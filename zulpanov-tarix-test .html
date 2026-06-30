@@ -1,0 +1,1605 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ZULPANOV TARIX TEST</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+
+<!-- Firebase SDK -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, doc, setDoc, getDoc, collection, addDoc, getDocs, query, where, orderBy, updateDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyD4YoS8AUkVHJp0MPjQr65Z2u2dHo8j1ps",
+    authDomain: "zulpanov-tarix-test.firebaseapp.com",
+    projectId: "zulpanov-tarix-test",
+    storageBucket: "zulpanov-tarix-test.firebasestorage.app",
+    messagingSenderId: "828522489966",
+    appId: "1:828522489966:web:cf1ac1186e55d760969e7f"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  window._fb = { db, doc, setDoc, getDoc, collection, addDoc, getDocs, query, where, orderBy, updateDoc, deleteDoc, serverTimestamp };
+</script>
+
+<style>
+:root {
+  --ink:       #1a1410;
+  --parchment: #f7f3ec;
+  --gold:      #c8a84b;
+  --gold-dark: #9e7c2a;
+  --crimson:   #8b1a1a;
+  --stone:     #e8e2d9;
+  --text-muted:#6b5e4e;
+  --white:     #ffffff;
+  --success:   #2d6a4f;
+  --error:     #8b1a1a;
+  --shadow:    0 4px 24px rgba(26,20,16,0.12);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--parchment);
+  color: var(--ink);
+  min-height: 100vh;
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--stone); }
+::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 3px; }
+
+/* ── PAGES ── */
+.page { display: none; min-height: 100vh; }
+.page.active { display: flex; flex-direction: column; }
+
+/* ══════════════════════════════
+   AUTH PAGE
+══════════════════════════════ */
+#page-auth {
+  background: linear-gradient(135deg, #1a1410 0%, #2d2118 50%, #1a1410 100%);
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.auth-brand {
+  text-align: center;
+  margin-bottom: 32px;
+}
+.auth-brand .logo-mark {
+  width: 64px; height: 64px;
+  background: var(--gold);
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  margin-bottom: 16px;
+}
+.auth-brand h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(22px, 5vw, 32px);
+  color: var(--gold);
+  letter-spacing: 2px;
+}
+.auth-brand p { color: #a89070; font-size: 13px; margin-top: 6px; }
+
+.auth-card {
+  background: var(--white);
+  border-radius: 16px;
+  padding: 36px 32px;
+  width: 100%; max-width: 420px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+}
+
+.auth-tabs {
+  display: flex;
+  border-bottom: 2px solid var(--stone);
+  margin-bottom: 28px;
+}
+.auth-tab {
+  flex: 1; padding: 10px;
+  border: none; background: none;
+  font-size: 15px; font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.auth-tab.active {
+  color: var(--crimson);
+  border-bottom: 2px solid var(--crimson);
+  margin-bottom: -2px;
+}
+
+.form-group { margin-bottom: 18px; }
+.form-group label {
+  display: block; font-size: 13px;
+  font-weight: 600; color: var(--text-muted);
+  margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;
+}
+.form-group input, .form-group select, .form-group textarea {
+  width: 100%; padding: 11px 14px;
+  border: 1.5px solid var(--stone);
+  border-radius: 8px;
+  font-size: 15px; font-family: inherit;
+  background: var(--parchment);
+  color: var(--ink);
+  transition: border-color 0.2s;
+}
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+  outline: none; border-color: var(--gold);
+}
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: 8px; padding: 12px 24px;
+  border: none; border-radius: 8px;
+  font-size: 15px; font-weight: 600;
+  cursor: pointer; transition: all 0.2s;
+  font-family: inherit;
+}
+.btn-primary {
+  background: var(--crimson); color: var(--white);
+  width: 100%;
+}
+.btn-primary:hover { background: #6e1515; transform: translateY(-1px); }
+.btn-gold {
+  background: var(--gold); color: var(--ink);
+}
+.btn-gold:hover { background: var(--gold-dark); }
+.btn-outline {
+  background: transparent; color: var(--crimson);
+  border: 1.5px solid var(--crimson);
+}
+.btn-outline:hover { background: var(--crimson); color: var(--white); }
+.btn-sm { padding: 7px 16px; font-size: 13px; }
+.btn-danger { background: var(--error); color: var(--white); }
+.btn-success { background: var(--success); color: var(--white); }
+
+.auth-form { display: none; }
+.auth-form.active { display: block; }
+
+.msg { padding: 10px 14px; border-radius: 8px; font-size: 14px; margin-top: 12px; display: none; }
+.msg.error { background: #fdf0f0; color: var(--error); border: 1px solid #f5c0c0; display: block; }
+.msg.success { background: #f0fdf4; color: var(--success); border: 1px solid #b7dfca; display: block; }
+
+/* ══════════════════════════════
+   MAIN LAYOUT
+══════════════════════════════ */
+.layout {
+  display: flex; min-height: 100vh;
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: 240px; min-height: 100vh;
+  background: var(--ink);
+  display: flex; flex-direction: column;
+  position: fixed; left: 0; top: 0; bottom: 0;
+  z-index: 100;
+  transition: transform 0.3s;
+}
+.sidebar-brand {
+  padding: 24px 20px 20px;
+  border-bottom: 1px solid #2d2118;
+}
+.sidebar-brand .brand-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 15px; color: var(--gold);
+  letter-spacing: 1px; line-height: 1.3;
+}
+.sidebar-brand .brand-sub {
+  font-size: 11px; color: #6b5e4e;
+  margin-top: 4px;
+}
+.sidebar-user {
+  padding: 16px 20px;
+  border-bottom: 1px solid #2d2118;
+  display: flex; align-items: center; gap: 10px;
+}
+.user-avatar {
+  width: 36px; height: 36px;
+  background: var(--gold);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 700; color: var(--ink);
+  flex-shrink: 0;
+}
+.user-info .user-name { font-size: 13px; font-weight: 600; color: var(--white); }
+.user-info .user-role { font-size: 11px; color: #a89070; }
+
+.nav-section { padding: 12px 0; }
+.nav-label { font-size: 10px; font-weight: 700; color: #4a3d30; text-transform: uppercase; letter-spacing: 1.5px; padding: 4px 20px 8px; }
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 20px;
+  color: #a89070; font-size: 14px; font-weight: 500;
+  cursor: pointer; transition: all 0.15s;
+  border-left: 3px solid transparent;
+}
+.nav-item:hover { color: var(--white); background: rgba(200,168,75,0.08); }
+.nav-item.active { color: var(--gold); border-left-color: var(--gold); background: rgba(200,168,75,0.08); }
+.nav-item .nav-icon { font-size: 16px; width: 20px; text-align: center; }
+
+.sidebar-footer {
+  margin-top: auto; padding: 16px 20px;
+  border-top: 1px solid #2d2118;
+}
+.btn-logout {
+  width: 100%; padding: 9px;
+  background: transparent; border: 1px solid #4a3d30;
+  color: #a89070; border-radius: 7px;
+  font-size: 13px; cursor: pointer;
+  transition: all 0.2s; font-family: inherit;
+}
+.btn-logout:hover { border-color: var(--crimson); color: var(--crimson); }
+
+/* MAIN CONTENT */
+.main-content {
+  margin-left: 240px;
+  flex: 1; padding: 32px;
+  min-height: 100vh;
+}
+
+.page-header {
+  margin-bottom: 28px;
+}
+.page-header h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 26px; color: var(--ink);
+  font-weight: 700;
+}
+.page-header p { color: var(--text-muted); font-size: 14px; margin-top: 4px; }
+
+/* CARDS */
+.card {
+  background: var(--white);
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: var(--shadow);
+}
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+}
+.stat-card {
+  background: var(--white); border-radius: 12px; padding: 22px;
+  box-shadow: var(--shadow); border-left: 4px solid var(--gold);
+}
+.stat-card .stat-value { font-family: 'Playfair Display', serif; font-size: 32px; color: var(--ink); font-weight: 700; }
+.stat-card .stat-label { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+
+/* SECTION VIEWS */
+.section-view { display: none; }
+.section-view.active { display: block; }
+
+/* SUBJECT SELECTOR */
+.subject-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px; margin-top: 16px;
+}
+.subject-card {
+  background: var(--white); border-radius: 12px; padding: 22px;
+  box-shadow: var(--shadow); cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.2s;
+  text-align: center;
+}
+.subject-card:hover { border-color: var(--gold); transform: translateY(-2px); }
+.subject-card .s-icon { font-size: 32px; margin-bottom: 10px; }
+.subject-card .s-name { font-weight: 700; font-size: 15px; color: var(--ink); }
+.subject-card .s-tests { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+
+/* TEST LIST */
+.test-list { display: flex; flex-direction: column; gap: 12px; margin-top: 16px; }
+.test-item {
+  background: var(--white); border-radius: 10px; padding: 18px 22px;
+  box-shadow: var(--shadow); display: flex; align-items: center;
+  justify-content: space-between; gap: 12px;
+}
+.test-item .t-info .t-title { font-weight: 600; font-size: 15px; }
+.test-item .t-info .t-meta { font-size: 12px; color: var(--text-muted); margin-top: 3px; }
+.badge {
+  display: inline-flex; align-items: center; padding: 3px 10px;
+  border-radius: 20px; font-size: 12px; font-weight: 600;
+}
+.badge-gold { background: #fef3d0; color: var(--gold-dark); }
+.badge-crimson { background: #fdf0f0; color: var(--crimson); }
+.badge-green { background: #f0fdf4; color: var(--success); }
+
+/* TEST MODAL */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(26,20,16,0.7);
+  z-index: 200; display: none;
+  align-items: center; justify-content: center;
+  padding: 20px;
+}
+.modal-overlay.active { display: flex; }
+.modal {
+  background: var(--white); border-radius: 16px;
+  padding: 32px; max-width: 700px; width: 100%;
+  max-height: 90vh; overflow-y: auto;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.4);
+}
+
+/* TEST ENGINE */
+.test-progress-bar {
+  height: 6px; background: var(--stone); border-radius: 3px; overflow: hidden; margin-bottom: 24px;
+}
+.test-progress-fill { height: 100%; background: var(--gold); border-radius: 3px; transition: width 0.3s; }
+.test-counter { font-size: 13px; color: var(--text-muted); margin-bottom: 8px; }
+.test-question { font-size: 18px; font-weight: 600; color: var(--ink); margin-bottom: 20px; line-height: 1.5; }
+.test-options { display: flex; flex-direction: column; gap: 10px; }
+.test-option {
+  padding: 13px 18px; border-radius: 9px;
+  border: 1.5px solid var(--stone);
+  cursor: pointer; font-size: 15px;
+  transition: all 0.15s; background: var(--parchment);
+}
+.test-option:hover { border-color: var(--gold); background: #fef9ec; }
+.test-option.correct { background: #f0fdf4; border-color: var(--success); color: var(--success); font-weight: 600; }
+.test-option.wrong { background: #fdf0f0; border-color: var(--error); color: var(--error); }
+.test-option.reveal-correct { background: #f0fdf4; border-color: var(--success); }
+.test-option:disabled { cursor: default; }
+.answer-feedback {
+  margin-top: 14px; padding: 12px 16px;
+  border-radius: 8px; font-size: 14px; font-weight: 500;
+  display: none;
+}
+.answer-feedback.show-correct { display: block; background: #f0fdf4; color: var(--success); border: 1px solid #b7dfca; }
+.answer-feedback.show-wrong { display: block; background: #fdf0f0; color: var(--error); border: 1px solid #f5c0c0; }
+.test-nav { display: flex; justify-content: space-between; margin-top: 24px; align-items: center; }
+
+/* RESULTS */
+.result-circle {
+  width: 120px; height: 120px;
+  border-radius: 50%;
+  border: 6px solid var(--gold);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  margin: 0 auto 24px;
+}
+.result-circle .r-score { font-family: 'Playfair Display', serif; font-size: 36px; font-weight: 900; color: var(--gold-dark); }
+.result-circle .r-label { font-size: 11px; color: var(--text-muted); }
+
+/* STATISTICS TABLE */
+.stats-table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+.stats-table th {
+  text-align: left; padding: 10px 14px;
+  font-size: 12px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.5px;
+  color: var(--text-muted);
+  border-bottom: 2px solid var(--stone);
+}
+.stats-table td {
+  padding: 12px 14px; font-size: 14px;
+  border-bottom: 1px solid var(--stone);
+}
+.stats-table tr:last-child td { border-bottom: none; }
+.rank-badge {
+  width: 28px; height: 28px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700;
+}
+.rank-1 { background: var(--gold); color: var(--ink); }
+.rank-2 { background: #c0c0c0; color: var(--ink); }
+.rank-3 { background: #cd7f32; color: var(--white); }
+.rank-other { background: var(--stone); color: var(--text-muted); }
+
+/* ADMIN */
+.upload-zone {
+  border: 2px dashed var(--stone); border-radius: 12px;
+  padding: 40px; text-align: center; cursor: pointer;
+  transition: all 0.2s;
+}
+.upload-zone:hover { border-color: var(--gold); background: #fef9ec; }
+.upload-zone .uz-icon { font-size: 40px; margin-bottom: 12px; }
+.upload-zone p { color: var(--text-muted); font-size: 14px; }
+.upload-zone strong { color: var(--ink); display: block; margin-bottom: 6px; }
+
+/* PROFILE */
+.profile-hero {
+  background: linear-gradient(135deg, var(--ink) 0%, #2d2118 100%);
+  border-radius: 16px; padding: 32px;
+  display: flex; align-items: center; gap: 24px;
+  margin-bottom: 24px; color: var(--white);
+}
+.profile-avatar-big {
+  width: 80px; height: 80px;
+  background: var(--gold); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 32px; font-weight: 700; color: var(--ink);
+  flex-shrink: 0;
+}
+.profile-info h3 { font-family: 'Playfair Display', serif; font-size: 22px; color: var(--gold); }
+.profile-info p { font-size: 13px; color: #a89070; margin-top: 4px; }
+
+/* ABOUT */
+.about-card {
+  background: linear-gradient(135deg, var(--ink) 0%, #2d2118 100%);
+  border-radius: 16px; padding: 36px; color: var(--white); margin-bottom: 24px;
+}
+.about-card h2 { font-family: 'Playfair Display', serif; font-size: 28px; color: var(--gold); margin-bottom: 8px; }
+.about-card p { color: #c8b89a; line-height: 1.7; }
+
+/* TOAST */
+.toast {
+  position: fixed; bottom: 24px; right: 24px;
+  background: var(--ink); color: var(--white);
+  padding: 14px 20px; border-radius: 10px;
+  font-size: 14px; z-index: 999;
+  transform: translateY(100px); opacity: 0;
+  transition: all 0.3s;
+  max-width: 320px;
+  border-left: 4px solid var(--gold);
+}
+.toast.show { transform: translateY(0); opacity: 1; }
+
+/* MOBILE MENU */
+.menu-toggle {
+  display: none; position: fixed; top: 16px; left: 16px;
+  z-index: 101; background: var(--ink);
+  border: none; color: var(--gold);
+  padding: 10px 12px; border-radius: 8px;
+  cursor: pointer; font-size: 18px;
+}
+
+.filter-bar {
+  display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px;
+}
+.filter-btn {
+  padding: 7px 16px; border-radius: 20px;
+  border: 1.5px solid var(--stone); background: var(--white);
+  font-size: 13px; cursor: pointer;
+  transition: all 0.15s; font-family: inherit;
+  font-weight: 500; color: var(--text-muted);
+}
+.filter-btn.active { border-color: var(--crimson); background: var(--crimson); color: var(--white); }
+
+.back-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: none; border: none;
+  color: var(--text-muted); font-size: 14px;
+  cursor: pointer; margin-bottom: 16px;
+  font-family: inherit; padding: 0;
+}
+.back-btn:hover { color: var(--ink); }
+
+/* Loading */
+.loading {
+  display: flex; align-items: center; justify-content: center;
+  padding: 40px; color: var(--text-muted);
+  flex-direction: column; gap: 12px;
+}
+.spinner {
+  width: 32px; height: 32px;
+  border: 3px solid var(--stone);
+  border-top-color: var(--gold);
+  border-radius: 50%; animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+@media (max-width: 768px) {
+  .sidebar { transform: translateX(-100%); }
+  .sidebar.open { transform: translateX(0); }
+  .main-content { margin-left: 0; padding: 20px; }
+  .menu-toggle { display: block; }
+  .card-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════
+     AUTH PAGE
+═══════════════════════════════════════ -->
+<div id="page-auth" class="page active">
+  <div class="auth-brand">
+    <div class="logo-mark">🏛️</div>
+    <h1>ZULPANOV<br>TARIX TEST</h1>
+    <p>O'zbekiston va Jahon tarixi bo'yicha test platformasi</p>
+  </div>
+  <div class="auth-card">
+    <div style="text-align:center;margin-bottom:24px;">
+      <h3 style="font-family:'Playfair Display',serif;font-size:18px;">Saytga kirish</h3>
+      <p style="color:var(--text-muted);font-size:13px;margin-top:4px;">Ism-familiya va telefon raqamingizni kiriting</p>
+    </div>
+
+    <div id="form-login">
+      <div class="form-group">
+        <label>Ism va Familiya</label>
+        <input type="text" id="reg-name" placeholder="Ismoil Karimov"/>
+      </div>
+      <div class="form-group">
+        <label>Sinf</label>
+        <select id="reg-class">
+          <option value="">Sinfingizni tanlang</option>
+          <option>6-sinf</option><option>7-sinf</option>
+          <option>8-sinf</option><option>9-sinf</option>
+          <option>10-sinf</option><option>11-sinf</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Telefon raqam</label>
+        <input type="tel" id="reg-phone" placeholder="+998 90 123 45 67"/>
+      </div>
+      <button class="btn btn-primary" onclick="doLogin()">Kirish →</button>
+      <div id="login-msg" class="msg"></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════
+     MAIN APP
+═══════════════════════════════════════ -->
+<div id="page-app" class="page">
+  <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+
+  <!-- SIDEBAR -->
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div style="font-size:20px;margin-bottom:8px;">🏛️</div>
+      <div class="brand-name">ZULPANOV<br>TARIX TEST</div>
+      <div class="brand-sub">Test platformasi</div>
+    </div>
+    <div class="sidebar-user">
+      <div class="user-avatar" id="sb-avatar">?</div>
+      <div class="user-info">
+        <div class="user-name" id="sb-name">Yuklanmoqda...</div>
+        <div class="user-role" id="sb-role">O'quvchi</div>
+      </div>
+    </div>
+    <div class="nav-section">
+      <div class="nav-label">Asosiy</div>
+      <div class="nav-item active" onclick="goSection('home')"><span class="nav-icon">🏠</span> Bosh sahifa</div>
+      <div class="nav-item" onclick="goSection('tests')"><span class="nav-icon">📝</span> Testlar</div>
+      <div class="nav-item" onclick="goSection('stats')"><span class="nav-icon">📊</span> Statistika</div>
+      <div class="nav-item" onclick="goSection('profile')"><span class="nav-icon">👤</span> Profil</div>
+    </div>
+    <div class="nav-section" id="admin-nav" style="display:none;">
+      <div class="nav-label">Boshqaruv</div>
+      <div class="nav-item" onclick="goSection('admin')"><span class="nav-icon">⚙️</span> Admin Panel</div>
+    </div>
+    <div class="nav-section">
+      <div class="nav-label">Ma'lumot</div>
+      <div class="nav-item" onclick="goSection('about')"><span class="nav-icon">ℹ️</span> Platforma haqida</div>
+    </div>
+    <div class="sidebar-footer">
+      <button class="btn-logout" onclick="doLogout()">🚪 Chiqish</button>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main-content">
+
+    <!-- HOME -->
+    <div id="section-home" class="section-view active">
+      <div class="page-header">
+        <h2 id="home-greeting">Xush kelibsiz!</h2>
+        <p>Bugungi mashg'ulotni boshlang</p>
+      </div>
+      <div class="card-grid" style="margin-bottom:24px;">
+        <div class="stat-card">
+          <div class="stat-value" id="home-total-tests">0</div>
+          <div class="stat-label">Jami yechilgan testlar</div>
+        </div>
+        <div class="stat-card" style="border-left-color: var(--crimson);">
+          <div class="stat-value" id="home-avg-score">0%</div>
+          <div class="stat-label">O'rtacha ball</div>
+        </div>
+        <div class="stat-card" style="border-left-color: var(--success);">
+          <div class="stat-value" id="home-rank">#—</div>
+          <div class="stat-label">Umumiy o'rningiz</div>
+        </div>
+      </div>
+      <div class="card">
+        <h3 style="font-family:'Playfair Display',serif;margin-bottom:16px;">So'nggi natijalar</h3>
+        <div id="home-recent"><div class="loading"><div class="spinner"></div>Yuklanmoqda...</div></div>
+      </div>
+    </div>
+
+    <!-- TESTS -->
+    <div id="section-tests" class="section-view">
+      <div id="view-subjects">
+        <div class="page-header">
+          <h2>Testlar</h2>
+          <p>Fan va sinfni tanlang</p>
+        </div>
+        <div class="filter-bar">
+          <button class="filter-btn active" onclick="filterClass(this,'all')">Barchasi</button>
+          <button class="filter-btn" onclick="filterClass(this,'6-sinf')">6-sinf</button>
+          <button class="filter-btn" onclick="filterClass(this,'7-sinf')">7-sinf</button>
+          <button class="filter-btn" onclick="filterClass(this,'8-sinf')">8-sinf</button>
+          <button class="filter-btn" onclick="filterClass(this,'9-sinf')">9-sinf</button>
+          <button class="filter-btn" onclick="filterClass(this,'10-sinf')">10-sinf</button>
+          <button class="filter-btn" onclick="filterClass(this,'11-sinf')">11-sinf</button>
+        </div>
+        <div class="subject-grid" id="subject-grid">
+          <div class="loading"><div class="spinner"></div>Yuklanmoqda...</div>
+        </div>
+      </div>
+
+      <div id="view-tests" style="display:none;">
+        <button class="back-btn" onclick="backToSubjects()">← Orqaga</button>
+        <div class="page-header">
+          <h2 id="tests-subject-title">Testlar</h2>
+          <p id="tests-subject-meta"></p>
+        </div>
+        <div class="test-list" id="tests-list">
+          <div class="loading"><div class="spinner"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STATISTICS -->
+    <div id="section-stats" class="section-view">
+      <div class="page-header">
+        <h2>Statistika</h2>
+        <p>Barcha o'quvchilar natijalari</p>
+      </div>
+      <div class="card-grid" style="margin-bottom:24px;">
+        <div class="stat-card">
+          <div class="stat-value" id="stat-total-users">—</div>
+          <div class="stat-label">Jami foydalanuvchilar</div>
+        </div>
+        <div class="stat-card" style="border-left-color:var(--crimson);">
+          <div class="stat-value" id="stat-total-attempts">—</div>
+          <div class="stat-label">Jami urinishlar</div>
+        </div>
+        <div class="stat-card" style="border-left-color:var(--success);">
+          <div class="stat-value" id="stat-avg-global">—</div>
+          <div class="stat-label">Umumiy o'rtacha</div>
+        </div>
+      </div>
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+          <h3 style="font-family:'Playfair Display',serif;">Reyting jadvali</h3>
+          <select id="stats-filter" onchange="loadStats()" style="padding:7px 12px;border:1.5px solid var(--stone);border-radius:7px;font-family:inherit;font-size:13px;">
+            <option value="all">Barcha sinflar</option>
+            <option value="6-sinf">6-sinf</option>
+            <option value="7-sinf">7-sinf</option>
+            <option value="8-sinf">8-sinf</option>
+            <option value="9-sinf">9-sinf</option>
+            <option value="10-sinf">10-sinf</option>
+            <option value="11-sinf">11-sinf</option>
+          </select>
+        </div>
+        <div style="overflow-x:auto;">
+          <table class="stats-table">
+            <thead>
+              <tr>
+                <th>O'rin</th>
+                <th>Ism Familiya</th>
+                <th>Sinf</th>
+                <th>Testlar</th>
+                <th>O'rtacha ball</th>
+                <th>So'nggi faollik</th>
+              </tr>
+            </thead>
+            <tbody id="stats-body">
+              <tr><td colspan="6" style="text-align:center;padding:30px;color:var(--text-muted);">Yuklanmoqda...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROFILE -->
+    <div id="section-profile" class="section-view">
+      <div class="page-header"><h2>Profil</h2></div>
+      <div class="profile-hero">
+        <div class="profile-avatar-big" id="prof-avatar">?</div>
+        <div class="profile-info">
+          <h3 id="prof-name">—</h3>
+          <p id="prof-class">—</p>
+          <p id="prof-email" style="margin-top:2px;">—</p>
+        </div>
+      </div>
+      <div class="card-grid" style="margin-bottom:24px;">
+        <div class="stat-card">
+          <div class="stat-value" id="prof-tests">0</div>
+          <div class="stat-label">Yechilgan testlar</div>
+        </div>
+        <div class="stat-card" style="border-left-color:var(--crimson);">
+          <div class="stat-value" id="prof-avg">0%</div>
+          <div class="stat-label">O'rtacha ball</div>
+        </div>
+        <div class="stat-card" style="border-left-color:var(--success);">
+          <div class="stat-value" id="prof-best">0%</div>
+          <div class="stat-label">Eng yaxshi natija</div>
+        </div>
+      </div>
+      <div class="card">
+        <h3 style="font-family:'Playfair Display',serif;margin-bottom:20px;">Ma'lumotlarni tahrirlash</h3>
+        <div class="form-group">
+          <label>Ism Familiya</label>
+          <input type="text" id="edit-name" placeholder="To'liq ismingiz"/>
+        </div>
+        <div class="form-group">
+          <label>Sinf</label>
+          <select id="edit-class">
+            <option>6-sinf</option><option>7-sinf</option>
+            <option>8-sinf</option><option>9-sinf</option>
+            <option>10-sinf</option><option>11-sinf</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Telefon</label>
+          <input type="tel" id="edit-phone" placeholder="+998 XX XXX XX XX"/>
+        </div>
+        <button class="btn btn-gold" onclick="saveProfile()">💾 Saqlash</button>
+      </div>
+      <div class="card" style="margin-top:20px;">
+        <h3 style="font-family:'Playfair Display',serif;margin-bottom:16px;">Mening natijalarim</h3>
+        <div id="my-results-list"><div class="loading"><div class="spinner"></div></div></div>
+      </div>
+    </div>
+
+    <!-- ADMIN -->
+    <div id="section-admin" class="section-view">
+      <div class="page-header">
+        <h2>⚙️ Admin Panel</h2>
+        <p>Testlarni boshqarish</p>
+      </div>
+
+      <!-- Upload JSON -->
+      <div class="card" style="margin-bottom:24px;">
+        <h3 style="font-family:'Playfair Display',serif;margin-bottom:16px;">📤 Test yuklash (JSON)</h3>
+        <div style="background:#f7f3ec;border-radius:10px;padding:16px;margin-bottom:16px;font-size:13px;">
+          <strong>JSON format namunasi:</strong>
+          <pre style="margin-top:8px;font-size:12px;overflow-x:auto;color:var(--text-muted);">{
+  "title": "O'zbekiston tarixi - Amir Temur davri",
+  "subject": "uzbekiston",
+  "class": "7-sinf",
+  "topic": "Amir Temur",
+  "questions": [
+    {
+      "question": "Amir Temur qaysi yili taxtga chiqdi?",
+      "options": ["1370", "1380", "1360", "1390"],
+      "answer": 0
+    }
+  ]
+}</pre>
+        </div>
+        <div class="upload-zone" onclick="document.getElementById('json-file').click()">
+          <div class="uz-icon">📁</div>
+          <strong>JSON faylni tanlang</strong>
+          <p>yoki shu yerga torting</p>
+        </div>
+        <input type="file" id="json-file" accept=".json" style="display:none" onchange="handleJsonUpload(event)"/>
+        <div id="upload-preview" style="margin-top:16px;display:none;">
+          <div class="card" style="border:2px solid var(--gold);background:#fef9ec;">
+            <h4 style="margin-bottom:8px;" id="preview-title">—</h4>
+            <p style="font-size:13px;color:var(--text-muted);" id="preview-meta">—</p>
+            <div style="margin-top:12px;display:flex;gap:10px;">
+              <button class="btn btn-success btn-sm" onclick="confirmUpload()">✓ Bazaga kiritish</button>
+              <button class="btn btn-outline btn-sm" onclick="cancelUpload()">Bekor qilish</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Manage tests -->
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+          <h3 style="font-family:'Playfair Display',serif;">Testlar ro'yxati</h3>
+          <button class="btn btn-gold btn-sm" onclick="loadAdminTests()">🔄 Yangilash</button>
+        </div>
+        <div id="admin-tests-list"><div class="loading"><div class="spinner"></div></div></div>
+      </div>
+
+      <!-- Add test manually -->
+      <div class="card" style="margin-top:24px;">
+        <h3 style="font-family:'Playfair Display',serif;margin-bottom:16px;">✏️ Qo'lda test qo'shish</h3>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+          <div class="form-group">
+            <label>Sarlavha</label>
+            <input type="text" id="at-title" placeholder="Test nomi"/>
+          </div>
+          <div class="form-group">
+            <label>Fan</label>
+            <select id="at-subject">
+              <option value="uzbekiston">O'zbekiston tarixi</option>
+              <option value="jahon">Jahon tarixi</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Sinf</label>
+            <select id="at-class">
+              <option>6-sinf</option><option>7-sinf</option>
+              <option>8-sinf</option><option>9-sinf</option>
+              <option>10-sinf</option><option>11-sinf</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Mavzu</label>
+            <input type="text" id="at-topic" placeholder="Bob/mavzu nomi"/>
+          </div>
+        </div>
+        <div id="manual-questions">
+          <div class="manual-q" data-idx="0" style="border:1.5px solid var(--stone);border-radius:10px;padding:16px;margin-bottom:12px;">
+            <div class="form-group"><label>1-savol</label><input type="text" class="q-text" placeholder="Savol matni"/></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+              <input type="text" class="opt-a" placeholder="A) Variant" style="padding:9px 12px;border:1.5px solid var(--stone);border-radius:7px;font-family:inherit;font-size:14px;"/>
+              <input type="text" class="opt-b" placeholder="B) Variant" style="padding:9px 12px;border:1.5px solid var(--stone);border-radius:7px;font-family:inherit;font-size:14px;"/>
+              <input type="text" class="opt-c" placeholder="C) Variant" style="padding:9px 12px;border:1.5px solid var(--stone);border-radius:7px;font-family:inherit;font-size:14px;"/>
+              <input type="text" class="opt-d" placeholder="D) Variant" style="padding:9px 12px;border:1.5px solid var(--stone);border-radius:7px;font-family:inherit;font-size:14px;"/>
+            </div>
+            <div class="form-group" style="margin-top:12px;margin-bottom:0;">
+              <label>To'g'ri javob</label>
+              <select class="correct-ans" style="width:auto;padding:8px 12px;border:1.5px solid var(--stone);border-radius:7px;font-family:inherit;font-size:14px;">
+                <option value="0">A</option><option value="1">B</option>
+                <option value="2">C</option><option value="3">D</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:8px;">
+          <button class="btn btn-outline btn-sm" onclick="addManualQuestion()">+ Savol qo'shish</button>
+          <button class="btn btn-gold" onclick="saveManualTest()">💾 Testni saqlash</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ABOUT -->
+    <div id="section-about" class="section-view">
+      <div class="about-card">
+        <h2>ZULPANOV TARIX TEST</h2>
+        <p style="margin-top:12px;">O'zbekiston va Jahon tarixi fanlaridan 6—11-sinf o'quvchilariga mo'ljallangan zamonaviy test platformasi. Bilimlarni tekshiring, reyting jadvalida o'z o'rningizni toping!</p>
+      </div>
+      <div class="card-grid">
+        <div class="card" style="text-align:center;">
+          <div style="font-size:40px;margin-bottom:12px;">👨‍🏫</div>
+          <h3 style="font-family:'Playfair Display',serif;">Muallif</h3>
+          <p style="color:var(--text-muted);margin-top:8px;font-size:14px;">Zulpanov — tarix o'qituvchisi, metodist</p>
+        </div>
+        <div class="card" style="text-align:center;">
+          <div style="font-size:40px;margin-bottom:12px;">📞</div>
+          <h3 style="font-family:'Playfair Display',serif;">Aloqa</h3>
+          <p style="color:var(--text-muted);margin-top:8px;font-size:14px;">
+            <a href="tel:+998932370603" style="color:var(--crimson);text-decoration:none;font-weight:600;">+998 93 237 06 03</a>
+          </p>
+        </div>
+        <div class="card" style="text-align:center;">
+          <div style="font-size:40px;margin-bottom:12px;">🎯</div>
+          <h3 style="font-family:'Playfair Display',serif;">Maqsad</h3>
+          <p style="color:var(--text-muted);margin-top:8px;font-size:14px;">Tarix bilimlarini qiziqarli va samarali o'rgatish</p>
+        </div>
+        <div class="card" style="text-align:center;">
+          <div style="font-size:40px;margin-bottom:12px;">📚</div>
+          <h3 style="font-family:'Playfair Display',serif;">Fanlar</h3>
+          <p style="color:var(--text-muted);margin-top:8px;font-size:14px;">O'zbekiston tarixi • Jahon tarixi</p>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /main-content -->
+</div><!-- /page-app -->
+
+<!-- ═══════════ TEST MODAL ═══════════ -->
+<div class="modal-overlay" id="test-modal">
+  <div class="modal">
+    <div id="modal-start">
+      <h2 style="font-family:'Playfair Display',serif;margin-bottom:8px;" id="modal-title">Test</h2>
+      <p style="color:var(--text-muted);margin-bottom:24px;" id="modal-meta-info">—</p>
+      <div style="background:var(--parchment);border-radius:10px;padding:16px;margin-bottom:24px;font-size:14px;line-height:1.7;">
+        <strong>Qoidalar:</strong><br>
+        • Har bir savolga faqat bitta javob tanlang<br>
+        • Javob tanlash bilan darhol natija ko'rinadi<br>
+        • Test tugagach umumiy ball va xatolar ko'rsatiladi
+      </div>
+      <div style="display:flex;gap:12px;">
+        <button class="btn btn-primary" onclick="startTest()">▶ Testni boshlash</button>
+        <button class="btn btn-outline" onclick="closeTestModal()">Bekor qilish</button>
+      </div>
+    </div>
+    <div id="modal-test" style="display:none;">
+      <div class="test-progress-bar"><div class="test-progress-fill" id="t-progress" style="width:0%"></div></div>
+      <div class="test-counter" id="t-counter">1 / 10</div>
+      <div class="test-question" id="t-question">Savol...</div>
+      <div class="test-options" id="t-options"></div>
+      <div class="answer-feedback" id="t-feedback"></div>
+      <div class="test-nav">
+        <span style="font-size:13px;color:var(--text-muted);" id="t-score-live">To'g'ri: 0</span>
+        <button class="btn btn-primary btn-sm" id="t-next-btn" onclick="nextQuestion()" style="display:none;">Keyingi →</button>
+      </div>
+    </div>
+    <div id="modal-result" style="display:none;">
+      <div class="result-circle">
+        <div class="r-score" id="r-score">0%</div>
+        <div class="r-label">Natija</div>
+      </div>
+      <h3 style="text-align:center;font-family:'Playfair Display',serif;margin-bottom:20px;" id="r-title">Test yakunlandi</h3>
+      <div class="card-grid" style="margin-bottom:20px;">
+        <div class="stat-card"><div class="stat-value" id="r-correct" style="font-size:24px;">0</div><div class="stat-label">To'g'ri</div></div>
+        <div class="stat-card" style="border-left-color:var(--crimson);"><div class="stat-value" id="r-wrong" style="font-size:24px;">0</div><div class="stat-label">Xato</div></div>
+      </div>
+      <div id="r-mistakes-block" style="margin-bottom:20px;"></div>
+      <div style="display:flex;gap:12px;">
+        <button class="btn btn-primary" onclick="closeTestModal()">✓ Yopish</button>
+        <button class="btn btn-outline" onclick="retryTest()">🔄 Qayta urinish</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════
+let currentUser = null;
+let currentUserData = null;
+let currentTest = null;
+let testState = {};
+let pendingJsonTest = null;
+let classFilter = 'all';
+let currentSubjectFilter = null;
+let manualQCount = 1;
+
+// ════════════════════════════════════════
+// HELPERS
+// ════════════════════════════════════════
+function $(id) { return document.getElementById(id); }
+
+function showToast(msg, dur=3000) {
+  const t = $('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), dur);
+}
+
+function fmtDate(ts) {
+  if (!ts) return '—';
+  const d = ts.toDate ? ts.toDate() : new Date(ts);
+  return d.toLocaleDateString('uz-UZ');
+}
+
+function fb() { return window._fb; }
+
+// ════════════════════════════════════════
+// AUTH (Ism + Telefon asosida)
+// ════════════════════════════════════════
+function normalizePhone(p) {
+  return p.replace(/[^\d]/g, ''); // faqat raqamlar, masalan 998901234567
+}
+
+async function doLogin() {
+  const name  = $('reg-name').value.trim();
+  const cls   = $('reg-class').value;
+  const phoneRaw = $('reg-phone').value.trim();
+  const msg   = $('login-msg');
+  msg.className='msg';
+
+  if (!name||!cls||!phoneRaw) { msg.className='msg error'; msg.textContent="Barcha maydonlarni to'ldiring"; return; }
+  const phone = normalizePhone(phoneRaw);
+  if (phone.length<9) { msg.className='msg error'; msg.textContent='Telefon raqamni to\'liq kiriting'; return; }
+
+  try {
+    const { db, doc, getDoc, setDoc, serverTimestamp } = fb();
+    const uid = phone; // telefon raqam = noyob identifikator
+    const ref = doc(db,'users',uid);
+    const snap = await getDoc(ref);
+
+    if (snap.exists()) {
+      // mavjud foydalanuvchi — ma'lumotlarini yangilab kiramiz
+      currentUserData = snap.data();
+      if (name && name !== currentUserData.name) {
+        await setDoc(ref, { ...currentUserData, name, class: cls }, { merge: true });
+        currentUserData.name = name; currentUserData.class = cls;
+      }
+    } else {
+      currentUserData = { name, class: cls, phone: phoneRaw, role: 'student', createdAt: serverTimestamp(), totalTests: 0, totalScore: 0 };
+      await setDoc(ref, currentUserData);
+    }
+
+    currentUser = { uid };
+    localStorage.setItem('ztt_uid', uid);
+    showApp();
+  } catch(e) {
+    msg.className='msg error';
+    msg.textContent = 'Xato: '+e.message;
+  }
+}
+
+function doLogout() {
+  localStorage.removeItem('ztt_uid');
+  currentUser = null;
+  currentUserData = null;
+  showAuth();
+}
+
+// Auth state listener — wait for Firebase to init, then auto-login if saved
+function waitForFb(cb, tries=0) {
+  if (window._fb) return cb();
+  if (tries>50) return;
+  setTimeout(() => waitForFb(cb, tries+1), 100);
+}
+
+waitForFb(async () => {
+  const savedUid = localStorage.getItem('ztt_uid');
+  if (savedUid) {
+    currentUser = { uid: savedUid };
+    await loadUserData();
+    if (currentUserData) { showApp(); return; }
+  }
+  showAuth();
+});
+
+async function loadUserData() {
+  const { db, doc, getDoc } = fb();
+  const snap = await getDoc(doc(db,'users',currentUser.uid));
+  if (snap.exists()) {
+    currentUserData = snap.data();
+  } else {
+    currentUserData = null;
+    localStorage.removeItem('ztt_uid');
+  }
+}
+
+function showAuth() {
+  $('page-auth').classList.add('active');
+  $('page-app').classList.remove('active');
+}
+
+function showApp() {
+  $('page-auth').classList.remove('active');
+  $('page-app').classList.add('active');
+  updateSidebar();
+  loadHomeSection();
+  loadSubjects();
+}
+
+function updateSidebar() {
+  const name = currentUserData?.name || currentUser?.displayName || 'Foydalanuvchi';
+  const role = currentUserData?.role === 'admin' ? 'Admin' : 'O\'quvchi';
+  $('sb-name').textContent = name;
+  $('sb-role').textContent = role + (currentUserData?.class ? ' • '+currentUserData.class : '');
+  $('sb-avatar').textContent = name.charAt(0).toUpperCase();
+  $('admin-nav').style.display = currentUserData?.role==='admin' ? 'block' : 'none';
+}
+
+// ════════════════════════════════════════
+// NAVIGATION
+// ════════════════════════════════════════
+function goSection(id) {
+  document.querySelectorAll('.section-view').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  $('section-'+id)?.classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=> {
+    if (n.getAttribute('onclick')?.includes("'"+id+"'")) n.classList.add('active');
+  });
+  if (id==='stats') loadStats();
+  if (id==='profile') loadProfile();
+  if (id==='admin') { if(currentUserData?.role==='admin') loadAdminTests(); }
+  closeSidebar();
+}
+
+function toggleSidebar() { $('sidebar').classList.toggle('open'); }
+function closeSidebar() { $('sidebar').classList.remove('open'); }
+
+// ════════════════════════════════════════
+// HOME
+// ════════════════════════════════════════
+async function loadHomeSection() {
+  if (!currentUser) return;
+  const { db, collection, query, where, getDocs, orderBy } = fb();
+  const name = currentUserData?.name || 'Foydalanuvchi';
+  $('home-greeting').textContent = 'Xush kelibsiz, ' + name + '!';
+
+  try {
+    const q = query(collection(db,'results'), where('userId','==',currentUser.uid), orderBy('createdAt','desc'));
+    const snap = await getDocs(q);
+    const results = snap.docs.map(d=>({id:d.id,...d.data()}));
+
+    $('home-total-tests').textContent = results.length;
+    if (results.length) {
+      const avg = Math.round(results.reduce((s,r)=>s+r.score,0)/results.length);
+      $('home-avg-score').textContent = avg+'%';
+    }
+
+    // Recent
+    const container = $('home-recent');
+    if (!results.length) { container.innerHTML='<p style="color:var(--text-muted);padding:16px 0;">Hali test yechmadingiz. Testlar bo\'limiga o\'ting!</p>'; return; }
+    container.innerHTML = results.slice(0,5).map(r=>`
+      <div class="test-item">
+        <div class="t-info">
+          <div class="t-title">${r.testTitle||'Test'}</div>
+          <div class="t-meta">${r.subject==='uzbekiston'?'O\'zbekiston tarixi':'Jahon tarixi'} • ${r.class||''} • ${fmtDate(r.createdAt)}</div>
+        </div>
+        <span class="badge ${r.score>=70?'badge-green':r.score>=50?'badge-gold':'badge-crimson'}">${r.score}%</span>
+      </div>`).join('');
+  } catch(e) { $('home-recent').innerHTML='<p style="color:var(--text-muted);">Ma\'lumot yuklanmadi.</p>'; }
+}
+
+// ════════════════════════════════════════
+// TESTS
+// ════════════════════════════════════════
+let allSubjects = [];
+
+async function loadSubjects() {
+  const { db, collection, getDocs } = fb();
+  try {
+    const snap = await getDocs(collection(db,'tests'));
+    const tests = snap.docs.map(d=>({id:d.id,...d.data()}));
+    allSubjects = tests;
+    renderSubjects();
+  } catch(e) {
+    $('subject-grid').innerHTML='<p style="color:var(--text-muted);">Testlar yuklanmadi.</p>';
+  }
+}
+
+function filterClass(btn, cls) {
+  classFilter = cls;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderSubjects();
+}
+
+function renderSubjects() {
+  const filtered = classFilter==='all' ? allSubjects : allSubjects.filter(t=>t.class===classFilter);
+
+  // Group by subject+class
+  const groups = {};
+  filtered.forEach(t => {
+    const key = t.subject+'|'+(t.class||'');
+    if (!groups[key]) groups[key] = { subject:t.subject, class:t.class, count:0 };
+    groups[key].count++;
+  });
+
+  const container = $('subject-grid');
+  if (!Object.keys(groups).length) { container.innerHTML='<p style="color:var(--text-muted);padding:20px 0;">Bu sinfda hali test yo\'q.</p>'; return; }
+
+  container.innerHTML = Object.values(groups).map(g=>`
+    <div class="subject-card" onclick="openSubject('${g.subject}','${g.class}')">
+      <div class="s-icon">${g.subject==='uzbekiston'?'🇺🇿':'🌍'}</div>
+      <div class="s-name">${g.subject==='uzbekiston'?"O'zbekiston tarixi":"Jahon tarixi"}</div>
+      <div style="font-size:12px;color:var(--gold-dark);margin-top:4px;font-weight:600;">${g.class}</div>
+      <div class="s-tests">${g.count} ta test</div>
+    </div>`).join('');
+}
+
+function openSubject(subject, cls) {
+  currentSubjectFilter = { subject, class: cls };
+  $('view-subjects').style.display='none';
+  $('view-tests').style.display='block';
+  $('tests-subject-title').textContent = (subject==='uzbekiston'?"O'zbekiston tarixi":"Jahon tarixi")+' — '+cls;
+  $('tests-subject-meta').textContent = 'Mavzularni tanlang va test boshlang';
+  renderTestsList(subject, cls);
+}
+
+function renderTestsList(subject, cls) {
+  const tests = allSubjects.filter(t=>t.subject===subject && t.class===cls);
+  const container = $('tests-list');
+  container.innerHTML = tests.map(t=>`
+    <div class="test-item">
+      <div class="t-info">
+        <div class="t-title">${t.title}</div>
+        <div class="t-meta">${t.topic||''} • ${t.questions?.length||0} ta savol</div>
+      </div>
+      <button class="btn btn-gold btn-sm" onclick="openTestModal('${t.id}')">▶ Boshlash</button>
+    </div>`).join('');
+}
+
+function backToSubjects() {
+  $('view-subjects').style.display='block';
+  $('view-tests').style.display='none';
+}
+
+// ════════════════════════════════════════
+// TEST MODAL
+// ════════════════════════════════════════
+function openTestModal(testId) {
+  currentTest = allSubjects.find(t=>t.id===testId);
+  if (!currentTest) return;
+  $('modal-title').textContent = currentTest.title;
+  $('modal-meta-info').textContent = (currentTest.subject==='uzbekiston'?"O'zbekiston tarixi":"Jahon tarixi")+' • '+currentTest.class+' • '+(currentTest.questions?.length||0)+' ta savol';
+  $('modal-start').style.display='block';
+  $('modal-test').style.display='none';
+  $('modal-result').style.display='none';
+  $('test-modal').classList.add('active');
+}
+
+function closeTestModal() {
+  $('test-modal').classList.remove('active');
+  currentTest=null; testState={};
+}
+
+function startTest() {
+  testState = { idx:0, correct:0, wrong:0, answers:[], questions:[...currentTest.questions] };
+  $('modal-start').style.display='none';
+  $('modal-test').style.display='block';
+  renderQuestion();
+}
+
+function retryTest() {
+  startTest();
+  $('modal-result').style.display='none';
+  $('modal-test').style.display='block';
+}
+
+function renderQuestion() {
+  const { idx, questions } = testState;
+  const q = questions[idx];
+  const total = questions.length;
+  $('t-counter').textContent = (idx+1)+' / '+total;
+  $('t-progress').style.width = (((idx)/total)*100)+'%';
+  $('t-question').textContent = q.question;
+  $('t-score-live').textContent = 'To\'g\'ri: '+testState.correct;
+  $('t-next-btn').style.display='none';
+  $('t-feedback').className='answer-feedback';
+
+  const opts = $('t-options');
+  const labels = ['A','B','C','D'];
+  opts.innerHTML = q.options.map((o,i)=>`
+    <button class="test-option" onclick="selectOption(${i})">${labels[i]}) ${o}</button>`).join('');
+}
+
+function selectOption(chosen) {
+  const q = testState.questions[testState.idx];
+  const correct = q.answer;
+  const btns = document.querySelectorAll('.test-option');
+  btns.forEach(b=>b.disabled=true);
+
+  const fb_el = $('t-feedback');
+  if (chosen===correct) {
+    testState.correct++;
+    btns[chosen].classList.add('correct');
+    fb_el.className='answer-feedback show-correct';
+    fb_el.textContent='✓ To\'g\'ri! Ajoyib!';
+  } else {
+    testState.wrong++;
+    btns[chosen].classList.add('wrong');
+    btns[correct].classList.add('reveal-correct');
+    fb_el.className='answer-feedback show-wrong';
+    fb_el.textContent='✗ Xato. To\'g\'ri javob: '+q.options[correct];
+  }
+
+  testState.answers.push({ q: q.question, chosen, correct, opts: q.options });
+  $('t-score-live').textContent = 'To\'g\'ri: '+testState.correct;
+
+  const isLast = testState.idx >= testState.questions.length - 1;
+  const btn = $('t-next-btn');
+  btn.style.display='inline-flex';
+  btn.textContent = isLast ? 'Natijani ko\'rish ✓' : 'Keyingi →';
+}
+
+function nextQuestion() {
+  testState.idx++;
+  if (testState.idx >= testState.questions.length) {
+    showResult();
+  } else {
+    renderQuestion();
+  }
+}
+
+async function showResult() {
+  $('modal-test').style.display='none';
+  $('modal-result').style.display='block';
+
+  const total = testState.questions.length;
+  const pct = Math.round((testState.correct/total)*100);
+  $('r-score').textContent = pct+'%';
+  $('r-correct').textContent = testState.correct;
+  $('r-wrong').textContent = testState.wrong;
+  $('r-title').textContent = pct>=90?'Ajoyib natija! 🏆':pct>=70?'Yaxshi natija! 👍':pct>=50?'O\'rtacha. Ko\'proq mashq qiling.':'Qiyinchilik bor. Qayta urinib ko\'ring.';
+  $('t-progress').style.width='100%';
+
+  // Mistakes
+  const mistakes = testState.answers.filter(a=>a.chosen!==a.correct);
+  if (mistakes.length) {
+    $('r-mistakes-block').innerHTML = `
+      <div style="background:#fdf0f0;border-radius:10px;padding:16px;">
+        <h4 style="margin-bottom:12px;color:var(--crimson);">❌ Xatolar (${mistakes.length})</h4>
+        ${mistakes.map(m=>`
+          <div style="margin-bottom:10px;padding:10px;background:white;border-radius:8px;font-size:13px;">
+            <strong>${m.q}</strong><br>
+            <span style="color:var(--error);">Sizning javobingiz: ${m.opts[m.chosen]}</span><br>
+            <span style="color:var(--success);">To'g'ri javob: ${m.opts[m.correct]}</span>
+          </div>`).join('')}
+      </div>`;
+  } else {
+    $('r-mistakes-block').innerHTML='';
+  }
+
+  // Save result
+  if (!currentUser || !currentTest) return;
+  try {
+    const { db, collection, addDoc, doc, updateDoc, getDoc, serverTimestamp } = fb();
+    await addDoc(collection(db,'results'), {
+      userId: currentUser.uid,
+      userName: currentUserData?.name||'—',
+      userClass: currentUserData?.class||'—',
+      testId: currentTest.id,
+      testTitle: currentTest.title,
+      subject: currentTest.subject,
+      class: currentTest.class,
+      score: pct, correct: testState.correct,
+      wrong: testState.wrong, total,
+      createdAt: serverTimestamp()
+    });
+    // Update user stats
+    const uRef = doc(db,'users',currentUser.uid);
+    const uSnap = await getDoc(uRef);
+    if (uSnap.exists()) {
+      const d = uSnap.data();
+      await updateDoc(uRef, {
+        totalTests: (d.totalTests||0)+1,
+        totalScore: (d.totalScore||0)+pct
+      });
+      currentUserData = { ...currentUserData, totalTests:(d.totalTests||0)+1, totalScore:(d.totalScore||0)+pct };
+    }
+  } catch(e) { console.error(e); }
+}
+
+// ════════════════════════════════════════
+// STATISTICS
+// ════════════════════════════════════════
+async function loadStats() {
+  const { db, collection, getDocs, query, where } = fb();
+  const filterVal = $('stats-filter').value;
+  try {
+    const [usersSnap, resultsSnap] = await Promise.all([
+      getDocs(collection(db,'users')),
+      getDocs(collection(db,'results'))
+    ]);
+    const users = usersSnap.docs.map(d=>({id:d.id,...d.data()}));
+    let results = resultsSnap.docs.map(d=>({id:d.id,...d.data()}));
+
+    if (filterVal!=='all') results = results.filter(r=>r.userClass===filterVal);
+
+    $('stat-total-users').textContent = users.filter(u=>u.role!=='admin').length;
+    $('stat-total-attempts').textContent = results.length;
+    if (results.length) {
+      const avg = Math.round(results.reduce((s,r)=>s+r.score,0)/results.length);
+      $('stat-avg-global').textContent = avg+'%';
+    } else { $('stat-avg-global').textContent='—'; }
+
+    // Build leaderboard
+    const userMap = {};
+    results.forEach(r=>{
+      if (!userMap[r.userId]) userMap[r.userId] = { name:r.userName, class:r.userClass, tests:0, totalScore:0, lastDate:null };
+      userMap[r.userId].tests++;
+      userMap[r.userId].totalScore+=r.score;
+      if (!userMap[r.userId].lastDate || (r.createdAt && r.createdAt > userMap[r.userId].lastDate))
+        userMap[r.userId].lastDate = r.createdAt;
+    });
+
+    const board = Object.values(userMap).map(u=>({...u, avg:Math.round(u.totalScore/u.tests)}))
+      .sort((a,b)=>b.avg-a.avg);
+
+    const tbody = $('stats-body');
+    if (!board.length) { tbody.innerHTML='<tr><td colspan="6" style="text-align:center;padding:30px;color:var(--text-muted);">Ma\'lumot yo\'q</td></tr>'; return; }
+
+    tbody.innerHTML = board.map((u,i)=>`
+      <tr>
+        <td><span class="rank-badge ${i===0?'rank-1':i===1?'rank-2':i===2?'rank-3':'rank-other'}">${i+1}</span></td>
+        <td><strong>${u.name}</strong> ${u.userId===currentUser?.uid?'<span class="badge badge-gold" style="margin-left:6px;">Siz</span>':''}</td>
+        <td><span class="badge badge-gold">${u.class||'—'}</span></td>
+        <td>${u.tests}</td>
+        <td><strong style="color:${u.avg>=70?'var(--success)':u.avg>=50?'var(--gold-dark)':'var(--crimson)'}">${u.avg}%</strong></td>
+        <td style="font-size:12px;color:var(--text-muted);">${fmtDate(u.lastDate)}</td>
+      </tr>`).join('');
+
+    // Highlight self rank
+    const myRank = board.findIndex(u=>u.userId===currentUser?.uid);
+    if (myRank>=0) $('home-rank').textContent = '#'+(myRank+1);
+  } catch(e) { $('stats-body').innerHTML='<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--text-muted);">Yuklanmadi</td></tr>'; }
+}
+
+// ════════════════════════════════════════
+// PROFILE
+// ════════════════════════════════════════
+async function loadProfile() {
+  if (!currentUser||!currentUserData) return;
+  const d = currentUserData;
+  const name = d.name||'—';
+  $('prof-name').textContent = name;
+  $('prof-class').textContent = d.class||'—';
+  $('prof-email').textContent = '📞 '+(d.phone||currentUser.uid||'—');
+  $('prof-avatar').textContent = name.charAt(0).toUpperCase();
+  $('edit-name').value = d.name||'';
+  $('edit-phone').value = d.phone||'';
+  document.querySelectorAll('#edit-class option').forEach(o=>{ if(o.value===d.class||o.textContent===d.class) o.selected=true; });
+
+  // Load my results
+  const { db, collection, query, where, getDocs, orderBy } = fb();
+  try {
+    const q = query(collection(db,'results'), where('userId','==',currentUser.uid), orderBy('createdAt','desc'));
+    const snap = await getDocs(q);
+    const results = snap.docs.map(d=>({id:d.id,...d.data()}));
+    $('prof-tests').textContent = results.length;
+    if (results.length) {
+      const avg = Math.round(results.reduce((s,r)=>s+r.score,0)/results.length);
+      const best = Math.max(...results.map(r=>r.score));
+      $('prof-avg').textContent = avg+'%';
+      $('prof-best').textContent = best+'%';
+    }
+    const container = $('my-results-list');
+    if (!results.length) { container.innerHTML='<p style="color:var(--text-muted);">Hali test yechmadingiz.</p>'; return; }
+    container.innerHTML = results.map(r=>`
+      <div class="test-item">
+        <div class="t-info">
+          <div class="t-title">${r.testTitle}</div>
+          <div class="t-meta">${r.subject==='uzbekiston'?'O\'z.Tarixi':'J.Tarixi'} • ${r.class} • ${fmtDate(r.createdAt)}</div>
+        </div>
+        <div style="text-align:right;">
+          <span class="badge ${r.score>=70?'badge-green':r.score>=50?'badge-gold':'badge-crimson'}">${r.score}%</span>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:3px;">${r.correct}✓ ${r.wrong}✗</div>
+        </div>
+      </div>`).join('');
+  } catch(e) {}
+}
+
+async function saveProfile() {
+  if (!currentUser) return;
+  const name  = $('edit-name').value.trim();
+  const cls   = $('edit-class').value;
+  const phone = $('edit-phone').value.trim();
+  if (!name) { showToast('Ism kiritish shart'); return; }
+  const { db, doc, updateDoc } = fb();
+  try {
+    await updateDoc(doc(db,'users',currentUser.uid), { name, class:cls, phone });
+    currentUserData = {...currentUserData, name, class:cls, phone};
+    updateSidebar();
+    showToast('✅ Profil saqlandi');
+  } catch(e) { showToast('Xato: '+e.message); }
+}
+
+// ════════════════════════════════════════
+// ADMIN
+// ════════════════════════════════════════
+async function loadAdminTests() {
+  if (currentUserData?.role!=='admin') return;
+  const { db, collection, getDocs, doc, deleteDoc } = fb();
+  const snap = await getDocs(collection(db,'tests'));
+  const tests = snap.docs.map(d=>({id:d.id,...d.data()}));
+  const container = $('admin-tests-list');
+  if (!tests.length) { container.innerHTML='<p style="color:var(--text-muted);">Testlar yo\'q.</p>'; return; }
+  container.innerHTML = `<div class="test-list">`+tests.map(t=>`
+    <div class="test-item">
+      <div class="t-info">
+        <div class="t-title">${t.title}</div>
+        <div class="t-meta">${t.subject==='uzbekiston'?'O\'z.Tarixi':'J.Tarixi'} • ${t.class} • ${t.topic||''} • ${t.questions?.length||0} savol</div>
+      </div>
+      <button class="btn btn-danger btn-sm" onclick="deleteTest('${t.id}')">🗑️</button>
+    </div>`).join('')+'</div>';
+}
+
+async function deleteTest(id) {
+  if (!confirm('Testni o\'chirish?')) return;
+  const { db, doc, deleteDoc } = fb();
+  await deleteDoc(doc(db,'tests',id));
+  allSubjects = allSubjects.filter(t=>t.id!==id);
+  showToast('🗑️ Test o\'chirildi');
+  loadAdminTests();
+  renderSubjects();
+}
+
+function handleJsonUpload(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      const data = JSON.parse(ev.target.result);
+      if (!data.title||!data.questions||!Array.isArray(data.questions)) throw new Error('Noto\'g\'ri format');
+      pendingJsonTest = data;
+      $('preview-title').textContent = data.title;
+      $('preview-meta').textContent = (data.subject==='uzbekiston'?"O'z.Tarixi":"J.Tarixi")+' • '+(data.class||'?')+' • '+(data.questions.length)+' ta savol • Mavzu: '+(data.topic||'—');
+      $('upload-preview').style.display='block';
+    } catch(err) { showToast('❌ Noto\'g\'ri JSON format'); }
+  };
+  reader.readAsText(file);
+}
+
+async function confirmUpload() {
+  if (!pendingJsonTest) return;
+  const { db, collection, addDoc, serverTimestamp } = fb();
+  try {
+    const docRef = await addDoc(collection(db,'tests'), { ...pendingJsonTest, createdAt: serverTimestamp(), createdBy: currentUser.uid });
+    allSubjects.push({id:docRef.id,...pendingJsonTest});
+    showToast('✅ Test muvaffaqiyatli yuklandi!');
+    cancelUpload();
+    loadAdminTests();
+    renderSubjects();
+  } catch(e) { showToast('Xato: '+e.message); }
+}
+
+function cancelUpload() {
+  pendingJsonTest = null;
+  $('upload-preview').style.display='none';
+  $('json-file').value='';
+}
+
+function addManualQuestion() {
+  manualQCount++;
+  const idx = manualQCount-1;
+  const div = document.createElement('div');
+  div.className='manual-q';
+  div.dataset.idx=idx;
+  div.style.cssText='border:1.5px solid var(--stone);border-radius:10px;padding:16px;margin-bottom:12px;';
+  div.innerHTML=`
+    <div class="form-group"><label>${manualQCount}-savol</label><input type="text" class="q-text" placeholder="Savol matni"/></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <input type="text" class="opt-a" placeholder="A) Variant" style="padding:9px 12px;border:1.5px solid var(--stone);border-radius:7px;font-family:inherit;font-size:14px;"/>
+      <input type="text" class="opt-b" placeholder="B) Variant" style="padding:9px 12px;border:1.5px solid var(--stone);border-radius:7px;font-family:inherit;font-size:14px;"/>
+      <input type="text" class="opt-c" placeholder="C) Variant" style="padding:9px 12px;border:1.5px solid var(--stone);border-radius:7px;font-family:inherit;font-size:14px;"/>
+      <input type="text" class="opt-d" placeholder="D) Variant" style="padding:9px 12px;border:1.5px solid var(--stone);border-radius:7px;font-family:inherit;font-size:14px;"/>
+    </div>
+    <div class="form-group" style="margin-top:12px;margin-bottom:0;">
+      <label>To'g'ri javob</label>
+      <select class="correct-ans" style="width:auto;padding:8px 12px;border:1.5px solid var(--stone);border-radius:7px;font-family:inherit;font-size:14px;">
+        <option value="0">A</option><option value="1">B</option>
+        <option value="2">C</option><option value="3">D</option>
+      </select>
+    </div>`;
+  $('manual-questions').appendChild(div);
+}
+
+async function saveManualTest() {
+  const title = $('at-title').value.trim();
+  const subject = $('at-subject').value;
+  const cls = $('at-class').value;
+  const topic = $('at-topic').value.trim();
+  if (!title) { showToast('Sarlavha kiriting'); return; }
+
+  const questions = [];
+  document.querySelectorAll('.manual-q').forEach(div=>{
+    const q = div.querySelector('.q-text').value.trim();
+    const a = div.querySelector('.opt-a').value.trim();
+    const b = div.querySelector('.opt-b').value.trim();
+    const c = div.querySelector('.opt-c').value.trim();
+    const d = div.querySelector('.opt-d').value.trim();
+    const ans = parseInt(div.querySelector('.correct-ans').value);
+    if (q&&a&&b) questions.push({ question:q, options:[a,b,c,d].filter(Boolean), answer:ans });
+  });
+
+  if (!questions.length) { showToast('Kamida 1 savol kiriting'); return; }
+  const { db, collection, addDoc, serverTimestamp } = fb();
+  try {
+    const data = { title, subject, class:cls, topic, questions, createdAt:serverTimestamp(), createdBy:currentUser.uid };
+    const ref = await addDoc(collection(db,'tests'), data);
+    allSubjects.push({id:ref.id,...data});
+    showToast('✅ Test saqlandi!');
+    renderSubjects();
+    loadAdminTests();
+  } catch(e) { showToast('Xato: '+e.message); }
+}
+
+// ════════════════════════════════════════
+// ADMIN SETUP: First user can promote self
+// Visit: yoursite.html#make-admin (avval saytga kiring, keyin shu hash bilan oching)
+// ════════════════════════════════════════
+if (location.hash==='#make-admin') {
+  waitForFb(()=>{
+    setTimeout(async ()=>{
+      const { db, doc, updateDoc } = fb();
+      const uid = localStorage.getItem('ztt_uid');
+      if (uid) {
+        try {
+          await updateDoc(doc(db,'users',uid), { role:'admin' });
+          alert('Admin huquqi berildi! Sahifani qayta yuklang.');
+        } catch(e) { alert('Xato: '+e.message); }
+      } else {
+        alert('Avval saytga kiring (ism va telefon bilan), keyin shu havolani qayta oching.');
+      }
+    }, 1500);
+  });
+}
+</script>
+</body>
+</html>
