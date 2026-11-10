@@ -3145,6 +3145,7 @@ const STAT = (() => {
   }
   const lvColor = lv => !lv ? "var(--bad)" : /A/.test(lv) ? "var(--ok)" : /B/.test(lv) ? "var(--ac2)" : "var(--ac)";
   function open() {
+    if (!isAdmin()) return T.openHost();
     if (typeof T !== "undefined") T.leave(); if (typeof ACC !== "undefined") ACC.leave();
     show("tz");
     $("tz").innerHTML = `${adminNav("stat")}<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
@@ -3389,6 +3390,7 @@ const ACC = (() => {
   const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const d2 = n => String(n).padStart(2, "0"), dt = ms => { if (!ms) return "—"; const d = new Date(ms); return `${d2(d.getDate())}.${d2(d.getMonth() + 1)}.${d.getFullYear()} ${d2(d.getHours())}:${d2(d.getMinutes())}`; };
   function open() {
+    if (!isAdmin()) return T.openHost();
     if (typeof T !== "undefined") T.leave();
     unsubs.forEach(f => f()); unsubs = [];
     show("tz");
@@ -3472,15 +3474,18 @@ const ACC = (() => {
 
 function adminNav(active) {
   const b = (k, l, fn) => `<button class="${k === active ? "on" : ""}" onclick="${fn}">${l}</button>`;
-  return `<div class="adminbar"><div class="adm-t">⚙️ ADMIN PANEL</div><div class="sttabs" style="margin:6px 0 0">${b("tur", "🏆 Turnirlar", "T.openHost()")}${b("acc", "👥 O'quvchilar", "ACC.open()")}${b("stat", "📊 Statistika", "STAT.open()")}${b("out", "🚪 Chiqish", "adminLogout()")}</div></div>`;
+  return `<div class="adminbar"><div class="adm-t">⚙️ ADMIN PANEL · @${ADMIN.login}</div><div class="sttabs" style="margin:6px 0 0">${b("tur", "🏆 Turnirlar", "T.openHost()")}${b("acc", "👥 O'quvchilar", "ACC.open()")}${b("stat", "📊 Statistika", "STAT.open()")}${b("out", "🚪 Chiqish", "adminLogout()")}</div></div>`;
 }
-function adminLogout() { try { localStorage.removeItem("zm_host"); } catch (e) {} if (typeof T !== "undefined") T.leave(); ACC.leave(); goHome(); }
+function adminLogout() { try { localStorage.removeItem("zm_admin"); localStorage.removeItem("zm_host"); } catch (e) {} if (typeof T !== "undefined") T.leave(); ACC.leave(); goHome(); }
 
 // ================== TURNIR REJIMI ==================
 // >>> Firebase sozlamasini shu yerga qo'ying (firebaseConfig obyektini to'liq):
 const FIREBASE_CONFIG = {};
 // >>> Ustoz paneli paroli (o'zgartiring):
-const HOST_PIN = "7777";
+// >>> Admin login va parol (parolning o'zi kodda saqlanmaydi, faqat SHA-256 izi):
+const ADMIN = { login: "zulpanov", salt: "52bea5c2a4e5c0c0", hash: "0c75f168e324e8b7027bf42d2df7270b2e820f6dba0a55cd200281bb48d0f144" };
+async function sha256hex(s) { const b = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s)); return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, "0")).join(""); }
+function isAdmin() { try { const s = JSON.parse(localStorage.getItem("zm_admin") || "null"); return !!(s && s.k === ADMIN.hash && s.exp > Date.now()); } catch (e) { return false; } }
 
 const DBA = (() => {
   const useMQ = !(FIREBASE_CONFIG && FIREBASE_CONFIG.databaseURL) && (window.ZM_FORCE === "mqtt" || /^https?:$/.test(location.protocol));
@@ -3758,13 +3763,32 @@ const T = (() => {
   // ================== USTOZ ==================
   function openHost() {
     clear(); st.role = "host"; show("tz");
-    tz().innerHTML = `<div class="card"><h1>⚙️ Admin panel</h1><p class="sub">Ustoz uchun boshqaruv bo'limi. Parolni kiriting.</p>
-      <input id="thp" type="password" placeholder="Parol"><div id="therr" style="color:var(--bad);font-size:14px;margin:-6px 0 12px"></div>
+    if (isAdmin()) return hSetup();
+    tz().innerHTML = `<div class="card authcard" style="margin-top:0"><div style="text-align:center"><div class="hero-logo" style="width:70px;height:70px;border-radius:22px"><span style="font-size:30px">⚙️</span></div><h1>Admin panel</h1><p class="sub">Faqat ustoz uchun. Admin login va parolini kiriting.</p></div>
+      <label>Login</label><input id="thl" autocomplete="username" autocapitalize="none">
+      <label>Parol</label><input id="thp" type="password" autocomplete="current-password">
+      <div id="therr" style="color:var(--bad);font-size:14px;margin:-6px 0 12px"></div>
       <button class="btn" id="thgo">Kirish</button><button class="btn ghost" style="margin-top:10px" onclick="goHome()">Orqaga</button></div>`;
-    $("thgo").onclick = () => { if ($("thp").value === HOST_PIN) { ls.set("zm_host", "1"); hSetup(); } else $("therr").textContent = "Parol noto'g'ri."; };
-    if (ls.get("zm_host") === "1") hSetup();
+    const go = async () => {
+      const E = m => $("therr").textContent = m;
+      const lock = +(ls.get("zm_alock") || 0);
+      if (lock > Date.now()) return E(`Ko'p marta xato kiritildi. ${Math.ceil((lock - Date.now()) / 1000)} soniyadan keyin urinib ko'ring.`);
+      const l = $("thl").value.trim().toLowerCase(), p = $("thp").value;
+      if (!l || !p) return E("Login va parolni kiriting.");
+      let hx = ""; try { hx = await sha256hex(ADMIN.salt + ":" + l + ":" + p); } catch (e) { return E("Brauzeringiz bu amalni qo'llamaydi. Boshqa brauzerdan kiring."); }
+      if (l === ADMIN.login && hx === ADMIN.hash) {
+        ls.del("zm_afail"); ls.set("zm_admin", JSON.stringify({ k: ADMIN.hash, exp: Date.now() + 12 * 3600e3 }));
+        FX.toast("✅ Admin panelga xush kelibsiz", "up"); hSetup();
+      } else {
+        const f = +(ls.get("zm_afail") || 0) + 1; ls.set("zm_afail", f);
+        if (f >= 5) { ls.set("zm_alock", Date.now() + 60000); ls.set("zm_afail", 0); return E("5 marta xato. 1 daqiqa kuting."); }
+        E("Login yoki parol noto'g'ri.");
+      }
+    };
+    $("thgo").onclick = go; $("thp").onkeydown = e => { if (e.key === "Enter") go(); };
   }
   function hSetup() {
+    if (!isAdmin()) return openHost();
     clear(); st.celebrated = false; st.code = null; st.meta = null;
     let opts = "", g = null;
     SETS.forEach(s => { if (s.g !== g) { if (g) opts += "</optgroup>"; g = s.g; opts += `<optgroup label="${esc(g)}">`; } opts += `<option value="${s.id}">${esc((s.n === "∑" ? "" : s.n + " · ") + s.title)} (${s.qs ? s.qs.length : 20} savol)</option>`; });
@@ -3804,6 +3828,7 @@ const T = (() => {
     hAttach(code);
   }
   function hAttach(code) {
+    if (!isAdmin()) return openHost();
     st.celebrated = false; st.ps = {};
     clear(); st.role = "host"; st.code = code; st.pid = null; st.meta = null; ls.set("zm_hostcode", code);
     st.unsub.push(DBA.on(`t/${code}/players`, v => { st.players = v || {}; hBoard(); hAuto(); }));
@@ -3876,7 +3901,7 @@ const T = (() => {
     const h = location.hash;
     if (h.startsWith("#turnir")) openJoin((h.split("-")[1] || "").slice(0, 4));
     else if (h === "#ustoz") openHost();
-    else if (h === "#statistika") { openHost(); if (ls.get("zm_host") === "1") STAT.open(); }
+    else if (h === "#statistika") { if (isAdmin()) STAT.open(); else openHost(); }
     else { let a = null; try { a = JSON.parse(ls.get("zm_active") || "null"); } catch (e) {} if (a && a.code && ACCT.cur && a.u === ACCT.cur.login) { openJoin(a.code); $("tjerr").textContent = "Turniringizga qayta ulanmoqda…"; join(true); } else goHome(); }
   }
   return { openJoin, openHost, boot, st, leave: clear };
