@@ -3126,7 +3126,7 @@ function saveResult(r) {
     const ac = typeof ACCT !== "undefined" && ACCT.cur; if (ac) r.u = ac.login;
     const rec = { ...r, at: DBA.now() };
     DBA.set("r/" + id, rec).catch(() => {});
-    if (ac) DBA.set("h/" + ac.login + "/" + id, { ttl: rec.ttl, mode: rec.mode, ok: rec.ok, tot: rec.tot, pts: rec.pts, lv: rec.lv, at: rec.at }).catch(() => {});
+    if (ac) DBA.set("h/" + ac.uid + "/" + id, { ttl: rec.ttl, mode: rec.mode, ok: rec.ok, tot: rec.tot, pts: rec.pts, lv: rec.lv, at: rec.at }).catch(() => {});
   } catch (e) {}
 }
 
@@ -3254,20 +3254,33 @@ const ACCT = (() => {
     if (nav) goHome(); else if (cur && !$("home").classList.contains("hide")) renderHome();
   }
   async function restore() {
+    if (AUTH.FB) {
+      let s = null; try { s = JSON.parse(L.get("zm_user") || "null"); } catch (e) {}
+      if (s && s.u && s.uid) { cur = { uid: s.uid, login: s.u, f: s.f, l: s.l, g: s.g || "" }; apply(); }
+      await AUTH.ready();
+      const uid = AUTH.uid;
+      if (!uid) { if (cur) logout("Hisobingizga qayta kiring."); ready = true; renderBox(); return; }
+      let r = null; try { r = await DBA.get("users/" + uid); } catch (e) {}
+      if (!r) { cur = null; L.del("zm_user"); ready = true; renderBox(); return; } // admin yoki o'chirilgan hisob
+      if (r.b) { await AUTH.signOut(); logout("Hisobingiz ustoz tomonidan bloklangan."); ready = true; return; }
+      cur = { uid, login: r.login, f: r.f, l: r.l, g: r.g || "" };
+      L.set("zm_user", JSON.stringify({ uid, u: r.login, f: r.f, l: r.l, g: r.g || "" }));
+      DBA.update("users/" + uid, { last: DBA.now() }); apply(); ready = true; return;
+    }
     let s = null; try { s = JSON.parse(L.get("zm_user") || "null"); } catch (e) {}
     if (s && s.u) {
-      cur = { login: s.u, f: s.f, l: s.l, g: s.g || "" }; apply(); // darhol ko'rsatamiz, keyin tekshiramiz
+      cur = { uid: s.u, login: s.u, f: s.f, l: s.l, g: s.g || "" }; apply(); // darhol ko'rsatamiz, keyin tekshiramiz
       try {
         const r = await DBA.get("u/" + s.u);
         if (!cur || cur.login !== s.u) { ready = true; return; }
         if (!r || r.p !== s.p || r.b) { logout(r && r.b ? "Hisobingiz ustoz tomonidan bloklangan." : "Hisobingizga qayta kiring."); }
-        else { cur = { login: s.u, f: r.f, l: r.l, g: r.g || "" }; L.set("zm_user", JSON.stringify({ u: s.u, p: r.p, f: r.f, l: r.l, g: r.g || "" })); DBA.update("u/" + s.u, { last: DBA.now() }); apply(); }
+        else { cur = { uid: s.u, login: s.u, f: r.f, l: r.l, g: r.g || "" }; L.set("zm_user", JSON.stringify({ u: s.u, p: r.p, f: r.f, l: r.l, g: r.g || "" })); DBA.update("u/" + s.u, { last: DBA.now() }); apply(); }
       } catch (e) {}
       ready = true; return;
     }
     ready = true; renderBox();
   }
-  function logout(msg) { cur = null; L.del("zm_user"); L.del("zm_active"); if (hUn) { hUn(); hUn = null; } renderBox(msg); if (typeof chk === "function") chk(); show("auth"); }
+  function logout(msg) { if (AUTH.FB && AUTH.uid && !AUTH.isAdmin) AUTH.signOut(); cur = null; L.del("zm_user"); L.del("zm_active"); if (hUn) { hUn(); hUn = null; } renderBox(msg); if (typeof chk === "function") chk(); show("auth"); }
   function renderBox(msg) {
     const box = $("acc"); if (!box) return;
     if (cur) { box.innerHTML = ""; return; }
@@ -3289,7 +3302,7 @@ const ACCT = (() => {
         <div class="row"><div style="flex:1"><label>Ism</label><input id="rF" placeholder="Ali"></div><div style="flex:1"><label>Familiya</label><input id="rLn" placeholder="Valiyev"></div></div>
         <label>Sinf yoki guruh</label><input id="rG" placeholder="masalan: 7-A yoki 1-guruh">
         <label>Login (lotin harflari, raqam, _ belgisi)</label><input id="rL" autocapitalize="none" placeholder="ali_valiyev">
-        <div class="row"><div style="flex:1"><label>Parol</label><input id="rP" type="password" placeholder="kamida 4 belgi"></div><div style="flex:1"><label>Parolni takrorlang</label><input id="rP2" type="password"></div></div>
+        <div class="row"><div style="flex:1"><label>Parol</label><input id="rP" type="password" placeholder="kamida 6 belgi"></div><div style="flex:1"><label>Parolni takrorlang</label><input id="rP2" type="password"></div></div>
         <div class="tnote" style="font-size:12px">⚠️ Boshqa joylarda (Telegram, Instagram, pochta) ishlatadigan parolingizni yozmang. Bu parolni ustozingiz ko'ra oladi.</div>
         <div class="accerr" id="aE"></div><button class="btn" id="rGo">Ro'yxatdan o'tish</button>`;
       $("rGo").onclick = register;
@@ -3300,12 +3313,25 @@ const ACCT = (() => {
     const u = normLogin($("aL").value), p = $("aP").value, E = m => $("aE").textContent = m;
     if (!u || !p) return E("Login va parolni kiriting.");
     $("aGo").disabled = true; E("");
+    if (AUTH.FB) {
+      try {
+        const uid = await AUTH.signIn(u, p);
+        const r = await DBA.get("users/" + uid);
+        $("aGo").disabled = false;
+        if (!r) { await AUTH.signOut(); return E(u === ADMIN.login ? "Bu admin hisobi. Admin panel tugmasi orqali kiring." : "Hisob topilmadi."); }
+        if (r.b) { await AUTH.signOut(); return E("Hisobingiz ustoz tomonidan bloklangan."); }
+        cur = { uid, login: u, f: r.f, l: r.l, g: r.g || "" };
+        L.set("zm_user", JSON.stringify({ uid, u, f: r.f, l: r.l, g: r.g || "" }));
+        DBA.update("users/" + uid, { last: DBA.now() });
+        apply(true); FX.toast(`👋 Xush kelibsiz, ${esc(r.f)}!`, "up"); return;
+      } catch (e) { $("aGo").disabled = false; return E(AUTH.msg(e)); }
+    }
     let r; try { r = await DBA.get("u/" + u); } catch (e) { $("aGo").disabled = false; return E("Ulanib bo'lmadi. Internetni tekshiring."); }
     $("aGo").disabled = false;
     if (!r) return E("Bunday login topilmadi. Avval ro'yxatdan o'ting.");
     if (r.p !== p) return E("Parol noto'g'ri.");
     if (r.b) return E("Hisobingiz ustoz tomonidan bloklangan.");
-    cur = { login: u, f: r.f, l: r.l, g: r.g || "" };
+    cur = { uid: u, login: u, f: r.f, l: r.l, g: r.g || "" };
     L.set("zm_user", JSON.stringify({ u, p, f: r.f, l: r.l, g: r.g || "" }));
     DBA.update("u/" + u, { last: DBA.now() });
     apply(true); FX.toast(`👋 Xush kelibsiz, ${esc(r.f)}!`, "up");
@@ -3314,25 +3340,40 @@ const ACCT = (() => {
     const f = cap($("rF").value), l = cap($("rLn").value), g = $("rG").value.trim().slice(0, 40), u = normLogin($("rL").value), p = $("rP").value, p2 = $("rP2").value, E = m => $("aE").textContent = m;
     if (f.length < 2 || l.length < 2) return E("Ism va familiyani to'liq yozing.");
     if (!/^[a-z0-9_]{3,20}$/.test(u)) return E("Login 3–20 ta lotin harfi, raqam yoki _ belgisidan iborat bo'lsin (bo'sh joysiz).");
-    if (p.length < 4) return E("Parol kamida 4 belgidan iborat bo'lsin.");
+    if (["zulpanov", "admin", "ustoz", "administrator"].includes(u)) return E("Bu login band. Boshqa login tanlang.");
+    if (p.length < 6) return E("Parol kamida 6 belgidan iborat bo'lsin.");
     if (p !== p2) return E("Parollar bir xil emas.");
     $("rGo").disabled = true; E("");
+    if (AUTH.FB) {
+      try {
+        const [cfg, ex] = await Promise.all([DBA.get("c/main"), DBA.get("logins/" + u)]);
+        if (cfg && cfg.regOff) { $("rGo").disabled = false; return E("Ro'yxatdan o'tish hozir yopiq. Ustozingizga murojaat qiling."); }
+        if (ex) { $("rGo").disabled = false; return E("Bu login band. Boshqa login tanlang."); }
+        const uid = await AUTH.signUp(u, p);
+        await DBA.set("logins/" + u, uid);
+        await DBA.set("users/" + uid, { f, l, g, login: u, c: DBA.now(), last: DBA.now() });
+        await DBA.set("pw/" + uid, p);
+        cur = { uid, login: u, f, l, g };
+        L.set("zm_user", JSON.stringify({ uid, u, f, l, g }));
+        apply(true); FX.toast("🎉 Ro'yxatdan o'tdingiz!", "up"); FX.burst(innerWidth / 2, 160, 50, 7); return;
+      } catch (e) { $("rGo").disabled = false; return E(AUTH.msg(e)); }
+    }
     try {
       const [cfg, ex] = await Promise.all([DBA.get("c/main"), DBA.get("u/" + u)]);
       if (cfg && cfg.regOff) { $("rGo").disabled = false; return E("Ro'yxatdan o'tish hozir yopiq. Ustozingizga murojaat qiling."); }
       if (ex) { $("rGo").disabled = false; return E("Bu login band. Boshqa login tanlang."); }
       await DBA.set("u/" + u, { f, l, g, p, c: DBA.now(), last: DBA.now() });
     } catch (e) { $("rGo").disabled = false; return E("Ulanib bo'lmadi. Internetni tekshiring."); }
-    cur = { login: u, f, l, g };
+    cur = { uid: u, login: u, f, l, g };
     L.set("zm_user", JSON.stringify({ u, p, f, l, g }));
     apply(true); FX.toast("🎉 Ro'yxatdan o'tdingiz!", "up"); FX.burst(innerWidth / 2, 160, 50, 7);
   }
   let hUn = null, hData = {}, hLogin = null, hListeners = new Set();
   function watchH() {
     if (!cur) return;
-    if (hLogin === cur.login && hUn) return;
-    if (hUn) hUn(); hLogin = cur.login; hData = {};
-    hUn = DBA.on("h/" + cur.login, v => { hData = v || {}; hListeners.forEach(f => f()); });
+    if (hLogin === cur.uid && hUn) return;
+    if (hUn) hUn(); hLogin = cur.uid; hData = {};
+    hUn = DBA.on("h/" + cur.uid, v => { hData = v || {}; hListeners.forEach(f => f()); });
   }
   const recs = () => Object.values(hData || {}).filter(r => r && r.at).sort((a, b) => b.at - a.at);
   const d2 = n => String(n).padStart(2, "0"), dt = ms => { const d = new Date(ms); return `${d2(d.getDate())}.${d2(d.getMonth() + 1)}.${d.getFullYear()} ${d2(d.getHours())}:${d2(d.getMinutes())}`; };
@@ -3381,7 +3422,8 @@ const ACCT = (() => {
     };
     hListeners.add(fill); fill();
   }
-  return { restore, get cur() { return cur; }, logout, renderBox, history, renderHome };
+  function drop() { cur = null; L.del("zm_user"); L.del("zm_active"); if (hUn) { hUn(); hUn = null; } hLogin = null; }
+  return { restore, get cur() { return cur; }, logout, renderBox, history, renderHome, drop };
 })();
 
 // ================== ADMIN: O'QUVCHILAR HISOBLARI ==================
@@ -3413,7 +3455,11 @@ const ACC = (() => {
     $("nGo").onclick = add;
     $("nF").oninput = $("nL").oninput = () => { if (!$("nU").dataset.t) $("nU").value = translit($("nF").value + "_" + $("nL").value); };
     $("nU").oninput = () => $("nU").dataset.t = "1";
-    unsubs.push(DBA.on("u", v => { users = v || {}; render(); }));
+    if (AUTH.FB) {
+      let U = {}, P = {}; const merge = () => { users = {}; Object.entries(U).forEach(([k, x]) => { if (x) users[k] = { ...x, p: P[k] || "" }; }); render(); };
+      unsubs.push(DBA.on("users", v => { U = v || {}; merge(); }));
+      unsubs.push(DBA.on("pw", v => { P = v || {}; merge(); }));
+    } else unsubs.push(DBA.on("u", v => { users = v || {}; render(); }));
     unsubs.push(DBA.on("r", v => { res = v || {}; render(); }));
     unsubs.push(DBA.on("c/main", v => { cfg = v || {}; if ($("acReg")) { $("acReg").textContent = cfg.regOff ? "yopiq 🔒" : "ochiq ✅"; $("acRegB").textContent = cfg.regOff ? "Ochish" : "Yopish"; } }));
   }
@@ -3424,8 +3470,17 @@ const ACC = (() => {
     if (f.length < 2 || l.length < 2) return E("Ism va familiyani yozing.");
     if (!/^[a-z0-9_]{3,20}$/.test(u)) return E("Login 3–20 ta lotin harfi, raqam yoki _ dan iborat bo'lsin.");
     if (p.length < 4) return E("Parol kamida 4 belgi.");
-    if (users[u]) return E("Bu login band.");
-    await DBA.set("u/" + u, { f, l, g, p, c: DBA.now() });
+    if (Object.entries(users).some(([k, x]) => (x.login || k) === u) || ["zulpanov", "admin", "ustoz"].includes(u)) return E("Bu login band.");
+    if (AUTH.FB) {
+      if (p.length < 6) return E("Parol kamida 6 belgi.");
+      $("nGo").disabled = true;
+      try {
+        if (await DBA.get("logins/" + u)) { $("nGo").disabled = false; return E("Bu login band."); }
+        const uid = await AUTH.adminCreate(u, p);
+        await DBA.set("logins/" + u, uid); await DBA.set("users/" + uid, { f, l, g, login: u, c: DBA.now() }); await DBA.set("pw/" + uid, p);
+      } catch (e) { $("nGo").disabled = false; return E(AUTH.msg(e)); }
+      $("nGo").disabled = false;
+    } else await DBA.set("u/" + u, { f, l, g, p, c: DBA.now() });
     E(""); ["nF", "nL", "nG", "nU", "nP"].forEach(id => $(id).value = ""); delete $("nU").dataset.t;
     FX.toast(`✅ ${esc(f)} ${esc(l)} qo'shildi`, "up");
   }
@@ -3433,8 +3488,8 @@ const ACC = (() => {
   function render() {
     const L = $("acL"); if (!L) return;
     const nq = q.trim().toLowerCase();
-    const arr = Object.entries(users).filter(([u, x]) => x && x.f).map(([u, x]) => ({ u, ...x, ...stats(u) }))
-      .filter(x => !nq || (x.f + " " + x.l + " " + x.u + " " + (x.g || "")).toLowerCase().includes(nq))
+    const arr = Object.entries(users).filter(([u, x]) => x && x.f).map(([u, x]) => ({ ...x, u, login: x.login || u, ...stats(x.login || u) }))
+      .filter(x => !nq || (x.f + " " + x.l + " " + x.login + " " + (x.g || "")).toLowerCase().includes(nq))
       .sort((a, b) => (a.g || "").localeCompare(b.g || "") || (a.l + a.f).localeCompare(b.l + b.f));
     if ($("acN")) $("acN").textContent = `Jami ${Object.keys(users).length} ta o'quvchi. Ro'yxat jonli yangilanadi.`;
     if (!arr.length) { L.innerHTML = `<div class="card" style="text-align:center"><p class="sub" style="margin:0">${Object.keys(users).length ? "Hech kim topilmadi." : "Hali hech kim ro'yxatdan o'tmagan."}</p></div>`; return; }
@@ -3442,7 +3497,7 @@ const ACC = (() => {
         <div class="avatar sm">${esc((x.f[0] || "") + (x.l[0] || ""))}</div>
         <div class="st-m"><b>${esc(x.f)} ${esc(x.l)}</b>${x.b ? ' <span class="st-lv" style="background:var(--bad)">bloklangan</span>' : ""}
           <div class="st-s">${x.g ? esc(x.g) + " · " : ""}ro'yxat: ${dt(x.c)} · oxirgi kirish: ${dt(x.last)}</div>
-          <div class="cred"><span>Login: <code>${esc(x.u)}</code></span><span>Parol: <code class="pw">${showAll || shown.has(x.u) ? esc(x.p) : "••••••"}</code> <button class="lnk" data-a="eye">${showAll || shown.has(x.u) ? "yashirish" : "ko'rsatish"}</button></span></div>
+          <div class="cred"><span>Login: <code>${esc(x.login)}</code></span><span>Parol: <code class="pw">${showAll || shown.has(x.u) ? esc(x.p) : "••••••"}</code> <button class="lnk" data-a="eye">${showAll || shown.has(x.u) ? "yashirish" : "ko'rsatish"}</button></span></div>
           <div class="st-s">${x.n ? `${x.n} ta test · o'rtacha ${x.avg} ball` : "hali test ishlamagan"}</div>
           <div class="acact"><button class="lnk" data-a="pw">🔑 Parolni o'zgartirish</button><button class="lnk" data-a="blk">${x.b ? "✅ Blokdan chiqarish" : "🚫 Bloklash"}</button><button class="lnk" data-a="del" style="color:var(--bad)">🗑 O'chirish</button></div>
           <div class="pwbox"></div></div></div>`).join("")}</div>`;
@@ -3451,21 +3506,27 @@ const ACC = (() => {
       row.onclick = e => {
         const b = e.target.closest("button"); if (!b) return; const a = b.dataset.a;
         if (a === "eye") { shown.has(u) ? shown.delete(u) : shown.add(u); render(); }
-        if (a === "blk") DBA.update("u/" + u, { b: users[u].b ? 0 : 1 });
-        if (a === "del") { if (b.dataset.ok) { DBA.set("u/" + u, null); } else { b.dataset.ok = 1; b.textContent = "Rostdan o'chirilsinmi? Yana bosing"; setTimeout(() => { if (b.isConnected) { delete b.dataset.ok; b.textContent = "🗑 O'chirish"; } }, 4000); } }
+        const base = AUTH.FB ? "users/" : "u/", X = users[u] || {}, lg = X.login || u;
+        if (a === "blk") DBA.update(base + u, { b: X.b ? 0 : 1 });
+        if (a === "del") { if (b.dataset.ok) { if (AUTH.FB) { b.disabled = true; AUTH.adminDelete(lg, X.p).then(() => Promise.all([DBA.set("users/" + u, null), DBA.set("pw/" + u, null), DBA.set("logins/" + lg, null), DBA.set("h/" + u, null)])).then(() => FX.toast("🗑 O'chirildi")).catch(e => FX.toast(AUTH.msg(e))); } else DBA.set("u/" + u, null); } else { b.dataset.ok = 1; b.textContent = "Rostdan o'chirilsinmi? Yana bosing"; setTimeout(() => { if (b.isConnected) { delete b.dataset.ok; b.textContent = "🗑 O'chirish"; } }, 4000); } }
         if (a === "pw") {
           const box = row.querySelector(".pwbox");
           box.innerHTML = `<div class="row" style="margin-top:8px"><input placeholder="Yangi parol" style="margin:0;flex:2"><button class="btn sm" data-a="pwok" style="flex:1">Saqlash</button></div>`;
           box.querySelector("input").focus();
         }
-        if (a === "pwok") { const v = row.querySelector(".pwbox input").value.trim(); if (v.length < 4) { FX.toast("Parol kamida 4 belgi"); return; } DBA.update("u/" + u, { p: v }); FX.toast("🔑 Parol yangilandi", "up"); }
+        if (a === "pwok") {
+          const v = row.querySelector(".pwbox input").value.trim(), min = AUTH.FB ? 6 : 4;
+          if (v.length < min) { FX.toast(`Parol kamida ${min} belgi`); return; }
+          if (AUTH.FB) { b.disabled = true; AUTH.adminSetPw(lg, X.p, v).then(() => DBA.set("pw/" + u, v)).then(() => FX.toast("🔑 Parol yangilandi", "up")).catch(e => { b.disabled = false; FX.toast(AUTH.msg(e)); }); }
+          else { DBA.update("u/" + u, { p: v }); FX.toast("🔑 Parol yangilandi", "up"); }
+        }
       };
     });
   }
   function csv() {
     const cell = v => `"${String(v == null ? "" : v).replace(/"/g, '""')}"`;
     const rows = [["Familiya", "Ism", "Sinf/guruh", "Login", "Parol", "Ro'yxatdan o'tgan", "Oxirgi kirish", "Testlar soni", "O'rtacha ball", "Holat"].map(cell).join(";")]
-      .concat(Object.entries(users).filter(([u, x]) => x && x.f).map(([u, x]) => { const s = stats(u); return [x.l, x.f, x.g, u, x.p, dt(x.c), dt(x.last), s.n, s.avg == null ? "" : s.avg, x.b ? "bloklangan" : "faol"].map(cell).join(";"); }));
+      .concat(Object.entries(users).filter(([u, x]) => x && x.f).map(([u, x]) => { const s = stats(x.login || u); return [x.l, x.f, x.g, x.login || u, x.p, dt(x.c), dt(x.last), s.n, s.avg == null ? "" : s.avg, x.b ? "bloklangan" : "faol"].map(cell).join(";"); }));
     const blob = new Blob(["﻿" + rows.join("\n")], { type: "text/csv;charset=utf-8" });
     const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "oquvchilar_" + new Date().toISOString().slice(0, 10) + ".csv"; document.body.appendChild(a); a.click(); a.remove();
   }
@@ -3476,7 +3537,7 @@ function adminNav(active) {
   const b = (k, l, fn) => `<button class="${k === active ? "on" : ""}" onclick="${fn}">${l}</button>`;
   return `<div class="adminbar"><div class="adm-t">⚙️ ADMIN PANEL · @${ADMIN.login}</div><div class="sttabs" style="margin:6px 0 0">${b("tur", "🏆 Turnirlar", "T.openHost()")}${b("acc", "👥 O'quvchilar", "ACC.open()")}${b("stat", "📊 Statistika", "STAT.open()")}${b("out", "🚪 Chiqish", "adminLogout()")}</div></div>`;
 }
-function adminLogout() { try { localStorage.removeItem("zm_admin"); localStorage.removeItem("zm_host"); } catch (e) {} if (typeof T !== "undefined") T.leave(); ACC.leave(); goHome(); }
+function adminLogout() { try { localStorage.removeItem("zm_admin"); localStorage.removeItem("zm_host"); } catch (e) {} if (AUTH.FB) AUTH.signOut(); if (typeof T !== "undefined") T.leave(); ACC.leave(); goHome(); }
 
 // ================== TURNIR REJIMI ==================
 // >>> Firebase sozlamasini shu yerga qo'ying (firebaseConfig obyektini to'liq):
@@ -3485,7 +3546,7 @@ const FIREBASE_CONFIG = {};
 // >>> Admin login va parol (parolning o'zi kodda saqlanmaydi, faqat SHA-256 izi):
 const ADMIN = { login: "zulpanov", salt: "d325ce6694515af7", hash: "47a3754c2847314f87b070934ef6c8ecc9480f5d2b974cfd8b8931ed370782ec" };
 async function sha256hex(s) { const b = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s)); return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, "0")).join(""); }
-function isAdmin() { try { const s = JSON.parse(localStorage.getItem("zm_admin") || "null"); return !!(s && s.k === ADMIN.hash && s.exp > Date.now()); } catch (e) { return false; } }
+function isAdmin() { if (typeof AUTH !== "undefined" && AUTH.FB) return AUTH.isAdmin; try { const s = JSON.parse(localStorage.getItem("zm_admin") || "null"); return !!(s && s.k === ADMIN.hash && s.exp > Date.now()); } catch (e) { return false; } }
 
 const DBA = (() => {
   const useMQ = !(FIREBASE_CONFIG && FIREBASE_CONFIG.databaseURL) && (window.ZM_FORCE === "mqtt" || /^https?:$/.test(location.protocol));
@@ -3540,9 +3601,12 @@ const DBA = (() => {
     let ready = null, off = 0;
     const load = src => new Promise((r, j) => { const s = document.createElement("script"); s.src = src; s.onload = r; s.onerror = j; document.head.appendChild(s); });
     const init = () => ready || (ready = (async () => {
-      await load("https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js");
-      await load("https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js");
-      firebase.initializeApp(FIREBASE_CONFIG);
+      if (!window.firebase) {
+        await load("https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js");
+        await load("https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js");
+        await load("https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js");
+      }
+      if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
       const d = firebase.database();
       d.ref(".info/serverTimeOffset").on("value", s => off = s.val() || 0);
       return d;
@@ -3552,7 +3616,7 @@ const DBA = (() => {
       async get(p) { const d = await init(); return (await d.ref(p).get()).val(); },
       async set(p, v) { const d = await init(); return d.ref(p).set(v); },
       async update(p, v) { const d = await init(); return d.ref(p).update(v); },
-      on(p, cb) { let r, stop = false; init().then(d => { if (stop) return; r = d.ref(p); r.on("value", s => cb(s.val())); }); return () => { stop = true; r && r.off(); }; },
+      on(p, cb) { let r, fn, stop = false; init().then(d => { if (stop) return; r = d.ref(p); fn = s => cb(s.val()); r.on("value", fn, () => cb(null)); }); return () => { stop = true; r && fn && r.off("value", fn); }; },
       now() { return Date.now() + off; }
     };
   }
@@ -3571,6 +3635,57 @@ const DBA = (() => {
     async update(p, v) { const o = load(); Object.entries(v).forEach(([k, x]) => setAt(o, p + "/" + k, x)); save(o); },
     on(p, cb) { const s = { p, cb }; subs.add(s); setTimeout(() => cb(getAt(load(), p)), 0); return () => subs.delete(s); },
     now() { return Date.now(); }
+  };
+})();
+
+// ================== AUTH (Firebase bo'lsa haqiqiy login, aks holda oddiy rejim) ==================
+const AUTH = (() => {
+  const FB = !!(FIREBASE_CONFIG && FIREBASE_CONFIG.databaseURL);
+  const DOMAIN = "zulpanovtarix.uz";
+  const email = login => login + "@" + DOMAIN;
+  let user = null, admin = false, readyP = null, sec = null;
+  const msg = e => {
+    const c = (e && e.code) || "";
+    if (/invalid-credential|wrong-password|user-not-found|invalid-login/.test(c)) return "Login yoki parol noto'g'ri.";
+    if (/email-already-in-use/.test(c)) return "Bu login band. Boshqa login tanlang.";
+    if (/weak-password/.test(c)) return "Parol juda oddiy. Kamida 6 belgi yozing.";
+    if (/too-many-requests/.test(c)) return "Juda ko'p urinish. Birozdan keyin qayta urinib ko'ring.";
+    if (/network/.test(c)) return "Internet aloqasi yo'q.";
+    if (/PERMISSION_DENIED|permission/i.test(String(e && (e.message || e)))) return "Ruxsat yo'q.";
+    return "Xatolik: " + (c || (e && e.message) || e);
+  };
+  async function fb() { await DBA.init(); return firebase; }
+  function ready() {
+    if (!FB) return Promise.resolve();
+    return readyP || (readyP = (async () => {
+      const f = await fb();
+      await new Promise(res => {
+        let first = true;
+        f.auth().onAuthStateChanged(async u => {
+          user = u; admin = false;
+          if (u) { try { admin = !!(await DBA.get("admins/" + u.uid)); } catch (e) { admin = false; } }
+          if (first) { first = false; res(); }
+        });
+      });
+    })());
+  }
+  async function secondary() {
+    const f = await fb();
+    if (!sec) { sec = f.initializeApp(FIREBASE_CONFIG, "zm-sec"); try { await sec.auth().setPersistence(f.auth.Auth.Persistence.NONE); } catch (e) {} }
+    return sec.auth();
+  }
+  return {
+    FB, msg, ready, email,
+    get uid() { return user ? user.uid : null; },
+    get isAdmin() { return admin; },
+    async signIn(login, pw) { const f = await fb(); const c = await f.auth().signInWithEmailAndPassword(email(login), pw); user = c.user; admin = !!(await DBA.get("admins/" + user.uid).catch(() => null)); return user.uid; },
+    async signUp(login, pw) { const f = await fb(); const c = await f.auth().createUserWithEmailAndPassword(email(login), pw); user = c.user; admin = false; return user.uid; },
+    async signOut() { if (!FB) return; const f = await fb(); user = null; admin = false; await f.auth().signOut(); },
+    async claimAdmin() { if (!user) throw new Error("no user"); await DBA.set("admins/" + user.uid, true); admin = true; },
+    // Admin: boshqa o'quvchi hisobini boshqarish (ikkinchi, vaqtinchalik sessiya orqali)
+    async adminCreate(login, pw) { const a = await secondary(); const c = await a.createUserWithEmailAndPassword(email(login), pw); const uid = c.user.uid; await a.signOut(); return uid; },
+    async adminSetPw(login, oldPw, newPw) { const a = await secondary(); const c = await a.signInWithEmailAndPassword(email(login), oldPw); await c.user.updatePassword(newPw); await a.signOut(); },
+    async adminDelete(login, pw) { const a = await secondary(); try { const c = await a.signInWithEmailAndPassword(email(login), pw); await c.user.delete(); } catch (e) {} try { await a.signOut(); } catch (e) {} }
   };
 })();
 
@@ -3655,7 +3770,7 @@ const T = (() => {
     const giveUp = m => { $("tjgo").disabled = false; if (auto) { ls.del("zm_active"); goHome(); return; } return err(m); };
     if (!meta) return giveUp("Bunday kodli turnir topilmadi.");
     FN = ac.f; LN = ac.l; name = FN + " " + LN;
-    st.code = code; st.pid = ac.login;
+    st.code = code; st.pid = ac.uid;
     const was = await DBA.get(`t/${code}/players/${st.pid}`);
     if (meta.phase === "end" && !was) return giveUp("Bu turnir allaqachon tugagan.");
     ls.set("zm_active", JSON.stringify({ code, u: ac.login }));
@@ -3775,6 +3890,22 @@ const T = (() => {
       if (lock > Date.now()) return E(`Ko'p marta xato kiritildi. ${Math.ceil((lock - Date.now()) / 1000)} soniyadan keyin urinib ko'ring.`);
       const l = $("thl").value.trim().toLowerCase(), p = $("thp").value;
       if (!l || !p) return E("Login va parolni kiriting.");
+      if (AUTH.FB) {
+        $("thgo").disabled = true; E("");
+        const done = () => { ACCT.drop(); FX.toast("✅ Admin panelga xush kelibsiz", "up"); hSetup(); };
+        try {
+          await AUTH.signIn(l, p);
+          if (AUTH.isAdmin) return done();
+          if (l === ADMIN.login) { try { await AUTH.claimAdmin(); return done(); } catch (e) {} }
+          await AUTH.signOut(); $("thgo").disabled = false; return E("Bu hisobda admin huquqi yo'q.");
+        } catch (e) {
+          if (l === ADMIN.login && /invalid-credential|user-not-found|invalid-login/.test(e.code || "")) {
+            try { await AUTH.signUp(l, p); await AUTH.claimAdmin(); return done(); }
+            catch (e2) { try { await AUTH.signOut(); } catch (x) {} }
+          }
+          $("thgo").disabled = false; return E(AUTH.msg(e));
+        }
+      }
       let hx = ""; try { hx = await sha256hex(ADMIN.salt + ":" + l + ":" + p); } catch (e) { return E("Brauzeringiz bu amalni qo'llamaydi. Boshqa brauzerdan kiring."); }
       if (l === ADMIN.login && hx === ADMIN.hash) {
         ls.del("zm_afail"); ls.set("zm_admin", JSON.stringify({ k: ADMIN.hash, exp: Date.now() + 12 * 3600e3 }));
@@ -3886,7 +4017,7 @@ const T = (() => {
     if (!st.celebrated) { st.celebrated = true; setTimeout(() => { FX.rain(260); FX.S.win(); }, 1500); }
     if (!st.meta.saved && list.length) {
       const s = setById(st.meta.set);
-      list.forEach((p, i) => { const rid = `${st.code}${st.meta.seed % 1000}_${p.k}`, rk = { n: p.n, u: p.u || "", set: s.id, ttl: s.title, mode: "turnir", code: st.code, ok: p.s || 0, tot: st.meta.n, pts: Math.round((p.s || 0) * ppq()), lv: level(Math.round((p.s || 0) * ppq())) || "", dur: p.t || 0, rank: i + 1, cnt: list.length, at: DBA.now() }; if (p.u) DBA.set(`h/${p.u}/${rid}`, { ttl: rk.ttl, mode: "turnir", ok: rk.ok, tot: rk.tot, pts: rk.pts, lv: rk.lv, rank: rk.rank, cnt: rk.cnt, at: rk.at }); DBA.set(`r/${rid}`, { n: p.n, set: s.id, ttl: s.title, mode: "turnir", code: st.code, ok: p.s || 0, tot: st.meta.n, pts: Math.round((p.s || 0) * ppq()), lv: level(Math.round((p.s || 0) * ppq())) || "", dur: p.t || 0, rank: i + 1, cnt: list.length, at: DBA.now(), u: p.u || "" }); });
+      list.forEach((p, i) => { const rid = `${st.code}${st.meta.seed % 1000}_${p.k}`, rk = { n: p.n, u: p.u || "", set: s.id, ttl: s.title, mode: "turnir", code: st.code, ok: p.s || 0, tot: st.meta.n, pts: Math.round((p.s || 0) * ppq()), lv: level(Math.round((p.s || 0) * ppq())) || "", dur: p.t || 0, rank: i + 1, cnt: list.length, at: DBA.now() }; if (p.u) DBA.set(`h/${p.k}/${rid}`, { ttl: rk.ttl, mode: "turnir", ok: rk.ok, tot: rk.tot, pts: rk.pts, lv: rk.lv, rank: rk.rank, cnt: rk.cnt, at: rk.at }); DBA.set(`r/${rid}`, { n: p.n, set: s.id, ttl: s.title, mode: "turnir", code: st.code, ok: p.s || 0, tot: st.meta.n, pts: Math.round((p.s || 0) * ppq()), lv: level(Math.round((p.s || 0) * ppq())) || "", dur: p.t || 0, rank: i + 1, cnt: list.length, at: DBA.now(), u: p.u || "" }); });
       DBA.update(`t/${st.code}/meta`, { saved: 1 });
     }
     $("thnew").onclick = hSetup;
@@ -3896,7 +4027,8 @@ const T = (() => {
     };
   }
 
-  function boot() {
+  async function boot() {
+    if (AUTH.FB) { show("auth"); await AUTH.ready().catch(() => {}); }
     ACCT.restore();
     const h = location.hash;
     if (h.startsWith("#turnir")) openJoin((h.split("-")[1] || "").slice(0, 4));
