@@ -1,0 +1,3223 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jahon tarixi 11-sinf — 20–22-mavzular testi</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=PT+Serif:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0f1720;--card:#17212c;--card2:#1e2a37;--line:#2b3a4a;--tx:#e9eef3;--mu:#97a6b5;--ac:#e8893f;--ac2:#2fa59a;--ok:#2fb36b;--bad:#e05252}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;line-height:1.5}
+.wrap{max-width:720px;margin:0 auto;padding:18px 16px 60px}
+.brand{display:flex;align-items:center;gap:10px;margin-bottom:18px}
+.logo{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--ac),#c9622a);display:grid;place-items:center;font-weight:800;font-size:15px}
+.brand b{font-size:13px;letter-spacing:.08em}
+.brand small{display:block;color:var(--mu);font-size:11px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px}
+h1{font-size:24px;line-height:1.25;margin-bottom:8px}
+.sub{color:var(--mu);font-size:14px;margin-bottom:18px}
+label{font-size:13px;color:var(--mu);display:block;margin-bottom:6px}
+input{width:100%;padding:13px 14px;border-radius:10px;border:1px solid var(--line);background:var(--card2);color:var(--tx);font-size:16px;font-family:inherit;margin-bottom:18px}
+input:focus{outline:2px solid var(--ac);border-color:transparent}
+.topics{display:grid;gap:10px;margin-bottom:18px}
+.tp{display:flex;align-items:center;gap:14px;text-align:left;padding:14px;border-radius:14px;border:1px solid var(--line);background:var(--card2);color:var(--tx);font-family:inherit;cursor:pointer}
+.tp .n{flex:none;width:44px;height:44px;border-radius:12px;background:var(--bg);display:grid;place-items:center;font-weight:800;font-size:15px;color:var(--ac)}
+.tp b{display:block;font-size:15px}
+.tp span{font-size:12px;color:var(--mu)}
+.tp.sel{border-color:var(--ac);background:#2a2420}
+.tp.sel .n{background:var(--ac);color:#fff}
+.btn{width:100%;padding:14px;border:0;border-radius:12px;background:var(--ac);color:#fff;font-weight:700;font-size:16px;font-family:inherit;cursor:pointer}
+.btn:disabled{opacity:.4;cursor:default}
+.btn.ghost{background:var(--card2);border:1px solid var(--line);color:var(--tx)}
+.row{display:flex;gap:10px}
+.top{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--mu);margin-bottom:10px}
+.bar{height:6px;background:var(--card2);border-radius:9px;overflow:hidden;margin-bottom:18px}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--ac),var(--ac2));transition:width .3s}
+.tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ac2);margin-bottom:8px}
+.q{font-size:18px;font-weight:600;margin-bottom:18px}
+.opt{display:flex;gap:12px;align-items:flex-start;width:100%;text-align:left;padding:13px 14px;margin-bottom:10px;border-radius:12px;border:1px solid var(--line);background:var(--card2);color:var(--tx);font-size:15px;font-family:inherit;cursor:pointer;line-height:1.4}
+.opt .l{flex:none;width:26px;height:26px;border-radius:8px;background:var(--bg);display:grid;place-items:center;font-weight:700;font-size:13px;color:var(--mu)}
+.opt.sel{border-color:var(--ac);background:#2a2420}
+.opt.sel .l{background:var(--ac);color:#fff}
+.dots{display:flex;flex-wrap:wrap;gap:6px;margin-top:18px}
+.dot{width:30px;height:30px;border-radius:8px;border:1px solid var(--line);background:var(--card2);color:var(--mu);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit}
+.dot.ans{background:#2a2420;border-color:var(--ac);color:var(--tx)}
+.dot.cur{outline:2px solid var(--ac2)}
+.score{text-align:center;padding:10px 0 4px}
+.big{font-size:56px;font-weight:800;line-height:1}
+.big small{font-size:22px;color:var(--mu)}
+.grade{display:inline-block;margin:12px 0;padding:6px 16px;border-radius:999px;font-weight:700;font-size:14px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0 20px}
+.stat{background:var(--card2);border-radius:12px;padding:12px;text-align:center}
+.stat b{display:block;font-size:20px}
+.stat span{font-size:12px;color:var(--mu)}
+.mast{text-align:left;margin:0 0 18px}
+.mast .mr{margin-bottom:10px}
+.mast .mh{display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px}
+.mast .mh span{color:var(--mu)}
+.rv{border:1px solid var(--line);border-radius:14px;padding:16px;margin-top:12px;background:var(--card)}
+.rv.good{border-left:4px solid var(--ok)}
+.rv.wrong{border-left:4px solid var(--bad)}
+.rv .q{font-size:15px;margin-bottom:10px}
+.ans-line{font-size:14px;margin-bottom:4px}
+.ans-line.y{color:#f08c8c}
+.ans-line.c{color:#6fd99c}
+.exp{font-size:13px;color:var(--mu);margin-top:8px;padding-top:8px;border-top:1px dashed var(--line)}
+.filter{display:flex;gap:8px;margin:22px 0 4px}
+.filter button{flex:1;padding:9px;border-radius:10px;border:1px solid var(--line);background:var(--card2);color:var(--mu);font-family:inherit;font-size:13px;cursor:pointer}
+.filter button.on{border-color:var(--ac);color:var(--tx)}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;padding:20px}
+.modal.on{display:flex}
+.modal .card{max-width:380px;width:100%}
+.hide{display:none!important}
+.tcard{display:flex;gap:12px;align-items:center;margin-bottom:14px;background:linear-gradient(135deg,#2a2420,#17212c);border-color:var(--ac)}
+.trow{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:10px;background:var(--card2);margin-bottom:6px;position:relative}
+.trow.me{outline:2px solid var(--ac);background:#2a2420}
+.trow.big{padding:12px 14px;font-size:17px}
+.tr-r{width:30px;text-align:center;font-weight:800;color:var(--mu)}
+.tr-n{flex:1;min-width:0}.tr-nm{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tr-bar{height:4px;background:var(--bg);border-radius:4px;margin-top:5px;overflow:hidden}.tr-bar i{display:block;height:100%;background:var(--ac2);transition:width .4s}
+.tr-s{font-weight:800;font-size:18px;min-width:52px;text-align:right}.tr-s small{color:var(--ok);font-size:13px}
+.tcode{font-size:64px;font-weight:800;letter-spacing:.15em;color:var(--ac);line-height:1.1;margin:4px 0 10px}
+.tlink{font-size:12px;word-break:break-all;color:var(--ac2)}
+.ttm{font-weight:800;color:var(--tx)}.ttm.low{color:var(--bad)}
+.tnote{background:var(--card2);border-radius:10px;padding:10px 12px;font-size:14px;margin-bottom:14px}.tnote.warn{border:1px solid var(--ac);color:#f3c79c}
+.opt.okk{border-color:var(--ok);background:#173a28}.opt.bad{border-color:var(--bad);background:#3a1a1a}
+select{width:100%;padding:13px 14px;border-radius:10px;border:1px solid var(--line);background:var(--card2);color:var(--tx);font-size:15px;font-family:inherit;margin-bottom:18px}
+.podium{display:flex;align-items:flex-end;justify-content:center;gap:10px;margin-top:18px}
+.pd{flex:1;max-width:150px;display:flex;flex-direction:column;align-items:center}
+.pd-n{font-weight:700;font-size:14px;margin-bottom:2px;word-break:break-word}.pd-s{font-size:12px;color:var(--mu);margin-bottom:6px}
+.pd-b{width:100%;border-radius:10px 10px 0 0;display:grid;place-items:center;font-size:34px;font-weight:800;color:#1d2b38}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand"><div class="logo">ZM</div><div><b>ZULPANOV METHODS TARIX</b><small>Jahon tarixi · 11-sinf</small></div></div>
+
+  <div class="card tcard" id="tCard"><div style="font-size:34px">🏆</div><div style="flex:1"><b>Turnir rejimi</b><div class="sub" style="margin:2px 0 0">Ustoz bergan kod bilan sinfdoshlaringiz bilan jonli bellashing</div></div><button class="btn" style="width:auto;padding:10px 16px" onclick="T.openJoin()">Kirish</button></div>
+  <section id="tz" class="hide"></section>
+  <section id="start" class="card">
+    <h1>Mavzulashtirilgan tahliliy testlar</h1>
+    <p class="sub">Har bir test 100 ballik: 20 savollik testda har bir to'g'ri javob — 5 ball, 45 savollik testda — taxminan 2,2 ball. Natijaga qarab ismingiz yozilgan sertifikat beriladi: 45+ → C, 50+ → C+, 55+ → B, 60+ → B+, 65+ → A, 70+ → A+.</p>
+    <div class="row"><div style="flex:1"><label for="fn">Ism</label><input id="fn" placeholder="Aziz" autocomplete="off"></div>
+    <div style="flex:1"><label for="ln">Familiya</label><input id="ln" placeholder="Karimov" autocomplete="off"></div></div>
+    <label>Mavzuni tanlang</label>
+    <div class="topics" id="tps"></div>
+    <button class="btn" id="go" disabled>Testni boshlash</button>
+  </section>
+
+  <section id="quiz" class="hide">
+    <div class="top"><span id="cnt"></span><span id="tm">⏱ 00:00</span></div>
+    <div class="bar"><i id="pb"></i></div>
+    <div class="card">
+      <span class="tag" id="tg"></span>
+      <div class="q" id="qt"></div>
+      <div id="ops"></div>
+      <div class="row" style="margin-top:8px">
+        <button class="btn ghost" id="prev">← Oldingi</button>
+        <button class="btn" id="next">Keyingi →</button>
+      </div>
+      <div class="dots" id="dots"></div>
+    </div>
+  </section>
+
+  <section id="res" class="hide">
+    <div class="card score">
+      <div style="color:var(--mu);font-size:14px;margin-bottom:8px" id="who"></div>
+      <div class="big"><span id="pts">0</span><small> / 100</small></div>
+      <div class="grade" id="gr"></div>
+      <div class="stats">
+        <div class="stat"><b id="sOk" style="color:var(--ok)">0</b><span>To'g'ri</span></div>
+        <div class="stat"><b id="sBad" style="color:var(--bad)">0</b><span>Xato</span></div>
+        <div class="stat"><b id="sT">0</b><span>Vaqt</span></div>
+      </div>
+      <div class="mast" id="mast"></div>
+      <div id="certBox" style="margin-bottom:18px"><img id="cert" alt="Sertifikat" style="width:100%;border-radius:12px;display:block"><p style="font-size:12px;color:var(--mu);margin-top:8px">📲 Saqlash uchun sertifikat ustiga barmog'ingizni bosib turing → "Rasmni saqlash"</p></div>
+      <button class="btn" id="again">Bosh sahifaga qaytish</button>
+    </div>
+    <div class="filter"><button class="on" data-f="all">Hammasi</button><button data-f="wrong">Xatolar</button><button data-f="good">To'g'rilar</button></div>
+    <div id="rvl"></div>
+  </section>
+</div>
+
+<div style="text-align:center;margin:-40px 0 30px"><a href="#ustoz" onclick="T.openHost();return false" style="color:var(--mu);font-size:12px">Ustoz paneli</a></div>
+<div class="modal" id="mdl"><div class="card">
+  <p style="font-weight:700;font-size:17px;margin-bottom:6px">Testni yakunlaysizmi?</p>
+  <p class="sub" id="mtx"></p>
+  <div class="row"><button class="btn ghost" id="mNo">Qaytish</button><button class="btn" id="mYes">Yakunlash</button></div>
+</div></div>
+
+<script>
+//---------------------------------------------------------------------
+//
+// QR Code Generator for JavaScript
+//
+// Copyright (c) 2009 Kazuhiko Arase
+//
+// URL: http://www.d-project.com/
+//
+// Licensed under the MIT license:
+//  http://www.opensource.org/licenses/mit-license.php
+//
+// The word 'QR Code' is registered trademark of
+// DENSO WAVE INCORPORATED
+//  http://www.denso-wave.com/qrcode/faqpatent-e.html
+//
+//---------------------------------------------------------------------
+
+var qrcode = function() {
+
+  //---------------------------------------------------------------------
+  // qrcode
+  //---------------------------------------------------------------------
+
+  /**
+   * qrcode
+   * @param typeNumber 1 to 40
+   * @param errorCorrectionLevel 'L','M','Q','H'
+   */
+  var qrcode = function(typeNumber, errorCorrectionLevel) {
+
+    var PAD0 = 0xEC;
+    var PAD1 = 0x11;
+
+    var _typeNumber = typeNumber;
+    var _errorCorrectionLevel = QRErrorCorrectionLevel[errorCorrectionLevel];
+    var _modules = null;
+    var _moduleCount = 0;
+    var _dataCache = null;
+    var _dataList = [];
+
+    var _this = {};
+
+    var makeImpl = function(test, maskPattern) {
+
+      _moduleCount = _typeNumber * 4 + 17;
+      _modules = function(moduleCount) {
+        var modules = new Array(moduleCount);
+        for (var row = 0; row < moduleCount; row += 1) {
+          modules[row] = new Array(moduleCount);
+          for (var col = 0; col < moduleCount; col += 1) {
+            modules[row][col] = null;
+          }
+        }
+        return modules;
+      }(_moduleCount);
+
+      setupPositionProbePattern(0, 0);
+      setupPositionProbePattern(_moduleCount - 7, 0);
+      setupPositionProbePattern(0, _moduleCount - 7);
+      setupPositionAdjustPattern();
+      setupTimingPattern();
+      setupTypeInfo(test, maskPattern);
+
+      if (_typeNumber >= 7) {
+        setupTypeNumber(test);
+      }
+
+      if (_dataCache == null) {
+        _dataCache = createData(_typeNumber, _errorCorrectionLevel, _dataList);
+      }
+
+      mapData(_dataCache, maskPattern);
+    };
+
+    var setupPositionProbePattern = function(row, col) {
+
+      for (var r = -1; r <= 7; r += 1) {
+
+        if (row + r <= -1 || _moduleCount <= row + r) continue;
+
+        for (var c = -1; c <= 7; c += 1) {
+
+          if (col + c <= -1 || _moduleCount <= col + c) continue;
+
+          if ( (0 <= r && r <= 6 && (c == 0 || c == 6) )
+              || (0 <= c && c <= 6 && (r == 0 || r == 6) )
+              || (2 <= r && r <= 4 && 2 <= c && c <= 4) ) {
+            _modules[row + r][col + c] = true;
+          } else {
+            _modules[row + r][col + c] = false;
+          }
+        }
+      }
+    };
+
+    var getBestMaskPattern = function() {
+
+      var minLostPoint = 0;
+      var pattern = 0;
+
+      for (var i = 0; i < 8; i += 1) {
+
+        makeImpl(true, i);
+
+        var lostPoint = QRUtil.getLostPoint(_this);
+
+        if (i == 0 || minLostPoint > lostPoint) {
+          minLostPoint = lostPoint;
+          pattern = i;
+        }
+      }
+
+      return pattern;
+    };
+
+    var setupTimingPattern = function() {
+
+      for (var r = 8; r < _moduleCount - 8; r += 1) {
+        if (_modules[r][6] != null) {
+          continue;
+        }
+        _modules[r][6] = (r % 2 == 0);
+      }
+
+      for (var c = 8; c < _moduleCount - 8; c += 1) {
+        if (_modules[6][c] != null) {
+          continue;
+        }
+        _modules[6][c] = (c % 2 == 0);
+      }
+    };
+
+    var setupPositionAdjustPattern = function() {
+
+      var pos = QRUtil.getPatternPosition(_typeNumber);
+
+      for (var i = 0; i < pos.length; i += 1) {
+
+        for (var j = 0; j < pos.length; j += 1) {
+
+          var row = pos[i];
+          var col = pos[j];
+
+          if (_modules[row][col] != null) {
+            continue;
+          }
+
+          for (var r = -2; r <= 2; r += 1) {
+
+            for (var c = -2; c <= 2; c += 1) {
+
+              if (r == -2 || r == 2 || c == -2 || c == 2
+                  || (r == 0 && c == 0) ) {
+                _modules[row + r][col + c] = true;
+              } else {
+                _modules[row + r][col + c] = false;
+              }
+            }
+          }
+        }
+      }
+    };
+
+    var setupTypeNumber = function(test) {
+
+      var bits = QRUtil.getBCHTypeNumber(_typeNumber);
+
+      for (var i = 0; i < 18; i += 1) {
+        var mod = (!test && ( (bits >> i) & 1) == 1);
+        _modules[Math.floor(i / 3)][i % 3 + _moduleCount - 8 - 3] = mod;
+      }
+
+      for (var i = 0; i < 18; i += 1) {
+        var mod = (!test && ( (bits >> i) & 1) == 1);
+        _modules[i % 3 + _moduleCount - 8 - 3][Math.floor(i / 3)] = mod;
+      }
+    };
+
+    var setupTypeInfo = function(test, maskPattern) {
+
+      var data = (_errorCorrectionLevel << 3) | maskPattern;
+      var bits = QRUtil.getBCHTypeInfo(data);
+
+      // vertical
+      for (var i = 0; i < 15; i += 1) {
+
+        var mod = (!test && ( (bits >> i) & 1) == 1);
+
+        if (i < 6) {
+          _modules[i][8] = mod;
+        } else if (i < 8) {
+          _modules[i + 1][8] = mod;
+        } else {
+          _modules[_moduleCount - 15 + i][8] = mod;
+        }
+      }
+
+      // horizontal
+      for (var i = 0; i < 15; i += 1) {
+
+        var mod = (!test && ( (bits >> i) & 1) == 1);
+
+        if (i < 8) {
+          _modules[8][_moduleCount - i - 1] = mod;
+        } else if (i < 9) {
+          _modules[8][15 - i - 1 + 1] = mod;
+        } else {
+          _modules[8][15 - i - 1] = mod;
+        }
+      }
+
+      // fixed module
+      _modules[_moduleCount - 8][8] = (!test);
+    };
+
+    var mapData = function(data, maskPattern) {
+
+      var inc = -1;
+      var row = _moduleCount - 1;
+      var bitIndex = 7;
+      var byteIndex = 0;
+      var maskFunc = QRUtil.getMaskFunction(maskPattern);
+
+      for (var col = _moduleCount - 1; col > 0; col -= 2) {
+
+        if (col == 6) col -= 1;
+
+        while (true) {
+
+          for (var c = 0; c < 2; c += 1) {
+
+            if (_modules[row][col - c] == null) {
+
+              var dark = false;
+
+              if (byteIndex < data.length) {
+                dark = ( ( (data[byteIndex] >>> bitIndex) & 1) == 1);
+              }
+
+              var mask = maskFunc(row, col - c);
+
+              if (mask) {
+                dark = !dark;
+              }
+
+              _modules[row][col - c] = dark;
+              bitIndex -= 1;
+
+              if (bitIndex == -1) {
+                byteIndex += 1;
+                bitIndex = 7;
+              }
+            }
+          }
+
+          row += inc;
+
+          if (row < 0 || _moduleCount <= row) {
+            row -= inc;
+            inc = -inc;
+            break;
+          }
+        }
+      }
+    };
+
+    var createBytes = function(buffer, rsBlocks) {
+
+      var offset = 0;
+
+      var maxDcCount = 0;
+      var maxEcCount = 0;
+
+      var dcdata = new Array(rsBlocks.length);
+      var ecdata = new Array(rsBlocks.length);
+
+      for (var r = 0; r < rsBlocks.length; r += 1) {
+
+        var dcCount = rsBlocks[r].dataCount;
+        var ecCount = rsBlocks[r].totalCount - dcCount;
+
+        maxDcCount = Math.max(maxDcCount, dcCount);
+        maxEcCount = Math.max(maxEcCount, ecCount);
+
+        dcdata[r] = new Array(dcCount);
+
+        for (var i = 0; i < dcdata[r].length; i += 1) {
+          dcdata[r][i] = 0xff & buffer.getBuffer()[i + offset];
+        }
+        offset += dcCount;
+
+        var rsPoly = QRUtil.getErrorCorrectPolynomial(ecCount);
+        var rawPoly = qrPolynomial(dcdata[r], rsPoly.getLength() - 1);
+
+        var modPoly = rawPoly.mod(rsPoly);
+        ecdata[r] = new Array(rsPoly.getLength() - 1);
+        for (var i = 0; i < ecdata[r].length; i += 1) {
+          var modIndex = i + modPoly.getLength() - ecdata[r].length;
+          ecdata[r][i] = (modIndex >= 0)? modPoly.getAt(modIndex) : 0;
+        }
+      }
+
+      var totalCodeCount = 0;
+      for (var i = 0; i < rsBlocks.length; i += 1) {
+        totalCodeCount += rsBlocks[i].totalCount;
+      }
+
+      var data = new Array(totalCodeCount);
+      var index = 0;
+
+      for (var i = 0; i < maxDcCount; i += 1) {
+        for (var r = 0; r < rsBlocks.length; r += 1) {
+          if (i < dcdata[r].length) {
+            data[index] = dcdata[r][i];
+            index += 1;
+          }
+        }
+      }
+
+      for (var i = 0; i < maxEcCount; i += 1) {
+        for (var r = 0; r < rsBlocks.length; r += 1) {
+          if (i < ecdata[r].length) {
+            data[index] = ecdata[r][i];
+            index += 1;
+          }
+        }
+      }
+
+      return data;
+    };
+
+    var createData = function(typeNumber, errorCorrectionLevel, dataList) {
+
+      var rsBlocks = QRRSBlock.getRSBlocks(typeNumber, errorCorrectionLevel);
+
+      var buffer = qrBitBuffer();
+
+      for (var i = 0; i < dataList.length; i += 1) {
+        var data = dataList[i];
+        buffer.put(data.getMode(), 4);
+        buffer.put(data.getLength(), QRUtil.getLengthInBits(data.getMode(), typeNumber) );
+        data.write(buffer);
+      }
+
+      // calc num max data.
+      var totalDataCount = 0;
+      for (var i = 0; i < rsBlocks.length; i += 1) {
+        totalDataCount += rsBlocks[i].dataCount;
+      }
+
+      if (buffer.getLengthInBits() > totalDataCount * 8) {
+        throw 'code length overflow. ('
+          + buffer.getLengthInBits()
+          + '>'
+          + totalDataCount * 8
+          + ')';
+      }
+
+      // end code
+      if (buffer.getLengthInBits() + 4 <= totalDataCount * 8) {
+        buffer.put(0, 4);
+      }
+
+      // padding
+      while (buffer.getLengthInBits() % 8 != 0) {
+        buffer.putBit(false);
+      }
+
+      // padding
+      while (true) {
+
+        if (buffer.getLengthInBits() >= totalDataCount * 8) {
+          break;
+        }
+        buffer.put(PAD0, 8);
+
+        if (buffer.getLengthInBits() >= totalDataCount * 8) {
+          break;
+        }
+        buffer.put(PAD1, 8);
+      }
+
+      return createBytes(buffer, rsBlocks);
+    };
+
+    _this.addData = function(data, mode) {
+
+      mode = mode || 'Byte';
+
+      var newData = null;
+
+      switch(mode) {
+      case 'Numeric' :
+        newData = qrNumber(data);
+        break;
+      case 'Alphanumeric' :
+        newData = qrAlphaNum(data);
+        break;
+      case 'Byte' :
+        newData = qr8BitByte(data);
+        break;
+      case 'Kanji' :
+        newData = qrKanji(data);
+        break;
+      default :
+        throw 'mode:' + mode;
+      }
+
+      _dataList.push(newData);
+      _dataCache = null;
+    };
+
+    _this.isDark = function(row, col) {
+      if (row < 0 || _moduleCount <= row || col < 0 || _moduleCount <= col) {
+        throw row + ',' + col;
+      }
+      return _modules[row][col];
+    };
+
+    _this.getModuleCount = function() {
+      return _moduleCount;
+    };
+
+    _this.make = function() {
+      if (_typeNumber < 1) {
+        var typeNumber = 1;
+
+        for (; typeNumber < 40; typeNumber++) {
+          var rsBlocks = QRRSBlock.getRSBlocks(typeNumber, _errorCorrectionLevel);
+          var buffer = qrBitBuffer();
+
+          for (var i = 0; i < _dataList.length; i++) {
+            var data = _dataList[i];
+            buffer.put(data.getMode(), 4);
+            buffer.put(data.getLength(), QRUtil.getLengthInBits(data.getMode(), typeNumber) );
+            data.write(buffer);
+          }
+
+          var totalDataCount = 0;
+          for (var i = 0; i < rsBlocks.length; i++) {
+            totalDataCount += rsBlocks[i].dataCount;
+          }
+
+          if (buffer.getLengthInBits() <= totalDataCount * 8) {
+            break;
+          }
+        }
+
+        _typeNumber = typeNumber;
+      }
+
+      makeImpl(false, getBestMaskPattern() );
+    };
+
+    _this.createTableTag = function(cellSize, margin) {
+
+      cellSize = cellSize || 2;
+      margin = (typeof margin == 'undefined')? cellSize * 4 : margin;
+
+      var qrHtml = '';
+
+      qrHtml += '<table style="';
+      qrHtml += ' border-width: 0px; border-style: none;';
+      qrHtml += ' border-collapse: collapse;';
+      qrHtml += ' padding: 0px; margin: ' + margin + 'px;';
+      qrHtml += '">';
+      qrHtml += '<tbody>';
+
+      for (var r = 0; r < _this.getModuleCount(); r += 1) {
+
+        qrHtml += '<tr>';
+
+        for (var c = 0; c < _this.getModuleCount(); c += 1) {
+          qrHtml += '<td style="';
+          qrHtml += ' border-width: 0px; border-style: none;';
+          qrHtml += ' border-collapse: collapse;';
+          qrHtml += ' padding: 0px; margin: 0px;';
+          qrHtml += ' width: ' + cellSize + 'px;';
+          qrHtml += ' height: ' + cellSize + 'px;';
+          qrHtml += ' background-color: ';
+          qrHtml += _this.isDark(r, c)? '#000000' : '#ffffff';
+          qrHtml += ';';
+          qrHtml += '"/>';
+        }
+
+        qrHtml += '</tr>';
+      }
+
+      qrHtml += '</tbody>';
+      qrHtml += '</table>';
+
+      return qrHtml;
+    };
+
+    _this.createSvgTag = function(cellSize, margin, alt, title) {
+
+      var opts = {};
+      if (typeof arguments[0] == 'object') {
+        // Called by options.
+        opts = arguments[0];
+        // overwrite cellSize and margin.
+        cellSize = opts.cellSize;
+        margin = opts.margin;
+        alt = opts.alt;
+        title = opts.title;
+      }
+
+      cellSize = cellSize || 2;
+      margin = (typeof margin == 'undefined')? cellSize * 4 : margin;
+
+      // Compose alt property surrogate
+      alt = (typeof alt === 'string') ? {text: alt} : alt || {};
+      alt.text = alt.text || null;
+      alt.id = (alt.text) ? alt.id || 'qrcode-description' : null;
+
+      // Compose title property surrogate
+      title = (typeof title === 'string') ? {text: title} : title || {};
+      title.text = title.text || null;
+      title.id = (title.text) ? title.id || 'qrcode-title' : null;
+
+      var size = _this.getModuleCount() * cellSize + margin * 2;
+      var c, mc, r, mr, qrSvg='', rect;
+
+      rect = 'l' + cellSize + ',0 0,' + cellSize +
+        ' -' + cellSize + ',0 0,-' + cellSize + 'z ';
+
+      qrSvg += '<svg version="1.1" xmlns="http://www.w3.org/2000/svg"';
+      qrSvg += !opts.scalable ? ' width="' + size + 'px" height="' + size + 'px"' : '';
+      qrSvg += ' viewBox="0 0 ' + size + ' ' + size + '" ';
+      qrSvg += ' preserveAspectRatio="xMinYMin meet"';
+      qrSvg += (title.text || alt.text) ? ' role="img" aria-labelledby="' +
+          escapeXml([title.id, alt.id].join(' ').trim() ) + '"' : '';
+      qrSvg += '>';
+      qrSvg += (title.text) ? '<title id="' + escapeXml(title.id) + '">' +
+          escapeXml(title.text) + '</title>' : '';
+      qrSvg += (alt.text) ? '<description id="' + escapeXml(alt.id) + '">' +
+          escapeXml(alt.text) + '</description>' : '';
+      qrSvg += '<rect width="100%" height="100%" fill="white" cx="0" cy="0"/>';
+      qrSvg += '<path d="';
+
+      for (r = 0; r < _this.getModuleCount(); r += 1) {
+        mr = r * cellSize + margin;
+        for (c = 0; c < _this.getModuleCount(); c += 1) {
+          if (_this.isDark(r, c) ) {
+            mc = c*cellSize+margin;
+            qrSvg += 'M' + mc + ',' + mr + rect;
+          }
+        }
+      }
+
+      qrSvg += '" stroke="transparent" fill="black"/>';
+      qrSvg += '</svg>';
+
+      return qrSvg;
+    };
+
+    _this.createDataURL = function(cellSize, margin) {
+
+      cellSize = cellSize || 2;
+      margin = (typeof margin == 'undefined')? cellSize * 4 : margin;
+
+      var size = _this.getModuleCount() * cellSize + margin * 2;
+      var min = margin;
+      var max = size - margin;
+
+      return createDataURL(size, size, function(x, y) {
+        if (min <= x && x < max && min <= y && y < max) {
+          var c = Math.floor( (x - min) / cellSize);
+          var r = Math.floor( (y - min) / cellSize);
+          return _this.isDark(r, c)? 0 : 1;
+        } else {
+          return 1;
+        }
+      } );
+    };
+
+    _this.createImgTag = function(cellSize, margin, alt) {
+
+      cellSize = cellSize || 2;
+      margin = (typeof margin == 'undefined')? cellSize * 4 : margin;
+
+      var size = _this.getModuleCount() * cellSize + margin * 2;
+
+      var img = '';
+      img += '<img';
+      img += '\u0020src="';
+      img += _this.createDataURL(cellSize, margin);
+      img += '"';
+      img += '\u0020width="';
+      img += size;
+      img += '"';
+      img += '\u0020height="';
+      img += size;
+      img += '"';
+      if (alt) {
+        img += '\u0020alt="';
+        img += escapeXml(alt);
+        img += '"';
+      }
+      img += '/>';
+
+      return img;
+    };
+
+    var escapeXml = function(s) {
+      var escaped = '';
+      for (var i = 0; i < s.length; i += 1) {
+        var c = s.charAt(i);
+        switch(c) {
+        case '<': escaped += '&lt;'; break;
+        case '>': escaped += '&gt;'; break;
+        case '&': escaped += '&amp;'; break;
+        case '"': escaped += '&quot;'; break;
+        default : escaped += c; break;
+        }
+      }
+      return escaped;
+    };
+
+    var _createHalfASCII = function(margin) {
+      var cellSize = 1;
+      margin = (typeof margin == 'undefined')? cellSize * 2 : margin;
+
+      var size = _this.getModuleCount() * cellSize + margin * 2;
+      var min = margin;
+      var max = size - margin;
+
+      var y, x, r1, r2, p;
+
+      var blocks = {
+        '██': '█',
+        '█ ': '▀',
+        ' █': '▄',
+        '  ': ' '
+      };
+
+      var blocksLastLineNoMargin = {
+        '██': '▀',
+        '█ ': '▀',
+        ' █': ' ',
+        '  ': ' '
+      };
+
+      var ascii = '';
+      for (y = 0; y < size; y += 2) {
+        r1 = Math.floor((y - min) / cellSize);
+        r2 = Math.floor((y + 1 - min) / cellSize);
+        for (x = 0; x < size; x += 1) {
+          p = '█';
+
+          if (min <= x && x < max && min <= y && y < max && _this.isDark(r1, Math.floor((x - min) / cellSize))) {
+            p = ' ';
+          }
+
+          if (min <= x && x < max && min <= y+1 && y+1 < max && _this.isDark(r2, Math.floor((x - min) / cellSize))) {
+            p += ' ';
+          }
+          else {
+            p += '█';
+          }
+
+          // Output 2 characters per pixel, to create full square. 1 character per pixels gives only half width of square.
+          ascii += (margin < 1 && y+1 >= max) ? blocksLastLineNoMargin[p] : blocks[p];
+        }
+
+        ascii += '\n';
+      }
+
+      if (size % 2 && margin > 0) {
+        return ascii.substring(0, ascii.length - size - 1) + Array(size+1).join('▀');
+      }
+
+      return ascii.substring(0, ascii.length-1);
+    };
+
+    _this.createASCII = function(cellSize, margin) {
+      cellSize = cellSize || 1;
+
+      if (cellSize < 2) {
+        return _createHalfASCII(margin);
+      }
+
+      cellSize -= 1;
+      margin = (typeof margin == 'undefined')? cellSize * 2 : margin;
+
+      var size = _this.getModuleCount() * cellSize + margin * 2;
+      var min = margin;
+      var max = size - margin;
+
+      var y, x, r, p;
+
+      var white = Array(cellSize+1).join('██');
+      var black = Array(cellSize+1).join('  ');
+
+      var ascii = '';
+      var line = '';
+      for (y = 0; y < size; y += 1) {
+        r = Math.floor( (y - min) / cellSize);
+        line = '';
+        for (x = 0; x < size; x += 1) {
+          p = 1;
+
+          if (min <= x && x < max && min <= y && y < max && _this.isDark(r, Math.floor((x - min) / cellSize))) {
+            p = 0;
+          }
+
+          // Output 2 characters per pixel, to create full square. 1 character per pixels gives only half width of square.
+          line += p ? white : black;
+        }
+
+        for (r = 0; r < cellSize; r += 1) {
+          ascii += line + '\n';
+        }
+      }
+
+      return ascii.substring(0, ascii.length-1);
+    };
+
+    _this.renderTo2dContext = function(context, cellSize) {
+      cellSize = cellSize || 2;
+      var length = _this.getModuleCount();
+      for (var row = 0; row < length; row++) {
+        for (var col = 0; col < length; col++) {
+          context.fillStyle = _this.isDark(row, col) ? 'black' : 'white';
+          context.fillRect(row * cellSize, col * cellSize, cellSize, cellSize);
+        }
+      }
+    }
+
+    return _this;
+  };
+
+  //---------------------------------------------------------------------
+  // qrcode.stringToBytes
+  //---------------------------------------------------------------------
+
+  qrcode.stringToBytesFuncs = {
+    'default' : function(s) {
+      var bytes = [];
+      for (var i = 0; i < s.length; i += 1) {
+        var c = s.charCodeAt(i);
+        bytes.push(c & 0xff);
+      }
+      return bytes;
+    }
+  };
+
+  qrcode.stringToBytes = qrcode.stringToBytesFuncs['default'];
+
+  //---------------------------------------------------------------------
+  // qrcode.createStringToBytes
+  //---------------------------------------------------------------------
+
+  /**
+   * @param unicodeData base64 string of byte array.
+   * [16bit Unicode],[16bit Bytes], ...
+   * @param numChars
+   */
+  qrcode.createStringToBytes = function(unicodeData, numChars) {
+
+    // create conversion map.
+
+    var unicodeMap = function() {
+
+      var bin = base64DecodeInputStream(unicodeData);
+      var read = function() {
+        var b = bin.read();
+        if (b == -1) throw 'eof';
+        return b;
+      };
+
+      var count = 0;
+      var unicodeMap = {};
+      while (true) {
+        var b0 = bin.read();
+        if (b0 == -1) break;
+        var b1 = read();
+        var b2 = read();
+        var b3 = read();
+        var k = String.fromCharCode( (b0 << 8) | b1);
+        var v = (b2 << 8) | b3;
+        unicodeMap[k] = v;
+        count += 1;
+      }
+      if (count != numChars) {
+        throw count + ' != ' + numChars;
+      }
+
+      return unicodeMap;
+    }();
+
+    var unknownChar = '?'.charCodeAt(0);
+
+    return function(s) {
+      var bytes = [];
+      for (var i = 0; i < s.length; i += 1) {
+        var c = s.charCodeAt(i);
+        if (c < 128) {
+          bytes.push(c);
+        } else {
+          var b = unicodeMap[s.charAt(i)];
+          if (typeof b == 'number') {
+            if ( (b & 0xff) == b) {
+              // 1byte
+              bytes.push(b);
+            } else {
+              // 2bytes
+              bytes.push(b >>> 8);
+              bytes.push(b & 0xff);
+            }
+          } else {
+            bytes.push(unknownChar);
+          }
+        }
+      }
+      return bytes;
+    };
+  };
+
+  //---------------------------------------------------------------------
+  // QRMode
+  //---------------------------------------------------------------------
+
+  var QRMode = {
+    MODE_NUMBER :    1 << 0,
+    MODE_ALPHA_NUM : 1 << 1,
+    MODE_8BIT_BYTE : 1 << 2,
+    MODE_KANJI :     1 << 3
+  };
+
+  //---------------------------------------------------------------------
+  // QRErrorCorrectionLevel
+  //---------------------------------------------------------------------
+
+  var QRErrorCorrectionLevel = {
+    L : 1,
+    M : 0,
+    Q : 3,
+    H : 2
+  };
+
+  //---------------------------------------------------------------------
+  // QRMaskPattern
+  //---------------------------------------------------------------------
+
+  var QRMaskPattern = {
+    PATTERN000 : 0,
+    PATTERN001 : 1,
+    PATTERN010 : 2,
+    PATTERN011 : 3,
+    PATTERN100 : 4,
+    PATTERN101 : 5,
+    PATTERN110 : 6,
+    PATTERN111 : 7
+  };
+
+  //---------------------------------------------------------------------
+  // QRUtil
+  //---------------------------------------------------------------------
+
+  var QRUtil = function() {
+
+    var PATTERN_POSITION_TABLE = [
+      [],
+      [6, 18],
+      [6, 22],
+      [6, 26],
+      [6, 30],
+      [6, 34],
+      [6, 22, 38],
+      [6, 24, 42],
+      [6, 26, 46],
+      [6, 28, 50],
+      [6, 30, 54],
+      [6, 32, 58],
+      [6, 34, 62],
+      [6, 26, 46, 66],
+      [6, 26, 48, 70],
+      [6, 26, 50, 74],
+      [6, 30, 54, 78],
+      [6, 30, 56, 82],
+      [6, 30, 58, 86],
+      [6, 34, 62, 90],
+      [6, 28, 50, 72, 94],
+      [6, 26, 50, 74, 98],
+      [6, 30, 54, 78, 102],
+      [6, 28, 54, 80, 106],
+      [6, 32, 58, 84, 110],
+      [6, 30, 58, 86, 114],
+      [6, 34, 62, 90, 118],
+      [6, 26, 50, 74, 98, 122],
+      [6, 30, 54, 78, 102, 126],
+      [6, 26, 52, 78, 104, 130],
+      [6, 30, 56, 82, 108, 134],
+      [6, 34, 60, 86, 112, 138],
+      [6, 30, 58, 86, 114, 142],
+      [6, 34, 62, 90, 118, 146],
+      [6, 30, 54, 78, 102, 126, 150],
+      [6, 24, 50, 76, 102, 128, 154],
+      [6, 28, 54, 80, 106, 132, 158],
+      [6, 32, 58, 84, 110, 136, 162],
+      [6, 26, 54, 82, 110, 138, 166],
+      [6, 30, 58, 86, 114, 142, 170]
+    ];
+    var G15 = (1 << 10) | (1 << 8) | (1 << 5) | (1 << 4) | (1 << 2) | (1 << 1) | (1 << 0);
+    var G18 = (1 << 12) | (1 << 11) | (1 << 10) | (1 << 9) | (1 << 8) | (1 << 5) | (1 << 2) | (1 << 0);
+    var G15_MASK = (1 << 14) | (1 << 12) | (1 << 10) | (1 << 4) | (1 << 1);
+
+    var _this = {};
+
+    var getBCHDigit = function(data) {
+      var digit = 0;
+      while (data != 0) {
+        digit += 1;
+        data >>>= 1;
+      }
+      return digit;
+    };
+
+    _this.getBCHTypeInfo = function(data) {
+      var d = data << 10;
+      while (getBCHDigit(d) - getBCHDigit(G15) >= 0) {
+        d ^= (G15 << (getBCHDigit(d) - getBCHDigit(G15) ) );
+      }
+      return ( (data << 10) | d) ^ G15_MASK;
+    };
+
+    _this.getBCHTypeNumber = function(data) {
+      var d = data << 12;
+      while (getBCHDigit(d) - getBCHDigit(G18) >= 0) {
+        d ^= (G18 << (getBCHDigit(d) - getBCHDigit(G18) ) );
+      }
+      return (data << 12) | d;
+    };
+
+    _this.getPatternPosition = function(typeNumber) {
+      return PATTERN_POSITION_TABLE[typeNumber - 1];
+    };
+
+    _this.getMaskFunction = function(maskPattern) {
+
+      switch (maskPattern) {
+
+      case QRMaskPattern.PATTERN000 :
+        return function(i, j) { return (i + j) % 2 == 0; };
+      case QRMaskPattern.PATTERN001 :
+        return function(i, j) { return i % 2 == 0; };
+      case QRMaskPattern.PATTERN010 :
+        return function(i, j) { return j % 3 == 0; };
+      case QRMaskPattern.PATTERN011 :
+        return function(i, j) { return (i + j) % 3 == 0; };
+      case QRMaskPattern.PATTERN100 :
+        return function(i, j) { return (Math.floor(i / 2) + Math.floor(j / 3) ) % 2 == 0; };
+      case QRMaskPattern.PATTERN101 :
+        return function(i, j) { return (i * j) % 2 + (i * j) % 3 == 0; };
+      case QRMaskPattern.PATTERN110 :
+        return function(i, j) { return ( (i * j) % 2 + (i * j) % 3) % 2 == 0; };
+      case QRMaskPattern.PATTERN111 :
+        return function(i, j) { return ( (i * j) % 3 + (i + j) % 2) % 2 == 0; };
+
+      default :
+        throw 'bad maskPattern:' + maskPattern;
+      }
+    };
+
+    _this.getErrorCorrectPolynomial = function(errorCorrectLength) {
+      var a = qrPolynomial([1], 0);
+      for (var i = 0; i < errorCorrectLength; i += 1) {
+        a = a.multiply(qrPolynomial([1, QRMath.gexp(i)], 0) );
+      }
+      return a;
+    };
+
+    _this.getLengthInBits = function(mode, type) {
+
+      if (1 <= type && type < 10) {
+
+        // 1 - 9
+
+        switch(mode) {
+        case QRMode.MODE_NUMBER    : return 10;
+        case QRMode.MODE_ALPHA_NUM : return 9;
+        case QRMode.MODE_8BIT_BYTE : return 8;
+        case QRMode.MODE_KANJI     : return 8;
+        default :
+          throw 'mode:' + mode;
+        }
+
+      } else if (type < 27) {
+
+        // 10 - 26
+
+        switch(mode) {
+        case QRMode.MODE_NUMBER    : return 12;
+        case QRMode.MODE_ALPHA_NUM : return 11;
+        case QRMode.MODE_8BIT_BYTE : return 16;
+        case QRMode.MODE_KANJI     : return 10;
+        default :
+          throw 'mode:' + mode;
+        }
+
+      } else if (type < 41) {
+
+        // 27 - 40
+
+        switch(mode) {
+        case QRMode.MODE_NUMBER    : return 14;
+        case QRMode.MODE_ALPHA_NUM : return 13;
+        case QRMode.MODE_8BIT_BYTE : return 16;
+        case QRMode.MODE_KANJI     : return 12;
+        default :
+          throw 'mode:' + mode;
+        }
+
+      } else {
+        throw 'type:' + type;
+      }
+    };
+
+    _this.getLostPoint = function(qrcode) {
+
+      var moduleCount = qrcode.getModuleCount();
+
+      var lostPoint = 0;
+
+      // LEVEL1
+
+      for (var row = 0; row < moduleCount; row += 1) {
+        for (var col = 0; col < moduleCount; col += 1) {
+
+          var sameCount = 0;
+          var dark = qrcode.isDark(row, col);
+
+          for (var r = -1; r <= 1; r += 1) {
+
+            if (row + r < 0 || moduleCount <= row + r) {
+              continue;
+            }
+
+            for (var c = -1; c <= 1; c += 1) {
+
+              if (col + c < 0 || moduleCount <= col + c) {
+                continue;
+              }
+
+              if (r == 0 && c == 0) {
+                continue;
+              }
+
+              if (dark == qrcode.isDark(row + r, col + c) ) {
+                sameCount += 1;
+              }
+            }
+          }
+
+          if (sameCount > 5) {
+            lostPoint += (3 + sameCount - 5);
+          }
+        }
+      };
+
+      // LEVEL2
+
+      for (var row = 0; row < moduleCount - 1; row += 1) {
+        for (var col = 0; col < moduleCount - 1; col += 1) {
+          var count = 0;
+          if (qrcode.isDark(row, col) ) count += 1;
+          if (qrcode.isDark(row + 1, col) ) count += 1;
+          if (qrcode.isDark(row, col + 1) ) count += 1;
+          if (qrcode.isDark(row + 1, col + 1) ) count += 1;
+          if (count == 0 || count == 4) {
+            lostPoint += 3;
+          }
+        }
+      }
+
+      // LEVEL3
+
+      for (var row = 0; row < moduleCount; row += 1) {
+        for (var col = 0; col < moduleCount - 6; col += 1) {
+          if (qrcode.isDark(row, col)
+              && !qrcode.isDark(row, col + 1)
+              &&  qrcode.isDark(row, col + 2)
+              &&  qrcode.isDark(row, col + 3)
+              &&  qrcode.isDark(row, col + 4)
+              && !qrcode.isDark(row, col + 5)
+              &&  qrcode.isDark(row, col + 6) ) {
+            lostPoint += 40;
+          }
+        }
+      }
+
+      for (var col = 0; col < moduleCount; col += 1) {
+        for (var row = 0; row < moduleCount - 6; row += 1) {
+          if (qrcode.isDark(row, col)
+              && !qrcode.isDark(row + 1, col)
+              &&  qrcode.isDark(row + 2, col)
+              &&  qrcode.isDark(row + 3, col)
+              &&  qrcode.isDark(row + 4, col)
+              && !qrcode.isDark(row + 5, col)
+              &&  qrcode.isDark(row + 6, col) ) {
+            lostPoint += 40;
+          }
+        }
+      }
+
+      // LEVEL4
+
+      var darkCount = 0;
+
+      for (var col = 0; col < moduleCount; col += 1) {
+        for (var row = 0; row < moduleCount; row += 1) {
+          if (qrcode.isDark(row, col) ) {
+            darkCount += 1;
+          }
+        }
+      }
+
+      var ratio = Math.abs(100 * darkCount / moduleCount / moduleCount - 50) / 5;
+      lostPoint += ratio * 10;
+
+      return lostPoint;
+    };
+
+    return _this;
+  }();
+
+  //---------------------------------------------------------------------
+  // QRMath
+  //---------------------------------------------------------------------
+
+  var QRMath = function() {
+
+    var EXP_TABLE = new Array(256);
+    var LOG_TABLE = new Array(256);
+
+    // initialize tables
+    for (var i = 0; i < 8; i += 1) {
+      EXP_TABLE[i] = 1 << i;
+    }
+    for (var i = 8; i < 256; i += 1) {
+      EXP_TABLE[i] = EXP_TABLE[i - 4]
+        ^ EXP_TABLE[i - 5]
+        ^ EXP_TABLE[i - 6]
+        ^ EXP_TABLE[i - 8];
+    }
+    for (var i = 0; i < 255; i += 1) {
+      LOG_TABLE[EXP_TABLE[i] ] = i;
+    }
+
+    var _this = {};
+
+    _this.glog = function(n) {
+
+      if (n < 1) {
+        throw 'glog(' + n + ')';
+      }
+
+      return LOG_TABLE[n];
+    };
+
+    _this.gexp = function(n) {
+
+      while (n < 0) {
+        n += 255;
+      }
+
+      while (n >= 256) {
+        n -= 255;
+      }
+
+      return EXP_TABLE[n];
+    };
+
+    return _this;
+  }();
+
+  //---------------------------------------------------------------------
+  // qrPolynomial
+  //---------------------------------------------------------------------
+
+  function qrPolynomial(num, shift) {
+
+    if (typeof num.length == 'undefined') {
+      throw num.length + '/' + shift;
+    }
+
+    var _num = function() {
+      var offset = 0;
+      while (offset < num.length && num[offset] == 0) {
+        offset += 1;
+      }
+      var _num = new Array(num.length - offset + shift);
+      for (var i = 0; i < num.length - offset; i += 1) {
+        _num[i] = num[i + offset];
+      }
+      return _num;
+    }();
+
+    var _this = {};
+
+    _this.getAt = function(index) {
+      return _num[index];
+    };
+
+    _this.getLength = function() {
+      return _num.length;
+    };
+
+    _this.multiply = function(e) {
+
+      var num = new Array(_this.getLength() + e.getLength() - 1);
+
+      for (var i = 0; i < _this.getLength(); i += 1) {
+        for (var j = 0; j < e.getLength(); j += 1) {
+          num[i + j] ^= QRMath.gexp(QRMath.glog(_this.getAt(i) ) + QRMath.glog(e.getAt(j) ) );
+        }
+      }
+
+      return qrPolynomial(num, 0);
+    };
+
+    _this.mod = function(e) {
+
+      if (_this.getLength() - e.getLength() < 0) {
+        return _this;
+      }
+
+      var ratio = QRMath.glog(_this.getAt(0) ) - QRMath.glog(e.getAt(0) );
+
+      var num = new Array(_this.getLength() );
+      for (var i = 0; i < _this.getLength(); i += 1) {
+        num[i] = _this.getAt(i);
+      }
+
+      for (var i = 0; i < e.getLength(); i += 1) {
+        num[i] ^= QRMath.gexp(QRMath.glog(e.getAt(i) ) + ratio);
+      }
+
+      // recursive call
+      return qrPolynomial(num, 0).mod(e);
+    };
+
+    return _this;
+  };
+
+  //---------------------------------------------------------------------
+  // QRRSBlock
+  //---------------------------------------------------------------------
+
+  var QRRSBlock = function() {
+
+    var RS_BLOCK_TABLE = [
+
+      // L
+      // M
+      // Q
+      // H
+
+      // 1
+      [1, 26, 19],
+      [1, 26, 16],
+      [1, 26, 13],
+      [1, 26, 9],
+
+      // 2
+      [1, 44, 34],
+      [1, 44, 28],
+      [1, 44, 22],
+      [1, 44, 16],
+
+      // 3
+      [1, 70, 55],
+      [1, 70, 44],
+      [2, 35, 17],
+      [2, 35, 13],
+
+      // 4
+      [1, 100, 80],
+      [2, 50, 32],
+      [2, 50, 24],
+      [4, 25, 9],
+
+      // 5
+      [1, 134, 108],
+      [2, 67, 43],
+      [2, 33, 15, 2, 34, 16],
+      [2, 33, 11, 2, 34, 12],
+
+      // 6
+      [2, 86, 68],
+      [4, 43, 27],
+      [4, 43, 19],
+      [4, 43, 15],
+
+      // 7
+      [2, 98, 78],
+      [4, 49, 31],
+      [2, 32, 14, 4, 33, 15],
+      [4, 39, 13, 1, 40, 14],
+
+      // 8
+      [2, 121, 97],
+      [2, 60, 38, 2, 61, 39],
+      [4, 40, 18, 2, 41, 19],
+      [4, 40, 14, 2, 41, 15],
+
+      // 9
+      [2, 146, 116],
+      [3, 58, 36, 2, 59, 37],
+      [4, 36, 16, 4, 37, 17],
+      [4, 36, 12, 4, 37, 13],
+
+      // 10
+      [2, 86, 68, 2, 87, 69],
+      [4, 69, 43, 1, 70, 44],
+      [6, 43, 19, 2, 44, 20],
+      [6, 43, 15, 2, 44, 16],
+
+      // 11
+      [4, 101, 81],
+      [1, 80, 50, 4, 81, 51],
+      [4, 50, 22, 4, 51, 23],
+      [3, 36, 12, 8, 37, 13],
+
+      // 12
+      [2, 116, 92, 2, 117, 93],
+      [6, 58, 36, 2, 59, 37],
+      [4, 46, 20, 6, 47, 21],
+      [7, 42, 14, 4, 43, 15],
+
+      // 13
+      [4, 133, 107],
+      [8, 59, 37, 1, 60, 38],
+      [8, 44, 20, 4, 45, 21],
+      [12, 33, 11, 4, 34, 12],
+
+      // 14
+      [3, 145, 115, 1, 146, 116],
+      [4, 64, 40, 5, 65, 41],
+      [11, 36, 16, 5, 37, 17],
+      [11, 36, 12, 5, 37, 13],
+
+      // 15
+      [5, 109, 87, 1, 110, 88],
+      [5, 65, 41, 5, 66, 42],
+      [5, 54, 24, 7, 55, 25],
+      [11, 36, 12, 7, 37, 13],
+
+      // 16
+      [5, 122, 98, 1, 123, 99],
+      [7, 73, 45, 3, 74, 46],
+      [15, 43, 19, 2, 44, 20],
+      [3, 45, 15, 13, 46, 16],
+
+      // 17
+      [1, 135, 107, 5, 136, 108],
+      [10, 74, 46, 1, 75, 47],
+      [1, 50, 22, 15, 51, 23],
+      [2, 42, 14, 17, 43, 15],
+
+      // 18
+      [5, 150, 120, 1, 151, 121],
+      [9, 69, 43, 4, 70, 44],
+      [17, 50, 22, 1, 51, 23],
+      [2, 42, 14, 19, 43, 15],
+
+      // 19
+      [3, 141, 113, 4, 142, 114],
+      [3, 70, 44, 11, 71, 45],
+      [17, 47, 21, 4, 48, 22],
+      [9, 39, 13, 16, 40, 14],
+
+      // 20
+      [3, 135, 107, 5, 136, 108],
+      [3, 67, 41, 13, 68, 42],
+      [15, 54, 24, 5, 55, 25],
+      [15, 43, 15, 10, 44, 16],
+
+      // 21
+      [4, 144, 116, 4, 145, 117],
+      [17, 68, 42],
+      [17, 50, 22, 6, 51, 23],
+      [19, 46, 16, 6, 47, 17],
+
+      // 22
+      [2, 139, 111, 7, 140, 112],
+      [17, 74, 46],
+      [7, 54, 24, 16, 55, 25],
+      [34, 37, 13],
+
+      // 23
+      [4, 151, 121, 5, 152, 122],
+      [4, 75, 47, 14, 76, 48],
+      [11, 54, 24, 14, 55, 25],
+      [16, 45, 15, 14, 46, 16],
+
+      // 24
+      [6, 147, 117, 4, 148, 118],
+      [6, 73, 45, 14, 74, 46],
+      [11, 54, 24, 16, 55, 25],
+      [30, 46, 16, 2, 47, 17],
+
+      // 25
+      [8, 132, 106, 4, 133, 107],
+      [8, 75, 47, 13, 76, 48],
+      [7, 54, 24, 22, 55, 25],
+      [22, 45, 15, 13, 46, 16],
+
+      // 26
+      [10, 142, 114, 2, 143, 115],
+      [19, 74, 46, 4, 75, 47],
+      [28, 50, 22, 6, 51, 23],
+      [33, 46, 16, 4, 47, 17],
+
+      // 27
+      [8, 152, 122, 4, 153, 123],
+      [22, 73, 45, 3, 74, 46],
+      [8, 53, 23, 26, 54, 24],
+      [12, 45, 15, 28, 46, 16],
+
+      // 28
+      [3, 147, 117, 10, 148, 118],
+      [3, 73, 45, 23, 74, 46],
+      [4, 54, 24, 31, 55, 25],
+      [11, 45, 15, 31, 46, 16],
+
+      // 29
+      [7, 146, 116, 7, 147, 117],
+      [21, 73, 45, 7, 74, 46],
+      [1, 53, 23, 37, 54, 24],
+      [19, 45, 15, 26, 46, 16],
+
+      // 30
+      [5, 145, 115, 10, 146, 116],
+      [19, 75, 47, 10, 76, 48],
+      [15, 54, 24, 25, 55, 25],
+      [23, 45, 15, 25, 46, 16],
+
+      // 31
+      [13, 145, 115, 3, 146, 116],
+      [2, 74, 46, 29, 75, 47],
+      [42, 54, 24, 1, 55, 25],
+      [23, 45, 15, 28, 46, 16],
+
+      // 32
+      [17, 145, 115],
+      [10, 74, 46, 23, 75, 47],
+      [10, 54, 24, 35, 55, 25],
+      [19, 45, 15, 35, 46, 16],
+
+      // 33
+      [17, 145, 115, 1, 146, 116],
+      [14, 74, 46, 21, 75, 47],
+      [29, 54, 24, 19, 55, 25],
+      [11, 45, 15, 46, 46, 16],
+
+      // 34
+      [13, 145, 115, 6, 146, 116],
+      [14, 74, 46, 23, 75, 47],
+      [44, 54, 24, 7, 55, 25],
+      [59, 46, 16, 1, 47, 17],
+
+      // 35
+      [12, 151, 121, 7, 152, 122],
+      [12, 75, 47, 26, 76, 48],
+      [39, 54, 24, 14, 55, 25],
+      [22, 45, 15, 41, 46, 16],
+
+      // 36
+      [6, 151, 121, 14, 152, 122],
+      [6, 75, 47, 34, 76, 48],
+      [46, 54, 24, 10, 55, 25],
+      [2, 45, 15, 64, 46, 16],
+
+      // 37
+      [17, 152, 122, 4, 153, 123],
+      [29, 74, 46, 14, 75, 47],
+      [49, 54, 24, 10, 55, 25],
+      [24, 45, 15, 46, 46, 16],
+
+      // 38
+      [4, 152, 122, 18, 153, 123],
+      [13, 74, 46, 32, 75, 47],
+      [48, 54, 24, 14, 55, 25],
+      [42, 45, 15, 32, 46, 16],
+
+      // 39
+      [20, 147, 117, 4, 148, 118],
+      [40, 75, 47, 7, 76, 48],
+      [43, 54, 24, 22, 55, 25],
+      [10, 45, 15, 67, 46, 16],
+
+      // 40
+      [19, 148, 118, 6, 149, 119],
+      [18, 75, 47, 31, 76, 48],
+      [34, 54, 24, 34, 55, 25],
+      [20, 45, 15, 61, 46, 16]
+    ];
+
+    var qrRSBlock = function(totalCount, dataCount) {
+      var _this = {};
+      _this.totalCount = totalCount;
+      _this.dataCount = dataCount;
+      return _this;
+    };
+
+    var _this = {};
+
+    var getRsBlockTable = function(typeNumber, errorCorrectionLevel) {
+
+      switch(errorCorrectionLevel) {
+      case QRErrorCorrectionLevel.L :
+        return RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 0];
+      case QRErrorCorrectionLevel.M :
+        return RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 1];
+      case QRErrorCorrectionLevel.Q :
+        return RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 2];
+      case QRErrorCorrectionLevel.H :
+        return RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 3];
+      default :
+        return undefined;
+      }
+    };
+
+    _this.getRSBlocks = function(typeNumber, errorCorrectionLevel) {
+
+      var rsBlock = getRsBlockTable(typeNumber, errorCorrectionLevel);
+
+      if (typeof rsBlock == 'undefined') {
+        throw 'bad rs block @ typeNumber:' + typeNumber +
+            '/errorCorrectionLevel:' + errorCorrectionLevel;
+      }
+
+      var length = rsBlock.length / 3;
+
+      var list = [];
+
+      for (var i = 0; i < length; i += 1) {
+
+        var count = rsBlock[i * 3 + 0];
+        var totalCount = rsBlock[i * 3 + 1];
+        var dataCount = rsBlock[i * 3 + 2];
+
+        for (var j = 0; j < count; j += 1) {
+          list.push(qrRSBlock(totalCount, dataCount) );
+        }
+      }
+
+      return list;
+    };
+
+    return _this;
+  }();
+
+  //---------------------------------------------------------------------
+  // qrBitBuffer
+  //---------------------------------------------------------------------
+
+  var qrBitBuffer = function() {
+
+    var _buffer = [];
+    var _length = 0;
+
+    var _this = {};
+
+    _this.getBuffer = function() {
+      return _buffer;
+    };
+
+    _this.getAt = function(index) {
+      var bufIndex = Math.floor(index / 8);
+      return ( (_buffer[bufIndex] >>> (7 - index % 8) ) & 1) == 1;
+    };
+
+    _this.put = function(num, length) {
+      for (var i = 0; i < length; i += 1) {
+        _this.putBit( ( (num >>> (length - i - 1) ) & 1) == 1);
+      }
+    };
+
+    _this.getLengthInBits = function() {
+      return _length;
+    };
+
+    _this.putBit = function(bit) {
+
+      var bufIndex = Math.floor(_length / 8);
+      if (_buffer.length <= bufIndex) {
+        _buffer.push(0);
+      }
+
+      if (bit) {
+        _buffer[bufIndex] |= (0x80 >>> (_length % 8) );
+      }
+
+      _length += 1;
+    };
+
+    return _this;
+  };
+
+  //---------------------------------------------------------------------
+  // qrNumber
+  //---------------------------------------------------------------------
+
+  var qrNumber = function(data) {
+
+    var _mode = QRMode.MODE_NUMBER;
+    var _data = data;
+
+    var _this = {};
+
+    _this.getMode = function() {
+      return _mode;
+    };
+
+    _this.getLength = function(buffer) {
+      return _data.length;
+    };
+
+    _this.write = function(buffer) {
+
+      var data = _data;
+
+      var i = 0;
+
+      while (i + 2 < data.length) {
+        buffer.put(strToNum(data.substring(i, i + 3) ), 10);
+        i += 3;
+      }
+
+      if (i < data.length) {
+        if (data.length - i == 1) {
+          buffer.put(strToNum(data.substring(i, i + 1) ), 4);
+        } else if (data.length - i == 2) {
+          buffer.put(strToNum(data.substring(i, i + 2) ), 7);
+        }
+      }
+    };
+
+    var strToNum = function(s) {
+      var num = 0;
+      for (var i = 0; i < s.length; i += 1) {
+        num = num * 10 + chatToNum(s.charAt(i) );
+      }
+      return num;
+    };
+
+    var chatToNum = function(c) {
+      if ('0' <= c && c <= '9') {
+        return c.charCodeAt(0) - '0'.charCodeAt(0);
+      }
+      throw 'illegal char :' + c;
+    };
+
+    return _this;
+  };
+
+  //---------------------------------------------------------------------
+  // qrAlphaNum
+  //---------------------------------------------------------------------
+
+  var qrAlphaNum = function(data) {
+
+    var _mode = QRMode.MODE_ALPHA_NUM;
+    var _data = data;
+
+    var _this = {};
+
+    _this.getMode = function() {
+      return _mode;
+    };
+
+    _this.getLength = function(buffer) {
+      return _data.length;
+    };
+
+    _this.write = function(buffer) {
+
+      var s = _data;
+
+      var i = 0;
+
+      while (i + 1 < s.length) {
+        buffer.put(
+          getCode(s.charAt(i) ) * 45 +
+          getCode(s.charAt(i + 1) ), 11);
+        i += 2;
+      }
+
+      if (i < s.length) {
+        buffer.put(getCode(s.charAt(i) ), 6);
+      }
+    };
+
+    var getCode = function(c) {
+
+      if ('0' <= c && c <= '9') {
+        return c.charCodeAt(0) - '0'.charCodeAt(0);
+      } else if ('A' <= c && c <= 'Z') {
+        return c.charCodeAt(0) - 'A'.charCodeAt(0) + 10;
+      } else {
+        switch (c) {
+        case ' ' : return 36;
+        case '$' : return 37;
+        case '%' : return 38;
+        case '*' : return 39;
+        case '+' : return 40;
+        case '-' : return 41;
+        case '.' : return 42;
+        case '/' : return 43;
+        case ':' : return 44;
+        default :
+          throw 'illegal char :' + c;
+        }
+      }
+    };
+
+    return _this;
+  };
+
+  //---------------------------------------------------------------------
+  // qr8BitByte
+  //---------------------------------------------------------------------
+
+  var qr8BitByte = function(data) {
+
+    var _mode = QRMode.MODE_8BIT_BYTE;
+    var _data = data;
+    var _bytes = qrcode.stringToBytes(data);
+
+    var _this = {};
+
+    _this.getMode = function() {
+      return _mode;
+    };
+
+    _this.getLength = function(buffer) {
+      return _bytes.length;
+    };
+
+    _this.write = function(buffer) {
+      for (var i = 0; i < _bytes.length; i += 1) {
+        buffer.put(_bytes[i], 8);
+      }
+    };
+
+    return _this;
+  };
+
+  //---------------------------------------------------------------------
+  // qrKanji
+  //---------------------------------------------------------------------
+
+  var qrKanji = function(data) {
+
+    var _mode = QRMode.MODE_KANJI;
+    var _data = data;
+
+    var stringToBytes = qrcode.stringToBytesFuncs['SJIS'];
+    if (!stringToBytes) {
+      throw 'sjis not supported.';
+    }
+    !function(c, code) {
+      // self test for sjis support.
+      var test = stringToBytes(c);
+      if (test.length != 2 || ( (test[0] << 8) | test[1]) != code) {
+        throw 'sjis not supported.';
+      }
+    }('\u53cb', 0x9746);
+
+    var _bytes = stringToBytes(data);
+
+    var _this = {};
+
+    _this.getMode = function() {
+      return _mode;
+    };
+
+    _this.getLength = function(buffer) {
+      return ~~(_bytes.length / 2);
+    };
+
+    _this.write = function(buffer) {
+
+      var data = _bytes;
+
+      var i = 0;
+
+      while (i + 1 < data.length) {
+
+        var c = ( (0xff & data[i]) << 8) | (0xff & data[i + 1]);
+
+        if (0x8140 <= c && c <= 0x9FFC) {
+          c -= 0x8140;
+        } else if (0xE040 <= c && c <= 0xEBBF) {
+          c -= 0xC140;
+        } else {
+          throw 'illegal char at ' + (i + 1) + '/' + c;
+        }
+
+        c = ( (c >>> 8) & 0xff) * 0xC0 + (c & 0xff);
+
+        buffer.put(c, 13);
+
+        i += 2;
+      }
+
+      if (i < data.length) {
+        throw 'illegal char at ' + (i + 1);
+      }
+    };
+
+    return _this;
+  };
+
+  //=====================================================================
+  // GIF Support etc.
+  //
+
+  //---------------------------------------------------------------------
+  // byteArrayOutputStream
+  //---------------------------------------------------------------------
+
+  var byteArrayOutputStream = function() {
+
+    var _bytes = [];
+
+    var _this = {};
+
+    _this.writeByte = function(b) {
+      _bytes.push(b & 0xff);
+    };
+
+    _this.writeShort = function(i) {
+      _this.writeByte(i);
+      _this.writeByte(i >>> 8);
+    };
+
+    _this.writeBytes = function(b, off, len) {
+      off = off || 0;
+      len = len || b.length;
+      for (var i = 0; i < len; i += 1) {
+        _this.writeByte(b[i + off]);
+      }
+    };
+
+    _this.writeString = function(s) {
+      for (var i = 0; i < s.length; i += 1) {
+        _this.writeByte(s.charCodeAt(i) );
+      }
+    };
+
+    _this.toByteArray = function() {
+      return _bytes;
+    };
+
+    _this.toString = function() {
+      var s = '';
+      s += '[';
+      for (var i = 0; i < _bytes.length; i += 1) {
+        if (i > 0) {
+          s += ',';
+        }
+        s += _bytes[i];
+      }
+      s += ']';
+      return s;
+    };
+
+    return _this;
+  };
+
+  //---------------------------------------------------------------------
+  // base64EncodeOutputStream
+  //---------------------------------------------------------------------
+
+  var base64EncodeOutputStream = function() {
+
+    var _buffer = 0;
+    var _buflen = 0;
+    var _length = 0;
+    var _base64 = '';
+
+    var _this = {};
+
+    var writeEncoded = function(b) {
+      _base64 += String.fromCharCode(encode(b & 0x3f) );
+    };
+
+    var encode = function(n) {
+      if (n < 0) {
+        // error.
+      } else if (n < 26) {
+        return 0x41 + n;
+      } else if (n < 52) {
+        return 0x61 + (n - 26);
+      } else if (n < 62) {
+        return 0x30 + (n - 52);
+      } else if (n == 62) {
+        return 0x2b;
+      } else if (n == 63) {
+        return 0x2f;
+      }
+      throw 'n:' + n;
+    };
+
+    _this.writeByte = function(n) {
+
+      _buffer = (_buffer << 8) | (n & 0xff);
+      _buflen += 8;
+      _length += 1;
+
+      while (_buflen >= 6) {
+        writeEncoded(_buffer >>> (_buflen - 6) );
+        _buflen -= 6;
+      }
+    };
+
+    _this.flush = function() {
+
+      if (_buflen > 0) {
+        writeEncoded(_buffer << (6 - _buflen) );
+        _buffer = 0;
+        _buflen = 0;
+      }
+
+      if (_length % 3 != 0) {
+        // padding
+        var padlen = 3 - _length % 3;
+        for (var i = 0; i < padlen; i += 1) {
+          _base64 += '=';
+        }
+      }
+    };
+
+    _this.toString = function() {
+      return _base64;
+    };
+
+    return _this;
+  };
+
+  //---------------------------------------------------------------------
+  // base64DecodeInputStream
+  //---------------------------------------------------------------------
+
+  var base64DecodeInputStream = function(str) {
+
+    var _str = str;
+    var _pos = 0;
+    var _buffer = 0;
+    var _buflen = 0;
+
+    var _this = {};
+
+    _this.read = function() {
+
+      while (_buflen < 8) {
+
+        if (_pos >= _str.length) {
+          if (_buflen == 0) {
+            return -1;
+          }
+          throw 'unexpected end of file./' + _buflen;
+        }
+
+        var c = _str.charAt(_pos);
+        _pos += 1;
+
+        if (c == '=') {
+          _buflen = 0;
+          return -1;
+        } else if (c.match(/^\s$/) ) {
+          // ignore if whitespace.
+          continue;
+        }
+
+        _buffer = (_buffer << 6) | decode(c.charCodeAt(0) );
+        _buflen += 6;
+      }
+
+      var n = (_buffer >>> (_buflen - 8) ) & 0xff;
+      _buflen -= 8;
+      return n;
+    };
+
+    var decode = function(c) {
+      if (0x41 <= c && c <= 0x5a) {
+        return c - 0x41;
+      } else if (0x61 <= c && c <= 0x7a) {
+        return c - 0x61 + 26;
+      } else if (0x30 <= c && c <= 0x39) {
+        return c - 0x30 + 52;
+      } else if (c == 0x2b) {
+        return 62;
+      } else if (c == 0x2f) {
+        return 63;
+      } else {
+        throw 'c:' + c;
+      }
+    };
+
+    return _this;
+  };
+
+  //---------------------------------------------------------------------
+  // gifImage (B/W)
+  //---------------------------------------------------------------------
+
+  var gifImage = function(width, height) {
+
+    var _width = width;
+    var _height = height;
+    var _data = new Array(width * height);
+
+    var _this = {};
+
+    _this.setPixel = function(x, y, pixel) {
+      _data[y * _width + x] = pixel;
+    };
+
+    _this.write = function(out) {
+
+      //---------------------------------
+      // GIF Signature
+
+      out.writeString('GIF87a');
+
+      //---------------------------------
+      // Screen Descriptor
+
+      out.writeShort(_width);
+      out.writeShort(_height);
+
+      out.writeByte(0x80); // 2bit
+      out.writeByte(0);
+      out.writeByte(0);
+
+      //---------------------------------
+      // Global Color Map
+
+      // black
+      out.writeByte(0x00);
+      out.writeByte(0x00);
+      out.writeByte(0x00);
+
+      // white
+      out.writeByte(0xff);
+      out.writeByte(0xff);
+      out.writeByte(0xff);
+
+      //---------------------------------
+      // Image Descriptor
+
+      out.writeString(',');
+      out.writeShort(0);
+      out.writeShort(0);
+      out.writeShort(_width);
+      out.writeShort(_height);
+      out.writeByte(0);
+
+      //---------------------------------
+      // Local Color Map
+
+      //---------------------------------
+      // Raster Data
+
+      var lzwMinCodeSize = 2;
+      var raster = getLZWRaster(lzwMinCodeSize);
+
+      out.writeByte(lzwMinCodeSize);
+
+      var offset = 0;
+
+      while (raster.length - offset > 255) {
+        out.writeByte(255);
+        out.writeBytes(raster, offset, 255);
+        offset += 255;
+      }
+
+      out.writeByte(raster.length - offset);
+      out.writeBytes(raster, offset, raster.length - offset);
+      out.writeByte(0x00);
+
+      //---------------------------------
+      // GIF Terminator
+      out.writeString(';');
+    };
+
+    var bitOutputStream = function(out) {
+
+      var _out = out;
+      var _bitLength = 0;
+      var _bitBuffer = 0;
+
+      var _this = {};
+
+      _this.write = function(data, length) {
+
+        if ( (data >>> length) != 0) {
+          throw 'length over';
+        }
+
+        while (_bitLength + length >= 8) {
+          _out.writeByte(0xff & ( (data << _bitLength) | _bitBuffer) );
+          length -= (8 - _bitLength);
+          data >>>= (8 - _bitLength);
+          _bitBuffer = 0;
+          _bitLength = 0;
+        }
+
+        _bitBuffer = (data << _bitLength) | _bitBuffer;
+        _bitLength = _bitLength + length;
+      };
+
+      _this.flush = function() {
+        if (_bitLength > 0) {
+          _out.writeByte(_bitBuffer);
+        }
+      };
+
+      return _this;
+    };
+
+    var getLZWRaster = function(lzwMinCodeSize) {
+
+      var clearCode = 1 << lzwMinCodeSize;
+      var endCode = (1 << lzwMinCodeSize) + 1;
+      var bitLength = lzwMinCodeSize + 1;
+
+      // Setup LZWTable
+      var table = lzwTable();
+
+      for (var i = 0; i < clearCode; i += 1) {
+        table.add(String.fromCharCode(i) );
+      }
+      table.add(String.fromCharCode(clearCode) );
+      table.add(String.fromCharCode(endCode) );
+
+      var byteOut = byteArrayOutputStream();
+      var bitOut = bitOutputStream(byteOut);
+
+      // clear code
+      bitOut.write(clearCode, bitLength);
+
+      var dataIndex = 0;
+
+      var s = String.fromCharCode(_data[dataIndex]);
+      dataIndex += 1;
+
+      while (dataIndex < _data.length) {
+
+        var c = String.fromCharCode(_data[dataIndex]);
+        dataIndex += 1;
+
+        if (table.contains(s + c) ) {
+
+          s = s + c;
+
+        } else {
+
+          bitOut.write(table.indexOf(s), bitLength);
+
+          if (table.size() < 0xfff) {
+
+            if (table.size() == (1 << bitLength) ) {
+              bitLength += 1;
+            }
+
+            table.add(s + c);
+          }
+
+          s = c;
+        }
+      }
+
+      bitOut.write(table.indexOf(s), bitLength);
+
+      // end code
+      bitOut.write(endCode, bitLength);
+
+      bitOut.flush();
+
+      return byteOut.toByteArray();
+    };
+
+    var lzwTable = function() {
+
+      var _map = {};
+      var _size = 0;
+
+      var _this = {};
+
+      _this.add = function(key) {
+        if (_this.contains(key) ) {
+          throw 'dup key:' + key;
+        }
+        _map[key] = _size;
+        _size += 1;
+      };
+
+      _this.size = function() {
+        return _size;
+      };
+
+      _this.indexOf = function(key) {
+        return _map[key];
+      };
+
+      _this.contains = function(key) {
+        return typeof _map[key] != 'undefined';
+      };
+
+      return _this;
+    };
+
+    return _this;
+  };
+
+  var createDataURL = function(width, height, getPixel) {
+    var gif = gifImage(width, height);
+    for (var y = 0; y < height; y += 1) {
+      for (var x = 0; x < width; x += 1) {
+        gif.setPixel(x, y, getPixel(x, y) );
+      }
+    }
+
+    var b = byteArrayOutputStream();
+    gif.write(b);
+
+    var base64 = base64EncodeOutputStream();
+    var bytes = b.toByteArray();
+    for (var i = 0; i < bytes.length; i += 1) {
+      base64.writeByte(bytes[i]);
+    }
+    base64.flush();
+
+    return 'data:image/gif;base64,' + base64;
+  };
+
+  //---------------------------------------------------------------------
+  // returns qrcode function.
+
+  return qrcode;
+}();
+
+// multibyte support
+!function() {
+
+  qrcode.stringToBytesFuncs['UTF-8'] = function(s) {
+    // http://stackoverflow.com/questions/18729405/how-to-convert-utf8-string-to-byte-array
+    function toUTF8Array(str) {
+      var utf8 = [];
+      for (var i=0; i < str.length; i++) {
+        var charcode = str.charCodeAt(i);
+        if (charcode < 0x80) utf8.push(charcode);
+        else if (charcode < 0x800) {
+          utf8.push(0xc0 | (charcode >> 6),
+              0x80 | (charcode & 0x3f));
+        }
+        else if (charcode < 0xd800 || charcode >= 0xe000) {
+          utf8.push(0xe0 | (charcode >> 12),
+              0x80 | ((charcode>>6) & 0x3f),
+              0x80 | (charcode & 0x3f));
+        }
+        // surrogate pair
+        else {
+          i++;
+          // UTF-16 encodes 0x10000-0x10FFFF by
+          // subtracting 0x10000 and splitting the
+          // 20 bits of 0x0-0xFFFFF into two halves
+          charcode = 0x10000 + (((charcode & 0x3ff)<<10)
+            | (str.charCodeAt(i) & 0x3ff));
+          utf8.push(0xf0 | (charcode >>18),
+              0x80 | ((charcode>>12) & 0x3f),
+              0x80 | ((charcode>>6) & 0x3f),
+              0x80 | (charcode & 0x3f));
+        }
+      }
+      return utf8;
+    }
+    return toUTF8Array(s);
+  };
+
+}();
+
+(function (factory) {
+  if (typeof define === 'function' && define.amd) {
+      define([], factory);
+  } else if (typeof exports === 'object') {
+      module.exports = factory();
+  }
+}(function () {
+    return qrcode;
+}));
+
+</script>
+<script>
+const ERON=[
+{t:"Eron · 1979-yil inqilobi",q:"Darslikka ko'ra, 1979-yilgi inqilob tarixda birinchi marta nimani birlashtirdi?",o:["Monarxiyani parlament bilan","Islomiy boshqaruvni umumdemokratik institutlar bilan","Sotsializmni bozor iqtisodiyoti bilan","Dunyoviy davlatni diniy sud bilan"],a:1,e:"1979-yilgi inqilob tarixda birinchi marta Eron Islom Respublikasida islomiy boshqaruvni umumdemokratik institutlar bilan birlashtirdi."},
+{t:"Eron · tahlil",q:"Inqilob Eronning tashqi siyosatidagi o'rnini qanday o'zgartirdi?",o:["Eron AQSH va Isroilning asosiy ittifoqchisiga aylandi","AQSH, Isroil va G'arb ittifoqchisi bo'lgan Eron ularning asosiy dushmanlaridan biriga aylandi","Eron betaraf davlat deb e'lon qilindi","Eron SSSR tarkibiga kirdi"],a:1,e:"Inqilobgacha G'arbning ittifoqchisi bo'lgan Eron inqilob tufayli AQSH va Isroilning asosiy dushmanlaridan biriga aylandi; butun Yaqin Sharqda keskin yangilanishlar boshlandi."},
+{t:"Eron · sabab–oqibat",q:"Eron inqilobidan ruhlangan boshqa mamlakatlardagi islomiy partiyalarning bir qismi nega zo'ravonlik va terror yo'lini tanladi?",o:["Chunki Eron ularga qurol yetkazishni to'xtatdi","Chunki ular har doim ham aholi tomonidan qo'llab-quvvatlanmadi","Chunki BMT ularni qonuniy deb tan oldi","Chunki ular saylovlarda g'alaba qozondi"],a:1,e:"Misr, Tunis, Falastin, Livan, Suriya, Iroq, Yamandagi islomiy partiyalar har doim ham aholi tomonidan qo'llab-quvvatlanmadi va ulardan bir qismi maqsadiga erishish uchun zo'ravonlik va terrorni tanladi."},
+{t:"Eron · 1990-yillar",q:"1990-yillar boshidagi Eronga oid qaysi fikr NOTO'G'RI?",o:["Iqtisod barqarorlashib, YIM jadal o'sdi","Islom radikalizmi biroz susaydi","\"Osmon bolalari\" filmi \"Oskar\"ga tavsiya qilindi","Musiqa, televideniye va internet-kafelar taqiqlandi"],a:3,e:"Aksincha, mamlakatda musiqa, televideniye, internet-kafelarga ruxsat berildi, ayollar faol ijtimoiy hayotga qaytdi."},
+{t:"Eron · Hotamiy",q:"1997-yilda prezident etib saylangan Muhammad Hotamiy qanday yo'nalishni e'lon qildi?",o:["G'arb bilan munosabatlarni uzish va ultrakonservativ kurs","Demokratik va tolerant jamiyat qurishga qaratilgan islohotlar hamda G'arb bilan munosabatlarda ijobiy o'zgarishlar","Monarxiyani tiklash","Yadroviy qurol yaratishni ochiq e'lon qilish"],a:1,e:"Islohotchi M. Hotamiy demokratik va tolerant jamiyat qurishga qaratilgan islohotlar boshlanganini va G'arb bilan munosabatlarda ijobiy o'zgarishlarni e'lon qildi."},
+{t:"Eron · 2001-yildan keyin",q:"\"Xalqaro terrorizmning sherigi\" tamg'asidan qutulish uchun Eron qaysi qadamlarni qo'ydi?",o:["\"Hizbulloh\" rahbarlarini mamlakatdan chiqarib yubordi, Sudan, Liviya, Bosniyadagi diniy maslahatchilarini chaqirib oldi","AQSHga harbiy bazalar berdi","Yadroviy dasturini butunlay yopdi va BMTga topshirdi","Isroilni davlat sifatida tan oldi"],a:0,e:"2001-yil 11-sentabrdan keyin Eron \"Hizbulloh\" rahbarlarini chiqarib yubordi va Sudan, Liviya, Bosniyadagi eronlik diniy maslahatchilarni chaqirib oldi."},
+{t:"Eron · tahlil",q:"AQSHning Eronni xalqaro izolyatsiya qilish urinishi nima uchun muvaffaqiyatsiz chiqdi?",o:["Chunki Eron NATOga a'zo edi","Chunki Fransiya, Germaniya, Buyuk Britaniya buni ma'qullamadi va Eronga harbiy texnika yetkazayotgan, AES qurayotgan Rossiya qarshilik qildi","Chunki Xitoy AQSHga urush e'lon qildi","Chunki BMT Eronni himoyasiga oldi"],a:1,e:"Izolyatsiya G'arbiy Yevropa davlatlari tomonidan ma'qullanmadi va Eron bilan harbiy-texnik hamda atom energetikasi sohasida hamkorlik qilayotgan Rossiyaning qarshiligiga uchradi."},
+{t:"Eron · Ahmadinejod",q:"2005-yilda ultrakonservator M. Ahmadinejodning prezident bo'lishi qanday oqibatga olib keldi?",o:["Islohotlar tezlashdi va Eron G'arb bilan yaqinlashdi","Islohotlar va jahon hamjamiyatiga qaytish susaydi; liberal islohotlar to'xtatildi, arab davlatlari va Rossiya bilan hamkorlik kuchaytirildi","Eron yadroviy kelishuvni imzoladi","Eron BRIKSga a'zo bo'ldi"],a:1,e:"Ahmadinejod oldingi prezidentlarning liberal islohotlarini to'xtatdi, J. Bush ma'muriyatini keskin tanqid qildi, arab mamlakatlari va Rossiya bilan hamkorlik tarafdori bo'ldi."},
+{t:"Eron · fan",q:"2009-yili Eron koinotni o'zlashtirayotgan davlatlar qatoridan o'rin olishiga qaysi voqea sabab bo'ldi?",o:["Tehrondan \"Safir-1\" raketasi bilan \"Nur\" yo'ldoshi uchirildi","Semnondagi kosmodromdan \"Safir-2\" raketasi yordamida \"Umid\" sun'iy yo'ldoshi uchirildi","Rossiya kosmodromidan eronlik kosmonavt uchdi","Isfahonda kosmik markaz ochildi"],a:1,e:"Eron 2009-yili Semnondagi kosmodromdan \"Safir-2\" raketasi yordamida \"Umid\" sun'iy yo'ldoshini fazoga chiqardi."},
+{t:"Eron · yadroviy dastur",q:"2015-yil iyulidagi yadroviy kelishuvni imzolagan oltita davlat qatorida qaysi davlat YO'Q?",o:["Xitoy","Germaniya","Yaponiya","Rossiya"],a:2,e:"Kelishuvni AQSH, Rossiya, Xitoy, Buyuk Britaniya, Fransiya va Germaniya imzolagan. 2018-yili AQSH shartnomadan chiqqach, u amalda kuchini yo'qotdi."},
+{t:"Eron · xronologiya",q:"Eron prezidentlarining hokimiyatga kelish TO'G'RI ketma-ketligini toping.",o:["Hotamiy → Ahmadinejod → Ruhoniy → Raisiy → Pazishkiyon","Ahmadinejod → Hotamiy → Raisiy → Ruhoniy → Pazishkiyon","Hotamiy → Ruhoniy → Ahmadinejod → Pazishkiyon → Raisiy","Ruhoniy → Hotamiy → Ahmadinejod → Raisiy → Pazishkiyon"],a:0,e:"1997 – Hotamiy; 2005 – Ahmadinejod; 2013 – Ruhoniy; 2021 – Raisiy; 2024 – Pazishkiyon."},
+{t:"Eron · Raisiy",q:"Ibrohim Raisiyga oid TO'G'RI ma'lumotni toping.",o:["Islohotchi bo'lib, AQSH bilan munosabatlarni tikladi","Ultrakonservativ qanotga mansub, G'arb bilan qat'iylik tarafdori; 2024-yilda aviahalokatda halok bo'ldi","2015-yilgi yadroviy kelishuvni imzolagan","Hotamiy hukumatida sog'liqni saqlash vaziri bo'lgan"],a:1,e:"2021-yili saylangan I. Raisiy siyosiy va diniy arboblardan biri, ultrakonservativ qanot vakili edi va 2024-yilda aviahalokatda halok bo'ldi."},
+{t:"Eron · Pazishkiyon",q:"Mas'ud Pazishkiyon haqida qaysi ma'lumot TO'G'RI?",o:["Ahmadinejod hukumatida mudofaa vaziri bo'lgan","Hotamiy hukumatida sog'liqni saqlash vaziri bo'lgan; AQSH bilan munosabatlarni yo'lga qo'yish va ayollar erkinligi tarafdori","Eronni BRIKSdan chiqardi","Rossiya bilan munosabatlarni uzdi"],a:1,e:"Pazishkiyon islohotchi Hotamiy hukumatida sog'liqni saqlash vaziri bo'lgan. U Rossiya bilan ham yaxshi munosabatlarni saqlamoqda; 2024-yili Eron BRIKSga a'zo bo'ldi."},
+{t:"Eron · ta'lim",q:"Eronda maktabni bitirgan qizlarning oliy o'quv yurtiga kirishi qanday o'zgardi?",o:["1978-yil 12 % → 2016-yil 40 %","1978-yil 2,9 % → 2016-yil 65,5 %","1978-yil 30 % → 2016-yil 75 %","1978-yil 2,9 % → 2016-yil 28 %"],a:1,e:"1978-yili maktabni bitirgan qizlarning atigi 2,9 foizi oliy o'quv yurtiga kirgan bo'lsa, 2016-yili bu ko'rsatkich 65,5 foizga yetdi."},
+{t:"Eron · sabab–oqibat",q:"Erondagi suv ta'minoti inqirozi iqtisodiyotga qanday ta'sir qilmoqda?",o:["Suvning 90 % qishloq xo'jaligida ishlatilgani uchun boshqa sohalarda, xususan, elektr energiyasida taqchillik yuzaga keldi","Suv eksporti kamayib, neft narxi oshdi","Qishloq xo'jaligi butunlay to'xtadi","Suv zaxiralari sanoatga o'tkazilgani uchun qishloq xo'jaligi inqirozga uchradi"],a:0,e:"Mavjud suv zaxirasining 90 foizi qishloq xo'jaligida ishlatiladi; bu elektr energiyasi taqchilligiga olib keldi. YIM 2022-yilgi 554,8 mlrd dollardan 2024-yili 403 mlrd dollarga tushdi, xarid qobiliyati bir yilda 28 % pasaydi."},
+{t:"Eron · Isroil",q:"Eron–Isroil qarama-qarshiligi haqida qaysi fikr TO'G'RI?",o:["U 1948-yilda boshlangan; Eron Iordaniyani qo'llab-quvvatlagan","U 1979-yilgi inqilobdan keyin boshlangan; Eron Livandagi \"Hizbulloh\" va G'azodagi \"Hamas\"ni qo'llab-quvvatlagan","U 2025-yilda boshlangan; Eron \"Al-Qoida\"ni qo'llab-quvvatlagan","Eron Isroilni davlat sifatida tan olgan, ammo chegaralarini tan olmagan"],a:1,e:"Teokratik rejim Isroilni davlat sifatida tan olmadi. Inqilobdan keyin eronlik yahudiylarning 70 foizi mamlakatni tark etdi; 1990-yillarda Eron \"Hizbulloh\" va \"Hamas\"ga yordamni kuchaytirdi."},
+{t:"Eron · 2025-yil iyun",q:"2025-yil iyunidagi Eron–Isroil to'qnashuvi bo'yicha TO'G'RI juftlikni toping.",o:["13-iyun – AQSH Eronni bombardimon qildi; 22-iyun – urush to'xtatildi","13-iyun – Isroil Eronni bombardimon qila boshladi; 22-iyun – AQSH Eronning uchta yerosti zavodini portlatdi","13-iyun – Eron Qatardagi bazaga hujum qildi; 24-iyun – Isroil urushga kirdi","22-iyun – Eron Isroilni bombardimon qildi; 23-iyun – kelishuv imzolandi"],a:1,e:"13-iyun – Isroil Eronni bombardimon qila boshladi; 22-iyun – AQSH yadroviy dasturga kirgan uchta yerosti zavodini portlatdi; 23-iyun – Eron Qatardagi AQSH bazasiga hujum qildi; 24-iyun – harakatlar to'xtatildi."},
+{t:"Eron · tahlil",q:"Isroil Eronni nima sababdan o'z mavjudligiga xavf deb qabul qildi?",o:["Eronning neft eksporti hajmi tufayli","Eronning yadroviy dasturi, ballistik raketalar ishlab chiqarishi va Isroilga qarshi tashkilotlarni qo'llab-quvvatlashi tufayli","Eronning BRIKSga a'zo bo'lgani uchun","Eronning SHHTga a'zoligi tufayli"],a:1,e:"Yadroviy dastur, ballistik raketalar va yahudiy davlatiga qarshi tashkilotlarni qo'llab-quvvatlash Isroil tomonidan mavjudlikka tahdid deb baholandi."},
+{t:"Eron · O'zbekiston",q:"Eron–O'zbekiston munosabatlariga oid TO'G'RI ma'lumotni toping.",o:["Eron O'zbekiston mustaqilligini 1992-yil martda tan oldi","Eron O'zbekiston mustaqilligini 1991-yil noyabrda tan oldi; 1993-yil oktabrda prezident Ali Akbar Rafsanjoni O'zbekistonga tashrif buyurdi","1993-yilda M. Hotamiy O'zbekistonga tashrif buyurdi","Sh. Mirziyoyev Eronga 2019-yilda rasmiy tashrif buyurdi"],a:1,e:"Eron O'zbekiston mustaqilligini 1991-yil noyabrda tan oldi; 1993-yil oktabrda Rafsanjoni tashrif buyurdi. 2023-yil iyunda Sh. Mirziyoyev Eronga rasmiy tashrif buyurib, ko'plab hujjatlar imzolandi."},
+{t:"Eron · \"Bu qiziq!\" va atamalar",q:"Quyidagilardan qaysi biri NOTO'G'RI?",o:["Teokratiyada davlat boshlig'i bir vaqtning o'zida diniy boshliq hamdir","Eron hududining deyarli yarmi cho'ldan iborat","Dashti Lut cho'lida 2005-yili harorat 70,7 darajaga ko'tarilgan","Tehron universiteti dunyoning 50 ta eng yaxshi universiteti qatoriga kiradi"],a:3,e:"Tehron universiteti dunyoning 400 ta eng yaxshi universiteti qatoriga kiradi (Amirkabir va Sharif texnologiya universitetlari — 500 talik qatorda)."}
+];
+
+const PAKAFG=[
+{t:"Pokiston · 1990-yillar",q:"1990-yili B. Bhutto hukumati iste'foga chiqarilgandan so'ng saylovda g'olib bo'lib hokimiyatni boshqargan kim?",o:["Parvez Musharraf","Musulmon ligasi rahbari Navoz Sharif","Imron Xon","Asif Ali Zardariy"],a:1,e:"1990-yilgi saylovda g'olib chiqqan Musulmon ligasi partiyasining rahbari Navoz Sharif hokimiyatni boshqardi."},
+{t:"Pokiston · sabab",q:"1993-yili prezident G'ulom Is'hoqxon Navoz Sharif hukumatini nimada ayblab iste'foga chiqardi?",o:["Davlat sirini oshkor qilishda","Korrupsiya va qarindosh-urug'chilikda","AQSHga josuslikda","Harbiy to'ntarish tayyorlashda"],a:1,e:"G'ulom Is'hoqxon yangi hukumatni ham korrupsiya va qarindosh-urug'chilikda ayblab, iste'foga chiqardi."},
+{t:"Pokiston · tahlil",q:"Benazir Bhutto taqdiri 1990-yillardagi Pokiston siyosati haqida nimani ko'rsatadi?",o:["Bosh vazirlar uzoq muddat barqaror ishlaganini","Hukumatlar prezident tomonidan qayta-qayta iste'foga chiqarilib, beqarorlik va korrupsiya mojarolari hukm surganini","Pokistonda bir partiyaviy tizim o'rnatilganini","Harbiylar siyosatga umuman aralashmaganini"],a:1,e:"B. Bhutto ikki marta iste'foga chiqarildi: 1990-yilgacha va 1996-yili prezident S. F. A. Leg'oriy Milliy Assambleyani tarqatib yuborganida. Bu qizg'in siyosiy beqarorlikni ko'rsatadi."},
+{t:"Pokiston",q:"1999-yil kuzida Pokistonda qanday voqea sodir bo'ldi?",o:["Navoz Sharif prezident etib saylandi","Harbiy to'ntarish natijasida general Parvez Musharraf boshchiligidagi harbiy qo'mondonlik hokimiyatga keldi","Pokiston SHHTga a'zo bo'ldi","B. Bhutto uchinchi marta bosh vazir bo'ldi"],a:1,e:"1999-yil kuzida Pokistonda yana harbiy to'ntarish bo'lib, hokimiyatga general P. Musharraf boshchiligidagi harbiy qo'mondonlik keldi."},
+{t:"Pokiston · tahlil",q:"2001-yildan keyin P. Musharrafning AQSH boshchiligidagi koalitsiyaga qo'shilishi Pokiston ichida qanday oqibatga olib keldi?",o:["Pokiston SHHTdan chiqarildi","Ko'pchilik AQSH musulmonlarga qarshi kurashyapti deb hisobladi; Musharrafga qarshi suiqasdlar uyushtirildi, islomiy guruhlar uni dushman deb e'lon qildi","Musharraf xalq tomonidan qayta-qayta saylandi","Pokiston iqtisodiyoti BRIKS darajasiga yetdi"],a:1,e:"AQSH bilan yaqinlashuv ichki norozilikni kuchaytirdi. 2003–2005-yillarda Pokiston armiyasi AQSH yordamida Afg'oniston hududida operatsiyalar o'tkazdi. Oxir-oqibat Musharraf iste'foga chiqdi."},
+{t:"Pokiston",q:"2008-yilgi saylovlarda Pokiston prezidenti etib kim saylandi?",o:["PXP hamraisi Asif Ali Zardariy","Shahboz Sharif","Sardor Faruq Ahmadxon Leg'oriy","Imron Xon"],a:0,e:"2008-yilgi saylovlarda Pokiston xalq partiyasi (PXP) hamraisi Asif Ali Zardariy prezident etib saylandi. 2013-yili esa Navoz Sharif bosh vazir bo'ldi."},
+{t:"Pokiston · SHHT",q:"Pokistonning SHHTga a'zo bo'lish jarayoni qanday kechdi?",o:["2001-yil Shanxayda asoschi sifatida qo'shildi","2016-yil Toshkent sammitida qabul qilish tartibi to'g'risidagi hujjat imzolandi, 2017-yil a'zo bo'ldi","2017-yil Toshkentda hujjat imzolandi, 2018-yil a'zo bo'ldi","2024-yil BRIKS bilan bir vaqtda qo'shildi"],a:1,e:"SHHTning 2016-yilgi Toshkent sammitida Pokistonni qabul qilish tartibi va muddati to'g'risidagi hujjat imzolandi; Pokiston 2017-yili SHHTga a'zo bo'ldi."},
+{t:"Pokiston · Imron Xon",q:"Imron Xonga oid TO'G'RI ma'lumotni toping.",o:["1999-yili harbiy to'ntarish orqali hokimiyatga kelgan","2018-yili bosh vazir bo'lgan; 2022-yili lavozimidan ozod qilinib, noqonuniy daromad va davlat sirini oshkor qilishda ayblanib uzoq muddatli qamoqqa hukm qilingan","2024-yili ikkinchi marta bosh vazir bo'lgan","Navoz Sharifning ukasi"],a:1,e:"Imron Xon iqtisodiy islohotlar kursini e'lon qilgan, 2020–2021-yillarda inflyatsiya, qarzlar va COVID-19 bilan kurashgan; 2022-yili lavozimidan ozod qilingan."},
+{t:"Pokiston · Shahboz Sharif",q:"Shahboz Sharif kim?",o:["Benazir Bhuttoning eri","2017-yili korrupsiyada ayblanib hokimiyatdan chetlatilgan Navoz Sharifning ukasi; 2024-yilgi saylovdan keyin yana bosh vazir bo'lgan","PXP asoschisi","Pokistonning birinchi harbiy prezidenti"],a:1,e:"Shahboz Sharif — Navoz Sharifning ukasi. U bosh vazir etib saylanib, 2024-yilgi saylovdan keyin yana bu lavozimni egalladi."},
+{t:"Afg'oniston · xronologiya",q:"Voqealarning TO'G'RI ketma-ketligini toping: 1) Tolibon Kobulni egalladi; 2) Mujohidlar Kobulga kirdi; 3) Tolibon harakati mojaroga qo'shildi; 4) Tolibon hukumati ag'darildi.",o:["2 → 3 → 1 → 4","3 → 2 → 1 → 4","2 → 1 → 3 → 4","1 → 2 → 3 → 4"],a:0,e:"1992-yil aprel – mujohidlar Kobulga kirdi; 1994 – tolibon mojaroga qo'shildi; 1996-yil sentabr – tolibon Kobulni egalladi; 2001 – tolibon hukumati ag'darildi."},
+{t:"Afg'oniston · 1990-yillar",q:"1992-yili mujohidlar Kobulga kirgach, prezident Muhammad Najibulloning taqdiri qanday bo'ldi?",o:["SSSRga qochib ketdi","Qochishga ulgurmadi; mujohidlar uni tutib oldi va 1996-yili dorga osishdi","Pokistonga qochib, siyosiy boshpana oldi","Mujohidlar bilan koalitsiya hukumati tuzdi"],a:1,e:"Najibullo qochishga ulgurmadi; mujohidlar uni tutib olib, 1996-yili dorga osishdi. Hokimiyatni \"Jihod kengashi\" egalladi."},
+{t:"Afg'oniston · tolibon",q:"1996-yil sentabrda Kobulni egallagan tolibonlar mamlakatni qanday nomladi va ularning yetakchisi kim edi?",o:["\"Afg'oniston Islom Respublikasi\"; Hamid Karzay","\"Afg'oniston Islom amirligi\"; mulla Umar","\"Afg'oniston Demokratik Respublikasi\"; Najibullo","\"Afg'oniston qirolligi\"; Usoma bin Lodin"],a:1,e:"Tolibon yetakchisi mulla Umar bo'lib, 1996-yil sentabrda Kobulni egallab, mamlakatni \"Afg'oniston Islom amirligi\" deb e'lon qildi."},
+{t:"Afg'oniston · sabab–oqibat",q:"BMT Xavfsizlik Kengashi tolibon rejimiga qarshi iqtisodiy sanksiyalarni nima sababdan e'lon qildi?",o:["Tolibon SSSR bilan ittifoq tuzgani uchun","Tolibon Usoma bin Lodinni xalqaro sudga topshirishdan bosh tortgani uchun","Tolibon Pokistonga hujum qilgani uchun","Tolibon neft eksportini to'xtatgani uchun"],a:1,e:"Bin Lodin Afg'onistonda terrorchilar tayyorlash bazalari va lagerlarini yaratdi; tolibon uni xalqaro sudga topshirishdan bosh tortgach, BMT XK sanksiyalar e'lon qildi."},
+{t:"Afg'oniston · tahlil",q:"Mulla Umarning qaysi harakatlari jahon jamoatchiligining g'azabini keltirib chiqardi?",o:["Kobulda xalqaro aeroport qurishi","Islomgacha bo'lgan yodgorliklarni, jumladan V asrga oid Budda haykallarini yo'q qildirishi va musulmon bo'lmaganlarga sariq belgi taqishni majburlashi","SSSR bilan tinchlik shartnomasi tuzishi","Ayollarga saylov huquqi berishi"],a:1,e:"Xalqaro tan olinishdan umidini uzgan mulla Umar islomgacha bo'lgan yodgorliklarni yo'q qilishga buyruq berdi; sariq belgi to'g'risidagi dekret ham g'azab uyg'otdi. BMT XK sanksiyalarni kuchaytirdi."},
+{t:"Afg'oniston · 2001–2002",q:"2001-yil 11-sentabr voqealaridan keyin Afg'onistonda nima sodir bo'ldi?",o:["AQSH tolibon bilan ittifoq tuzdi","AQSH javobgarlikni \"Al-Qoida\" va Usoma bin Lodinga yukladi, terrorchilar bazalarini bombardimon qildi; tolibon hukumati ag'darilib, xalqaro harbiy kuchlar joylashtirildi","SSSR qo'shinlari qayta kiritildi","Najibullo hokimiyatga qaytdi"],a:1,e:"AQSH \"Al-Qoida\" bazalarini bombardimon qildi; muvaffaqiyatli hujumlardan so'ng tolibon hukumati ag'darildi va xalqaro harbiy kuchlar joylashtirildi."},
+{t:"Afg'oniston · Loyya Jirg'a",q:"2002-yil iyunidagi Umumafg'on Loyya Jirg'asi haqida qaysi fikr TO'G'RI?",o:["Loyya Jirg'a — parlamentning quyi palatasi; unda Ashraf G'ani prezident etib saylandi","Loyya Jirg'a — umumafg'on oqsoqollar kengashi; unda Hamid Karzay prezident vazifasini bajaruvchi etib saylandi","Loyya Jirg'a — tolibonning harbiy kengashi; unda mulla Umar amir etib saylandi","Loyya Jirg'a — BMT komissiyasi; u 5 mlrd dollar yordamni rad etdi"],a:1,e:"Loyya Jirg'a — afg'on qabilalari tomonidan saylanadigan umumafg'on oqsoqollar kengashi. 2002-yilda H. Karzay prezident vazifasini bajaruvchi etib saylandi, Afg'onistonga 5 mlrd dollar xalqaro yordam ajratildi."},
+{t:"Afg'oniston · konstitutsiya",q:"2003-yilgi Afg'oniston konstitutsiyasida nima ko'zda tutilMAGAN?",o:["Prezidentlik boshqaruvi","Ikki palatali parlament va mustaqil sud tizimi","Erkak va ayollarning qonun oldida tengligi","Monarxiyani tiklash"],a:3,e:"Konstitutsiya mamlakatni \"Afg'oniston Islom Respublikasi\" deb atadi, prezidentlik boshqaruvini, ikki palatali parlamentni, mustaqil sudni, kichik millatlar huquqlari va tenglikni kafolatladi. 2004-yili H. Karzay rasman prezident etib saylandi."},
+{t:"Afg'oniston · baho",q:"Sobiq prezident Hamid Karzay mamlakatdagi beqarorlikning sababi sifatida nimani ko'rsatdi?",o:["Pokistonning siyosatini","Mintaqada AQSH olib borayotgan siyosatni; AQSHni xatolarini tan olishga chaqirdi","Tolibonning saylovlardagi g'alabasini","Rossiyaning aralashuvini"],a:1,e:"2014-yili Ashraf G'ani prezident, Abdulla hukumat raisi bo'ldi, ammo mustahkam tinchlik o'rnatilmadi. Karzay beqarorlik sababini AQSH siyosatida ko'rdi."},
+{t:"Afg'oniston · 2021",q:"2021-yilda Afg'onistonda hokimiyat qanday almashdi?",o:["Saylov orqali Ashraf G'ani qayta saylandi","J. Bayden AQSH va NATO qo'shinlarini olib chiqishini e'lon qilgach, tolibon 15-avgustda Kobulni egalladi","BMT vaqtinchalik ma'muriyat tuzdi","Loyya Jirg'a monarxiyani tikladi"],a:1,e:"J. Bayden qo'shinlarni so'zsiz olib chiqishni e'lon qilgach, tolibon hujumga o'tdi va 15-avgustda Kobulni egallab, hokimiyat o'rnatdi."},
+{t:"Afg'oniston · O'zbekiston",q:"O'zbekiston–Afg'oniston aloqalariga oid TO'G'RI ma'lumotni toping.",o:["2024-yili Termizda Markaziy Osiyodagi birinchi \"Termiz xalqaro savdo markazi\" ochildi; 2025-yilda savdo aylanmasini 3 mlrd dollarga yetkazish rejalashtirilgan","O'zbekiston Afg'oniston bilan barcha aloqalarni uzgan","Termizda Afg'oniston harbiylarini tayyorlash markazi ochilgan","2025-yilda savdo aylanmasi 30 mlrd dollarga yetdi"],a:0,e:"Termiz tumanida afg'on fuqarolarini o'qitish ta'lim markazi ishlaydi; 2024-yili \"Termiz xalqaro savdo markazi\" ochildi; 2025-yilda savdo aylanmasini 3 mlrd dollarga yetkazish rejalashtirilgan."}
+];
+
+const SURIRQ=[
+{t:"Suriya",q:"Bashar Asadning 2000-yildan keyingi \"yumshoq\" tashqi siyosatiga qaysi qadam MOS KELMAYDI?",o:["Isroil bilan Jo'lon tepaliklari bo'yicha muzokaralarni tiklash","30 yildan beri Livanda turgan qo'shinlarni olib chiqish","Saddam Husayn bilan yarashish","Siyosiy partiyalar faoliyatini taqiqlash"],a:3,e:"B. Asad aksincha, ichki siyosatda siyosiy partiyalar faoliyatiga ruxsat bergan. Qolgan uchtasi uning tashqi siyosatidagi \"yumshoq\" kursga misol."},
+{t:"Suriya",q:"1990-yillarda Suriyada boshlangan iqtisodiy turg'unlikning darslikda ko'rsatilgan ikki sababi qaysi?",o:["Sotsialistik rejim inqirozi va eng dahshatli qurg'oqchilik","Neft narxining qulashi va Isroil bilan urush","\"Arab bahori\" va qochoqlar oqimi","AQSH sanksiyalari va ISHID hujumlari"],a:0,e:"Turg'unlik sotsialistik rejim inqirozi hamda Suriyaning yangi tarixidagi eng dahshatli qurg'oqchilik bilan bog'liq edi."},
+{t:"Suriya · tahlil",q:"Bashar Asadning savdo va moliyani liberallashtirish siyosati qanday ijtimoiy ziddiyatni keltirib chiqardi?",o:["Butun mamlakatda ishsizlik yo'qoldi, ammo inflyatsiya oshdi","Damashq va Halab kabi yirik shaharlar jonlandi, qishloq va kichik shaharlarda ishsizlik ortdi","Qishloq xo'jaligi gullab-yashnadi, sanoat esa inqirozga uchradi","Faqat chet el kompaniyalari foyda ko'rdi, davlat bankrot bo'ldi"],a:1,e:"Islohot foydasi notekis taqsimlandi: yirik shaharlar o'sdi, periferiyada ishsizlik kuchaydi. Bu keyingi norozilikning ijtimoiy asosi bo'ldi."},
+{t:"Suriya · sabab–oqibat",q:"2011-yil voqealari oldidan Suriya aholisining keskin noroziligiga qaysi omillar birikmasi sabab bo'ldi?",o:["Qurg'oqchilik, iqtisodiy inqiroz va qo'shni davlatlardan kelgan qochoqlar muammosi","ISHID hujumlari va Rossiya bombardimonlari","Hofiz Asadning vafoti va hokimiyat uchun kurash","Livan bilan urush va Jo'lon tepaliklarining yo'qotilishi"],a:0,e:"Qochoqlar Suriyaning katta muammosiga aylandi; qurg'oqchilik va iqtisodiy inqirozga qo'shilib, aholining keskin noroziligini keltirib chiqardi."},
+{t:"Suriya",q:"Suriyadagi \"Juma inqilobi\" qayerda va qanday boshlandi?",o:["Damashqda talabalar namoyishi bilan","Halabda ishchilar ish tashlashi bilan","Janubdagi Daraya shahrida juma namozidan so'ng boshlangan g'alayonlar bilan","Hims shahrida harbiy qo'zg'olon bilan"],a:2,e:"2011-yili mamlakat janubidagi Daraya shahrida juma namozidan so'ng boshlangan g'alayonlar \"Juma inqilobi\" nomini oldi."},
+{t:"Suriya · xronologiya",q:"Voqealarning TO'G'RI xronologik ketma-ketligini toping: 1) Rossiya harbiy-kosmik kuchlari operatsiyaga qo'shildi; 2) \"Umumjahon xalifaligi\" e'lon qilindi; 3) ISHID davlati tuzildi; 4) ISHID tor-mor qilindi.",o:["3 → 2 → 1 → 4","2 → 3 → 1 → 4","3 → 1 → 2 → 4","1 → 3 → 2 → 4"],a:0,e:"2013 – ISHID davlati tuzildi; 2014 – \"Umumjahon xalifaligi\" e'lon qilindi; 2015 – Rossiya qo'shildi; 2017 – ISHID tor-mor qilindi."},
+{t:"Suriya · tahlil",q:"2017-yilda faol jangovar harakatlar to'xtagan bo'lsa-da, nega Suriyada tinchlik o'rnatilmadi?",o:["Chunki BMT Suriyaga qarshi sanksiya kiritdi","Chunki tashqi kuchlarga tayangan muxolifat B. Asad hokimiyatda qolsa, mamlakatni tiklashda qatnashmasligini bildirdi","Chunki Rossiya qo'shinlarini olib chiqib ketdi","Chunki Iroq Suriyaga urush e'lon qildi"],a:1,e:"Asosiy ziddiyat — B. Asad hokimiyati masalasi hal bo'lmadi. Shu bilan birga shimolda Turkiya qo'shinlari kurdlar hududida harakat qilardi."},
+{t:"Suriya",q:"\"ISHID\" yetakchisi Abu Bakr al-Bag'dodiy qayerda va kim tomonidan o'ldirilganligi e'lon qilindi?",o:["Mosulda Iroq armiyasi tomonidan","Ar-Raqqada kurd otryadlari tomonidan","Idlib provinsiyasida AQSH qo'shinlari tomonidan","Damashqda Rossiya kuchlari tomonidan"],a:2,e:"AQSH qo'shinlari tomonidan Idlib provinsiyasida terroristik harakat yetakchisi al-Bag'dodiyning o'ldirilganligi e'lon qilindi."},
+{t:"Suriya · yangi tarix",q:"2024-yil noyabr voqealari bo'yicha TO'G'RI juftlikni toping.",o:["\"Jibhat an-Nusra\" — 30 kunda Damashqni oldi — Asad Eronga qochdi","\"Hayyat Tahrir ash-Shom\" — 11 kunda Halab, Hamo, Hims, Damashqni oldi — Asad Rossiyaga qochdi","\"ISHID\" — 11 kunda Halabni oldi — Asad Turkiyaga qochdi","Suriya ozodlik armiyasi — 2 haftada Damashqni oldi — Asad Iroqqa qochdi"],a:1,e:"\"Hayyat Tahrir ash-Shom\" 11 kun ichida Halab, Hamo, Hims va Damashqni egalladi; B. Asad oilasi bilan Rossiyaga qochdi. Hokimiyatni Abu Muhammad al-Jo'loniy egalladi."},
+{t:"Suriya · natija",q:"2011-yildan keyingi 13 yillik fuqarolar urushining Suriya davlati uchun eng og'ir hududiy oqibati qaysi?",o:["Mamlakat Iroq bilan birlashdi","Mamlakat amalda uch qismga bo'linib ketdi","Mamlakat BMTdan chiqarildi","Suriya poytaxti Halabga ko'chirildi"],a:1,e:"Fuqarolar urushi, ISHIDning yuksalishi va qulashi, Rossiya, AQSH va Turkiya operatsiyalari natijasida Suriya amalda uch qismga bo'lindi."},
+{t:"Suriya · \"Bu qiziq!\"",q:"\"Bu qiziq!\" ruknidagi Suriya ijtimoiy tizimiga oid ma'lumotlardan qaysi biri NOTO'G'RI?",o:["Tibbiyot va ta'lim bepul","Davlat xizmatchilarining xususiy klinikalardagi xarajatlari qoplanadi","Erkaklar 65 yoshda pensiyaga chiqadi","Pensioner vafot etsa, pullari xotini va farzandlariga o'tadi"],a:2,e:"Darslikka ko'ra Suriyada erkaklar 60 yoshda pensiyaga chiqadi."},
+{t:"Suriya va Iroq · tahlil",q:"Suriya va Iroq taqdirini XXI asrda bevosita bog'lagan umumiy omil qaysi?",o:["Ikkala davlatda ham monarxiya tiklangani","Iroq va qisman Suriya hududida \"ISHID\" deb ataluvchi davlatning tuzilishi","Ikkala davlatning ham SHHTga a'zo bo'lishi","Ikkalasida ham bir vaqtda harbiy to'ntarish bo'lgani"],a:1,e:"2013-yili terrorchi guruhlar Iroq va qisman Suriya hududida \"ISHID\" davlatini tuzdi; bu AQSH va ittifoqchilarining har ikki mamlakatdagi harbiy intervensiyasiga sabab bo'ldi."},
+{t:"Iroq · sabab–oqibat",q:"S. Husayn BMT inspektorlarini nimada ayblab, mamlakatdan quvdi va buning oqibati nima bo'ldi?",o:["Korrupsiyada; Iroq BMTdan chiqarildi","AQSH foydasiga josuslikda; 1999–2000-yillarda AQSH boshchiligidagi kuchlar Iroq harbiy obyektlarini bombardimon qildi","Terrorchilarni qo'llab-quvvatlashda; Iroqqa embargo joriy etildi","Kurdlarga yordam berishda; Turkiya Iroqqa bostirib kirdi"],a:1,e:"Saddam inspektorlarni AQSH foydasiga josuslikda aybladi. Shundan so'ng 1999–2000-yillarda AQSH boshchiligidagi xalqaro kuchlar Iroq harbiy obyektlarini bombardimon qildi."},
+{t:"Iroq",q:"2003-yili Bag'dodga qaysi davlatlarning qo'shinlari bostirib kirdi?",o:["AQSH va Fransiya","Rossiya va Eron","AQSH va Buyuk Britaniya","Turkiya va Saudiya Arabistoni"],a:2,e:"2003-yili AQSH va Buyuk Britaniya qo'shinlari Bag'dodga bostirib kirdi va S. Husayn hukumati quladi."},
+{t:"Iroq · konstitutsiya",q:"2005-yilgi konstitutsiyaga ko'ra Iroq qanday davlat bo'ldi va qaysi xalq uchta asosiy etnos qatoriga KIRMAYDI?",o:["Prezidentlik respublikasi; kurdlar","Parlamentar federativ respublika; turkmanlar","Konstitutsiyaviy monarxiya; shia arablar","Unitar respublika; sunniy arablar"],a:1,e:"Iroq sunniy arablar, shia arablar va kurdlar kelishuviga asoslangan parlamentar federativ respublika deb e'lon qilindi."},
+{t:"Iroq · tahlil",q:"2010-yilgi parlament saylovida muxolifatdagi sunniylar g'olib chiqqan bo'lsa-da, bu barqarorlik keltirmadi. Asosiy sabab nima?",o:["Saylov natijalari BMT tomonidan bekor qilindi","Joylarda real hokimiyat turli qurolli guruhlar qo'lida qoldi","Sunniylar hokimiyatni AQSHga topshirdi","Kurdlar mustaqillik e'lon qildi"],a:1,e:"Rasmiy saylov natijasi joylardagi real kuch muvozanatini o'zgartirmadi — hokimiyat amalda qurolli guruhlar qo'lida edi."},
+{t:"Iroq · baho",q:"Ko'pchilik mutaxassislar fikricha, Yaqin Sharqdagi vaziyatning keskinlashuvi va \"ISHID\" kabi tashkilotlar paydo bo'lishiga nima sabab bo'lgan?",o:["Rossiyaning Suriyadagi operatsiyalari","Amerika siyosati (buni Prezident B. Obama ham xato deb tan oldi)","Eron inqilobi","Arab davlatlari ligasining qarorlari"],a:1,e:"Prezident B. Obama AQSHning Iroqqa nisbatan siyosati xato ekanini tan oldi; mutaxassislar aynan shu siyosat ISHID paydo bo'lishiga sabab bo'lgan deb hisoblaydi."},
+{t:"Iroq · statistika",q:"2023-yilgi Gallup International so'rovida iroqliklarning necha foizi 2003-yildan keyingi 20 yilda yashash darajasi yomonlashganini bildirdi?",o:["40 %","50 %","60 %","75 %"],a:2,e:"So'rov ishtirokchilarining 60 foizi AQSH bostirib kirgandan keyingi 20 yilda yashash darajasi yomonlashganini bildirdi."},
+{t:"O'zbekiston · \"Mehr\"",q:"\"Mehr\" insonparvarlik operatsiyasi haqida qaysi ma'lumot TO'G'RI?",o:["3 ta operatsiya o'tkazilib, 100 nafar kishi qaytarildi","\"Mehr-1\"dan \"Mehr-5\"gacha beshta operatsiya o'tkazilib, 500 nafardan ortiq ayol va bolalar qaytarildi","Faqat Afg'onistondan 1000 nafar erkak qaytarildi","Operatsiya BMT tashabbusi bilan o'tkazildi"],a:1,e:"O'zbekiston Prezidenti topshirig'iga binoan Suriya, Iroq va Afg'onistondagi lagerlardan 5 ta operatsiya orqali 500 nafardan ortiq ayol va bolalar Vatanga qaytarildi."},
+{t:"Suriya",q:"Hofiz Asad hokimiyatga qanday kelgan va uning davrida Suriyada qanday o'zgarishlar bo'lgan?",o:["1970-yilgi harbiy to'ntarish orqali; neft-gaz konlari ishga tushirildi, sanoat va qishloq xo'jaligi rivojlandi","1980-yilgi saylov orqali; mamlakat Iroq bilan birlashdi","1970-yilgi inqilob orqali; monarxiya tiklandi","1991-yilgi referendum orqali; sotsialistik tuzum tugatildi"],a:0,e:"Hofiz Asad 1970-yili harbiy to'ntarish orqali hokimiyatga kelib, 2000-yilgacha boshqardi. Bu davrda neft va gaz konlari ishga tushirildi, yashash darajasi yaxshilandi."}
+];
+
+const KORFAZ=[
+{t:"Ko'rfaz",q:"Quyidagi davlatlardan qaysi biri Ko'rfaz arab mamlakatlari qatoriga KIRMAYDI?",o:["Bahrayn","O'mon","Iordaniya","Kuvayt"],a:2,e:"Ko'rfaz arab mamlakatlariga Saudiya Arabistoni, BAA, Bahrayn, Qatar, Kuvayt va O'mon kiradi."},
+{t:"Saudiya Arabistoni",q:"Saudiya Arabistoniga oid TO'G'RI ma'lumotni toping.",o:["Arabiston yarimorolining 50 % hududini egallaydi; aholining 10 % chet elliklar","Arabiston yarimorolining 80 % hududini egallaydi; 2025-yilda 38,8 mln dan ziyod aholining 38 % dan ortig'i chet elliklar","Arabiston yarimorolining 80 % hududini egallaydi; aholisi 100 mln dan oshgan","Yarimorolning 30 % ini egallaydi; aholining 85 % migrantlar"],a:1,e:"Saudiya Podshohligi yarimorolning 80 % hududini egallagan; 2025-yilda 38,8 mln dan ziyod aholining 38 % dan ortig'i chet elliklar."},
+{t:"Saudiya Arabistoni · sabab",q:"Saudiya Arabistoni boylik timsoliga aylanishiga nima asos bo'ldi?",o:["Angliya bilan harbiy ittifoq","Amerikaning \"Aramco\" kompaniyasi bilan neft qazib olish to'g'risidagi kelishuv","Makka va Madinaga ziyorat daromadlari","JSTga a'zo bo'lishi"],a:1,e:"\"Aramco\" bilan kelishuvdan so'ng neft konlari tezda ishga tushib, mamlakat qiyofasi o'zgarib ketdi."},
+{t:"Saudiya Arabistoni",q:"XX asr oxiridagi beqarorlik belgilariga javoban 1990-yillarda Saudiyada qanday islohotlar o'tkazildi?",o:["Monarxiya bekor qilinib, respublika e'lon qilindi","Tarixida birinchi konstitutsiya qabul qilindi, chet ellik investorlar uchun fond birjasi ochildi","Parlamentga ko'ppartiyaviylik asosida saylov o'tkazildi","Neft sanoati davlat tasarrufidan chiqarildi"],a:1,e:"Podshoh oilasi 1990-yillarda mamlakat tarixidagi birinchi konstitutsiyani qabul qildi va fond birjasini ochdi."},
+{t:"Saudiya Arabistoni",q:"Podshoh Abdulloh (2005–2015) davridagi o'zgarishlarga MOS KELMAYDIGAN fikrni toping.",o:["2005-yili mahalliy kengashlarga saylovlar o'tkazildi","Podshohlik JSTga a'zo bo'ldi","Qizlarning universitetda o'qishi taqiqlandi","Nora al-Fayz ayollar ishlari bo'yicha vazir o'rinbosari etib tayinlandi"],a:2,e:"Aksincha, Podshoh Abdulloh nomidagi Fan va texnologiyalar universitetida qizlarning ham ta'lim olishiga ruxsat berildi."},
+{t:"Saudiya Arabistoni · tahlil",q:"2007-yilgi korrupsiyaga qarshi qonunlar samara bermagach, podshoh oilasiga nisbatan qanday chora ko'rildi?",o:["Podshoh oilasi a'zolarining barchasi davlat lavozimlaridan chetlatildi","Oila a'zolariga davlat xazinasidan shaxsiy ehtiyojlar uchun foydalanish taqiqlandi (22 ming kishidan faqat 2 mingi boylikni nazorat qilish huquqiga ega)","Oila mulklari musodara qilindi","Oila a'zolari chet elga chiqarib yuborildi"],a:1,e:"Qariyb 22 ming kishilik podshoh oilasi a'zolariga xazinadan shaxsiy maqsadda foydalanish taqiqlandi."},
+{t:"Saudiya Arabistoni",q:"2015-yildan keyin Saudiya Arabistonini amalda kim boshqarmoqda?",o:["Podshoh Abdulloh","80 yoshli podshoh Salmon bin Abdulaziz nomidan valiahd shahzoda Muhammad bin Salmon","Malika Nora al-Fayz","Zoid bin Sulton Ol-Nahayon"],a:1,e:"2015-yili taxtga 80 yoshli Salmon bin Abdulaziz Ol Saud keldi; mamlakatni uning nomidan valiahd Muhammad bin Salmon boshqarmoqda. 50 ga yaqin davlat fuqarolari vizasiz kira oladi."},
+{t:"Saudiya Arabistoni",q:"O'zbekiston–Saudiya Arabistoni munosabatlariga oid TO'G'RI ma'lumotni toping.",o:["Munosabatlar 2010-yildan boshlangan","Ular ikki davrga bo'linadi: 90-yillardan 2017-yilgacha va 2017-yildan hozirgacha; \"ACWA Power\" bilan 2,6 mlrd dollarlik energetika loyihalari boshlangan","Sh. Mirziyoyev Saudiyaga 2019-yil martda tashrif buyurgan","\"SABIC\" bilan 10 mlrd dollarlik energetika loyihasi yakunlangan"],a:1,e:"2022-yil avgustdagi tashrifdan so'ng energetika va neft-kimyo hamkorligi kengaydi; \"ACWA Power\" bilan 2,6 mlrd dollarlik loyihalar boshlandi, kimyoda \"SABIC\" bilan sheriklik istiqbolli."},
+{t:"BAA",q:"Birlashgan Arab Amirliklari qachon va kimning tashabbusi bilan tashkil topgan?",o:["1961-yil 2-dekabrda Dubay amiri tashabbusi bilan","1971-yil 2-dekabrda Abu Dabi shayxi Zoid bin Sulton Ol-Nahayon tashabbusi bilan","1971-yil 3-sentabrda Qatar amiri tashabbusi bilan","1951-yilda \"Kuwait oil company\" tashabbusi bilan"],a:1,e:"BAA 1971-yil 2-dekabrda tashkil topgan va yetti amirlikdan iborat: Abu Dabi, Dubay, Sharja, Ajman, Umm ul-Qayvayn, Ras ul-Xayma, Al-Fujayra."},
+{t:"BAA · tahlil",q:"Nima sababdan BAAda faqat Abu Dabi va Dubay qonunchilikdagi muhim masalalarda veto huquqiga ega?",o:["Chunki ular eng ko'p aholiga ega","Chunki mamlakat neft boyliklarining 95 % i Abu Dabiga, 5 % i Dubayga tegishli","Chunki ular dengizga chiqish yo'liga ega yagona amirliklar","Chunki ular BMT tomonidan tan olingan"],a:1,e:"Neft boyligi to'liq shu ikki amirlikda jamlangan (95 % va 5 %), shu sababli ular veto huquqiga ega."},
+{t:"Ko'rfaz · tahlil",q:"Chet elliklar (migrantlar)ning aholidagi ulushi bo'yicha TO'G'RI juftliklarni toping.",o:["BAA – 85 %; O'mon – 50 % ga yaqin; Bahrayn – 33 %","BAA – 33 %; O'mon – 85 %; Bahrayn – 50 %","BAA – 50 %; O'mon – 33 %; Bahrayn – 85 %","BAA – 38 %; O'mon – 20 %; Bahrayn – 90 %"],a:0,e:"BAA aholisining 85 % migrantlar, O'mon aholisining 50 % ga yaqini ishchi-immigrantlar, Bahraynda chet elliklar 33 %."},
+{t:"BAA",q:"BAAdagi ijtimoiy siyosat haqida qaysi ma'lumot TO'G'RI?",o:["Oliy ta'lim pullik, tibbiyot bepul","Birinchi kursni \"a'lo\"ga bitirgan talabaga xorijdagi eng yaxshi universitetda o'qish huquqi beriladi va oyiga 2000 AQSH dollari stipendiya to'lanadi","Chet elda davolanish xarajatlari fuqaroning o'ziga yuklatiladi","Stipendiya faqat mamlakat ichida o'qiganlarga beriladi"],a:1,e:"BAAda ta'lim (oliy ta'lim ham) va tibbiyot bepul; a'lochi talabaning xorijdagi ta'lim xarajatlarini universitet o'z zimmasiga oladi."},
+{t:"BAA",q:"Dubaydagi baland binolar qurilishiga oid TO'G'RI ma'lumotni toping.",o:["Jarayon 1971-yilda 100 qavatli bino bilan boshlangan","Jarayon 1999-yildan 39 qavatli Dubay Xalqaro savdo markazi bilan boshlangan; qurilayotgan 122 qavatli \"Pentominium\"ning balandligi 516 metr","\"Pentominium\" 39 qavatli bo'lib, 220 metrga teng","Baland binolar qurish 2019-yilda taqiqlangan"],a:1,e:"1999-yildan 39 qavatli savdo markazi bilan boshlangan jarayonda 10 yildan ortiq vaqtda 220 metrli 39 ta bino qurildi; \"Pentominium\" — 122 qavat, 516 metr."},
+{t:"BAA",q:"O'zbekiston–BAA munosabatlariga oid TO'G'RI ma'lumotni toping.",o:["\"Masdar\" va \"Mubadala\" 2019-yili O'zbekiston energetikasiga 10 mlrd dollar sarmoya kiritgan; 2025-yil yanvarda Strategik sheriklik deklaratsiyasi imzolangan","\"ACWA Power\" 2025-yilda 10 mlrd dollar kiritgan","2030-yilgacha savdo hajmini 2 barobar oshirish belgilangan","2019-yilda Strategik sheriklik deklaratsiyasi imzolangan"],a:0,e:"2019-yil martdagi tashrif yangi bosqichni boshladi; 2025-yil yanvarda Strategik sheriklik deklaratsiyasi imzolandi va 2030-yilgacha savdoni 10 barobar oshirish vazifasi qo'yildi."},
+{t:"Kuvayt",q:"Kuvaytning keskin boyib ketishiga va mustaqillikka erishishiga oid TO'G'RI juftlikni toping.",o:["1951-yil \"Kuwait oil company\" bilan daromadni teng bo'lish kelishuvi; 1961-yil to'liq mustaqillik","1961-yil \"Aramco\" bilan kelishuv; 1971-yil mustaqillik","1971-yil \"ALBA\" zavodi; 1991-yil mustaqillik","1951-yil Angliya bilan harbiy shartnoma; 1990-yil mustaqillik"],a:0,e:"1951-yilda Kuvayt amiri neft daromadini teng bo'lish to'g'risida kelishuv imzoladi; 1961-yilda Kuvayt to'liq mustaqillikka erishdi."},
+{t:"Kuvayt · sabab–oqibat",q:"1990-yilgi Iroq agressiyasi Kuvayt tashqi siyosatida qanday o'zgarishga olib keldi?",o:["Kuvayt Iroq bilan ittifoq tuzdi","Kuvayt mintaqaviy xavfsizlik konsepsiyasini qayta ko'rib, 1991-yilda AQSH bilan 10 yillik harbiy hamkorlik shartnomasini, 1992-yilda Angliya va Fransiya bilan shunday shartnomalarni tuzdi","Kuvayt BMTdan chiqdi","Kuvayt neft eksportini butunlay to'xtatdi"],a:1,e:"1990-yil 2-avgustda Iroq bostirib kirdi, 1991-yil 28-fevralda koalitsiya Kuvaytni ozod qildi. Shundan so'ng Kuvayt G'arb davlatlari bilan harbiy shartnomalar tuzdi."},
+{t:"Kuvayt",q:"Iroq agressiyasidan keyingi Kuvayt iqtisodiyotiga oid qaysi fikr TO'G'RI?",o:["Iqtisod 20 yil davomida tiklanmadi","S. Husayn neft konlarini yoqib yuborgan bo'lsa-da, 1993-yilga kelib neft daromadi 9,9 mlrd dollarga yetdi, 1990-yillar oxirida 13,5 mlrd dollarga chiqdi","1993-yilda neft daromadi 1,5 mlrd dollarga tushdi","Kuvayt XXI asrda kapital import qiluvchi davlatga aylandi"],a:1,e:"1993-yilga kelib daromad urushdan oldingi darajadan oshib ketdi; XXI asr boshida Kuvayt faol kapital eksport qiluvchi davlatga aylandi."},
+{t:"Qatar",q:"Qatarga oid NOTO'G'RI ma'lumotni toping.",o:["1971-yil 3-sentabrda mustaqillikka erishgan","Aholi jon boshiga daromad bo'yicha dunyoda 5-o'rinda","Ishlayotganlarning 80 % i Qatar fuqarolari","Tabiiy gaz zaxirasi bo'yicha dunyoda 3-o'rinda"],a:2,e:"Ishlayotganlarning faqat 20 % i Qatar fuqarolari, qolganlari asosan Hindiston va Pokistondan kelganlar."},
+{t:"Bahrayn",q:"Bahraynga oid TO'G'RI ma'lumotni toping.",o:["10 ta oroldan iborat, 1961-yilda mustaqil bo'lgan","30 ta oroldan iborat arxipelag; 1971-yil avgustda mustaqil bo'lgan; Saudiyadan quvur orqali keladigan neftni qayta ishlaydi","Qishloq xo'jaligi uchun hududining 50 % idan foydalaniladi","Aholining 85 % chet elliklar"],a:1,e:"Bahrayn — 30 orolli arxipelag; unda eng katta neftni qayta ishlash zavodlaridan biri, \"ALBA\" alyumin zavodi, Salmon porti bor; qishloq xo'jaligi uchun hududning atigi 5 % i ishlatiladi."},
+{t:"O'mon",q:"O'mon hukumati 2016-yilda iqtisodni diversifikatsiya qilish rejasini nima sababdan qabul qildi?",o:["Turizm daromadlari kamaygani uchun","Neft zaxiralari kamayib borayotgani uchun","Sulton Qobus konstitutsiyani bekor qilgani uchun","Aholining 90 % chet elliklar bo'lgani uchun"],a:1,e:"Iqtisod asosini neft eksporti tashkil qiladi; zaxiralar kamaygani sababli gaz qazib chiqarish, qayta ishlash, qishloq xo'jaligi, baliqchilik va turizmni rivojlantirish rejasi qabul qilindi. (O'monning birinchi konstitutsiyasini 1996-yilda sulton Qobus imzolagan.)"}
+];
+
+const FALISR=[
+{t:"Falastin",q:"Darslikka ko'ra, 1947-yilgi BMT Xavfsizlik Kengashi rezolyutsiyasi nimani tavsiya etdi?",o:["Falastinni Iordaniyaga qo'shishni","1948-yil 1-avgustdan Falastinda ikkita — yahudiy Isroil va arab Falastin davlatlarini tashkil qilishni","Quddusni Isroil poytaxti deb e'lon qilishni","Falastinni BMT mandatiga topshirishni"],a:1,e:"Rezolyutsiyaga binoan 1948-yil 1-avgustdan Falastinda ikkita davlat tashkil qilish tavsiya etildi."},
+{t:"Falastin · sabab",q:"1948-yildan boshlangan falastin xalqining kurashi nimadan kelib chiqdi va uni kimlar qo'llab-quvvatladi?",o:["Arab aholisi ikki davlat rejasini adolatsiz deb hisobladi; kurashni arab davlatlari va SSSR qo'llab-quvvatladi","Falastinliklar BMTdan chiqishni xohladi; AQSH qo'llab-quvvatladi","Falastinliklar Isroil bilan birlashishni xohladi; Angliya qo'llab-quvvatladi","Kurash diniy sabablarga ko'ra boshlandi; Eron qo'llab-quvvatladi"],a:0,e:"Arab aholisi rejani adolatsiz deb hisoblab, o'z davlatini saqlab qolish uchun kurash boshladi. Kurash uchun FOQT tuzildi, unga uzoq yillar Yosir Arofat boshchilik qildi."},
+{t:"Falastin · tahlil",q:"Falastin muammosini hal qilish imkoni qachon va nima sababdan paydo bo'ldi?",o:["1967-yilda — Olti kunlik urushdan keyin","1990-yillarda — SSSR va Isroil o'rtasida diplomatik aloqalar o'rnatilib, sotsialistik rejim barham topgach","1948-yilda — Isroil tashkil topgach","2006-yilda — \"Hamas\" saylovda g'olib chiqqach"],a:1,e:"Faqat 1990-yillarga kelib SSSR bilan Isroil o'rtasida aloqalar o'rnatilgach va sotsialistik rejim barham topgach, muammoni hal qilish imkoni paydo bo'ldi."},
+{t:"Falastin · xronologiya",q:"Voqealarning TO'G'RI ketma-ketligini toping: 1) Arofat va Rabin Nobel mukofotini oldi; 2) Madrid konferensiyasi; 3) Is'hoq Rabin o'ldirildi; 4) Isroil va FOQT bir-birini tan olgani e'lon qilindi.",o:["2 → 4 → 1 → 3","4 → 2 → 1 → 3","2 → 1 → 4 → 3","2 → 4 → 3 → 1"],a:0,e:"1991 – Madrid konferensiyasi; 1993 – o'zaro tan olish; 1994 – Nobel tinchlik mukofoti; 1995 – I. Rabin mutaassib yahudiy tomonidan o'ldirildi."},
+{t:"Falastin · \"Bu qiziq!\"",q:"Falastinda ta'lim darajasiga oid TO'G'RI ma'lumotni toping.",o:["Aholining 50 % savodli","Ta'lim darajasi arab davlatlari orasida eng yuqori: aholining 90 % dan ortig'i savodli, 18–30 yoshli yoshlarning 33 % i oliy o'quv yurtlarida tahsil oladi","Yoshlarning 65,5 % i oliy ta'lim oladi","Falastinda oliy o'quv yurtlari yo'q"],a:1,e:"Falastinda ta'lim darajasi barcha arab davlatlari orasida eng yuqori."},
+{t:"Isroil",q:"Isroilda harbiy sanoat kompleksining rivojlanishi qaysi sohalarning taraqqiyotiga turtki berdi?",o:["Neft qazib olish va paxtachilik","Metallsozlik, mashinasozlik, elektrotexnika, elektronika va olmosga ishlov berish","Faqat qishloq xo'jaligi","Turizm va mehmonxona biznesi"],a:1,e:"Bir necha o'n yil ichida Isroil harbiy sanoat kompleksi rivojlangan mamlakatga aylandi va bu turdosh sohalarning jadal taraqqiyotiga olib keldi."},
+{t:"Isroil · sabab",q:"1990-yillarda Isroil iqtisodining jadal yuksalishiga qaysi ichki omil yordam berdi?",o:["Neft konlarining topilishi","Sobiq SSSRdan yuqori ma'lumotli 600 ming kishining ko'chib kelishi","Falastin bilan tinchlik shartnomasi","Eron bilan savdo"],a:1,e:"Yuqori ma'lumot va moddiy imkoniyatlarga ega immigrantlar Isroil qiyofasini o'zgartirib yubordi; iqtisod postindustrial modelga moslashdi."},
+{t:"Isroil · tahlil",q:"2000-yilgi Kemp-Devid muzokaralari nima sababdan natijasiz yakunlandi va qanday oqibatga olib keldi?",o:["Chegaralar masalasida; Netanyaxu iste'foga chiqdi","Asosiy muammo — Quddus shahrini bo'lib olish masalasida kelishilmadi; bosh vazir Ehud Barak iste'foga chiqdi, 2001-yilda Ariel Sharon saylandi","Suv resurslari masalasida; Arofat iste'foga chiqdi","Qochoqlar masalasida; Bill Klinton vositachilikdan voz kechdi"],a:1,e:"AQSH prezidenti Bill Klinton vositachiligidagi muzokaralarda Quddus masalasi hal bo'lmadi."},
+{t:"Isroil",q:"2003-yilgi \"Yo'l xaritasi\" qaysi vositachilar ishtirokida qabul qilindi?",o:["AQSH, Fransiya, Germaniya va Misr","BMT, AQSH, Rossiya va Yevropa Ittifoqi","Arab davlatlari ligasi va AQSH","Xitoy, Rossiya va Eron"],a:1,e:"\"Yo'l xaritasi\" BMT, AQSH, Rossiya va YI vositachiligida qabul qilindi, ammo tinchlik to'liq o'rnatilmagan sharoitda uning amalga oshishi mavhum qoldi."},
+{t:"Falastin–Isroil · sabab–oqibat",q:"2006-yilda \"Yo'l xaritasi\" amalga oshirilishi to'xtashiga nima sabab bo'ldi?",o:["Arofatning vafoti","G'azodagi saylovda g'olib chiqqan \"Hamas\" Isroilni va oldingi shartnomalarni tan olmadi; 2006-yil yozida janglar boshlandi, \"Hizbulloh\" ikkinchi front ochdi","Isroil BMTdan chiqdi","AQSH vositachilikdan voz kechdi"],a:1,e:"2006-yilgi urush va uning oqibatida \"Yo'l xaritasi\" to'xtatildi; bu jahon jamoatchiligi va Isroilning o'zida ham tanqid qilindi."},
+{t:"Isroil",q:"Binyamin Netanyaxu haqida TO'G'RI ma'lumotni toping.",o:["2001-yilda birinchi marta bosh vazir bo'lgan","\"Likud\" bloki g'alabasidan so'ng 2022-yil dekabrda bosh vazir bo'lgan; avval 1996–1999 va 2009–2021-yillarda ham shu lavozimda ishlagan","Kemp-Devid muzokaralaridan keyin iste'foga chiqqan","1994-yilda Nobel tinchlik mukofotini olgan"],a:1,e:"Netanyaxu Falastinga nisbatan qat'iy yo'nalish tarafdori sifatida tanilgan."},
+{t:"Isroil · iqtisod",q:"Bugungi Isroil iqtisodiyotining xarakterli jihatlarini toping.",o:["To'liq davlat rejalashtirishiga asoslangan, tashqi yordamsiz","Bozor munosabatlari ustuvor, ammo tashqi moliyaga kuchli bog'langan (AQSH har yili 3 mlrd dollar beminnat yordam beradi) va yuqori militarizatsiya darajasi bilan ajralib turadi","Asosan neft eksportiga tayanadi","Faqat qishloq xo'jaligiga asoslangan"],a:1,e:"Isroil — rivojlangan agrar-industrial mamlakat; muammolari qatorida arab-isroil mojarosi, ichki diniy-siyosiy kelishmovchiliklar va hududlararo tengsizlik bor."},
+{t:"Isroil · 2025-yil",q:"2025-yil iyunidagi Isroil–Eron to'qnashuvi qanday nom oldi?",o:["\"Olti kunlik urush\"","\"O'n ikki kunlik urush\"","\"Qiyomat kuni urushi\"","\"Ko'rfaz urushi\""],a:1,e:"13-iyunda Isroil Eronning yadro obyektlari va harbiy bazalarini bombardimon qildi, Eron dronlar va tovushdan tez raketalar bilan javob berdi. \"O'n ikki kunlik urush\" mintaqadagi tanglikni oshirdi."},
+{t:"Falastin–Isroil",q:"1993-yilgi Vashington kelishuviga ko'ra nima ko'zda tutildi?",o:["Falastin davlatini darhol e'lon qilish","Falastin avtonomiyasini 5 yil ichida bosqichma-bosqich tuzish","Quddusni xalqaro shahar deb e'lon qilish","Isroil qo'shinlarini Livandan olib chiqish"],a:1,e:"Birinchi bosqich G'azo sektori va Iordan daryosining G'arbiy sohilini FOQT avtonom boshqaruviga berish bitimi bilan boshlandi. Bu FOQT ichida norozilik va bo'linish keltirib chiqardi."},
+{t:"Falastin",q:"1994-yilda Falastin milliy ma'muriyati tuzilganda uning siyosiy markazi qaysi shahar etib belgilandi?",o:["Quddus","Romalloh","G'azo","Hevron"],a:1,e:"1987-yilgi Birinchi intifada natijasida boshlangan muzokaralar ortidan Oslo kelishuviga binoan 1994-yilda Y. Arofat boshchiligida ma'muriyat tuzildi, markaz — Romalloh."},
+{t:"Falastin · G'azo",q:"G'azo sektoriga oid TO'G'RI ma'lumotni toping.",o:["Iordan daryosi bo'yida joylashgan; 1948-yilda bosib olingan","Isroilning g'arbiy qismida, O'rtayer dengizi bo'yida joylashgan; 1967-yilda Isroil tomonidan bosib olingan; 2005-yilda isroilliklar bu hududdan chiqib ketgan","Misr tarkibiga kiradi","Romalloh bilan bir hududda joylashgan"],a:1,e:"2005-yili \"Hamas\" G'azo sektorida hokimiyatni egalladi; o'sha yili ikki tomonlama kelishuvga binoan isroilliklar hududdan chiqdi."},
+{t:"Falastin",q:"Darslikka ko'ra Y. Arofatdan keyingi Falastin davlatchiligiga oid TO'G'RI ma'lumotni toping.",o:["2006-yil Arofat vafotidan so'ng Mahmud Abbos avtonomiya raisi bo'ldi; 2012-yilda Falastin BMTda kuzatuvchi davlat maqomini oldi; 2017-yilga kelib uni 140 ga yaqin davlat tan oldi","Arofatdan keyin Is'hoq Rabin rais bo'ldi","2012-yilda Falastin BMTning to'la a'zosi bo'ldi","2017-yilga kelib Falastinni 40 ta davlat tan oldi"],a:0,e:"M. Abbosning BMT Bosh Assambleyasidagi nutqi Isroil vakillari tomonidan norozilik bilan qarshi olindi."},
+{t:"Falastin–Isroil",q:"2023-yilda boshlangan urushga oid TO'G'RI ma'lumotni toping.",o:["Urushni Isroil Livanda boshlagan","G'azodagi \"Hamas\" va boshqa qurolli guruhlar Isroilga qarshi urush boshladi; 2025-yil martgacha minglab falastinliklar va isroilliklar halok bo'ldi","Urush 2023-yilning o'zida tinchlik shartnomasi bilan tugadi","Urushda faqat harbiylar halok bo'lgan"],a:1,e:"BMT va ko'plab davlatlar Isroil hukumatini tinch aholini qirg'in qilishda ayblamoqda."},
+{t:"O'zbekiston",q:"Prezident Sh. Mirziyoyev 2024-yil noyabrdagi Arab-islom sammitida qanday pozitsiyani bildirdi?",o:["Falastin xalqi 1967-yilgi chegaralar doirasida, poytaxti Sharqiy Quddus bo'lgan mustaqil davlat tuzishga haqli","Falastin Iordaniya tarkibida avtonomiya bo'lishi kerak","O'zbekiston bu masalada betaraf ekanini e'lon qildi","Falastin poytaxti G'azo bo'lishi kerak"],a:0,e:"Prezident Saudiya Arabistoni tashabbusi bilan tuzilgan \"Ikki davlat yechimi uchun global alyans\"ni qo'llab-quvvatladi. 15-noyabr — Falastin Davlati e'lon qilingan kun, milliy bayram."},
+{t:"O'zbekiston",q:"O'zbekistonning Falastinga insonparvarlik yordami haqida TO'G'RI ma'lumot qaysi?",o:["Toshkent — Misr — Toshkent yo'nalishida charter reys bilan 100 nafar falastinlik bola va ayol olib kelinib, davlat hisobidan davolanmoqda","500 nafar bola Iordaniya orqali olib kelindi","Yordam faqat moliyaviy ko'rinishda berildi","Falastinliklar Turkiya shifoxonalariga yuborildi"],a:0,e:"Ular to'liq tibbiy ko'rikdan o'tkazilib, sog'lomlashtirish sihatgohlariga joylashtirildi va hayotga moslashuviga ko'mak berilmoqda."}
+];
+
+const LOTIN=[
+{t:"Lotin Amerikasi",q:"\"Lotin Amerikasi\" nomi nimadan kelib chiqqan?",o:["Mintaqani Rim imperiyasi bosib olganidan","Hudud aholisining o'zagi lotin tili bo'lgan ispan, portugal va fransuz tillarida so'zlashishidan","Lotin yozuvi birinchi bo'lib shu yerda qo'llanganidan","Mintaqa kashfiyotchisining ismidan"],a:1,e:"Nom aholining lotin tili asosidagi ispan, portugal va fransuz tillarida so'zlashishi sababli kelib chiqqan."},
+{t:"Lotin Amerikasi",q:"Lotin Amerikasi mintaqasiga oid TO'G'RI ma'lumotni toping.",o:["10 mln kv.km hudud, 20 ta mustaqil davlat","20 mln kv.km hudud, 33 ta mustaqil davlat va bir qancha qaram hududlar; 2025-yil boshida aholi 665 mln dan oshdi","20 mln kv.km, 50 ta davlat; aholi 1 mlrd","33 mln kv.km, 20 ta davlat; aholi 400 mln"],a:1,e:"Mintaqa 20 mln kv.km hududni egallaydi, 33 mustaqil davlatdan iborat."},
+{t:"Lotin Amerikasi",q:"XX asr oxirida Lotin Amerikasida oldingi o'ringa chiqqan neoliberal rivojlanish modeli qayerda va kim davrida muvaffaqiyatli amalga oshirilgan?",o:["Kubada Fidel Kastro davrida","Chilida Augusto Pinochet davrida","Venesuelada Ugo Chaves davrida","Braziliyada Lula da Silva davrida"],a:1,e:"Neoliberal model Chilida A. Pinochet davrida muvaffaqiyatli amalga oshirildi; Chili bugun ham mintaqada yetakchi."},
+{t:"Lotin Amerikasi · tahlil",q:"Darslikka ko'ra neoliberal islohotlar Lotin Amerikasi uchun umuman qanday natija berdi?",o:["Barcha davlatlarda barqaror o'sish ta'minlandi","Natijalar ziddiyatli bo'ldi: birinchi bosqich o'sishga turtki bo'lib, modernizatsiyaga yordam berdi, keyinchalik ba'zan retsessiya va chuqur tushkunlikka olib keldi","Islohotlar umuman amalga oshirilmadi","Islohotlar sotsializm qurilishiga olib keldi"],a:1,e:"Neoliberal eksperimentlar Meksika (1994) va Argentina (2001) inqirozlarida o'zining salbiy tomonlarini ko'rsatdi."},
+{t:"Meksika",q:"1994-yil dekabrda Meksikada boshlangan moliyaviy-iqtisodiy inqirozning oqibatlarini toping.",o:["Peso mustahkamlandi, AQSHdan kapital kirib keldi","Kapital ommaviy ravishda AQSHga ko'chdi, peso keskin tushdi, 20 ming korxona xonavayron bo'ldi, YIM keskin tushdi","Meksika defolt e'lon qilib, 80 mlrd dollar qarzdan voz kechdi","Meksika BRIKSga a'zo bo'ldi"],a:1,e:"Meksika neoliberal islohotlar yo'liga birinchi kirgan davlat edi; inqiroz natijasida milliy moliya tizimi izdan chiqdi."},
+{t:"Argentina",q:"2001-yilda Argentinaning defolt e'lon qilishi qanday ahamiyatga ega bo'ldi?",o:["Bu kichik moliyaviy tanglik bo'lib, tez bartaraf etildi","Jahon tarixidagi eng yirik bankrotlik (80 mlrd dollar qarz) bo'lib, mintaqadagi neoliberal eksperimentlarga nuqta qo'ydi va yangi davrni boshlab berdi","Argentina iqtisodiyotining eng yuqori cho'qqisi bo'ldi","Argentinaning G20ga qabul qilinishiga sabab bo'ldi"],a:1,e:"1990-yillarda \"neoliberal islohot yutuqlarining namoyishi\" deb atalgan Argentina iqtisodi qattiq zarar ko'rdi."},
+{t:"Lotin Amerikasi · sabab–oqibat",q:"Neoliberal kursdan norozilik kuchayishi qanday oqibatlarga olib keldi?",o:["Kommunistik partiyalar hokimiyatga keldi","Kolumbiya, Peru kabi mamlakatlarda radikal-terroristik tashkilotlar va narkomafiya faollashdi; 1994-yilda Meksikada hindularning ommaviy qo'zg'oloni boshlandi","Barcha davlatlarda harbiy diktatura o'rnatildi","Mintaqa davlatlari AQSHga qo'shildi"],a:1,e:"An'anaviy partiyalar va yetakchilarga ishonchsizlik kuchaydi, Argentina, Meksika, Ekvador va boshqa mamlakatlarda ommaviy namoyishlar bo'ldi."},
+{t:"Lotin Amerikasi",q:"XX asr oxirida hindular jamoalari aholining 25–50 % ini tashkil qilgan mamlakatlarda norozilikning asosiy sababi nima edi?",o:["Hindularning yerlarini tortib olish hollari","Hindularga saylov huquqi berilishi","Hindularning shaharlarga ko'chirilishi","Hindu tilining davlat tili deb e'lon qilinishi"],a:0,e:"Boliviya, Gvatemala, Peru, Meksika, Ekvadorda yer tortib olish hollaridan norozilik kuchaydi; harakat Ekvador, Boliviya, Peru, Braziliya va Meksikaning janubida ommaviy tus oldi."},
+{t:"Lotin Amerikasi · modellar",q:"AQSH bilan munosabatlardagi uch model va ularga mansub davlatlar bo'yicha TO'G'RI juftlikni toping.",o:["Venesuelacha (jangovar) – Kolumbiya, Meksika","Kolumbiyacha (AQSH bilan do'stona) – Kolumbiya, Meksika","Braziliyacha (pragmatik) – Kuba, Nikaragua","Kolumbiyacha – Venesuela, Boliviya"],a:1,e:"Venesuelacha model — AQSH yetakchiligini tan olmaydigan, lotin amerikacha sotsializmga intiluvchi; kolumbiyacha — iqtisodiy va xavfsizlik manfaatlari umumiyligi asosida AQSH bilan do'stona; braziliyacha — pragmatik hamkorlik."},
+{t:"Lotin Amerikasi · modellar",q:"Darslikka ko'ra qaysi davlat \"Venesuela modeli\"ga KIRMAYDI?",o:["Kuba","Nikaragua","Kolumbiya","Boliviya"],a:2,e:"Venesuela modeliga Venesuela, Kuba, Kosta Rika, Nikaragua, Boliviya kiradi; Kolumbiya — kolumbiyacha modelning asosiy vakili."},
+{t:"Lotin Amerikasi · XXI asr",q:"XXI asr boshida Lotin Amerikasi siyosiy hayotiga xos BO'LMAGAN jihatni toping.",o:["Tarixda birinchi marta diktaturalarsiz rivojlanish yo'liga kirildi","Deyarli barcha davlatlarda saylov va konstitutsiyaviy rejim joriy etildi","Partiyaviy-siyosiy tizim to'liq Yevropa standartlariga mos keladi","Ko'pchilik mamlakatlarda prezidentlik boshqaruvi o'rnatildi"],a:2,e:"Partiyaviy-siyosiy tizim Yevropa standartlariga mos tushmaydi; dohiyparastlik va populizm uning xarakterli jihatlari."},
+{t:"Lotin Amerikasi · tahlil",q:"XXI asr boshida Braziliya, Peru, Venesuela, Ekvadorda hokimiyatga yangi, mustaqil nomzodlar kelishining sababi nima edi?",o:["AQSH ularni tayinlagani","XX asr oxiridan aholining an'anaviy partiyalarga ishonchi so'nishi","Kommunistik partiyalarning kuchayishi","Harbiy to'ntarishlar"],a:1,e:"Shu davrda kommunistik partiyalar ham o'z mavqeini yo'qotdi — bu global jarayonlar bilan bog'liq edi."},
+{t:"Kuba",q:"Kubaga oid TO'G'RI ma'lumotni toping.",o:["1989-yilgi inqilobdan so'ng demokratik respublika bo'ldi","1959-yilgi inqilobdan so'ng kommunistik rejim shakllandi; sotsialistik rejim barbod bo'lgach tashqi yordamdan mahrum bo'ldi, ammo XXI asrda ham ijtimoiy davlat bo'lib qolmoqda","AQSH Kubaga eng ko'p yordam beruvchi davlat","Kuba G20 a'zosi"],a:1,e:"AQSH sanksiyalari sharoitida Kubaga Xitoy, Rossiya, Turkiya, Jazoir kabi davlatlar yordam ko'rsatmoqda."},
+{t:"Lotin Amerikasi · integratsiya",q:"2008-yildan G20 (katta yigirmalik) klubiga a'zo bo'lgan Lotin Amerikasining uchta yirik davlati qaysilar?",o:["Braziliya, Meksika, Argentina","Braziliya, Chili, Kolumbiya","Meksika, Venesuela, Kuba","Argentina, Peru, Chili"],a:0,e:"XXI asr boshida integratsiyaning asosiy yo'nalishi mintaqaviy erkin savdo zonalarini tuzish bo'ldi."},
+{t:"Meksika",q:"1994-yilda Shimoliy Amerika erkin savdo zonasiga kirgan Meksikaga oid TO'G'RI ma'lumotni toping.",o:["1994–2010-yillarda chet el investitsiyalari 4 barobar o'sdi, uning 75 % i AQSH ulushiga to'g'ri keladi; eksportning 80 % i sanoat mahsulotlari","Eksportning 80 % i neft","Investitsiyalar 2 barobar kamaydi","Investitsiyalarning 75 % i Xitoydan keldi"],a:0,e:"Yaqin o'tmishda eksport asosini neft tashkil qilgan bo'lsa, hozir eksportning 80 % i sanoat mahsulotlari."},
+{t:"Braziliya",q:"Braziliya XXI asrda qanday olamshumul vazifalarni maqsad qilib qo'ygan?",o:["NATOga a'zo bo'lish va AQSH bilan ittifoq tuzish","Lotin Amerikasining tan olingan lideriga aylanish, AQSHning doimiy ta'siridan butunlay qutulish va BMT XKning doimiy a'zolaridan biri bo'lish","Shimoliy Amerika erkin savdo zonasiga kirish","Portugaliya bilan konfederatsiya tuzish"],a:1,e:"Braziliya dunyoning eng yirik o'nta iqtisodiy markazidan biri va BRIKS a'zosi (Xitoy, Hindiston, JAR, Rossiya bilan)."},
+{t:"Braziliya",q:"Luis Inasiu Lula da Silva haqida TO'G'RI ma'lumot qaysi?",o:["2002, 2006-yillarda prezident etib saylangan va 2022-yilda qayta saylangan; kambag'allarni qo'llab-quvvatlash, moliya ustidan nazorat, inflyatsiyaga qarshi kompleks choralar ko'rmoqda","2023-yilda Argentina prezidenti bo'lgan","Braziliyani BRIKSdan chiqargan","Neoliberal islohotlarni Chilida o'tkazgan"],a:0,e:"Lula da Silva boshchiligidagi hukumat aholining eng kambag'al qismini qo'llab-quvvatlash bo'yicha ijtimoiy tadbirlar olib bormoqda."},
+{t:"Argentina",q:"Argentinada Kirshnerlar davriga oid TO'G'RI ma'lumotni toping.",o:["2003-yili Nestor Kirshner prezident bo'lib islohotlarni boshladi, 2007-yildan rafiqasi Kristina de Kirshner davom ettirdi; 2003–2012-yillarda YIM o'rtacha 7,1 % o'sdi","Kirshnerlar davrida Argentina defolt e'lon qildi","Kristina de Kirshner 2023-yilda saylangan","Bu davrda YIM yiliga 1 % o'sgan"],a:0,e:"Argentina 1914-yildan beri yuz yil davomida bunday yutuqlarga erishmagan edi."},
+{t:"Argentina",q:"2023-yilda saylangan Argentina prezidenti Xaver Miley siyosatiga oid TO'G'RI ma'lumotni toping.",o:["BRIKSga a'zo bo'lishni tezlashtirdi","Davlat boshqaruvi apparatini ikki barobar qisqartirdi, AQSH bilan yaqinlashish yo'lini tanladi; 2024-yil martda yillik inflyatsiya 1991-yildan beri birinchi marta 100 % dan oshdi","Rossiya va Xitoy bilan aloqalarni mustahkamladi","Inflyatsiyani 7,1 % ga tushirdi"],a:1,e:"X. Miley Argentinaning BRIKSga a'zo bo'lmasligini, \"kommunistik rejimlar\" bilan aloqalarni mustahkamlamasligini e'lon qildi."},
+{t:"Lotin Amerikasi · atamalar",q:"Atamalar va ularning izohi bo'yicha TO'G'RI juftlikni toping.",o:["Populizm — saralangan fuqarolar ehtiyojlariga qaratilgan siyosat; Defolt — qarzni muddatidan oldin to'lash","Populizm — xalq ommasi ehtiyojlariga qaratilgan siyosiy pozitsiya yoki nutq shakli; Defolt — kredit shartnomasini bajarmaslik, qarzni o'z vaqtida to'lay olmaslik","Populizm — harbiy diktatura; Defolt — valyuta kursining oshishi","Populizm — ko'ppartiyaviylik; Defolt — iqtisodiy o'sish"],a:1,e:"Defolt (ingl. default — majburiyatlarni bajarmaslik) — foizlar yoki asosiy qarzni o'z vaqtida to'lamaslik."}
+];
+
+const UZ7=[
+{t:"Kirish",q:"«O‘rta asrlar» tushunchasini tarix faniga kimlar olib kirgan va darslikka ko‘ra bu tushuncha nima bilan bevosita bog‘liq?",o:["Italyan tarixchilari; xususiy mulkchilik shakli o‘zgarishi davrlari bilan","Italyan tarixchilari; Rim imperiyasining qulashi bilan","Fransuz tarixchilari; xususiy mulkchilik shakli o‘zgarishi davrlari bilan","Arab tarixchilari; yer-mulk munosabatlarining jamoaviy shakli bilan"],a:0,e:"«O‘rta asrlar» tushunchasi tarix faniga italyan tarixchilari tomonidan olib kirilgan va xususiy mulkchilik shakli o‘zgarishi davrlari bilan bog‘liq (1-mavzu)."},
+{t:"Kirish · tahlil",q:"Nima sababdan «o‘rta asrlar» tushunchasi tariximizda shartli ravishda ishlatiladi?",o:["Chunki bu tushunchani arab tarixchilari kiritgan","Chunki Sharq mamlakatlarida yer-mulk munosabatlari azaldan jamoaviy asoslarda rivojlangan","Chunki Turonda o‘rta asrlar Rim imperiyasi qulashidan boshlangan","Chunki Turonda davlatlar o‘rta asrlarda bo‘lmagan"],a:1,e:"Tushuncha xususiy mulkchilik bilan bog‘liq, Sharqda esa yer-mulk munosabatlari azaldan jamoaviy asosda rivojlangan — shu sababli u shartli qo‘llanadi."},
+{t:"Kirish",q:"Darslikka ko‘ra, tariximizdagi «o‘rta asrlar» qachondan va qaysi voqea bilan boshlangan?",o:["476-yildan — Rim imperiyasining qulashi bilan","VIII asr boshidan — arab xalifaligi hukmronligi o‘rnatilishi bilan","IV asr oxiri – V asr o‘rtalaridan — kidariylar, xioniylar, eftaliylar kabi qabila uyushmalarining paydo bo‘lishi bilan","Milodiy II asrdan — Kushon podsholigining yuksalishi bilan"],a:2,e:"Yevropada o‘rta asrlar 476-yil Rim qulashidan boshlansa, bizda IV asr oxiri – V asr o‘rtalarida siyosiy maydonda kidariylar, xioniylar, eftaliylar paydo bo‘lgan davrdan boshlanadi."},
+{t:"Kirish",q:"O‘rta asrlar davrlari va ularning xronologik chegaralarini to‘g‘ri moslang: 1) ilk o‘rta asrlar; 2) rivojlangan o‘rta asrlar; 3) so‘nggi o‘rta asrlar. a) IX–XV asrlar; b) XVI–XIX asrlar; c) IV–VIII asrlar.",o:["1-c, 2-a, 3-b","1-a, 2-c, 3-b","1-c, 2-b, 3-a","1-b, 2-a, 3-c"],a:0,e:"Ilk o‘rta asrlar — IV–VIII, rivojlangan — IX–XV, so‘nggi — XVI–XIX asrlar."},
+{t:"Kirish",q:"Yurtimiz nomlari va ularni qo‘llay boshlaganlar haqidagi TO‘G‘RI juftlikni toping.",o:["«Movarounnahr» va «Xuroson» — XVIII–XIX asr g‘arb olimlari; «Markaziy Osiyo» — arablar","«Movarounnahr» va «Xuroson» — arablar davridan; «O‘rta Osiyo» va «Markaziy Osiyo» — XVIII–XIX asr g‘arb olimlari va sayyohlari","«Turon» — arablar davridan; «Movarounnahr» — g‘arb sayyohlari","«O‘rta Osiyo» — italyan tarixchilari; «Xuroson» — sosoniylar"],a:1,e:"Qadimdan «Turon» deb atalgan yurtimiz arablar davridan «Movarounnahr» va «Xuroson», XVIII–XIX asr g‘arb olimlari tomonidan «O‘rta Osiyo» yoki «Markaziy Osiyo» deb nomlangan."},
+{t:"Kirish",q:"Darslikda IX–XII asrlarda yetishib chiqqan, islom dini va ta’limotiga oid asarlari bilan mashhur ULAMOLAR qatorida tilga olinmagan shaxsni toping.",o:["Imom Termiziy","Mahmud Zamahshariy","Najmiddin Kubro","Ahmad Farg‘oniy"],a:3,e:"Ahmad Farg‘oniy darslikda ilm-fan taraqqiyotiga hissa qo‘shgan mutafakkirlar qatorida (Xorazmiy, Beruniy, Ibn Sino bilan) keltirilgan. Ulamolar: Imom Buxoriy, Imom Termiziy, Zamahshariy, Ahmad Yassaviy, Najmiddin Kubro."},
+{t:"Turmush tarzi · sabab",q:"Ilk o‘rta asrlarda «dehqon» (qishloq hokimi) deb ataluvchi mulkdor tabaqaning paydo bo‘lishiga nima sabab bo‘ldi?",o:["Arab xalifaligi yerlarni harbiylarga taqsimlagani","VI asrda unumdor yerlar va suv taqsimotining qabila boshliqlari va ishboshilar nazoratiga o‘tishi","Kashovarzlarning shaharlarga ko‘chib ketishi","Eftaliylar hukmdori yerlarni sotuvga chiqargani"],a:1,e:"VI asrda unumdor yerlar va suv taqsimoti qabila boshliqlari va ishboshilar nazoratiga o‘tdi; bu ularga ziroatchi aholiga hukmronlik qilish imkonini berdi — ular dehqonlar deb ataldi."},
+{t:"Turmush tarzi",q:"Ilk o‘rta asrlardagi ijtimoiy tabaqalarni ularning tavsifi bilan moslang: 1) kashovarz; 2) kadivar; 3) chokar. a) dehqon mulkini qo‘riqlovchi harbiy posbon; b) yer va suvdan iborat umumiy mulkka ega erkin ziroatchi; c) o‘z yeridan ayrilib, dehqon yerida ishlovchi qaram aholi.",o:["1-c, 2-b, 3-a","1-b, 2-c, 3-a","1-b, 2-a, 3-c","1-a, 2-c, 3-b"],a:1,e:"Kashovarz — erkin ziroatchi (oddiy qo‘shchi); kadivar — dehqonlarga qaram aholi; chokar — dehqon mulkini qo‘riqlovchi harbiy posbon."},
+{t:"Turmush tarzi · manba",q:"«So‘nggi antik davr (milodiy II–IV asrlar)dan boshlangan tub o‘zgarishlar shu qadar tez kechdiki, oqibatda O‘rta Osiyoning dehqonchilik viloyatlarida o‘nlab mahalliy hokimliklar tashkil topib, ularning yiriklashish jarayoni ham jadal kechdi». Ushbu fikr muallifi va asarini toping.",o:["Abu Rayhon Beruniy, «Qadimgi xalqlardan qolgan yodgorliklar»","Ahmadali Asqarov, «O‘zbek xalqining etnogenezi va etnik tarixi»","K. Trever, «Kushonlar, xioniylar va eftaliylar»","Istaxriy, «Masolik al-mamolik»"],a:1,e:"Iqtibos Ahmadali Asqarovning «O‘zbek xalqining etnogenezi va etnik tarixi» asaridan olingan (2-mavzu)."},
+{t:"Turmush tarzi · manba",q:"Yuqoridagi A. Asqarov iqtibosida tilga olingan dehqonchilik viloyatlari qatoriga KIRMAYDIGAN hududni toping.",o:["Marg‘iyona","Toxariston","Yettisuv","Choch"],a:2,e:"Iqtibosda Sug‘diyona, Marg‘iyona, Toxariston, Xorazm, Choch, Farg‘ona sanab o‘tilgan; Yettisuv tilga olinmagan."},
+{t:"Turmush tarzi",q:"Darslikka ko‘ra, qaysi kashfiyotlar qishloq xo‘jalik ishlarining rivojiga ta’sir ko‘rsatgan?",o:["Suv tegirmoni, chig‘ir va charxpalak","Kariz, sardoba va to‘g‘on","Omoch, o‘roq va mola","Shamol tegirmoni, nov va hovuz"],a:0,e:"Suv tegirmoni, chig‘ir va charxpalak kabi suv inshootlari kashf etilishi qishloq xo‘jalik ishlarining rivojiga ta’sir ko‘rsatdi."},
+{t:"Xorazm · manba",q:"«...Jayhunning butun foydasini ola bilgan mamlakatdir». Ushbu so‘zlar kimga tegishli va unda qaysi mamlakat haqida gap boradi?",o:["Gerodot; Misr","Istaxriy; Xorazm","Beruniy; Sug‘d","Istaxriy; Baqtriya"],a:1,e:"Olim Istaxriy: «Xorazm Jayhunning (Amudaryoning) butun foydasini ola bilgan mamlakatdir». Bu Gerodotning Nil haqidagi fikrini eslatadi."},
+{t:"Xorazm",q:"Amudaryoga oid TO‘G‘RI ma’lumotni toping.",o:["Tyanshan muzliklaridan boshlanadi; Zarafshon qo‘shilgan joydan quyida irmoqsiz oqadi","Hindiqushning shimoliy yonbag‘irlaridagi muzliklardan boshlanadi; Surxon qo‘shilgan joydan quyida irmoqsiz oqadi","Pomir ko‘llaridan boshlanadi; Kofirnihon qo‘shilgan joydan quyida irmoqsiz oqadi","Hindiqushdan boshlanadi; Sirdaryo bilan qo‘shilib Orolga quyiladi"],a:1,e:"Amudaryo Hindiqushning shimoliy yonbag‘irlaridagi muzliklardan boshlanadi; Surxon qo‘shilgan joydan quyida irmoqsiz, jazirama sahrolar ichidan oqib, Xorazmni suv bilan ta’minlaydi."},
+{t:"Xorazm",q:"IV–VII asrlarda xorazmliklarning xo‘jalik turmushida alohida o‘rin tutgan mahsulotlar qaysi qatorda to‘g‘ri berilgan?",o:["Baliq, qovun, qovoq, yovvoyi jiyda va tut","Sholi, paxta, uzum va anor","Bug‘doy, arpa, olma va o‘rik","Baliq, sholi, xurmo va zaytun"],a:0,e:"Xorazm aholisi chorvachilik va baliq ovlash bilan shug‘ullangan; xo‘jalikda baliq, qovun, qovoq, yovvoyi jiyda va tut alohida o‘rin tutgan."},
+{t:"Xorazm · sabab",q:"Xorazm qanday qilib mustaqil davlatga aylandi va uni kimlar idora qildi?",o:["Kushon podsholigi tarkibidan ajralib chiqdi; eftaliy hukmdorlar idora qildi","Zaiflashib borayotgan Qang‘ davlati tarkibidan ajralib chiqdi; Afrig‘iylar sulolasiga mansub xorazmshohlar idora qildi","Ahamoniylar davlati qulagach mustaqil bo‘ldi; mobadlar idora qildi","Sosoniylardan ajralib chiqdi; kidariylar idora qildi"],a:1,e:"Zaiflashib borayotgan Qang‘ davlati tarkibidan dastlab Xorazm ajralib chiqdi; uni mahalliy Afrig‘iylar sulolasiga mansub xorazmshohlar idora qilishgan."},
+{t:"Xorazm",q:"Milodiy 305-yilda Xorazmda qanday voqea sodir bo‘ldi?",o:["Xorazmshoh Afrig‘ o‘z qarorgohini qadimgi poytaxt Kat shahriga ko‘chirdi va Alfir qasri ichida yangi saroy qurdirdi","Xioniylar Xorazmni bosib oldi","Tuproqqal’a poytaxt deb e’lon qilindi","Xorazmda zardushtiylik taqiqlandi"],a:0,e:"305-yilda Afrig‘ qarorgohini Kat shahriga ko‘chirdi; Kat qayta tiklanib, Alfir qasri ichida yangi saroy qurildi."},
+{t:"Xorazm · tahlil",q:"Afrig‘iy podsholarining oldi tomoniga shoh, orqa tomoniga suvoriy tasviri tushirilgan kumush tangalar zarb etishi nimadan dalolat beradi?",o:["Xorazm sosoniylarga soliq to‘laganidan","Xorazm ichki va tashqi savdo munosabatlarida mustaqil bo‘lib olganidan","Xorazmda faqat harbiylar hokimiyatda bo‘lganidan","Xorazm eftaliylar tangalaridan foydalanganidan"],a:1,e:"O‘z tangasini zarb etish orqali Afrig‘iy podsholari mamlakatning ichki va tashqi savdo munosabatlarida mustaqil bo‘lib olganlar."},
+{t:"Xorazm",q:"Xorazm poytaxti Tuproqqal’a haqidagi qaysi ma’lumot NOTO‘G‘RI?",o:["Hozirgi Qoraqalpog‘istonning Ellikqal’a tumanida joylashgan","Shaharning burchak qismida balandligi 25 metrli ko‘p minorali qasr bo‘lgan","Darvozaxona shahar devorining burchagida joylashgan","Shaharning umumiy maydoni 25 gektar bo‘lgan"],a:2,e:"Darvozaxona shahar devorining o‘rtasida bo‘lgan; darvoza qarshisidan shahar markazidan kesib o‘tuvchi ko‘cha o‘tkazilgan."},
+{t:"Xorazm",q:"Afrig‘iylar sulolasi haqida TO‘G‘RI ma’lumotni toping.",o:["V–VI asrlarda hukmronlik qilgan; asoschisi Eftalon; ramzi — ho‘kiz","III–X asrlarda hukmronlik qilgan; asoschisi Afrig‘; burgut va lochin hukmronlik ramzlari bo‘lgan","III–X asrlarda hukmronlik qilgan; asoschisi Shovshafar; ramzi — baliq","IV–VIII asrlarda hukmronlik qilgan; asoschisi Kidar; ramzi — burgut"],a:1,e:"Afrig‘iylar — III–X asrlarda Xorazmda hukmronlik qilgan xorazmshohlar sulolasi; asoschisi — Afrig‘; burgut va lochin hukmronlik ramzlari."},
+{t:"Xorazm",q:"VIII asrgacha Xorazmda ta’lim-tarbiya haqida qaysi fikr TO‘G‘RI?",o:["Ta’limni buddaviy rohiblar olib borgan; bolalarga faqat hunar o‘rgatilgan","Mobadlar zardushtiylik o‘gitlarini o‘rgatgan; bolalarga o‘qish, yozish va jang san’atidan saboq berilgan, yolg‘on gapirish katta jinoyat hisoblangan","Ta’lim faqat saroy ahli bolalari uchun bo‘lgan","Bolalarga asosan savdo-sotiq o‘rgatilgan"],a:1,e:"Zardushtiylik ruhoniylari — mobadlar diniy marosimlarni avloddan avlodga saqlab qolish mas’uliyatini olgan; bolalarga rost so‘zlash zarurligi uqtirilgan."},
+{t:"Xorazm · afsona",q:"Xubbi haqidagi afsonaga oid NOTO‘G‘RI fikrni toping.",o:["Xubbi suv ilohi bo‘lib, suvga cho‘kkanlarni qutqargan","Jamshid taxtga o‘tirgan vaqtda Xubbi g‘oyib bo‘lgan","Xubbini dengiz malikasi o‘g‘irlab ketgan","Xorazmda qayiqlar burniga Xubbining otasi haykali o‘rnatilgan"],a:3,e:"Qayiqlar burniga Xubbining onasi — o‘z xalqini daryoda urishishga o‘rgatgan ayolning haykali o‘rnatilgan."},
+{t:"Xorazm · tahlil",q:"Xubbi haqidagi afsonadan qanday xulosa chiqarish mumkin?",o:["Xorazmda baliqchilik taqiqlangan","Xorazm diniy qarashlarida suv muqaddas hisoblangan va bu an’ana islom kirib kelgunga qadar amalda bo‘lgan","Xorazmliklar dengiz savdosi bilan shug‘ullangan","Jamshid Xorazmning birinchi xorazmshohi bo‘lgan"],a:1,e:"Xorazm diniy qarashlarida suv muqaddas, Xubbi esa suvning saqlovchisi sifatida qadrlangan; bu an’ana islomgacha amalda bo‘lgan."},
+{t:"Xioniylar va kidariylar",q:"IV asrda xioniylar dastlab qaysi hududni egallagan va ular tuzgan katta davlatning markazi qayer bo‘lgan?",o:["Farg‘ona vodiysi; Sug‘diyona","Zarafshon vohasi; Toxariston","Xorazm; Kat","Choch; Balx"],a:1,e:"Xioniylar dastlab Zarafshon vohasini egallab, janubga yurgan va markazi Toxariston bo‘lgan katta davlat tuzgan."},
+{t:"Xioniylar va kidariylar",q:"Xioniylar haqidagi TO‘G‘RI ma’lumotlarni toping.",o:["G‘arb tarixchilari ularni «oq xunnlar» deb atagan; ayrim tadqiqotchilar asli vatanini Orol dengizi bo‘yi deb hisoblaydi; 120 yildan ortiq hukmronlik qilgan","G‘arb tarixchilari ularni kushonlar avlodi deb hisoblagan; asli vatani Sharqiy Turkiston; 75 yil hukmronlik qilgan","Ular «toxarlar» deb atalgan; asli vatani Hindiston; 120 yil hukmronlik qilgan","Ular «oq xunnlar» deb atalgan; asli vatani Xitoy; 456-yilda tugatilgan"],a:0,e:"G‘arb tarixchilari xioniylarni xunnlarga qarindosh hisoblab «oq xunnlar» deb ataydi; ular bu hududda 120 yildan ortiq hukmronlik qilgan."},
+{t:"Xioniylar va kidariylar",q:"Kidariylar kimlar edi va ular nima uchun shunday nomlangan?",o:["Xioniylarning bir urug‘i; Kidar degan shahar nomidan","Kushonlarning avlodlari bo‘lgan toxarlar; ularga Kidar ismli hukmdor boshchilik qilgani uchun","Eftaliylarning ittifoqchilari; Kidar daryosi nomidan","Sosoniylar tomonidan ko‘chirilgan qabila; Kidar xudosi nomidan"],a:1,e:"V asrning 20-yillarida kirib kelgan toxarlar kushonlarning avlodlari bo‘lgan; ularga Kidar boshchilik qilgani uchun kidariylar deb atalgan."},
+{t:"Xioniylar va kidariylar",q:"Kidariylar qayerda hukmronlik o‘rnatgan va ularning poytaxti qaysi shahar bo‘lgan?",o:["Xioniylar davlatining janubiy qismida; Balx","Xorazmda; Kat","Sug‘diyonada; Poykand","Xioniylar davlatining shimoliy qismida; Buxoro"],a:0,e:"Kidariylar Xioniylar davlatining janubiy qismida hukmronlik o‘rnatgan; Balx shahri yangi davlatning poytaxtiga aylantirilgan."},
+{t:"Xioniylar va kidariylar",q:"Kidariylarning Hindistondagi faoliyatiga oid TO‘G‘RI ma’lumotni toping.",o:["Kidar Gandhardan shimoldagi 5 ta davlatni bo‘ysundirgan; kidariylar Gupta davlatini egallab, 75 yil hukmronlik qilgan va Xitoyga elchilar yuborgan","Kidar Hindistonda 120 yil hukmronlik qilgan","Kidariylar Hindistondan Eronga elchilar yuborgan","Kidariylar Hindistonni sosoniylar bilan birgalikda bosib olgan"],a:0,e:"Kidar Shimoliy Hindistonga yurish qilib, Gandhardan shimoldagi 5 ta davlatni bo‘ysundirgan; Gupta davlatida 75 yil hukmronlik qilgan."},
+{t:"Xioniylar va kidariylar",q:"«Xioniylar IV asrning 70-yillarida o‘zining kuchaygan pallasiga kiradi» degan fikr kimga tegishli?",o:["Prokopiy Kesariyskiy","K. Trever","Firdavsiy","Istaxriy"],a:1,e:"Tarixchi K. Treverning fikricha, xioniylar IV asrning 70-yillarida kuchaygan; kidariylar va eftaliylar hukmronligi o‘rnatilgach, ular eftaliylarga tobe bo‘lib qolgan."},
+{t:"Xioniylar va kidariylar · xronologiya",q:"Kidariylar tarixiga oid voqealarning TO‘G‘RI ketma-ketligini toping: 1) eftaliylar bilan to‘qnashib, Shimoliy Hindistonga chekinish; 2) Sharqiy Turkiston hududida yashash; 3) sosoniylar bilan to‘qnashuvda yengilish; 4) Xioniylar davlatining janubida hukmronlik o‘rnatish.",o:["2, 4, 3, 1","4, 2, 3, 1","2, 3, 4, 1","2, 4, 1, 3"],a:0,e:"Kidariylar dastlab Sharqiy Turkistonda yashagan → V asrning 20-yillarida Xioniylar davlatining janubida hukmronlik o‘rnatgan → 456-yilda sosoniylardan yengilgan → eftaliylar bilan to‘qnashib, Shimoliy Hindistonga chekingan."},
+{t:"Xioniylar va kidariylar",q:"Kidariylar tangalari haqida TO‘G‘RI ma’lumotni toping.",o:["Sug‘d yozuvida zarb etilgan; orqa tomonida kamonchi tasviri bor","Braxmiy yozuvida zarb etilgan; «Kidara Kushon sha» yozuvli tangalar ikkita hokim tomonidan bir vaqtda zarb etilgan","Baqtriya yozuvida zarb etilgan; faqat mis tangalar bo‘lgan","Yunon yozuvida zarb etilgan; Balxda topilmagan"],a:1,e:"Kidariylarning tangalari braxmiy yozuvida zarb etilgan; «Kidara Kushon sha» yozuvli tangalar ikki hokim tomonidan bir vaqtning o‘zida zarb etilgan."},
+{t:"Xioniylar va kidariylar · tahlil",q:"Nima sababdan xioniylar va kidariylarning xo‘jalik hayoti haqida aniq xulosa chiqarish qiyin?",o:["Chunki ular yozuvni bilmagan","Chunki ularning ijtimoiy-iqtisodiy tizimi haqidagi ma’lumotlar bizgacha yetib kelmagan","Chunki ular faqat Hindistonda yashagan","Chunki ularning tangalari topilmagan"],a:1,e:"Darslikda ta’kidlanishicha, afsuski, xioniylar va kidariylarning ijtimoiy-iqtisodiy tizimi haqidagi ma’lumotlar bizgacha yetib kelmagan."},
+{t:"Eftaliylar",q:"«Eftaliylar» nomi qayerdan olingan?",o:["Eftal daryosi nomidan","Eftalon degan shoh ismidan (uni Vaxshunvar deb ham ataganlar)","Eftaliya shahri nomidan","Sosoniylar bergan laqabdan"],a:1,e:"Eftaliylar nomi «Eftalon» degan shoh ismidan olingan; uni Vaxshunvar deb ham ataganlar."},
+{t:"Eftaliylar",q:"Eftaliylar davlatining dastlabki poytaxti qaysi shaharlar bo‘lgan?",o:["Balx va Termiz","Buxoro yaqinidagi Poykent va Varaxsha","Samarqand va Panjikent","Kat va Tuproqqal’a"],a:1,e:"Eftaliylar V asr boshlarida Sharqdan kirib kelgan; dastlabki poytaxti Buxoro yaqinidagi Poykent va Varaxsha bo‘lgan."},
+{t:"Eftaliylar",q:"Eftaliylar davlatida taxt vorisligi qanday hal qilingan?",o:["Taxt otadan to‘ng‘ich o‘g‘ilga o‘tgan","Taxt avloddan avlodga o‘tmay, sulolaning loyiq deb topilgan vakili o‘tirgan; nomzodni mo‘tabar kishilar va a’yonlardan iborat kengash taqdim etgan","Hukmdorni sosoniylar shohi tayinlagan","Hukmdor xalq yig‘inida saylangan"],a:1,e:"Saltanat yakka hukmdor tomonidan boshqarilgan; taxtga suloladan kim loyiq deb topilsa, o‘sha o‘tirgan, nomzodni kengash aniqlagan."},
+{t:"Eftaliylar · tahlil",q:"Eftaliylar davrida viloyatlardagi mahalliy sulolalarning o‘z kumush yoki mis tangalarini zarb etishi nimani ko‘rsatadi?",o:["Mahalliy sulolalar eftaliylarga mutlaqo bo‘ysunmaganini","Viloyatlar hukmdor — Shoga tobe bo‘lsa-da, mahalliy sulolalar ichki boshqaruvda keng huquqqa ega bo‘lganini","Eftaliylarda yagona pul tizimi bo‘lganini","Viloyatlarni sosoniylar boshqarganini"],a:1,e:"Viloyatlarda boshqaruv hukmdor — Shoga tobe mahalliy xonadonlar tomonidan olib borilgan, ularning har biri o‘z tangasini zarb etgan."},
+{t:"Eftaliylar · xronologiya",q:"Voqealarning TO‘G‘RI xronologik ketma-ketligini toping: 1) Pero‘zning eftaliylarga qarshi urushi uning halokati bilan tugadi; 2) kidariylar sosoniylardan yengildi; 3) Afrig‘ qarorgohini Kat shahriga ko‘chirdi; 4) turk elchisi Vizantiya imperatori huzurida eftaliylar haqida so‘zladi; 5) toxarlar (kidariylar) Xorazm va Amudaryo havzasiga kirib keldi.",o:["3, 5, 2, 1, 4","5, 3, 2, 1, 4","3, 5, 1, 2, 4","3, 2, 5, 1, 4"],a:0,e:"305-y. Afrig‘ Katga → V asrning 20-yillari kidariylar → 456-y. kidariylar yengildi → 484-y. Pero‘z halok bo‘ldi → 568–569-y. turk elchisi Vizantiyada."},
+{t:"Eftaliylar",q:"Firdavsiyning «Shohnoma» asarida eftaliylarning podshosi Katulf qaysi podshohga o‘xshatilgan?",o:["Gatfar","Jamshid","Pero‘z","Vaxshunvor"],a:0,e:"«Shohnoma»da Vaxshunvor va Peruz davri voqealari aks etgan; eftaliylar podshosi Katulf shu xalqning Gatfar ismli podshohiga o‘xshatilgan."},
+{t:"Eftaliylar",q:"Eftaliylarning savdo siyosatiga oid TO‘G‘RI ma’lumotni toping.",o:["Ipak yo‘lini nazoratda tutishga harakat qilgan; ichki va tashqi savdoda dastavval sosoniy hukmdorlarining kumush tangalaridan keng foydalangan","Ipak yo‘li savdosida faqat sosoniy savdogarlari vositachilik qilgan","Eftaliylar Vizantiya bilan savdo qilmagan","Dastavval faqat o‘z oltin tangalarini zarb etgan"],a:0,e:"Tashqi savdo bojidan manfaatdor eftaliylar Ipak yo‘lini nazorat qilishga intilgan; sosoniy savdogarlari bilan raqobatda sug‘diylar vositachi bo‘lgan."},
+{t:"Eftaliylar",q:"Eftaliylar alifbosi haqida TO‘G‘RI ma’lumotni toping.",o:["Sug‘d yozuvi asosida shakllangan, 22 harfdan iborat","Baqtriya yozuvi asosida shakllangan, 25 harfdan iborat","Braxmiy yozuvi asosida shakllangan, 25 harfdan iborat","Oromiy yozuvi asosida shakllangan, 30 harfdan iborat"],a:1,e:"Eftaliylar alifbosi Baqtriya yozuvi asosida shakllangan va 25 harfdan iborat bo‘lgan."},
+{t:"Eftaliylar",q:"Eftaliylar davridagi diniy hayot haqida TO‘G‘RI ma’lumotni toping.",o:["Eftaliylar asosan buddaviylikka e’tiqod qilgan","Eftaliylar asosan zardushtiylikka e’tiqod qilgan; tangrichilik, buddaviylik, moniylik, mazdakiylik ham tarqalgan, shaharlarda nestorianlar va yahudiylar jamoalari bo‘lgan","Davlatda faqat zardushtiylikka ruxsat berilgan","Eftaliylar asosan moniylikka e’tiqod qilgan"],a:1,e:"Eftaliylar asosan zardushtiylikka e’tiqod qilgan, biroq davlatda boshqa e’tiqodlar ham tarqalgan."},
+{t:"Eftaliylar · manba",q:"568–569-yillarda Vizantiya imperatori huzurida bo‘lgan turk elchisining «Ular shaharlik sulolalar, oliy hazratlari» degan javobidan qanday xulosa chiqadi?",o:["Eftaliylar ko‘chmanchi bo‘lib qolgan","Eftaliylar mahalliy aholi bilan aralashib ketgan va ularning davlatida shaharlar juda ko‘p bo‘lgan","Eftaliylar Vizantiyaga tobe bo‘lgan","Eftaliylar faqat qishloqlarda yashagan"],a:1,e:"Vaqt o‘tishi bilan eftaliylar mahalliy aholi bilan aralashib ketgan; davlatda shaharlar juda ko‘p bo‘lgan."},
+{t:"Eftaliylar · shaharlar",q:"Shaharlar va ularning tavsifini moslang: 1) Poykand; 2) Buxoro; 3) Panjikent; 4) Zartepa. a) Termiz atrofida, IV–V asrlarda maydoni 17 gektarga yetgan; b) arab manbalarida «Madina at-tujjor» — «Savdogarlar shahri»; c) asosi 21 gektar, yettita darvozasi bo‘lgan; d) V asrda qadimgi qishloq o‘rnida 18 gektarli yangi shahar barpo etilgan.",o:["1-b, 2-c, 3-d, 4-a","1-c, 2-b, 3-d, 4-a","1-b, 2-d, 3-c, 4-a","1-b, 2-c, 3-a, 4-d"],a:0,e:"Poykand — «Savdogarlar shahri»; Buxoro — 21 ga, 7 darvoza; Panjikent — V asrda 18 ga; Zartepa — Termiz atrofida, 17 ga."},
+{t:"Eftaliylar",q:"Ilk o‘rta asrlarga oid qal’a va istehkomlar hamda ular joylashgan hududlar bo‘yicha TO‘G‘RI juftlikni toping.",o:["Zahoki Maron — Buxoro; Shahri Vayron — Naxshab; Fir qal’asi — Xorazm","Zahoki Maron — Naxshab; Shahri Vayron — Buxoro; Fir qal’asi — Xorazm","Zahoki Maron — Xorazm; Shahri Vayron — Buxoro; Fir qal’asi — Naxshab","Zahoki Maron — Naxshab; Shahri Vayron — Xorazm; Fir qal’asi — Buxoro"],a:1,e:"Naxshab vohasidagi Zahoki Maron, Buxorodagi Shahri Vayron, Xorazmdagi Fir qal’asi — ilk o‘rta asrlar me’morchiligi namunalari."},
+{t:"Eftaliylar · tangalar",q:"Hududlar va ularda zarb etilgan tangalardagi tasvirlarni moslang: 1) Samarqand Sug‘di; 2) Xorazm; 3) Buxoro Sug‘di. a) old tomonida hukmdor boshi, orqa tomonida otliq chavandoz; b) o‘ng tomonida hukmdor tasviri; c) orqa tomonida tik turgan kamonchi.",o:["1-c, 2-a, 3-b","1-a, 2-c, 3-b","1-c, 2-b, 3-a","1-b, 2-a, 3-c"],a:0,e:"Samarqand Sug‘dida V–VI asrlarda orqa tomonida tik turgan kamonchi; Xorazmda old tomonida hukmdor boshi, orqasida otliq chavandoz; Buxoro Sug‘dida o‘ng tomonida hukmdor tasviri."},
+{t:"Eftaliylar · sug‘orish",q:"V asrda barpo etilgan sug‘orish tarmoqlari va ular suv bilan ta’minlayotgan hududlar bo‘yicha TO‘G‘RI juftlikni toping.",o:["Zog‘ariq va Bo‘zsuv — Samarqand viloyatining janubiy tumanlari; Darg‘om — Toshkent vohasi","Zog‘ariq (Zovariq) va Bo‘zsuv — Toshkent vohasi va Janubiy Qozog‘iston yerlarining bir qismi; Darg‘om — Samarqand viloyatining janubiy tumanlari","Darg‘om va Bo‘zsuv — Xorazm; Zog‘ariq — Farg‘ona","Zog‘ariq — Naxshab; Darg‘om — Buxoro"],a:1,e:"Zog‘ariq (Zovariq) va Bo‘zsuv hozir ham Toshkent vohasi va Janubiy Qozog‘istonni, Darg‘om — Samarqand viloyati janubiy tumanlarini suv bilan ta’minlaydi."}
+];
+
+const SETS=[
+ {id:"uz7a",n:"1–7",title:"O‘zbekiston tarixi: 1–7-mavzular",sub:"Turmush tarzi, Xorazm, xioniylar, kidariylar, eftaliylar · 45 savol",qs:UZ7,g:"7-sinf · O‘zbekiston tarixi",subj:"O‘zbekiston tarixi (7-sinf)"},
+ {id:"eron",n:"20",title:"Eron Islom Respublikasi",sub:"20-mavzu · 20 savol",qs:ERON},
+ {id:"pak",n:"21",title:"Pokiston va Afg'oniston",sub:"21-mavzu · 20 savol",qs:PAKAFG},
+ {id:"sur",n:"22",title:"Suriya va Iroq",sub:"22-mavzu · 20 savol",qs:SURIRQ},
+ {id:"kor",n:"23",title:"Ko'rfaz arab mamlakatlari",sub:"23-mavzu · 20 savol",qs:KORFAZ},
+ {id:"fal",n:"24",title:"Falastin va Isroil",sub:"24-mavzu · 20 savol",qs:FALISR},
+ {id:"lot",n:"25",title:"Lotin Amerikasi mamlakatlari",sub:"25-mavzu · 20 savol",qs:LOTIN},
+ {id:"mix",n:"∑",title:"Aralash nazorat",sub:"20–25-mavzular · 120 tadan tasodifiy 20 ta",qs:null}
+];
+SETS.forEach(s=>{s.g=s.g||"11-sinf · Jahon tarixi";s.subj=s.subj||"Jahon tarixi (11-sinf)"});
+SETS.filter(s=>s.qs).forEach(s=>s.qs.forEach(q=>q.m=s.title));
+
+const $=id=>document.getElementById(id);
+let PPQ=5,FN="",LN="",Q=[],order=[],ans=[],cur=0,t0=0,tick=null,name="",set=null;
+const L=["A","B","C","D"];
+
+SETS.forEach(s=>{
+  if(s.g!==SETS._lg){SETS._lg=s.g;$("tps").insertAdjacentHTML("beforeend",`<div style="font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ac2);margin-top:6px">${s.g}</div>`)}
+  const b=document.createElement("button");b.className="tp";
+  b.innerHTML=`<div class="n">${s.n}</div><div><b>${s.title}</b><span>${s.sub}</span></div>`;
+  b.onclick=()=>{set=s;document.querySelectorAll(".tp").forEach(x=>x.classList.toggle("sel",x===b));chk()};
+  $("tps").appendChild(b);
+});
+function chk(){$("go").disabled=!(set&&$("fn").value.trim().length>=2&&$("ln").value.trim().length>=2)}
+$("fn").oninput=chk;$("ln").oninput=chk;
+$("go").onclick=start;
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function start(){
+  const cap=s=>s.charAt(0).toUpperCase()+s.slice(1).toLowerCase();FN=cap($("fn").value.trim());LN=cap($("ln").value.trim());name=FN+" "+LN;
+  if(set.id==="mix"){Q=shuffle(SETS.filter(s=>s.qs&&s.g===set.g).flatMap(s=>s.qs)).slice(0,20)}else{Q=set.qs}
+  order=Q.map((q,i)=>({i,idx:shuffle([0,1,2,3])}));
+  ans=Array(Q.length).fill(null);cur=0;t0=Date.now();
+  clearInterval(tick);$("tm").textContent="⏱ 00:00";
+  tick=setInterval(()=>$("tm").textContent="⏱ "+fmt(Date.now()-t0),1000);
+  show("quiz");render();
+}
+function fmt(ms){const s=Math.floor(ms/1000);return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0")}
+function show(id){["start","quiz","res","tz"].forEach(s=>$(s).classList.toggle("hide",s!==id));$("tCard").classList.toggle("hide",id!=="start");window.scrollTo(0,0)}
+function render(){
+  const {i,idx}=order[cur],q=Q[i];
+  $("cnt").textContent=`${cur+1}-savol / ${Q.length}`;
+  $("pb").style.width=(ans.filter(a=>a!==null).length/Q.length*100)+"%";
+  $("tg").textContent=q.t;$("qt").textContent=q.q;
+  $("ops").innerHTML="";
+  idx.forEach((oi,k)=>{
+    const b=document.createElement("button");
+    b.className="opt"+(ans[cur]===oi?" sel":"");
+    b.innerHTML=`<span class="l">${L[k]}</span><span></span>`;
+    b.lastChild.textContent=q.o[oi];
+    b.onclick=()=>{ans[cur]=oi;render();if(cur<Q.length-1)setTimeout(()=>{cur++;render()},250)};
+    $("ops").appendChild(b);
+  });
+  $("prev").disabled=cur===0;
+  $("next").textContent=cur===Q.length-1?"Yakunlash ✓":"Keyingi →";
+  $("dots").innerHTML="";
+  order.forEach((_,k)=>{const d=document.createElement("button");d.className="dot"+(ans[k]!==null?" ans":"")+(k===cur?" cur":"");d.textContent=k+1;d.onclick=()=>{cur=k;render()};$("dots").appendChild(d)});
+}
+$("prev").onclick=()=>{if(cur>0){cur--;render()}};
+$("next").onclick=()=>{
+  if(cur<Q.length-1){cur++;render();return}
+  const left=ans.filter(a=>a===null).length;
+  $("mtx").textContent=left?`${left} ta savolga javob berilmagan. Ular xato hisoblanadi.`:"Barcha savollarga javob berdingiz.";
+  $("mdl").classList.add("on");
+};
+$("mNo").onclick=()=>$("mdl").classList.remove("on");
+$("mYes").onclick=()=>{$("mdl").classList.remove("on");finish()};
+$("again").onclick=()=>show("start");
+
+function finish(){
+  clearInterval(tick);
+  const time=fmt(Date.now()-t0);
+  let ok=0;const by={};
+  order.forEach(({i},k)=>{const q=Q[i],g=ans[k]===q.a;if(g)ok++;const key=set.id==="mix"?q.m:q.t.split(" · ")[0];by[key]=by[key]||[0,0];by[key][1]++;if(g)by[key][0]++});
+  PPQ=100/Q.length;const pts=Math.round(ok*PPQ);
+  $("who").textContent=name+" · "+set.title;$("pts").textContent=pts;
+  $("sOk").textContent=ok;$("sBad").textContent=Q.length-ok;$("sT").textContent=time;
+  const lv=level(pts);
+  $("gr").textContent=lv?lv+" sertifikati":"Sertifikat uchun kamida 45 ball kerak";$("gr").style.background=lv?(pts>=65?"var(--ok)":pts>=55?"var(--ac2)":"var(--ac)"):"var(--bad)";
+  $("certBox").style.display=lv?"":"none";
+  if(lv)drawCert(lv,pts,ok,time,by);
+  const m=$("mast");m.innerHTML="";
+  if(Object.keys(by).length>1){
+    m.innerHTML='<div style="font-size:13px;color:var(--mu);margin-bottom:10px">Mavzular bo\'yicha o\'zlashtirish</div>';
+    Object.entries(by).forEach(([k,[a,b]])=>{const p=Math.round(a/b*100);
+      m.insertAdjacentHTML("beforeend",`<div class="mr"><div class="mh"><b>${k}</b><span>${a}/${b} · ${p}%</span></div><div class="bar" style="margin:0"><i style="width:${p}%"></i></div></div>`)});
+  }
+  const box=$("rvl");box.innerHTML="";
+  order.forEach(({i},k)=>{
+    const q=Q[i],good=ans[k]===q.a;
+    const d=document.createElement("div");d.className="rv "+(good?"good":"wrong");d.dataset.k=good?"good":"wrong";
+    d.innerHTML=`<span class="tag">${k+1}. ${q.t} · ${good?"+"+(Math.round(PPQ*10)/10)+" ball":"0 ball"}</span><div class="q"></div>`+
+      (good?"":`<div class="ans-line y">✗ Sizning javobingiz: <span></span></div>`)+
+      `<div class="ans-line c">✓ To'g'ri javob: <span></span></div><div class="exp"></div>`;
+    d.querySelector(".q").textContent=q.q;
+    if(!good)d.querySelector(".y span").textContent=ans[k]===null?"javob berilmagan":q.o[ans[k]];
+    d.querySelector(".c span").textContent=q.o[q.a];
+    d.querySelector(".exp").textContent="💡 "+q.e;
+    box.appendChild(d);
+  });
+  setFilter("all");show("res");
+}
+function level(p){return p>=70?"A+":p>=65?"A":p>=60?"B+":p>=55?"B":p>=50?"C+":p>=45?"C":null}
+function isGirl(fn,ln){
+  const l=ln.toLowerCase().replace(/[ʻʼ'`‘’]/g,""),f=fn.toLowerCase().replace(/[ʻʼ'`‘’]/g,"");
+  if(/(ova|eva|yeva|iyeva|ovna|evna)$/.test(l))return true;
+  if(/(ov|ev|yev|iy|ich)$/.test(l))return false;
+  const male=["mustafa","murtazo","muso","iso","yahyo","zakariyo","mirzo","ota","bobo","ali","vali","navoiy"];
+  if(male.includes(f))return false;
+  return /(a|oy|gul|niso|bonu|beka|noza|nur|xola|bibi|moh|zoda)$/.test(f);
+}
+function sticker(x,X,Y,W,H,girl){
+  x.save();
+  x.fillStyle="#fff";x.fillRect(X,Y,W,H);
+  const g=x.createLinearGradient(0,Y,0,Y+H);g.addColorStop(0,girl?"#ffe3ef":"#dcefff");g.addColorStop(1,girl?"#ffc6dc":"#b9dcff");
+  x.fillStyle=g;x.fillRect(X+6,Y+6,W-12,H-12);
+  x.strokeStyle="#5b4a2a";x.lineWidth=2;x.strokeRect(X,Y,W,H);
+  x.beginPath();x.rect(X+6,Y+6,W-12,H-12);x.clip();
+  const cx=X+W/2,cy=Y+H*0.44,r=W*0.30;
+  const skin="#ffd9b8",hair=girl?"#5a3220":"#2b1d14";
+  // body / clothes
+  x.fillStyle=girl?"#e0558f":"#24496e";
+  x.beginPath();x.ellipse(cx,Y+H+10,W*0.48,H*0.30,0,0,Math.PI*2);x.fill();
+  if(!girl){x.fillStyle="#fff";x.beginPath();x.moveTo(cx-22,Y+H-62);x.lineTo(cx,Y+H-38);x.lineTo(cx+22,Y+H-62);x.closePath();x.fill();
+    x.fillStyle="#c0392b";x.beginPath();x.moveTo(cx-7,Y+H-44);x.lineTo(cx+7,Y+H-44);x.lineTo(cx+10,Y+H);x.lineTo(cx-10,Y+H);x.closePath();x.fill();}
+  else{x.fillStyle="#fff";x.beginPath();x.ellipse(cx,Y+H-52,26,12,0,0,Math.PI*2);x.fill();}
+  // long hair behind (girl)
+  if(girl){x.fillStyle=hair;x.beginPath();x.ellipse(cx,cy+r*0.55,r*1.22,r*1.45,0,0,Math.PI*2);x.fill();}
+  // neck
+  x.fillStyle=skin;x.fillRect(cx-r*0.28,cy+r*0.7,r*0.56,r*0.6);
+  // ears
+  x.beginPath();x.arc(cx-r*0.98,cy+r*0.08,r*0.2,0,Math.PI*2);x.arc(cx+r*0.98,cy+r*0.08,r*0.2,0,Math.PI*2);x.fill();
+  // face
+  x.beginPath();x.ellipse(cx,cy,r*0.95,r*1.05,0,0,Math.PI*2);x.fill();
+  // hair top
+  x.fillStyle=hair;x.beginPath();
+  if(girl){x.ellipse(cx,cy-r*0.55,r*1.05,r*0.62,0,Math.PI,0);x.fill();
+    x.beginPath();x.ellipse(cx-r*0.35,cy-r*0.55,r*0.7,r*0.32,-0.35,0,Math.PI*2);x.fill();
+    // bows
+    const bow=(bx,by)=>{x.fillStyle="#ff4f93";x.beginPath();x.moveTo(bx,by);x.lineTo(bx-26,by-16);x.lineTo(bx-26,by+16);x.closePath();x.fill();
+      x.beginPath();x.moveTo(bx,by);x.lineTo(bx+26,by-16);x.lineTo(bx+26,by+16);x.closePath();x.fill();x.beginPath();x.arc(bx,by,8,0,Math.PI*2);x.fill();};
+    bow(cx-r*0.95,cy-r*0.65);bow(cx+r*0.95,cy-r*0.65);
+  }else{x.ellipse(cx,cy-r*0.5,r*1.02,r*0.66,0,Math.PI,0);x.fill();
+    x.beginPath();x.moveTo(cx-r,cy-r*0.45);x.quadraticCurveTo(cx-r*0.2,cy-r*0.1,cx+r*0.5,cy-r*0.55);x.lineTo(cx+r,cy-r*0.4);x.lineTo(cx+r,cy-r*0.6);x.lineTo(cx-r,cy-r*0.6);x.fill();}
+  // eyes
+  x.fillStyle="#2b1d14";x.beginPath();x.ellipse(cx-r*0.36,cy+r*0.08,r*0.11,r*0.15,0,0,Math.PI*2);x.ellipse(cx+r*0.36,cy+r*0.08,r*0.11,r*0.15,0,0,Math.PI*2);x.fill();
+  x.fillStyle="#fff";x.beginPath();x.arc(cx-r*0.32,cy+r*0.03,r*0.04,0,Math.PI*2);x.arc(cx+r*0.4,cy+r*0.03,r*0.04,0,Math.PI*2);x.fill();
+  if(girl){x.strokeStyle="#2b1d14";x.lineWidth=2;[-1,1].forEach(s=>{x.beginPath();x.moveTo(cx+s*r*0.46,cy-r*0.05);x.lineTo(cx+s*r*0.56,cy-r*0.13);x.stroke();});}
+  // cheeks
+  x.fillStyle="rgba(255,120,140,.45)";x.beginPath();x.ellipse(cx-r*0.58,cy+r*0.38,r*0.15,r*0.09,0,0,Math.PI*2);x.ellipse(cx+r*0.58,cy+r*0.38,r*0.15,r*0.09,0,0,Math.PI*2);x.fill();
+  // smile
+  x.strokeStyle="#8a3b2b";x.lineWidth=3;x.lineCap="round";x.beginPath();x.arc(cx,cy+r*0.35,r*0.28,0.15*Math.PI,0.85*Math.PI);x.stroke();
+  x.restore();
+}
+function star6(x,cx,cy,r){x.beginPath();for(let i=0;i<=8;i++){const a=i*Math.PI/4+Math.PI/8,rr=i%2?r*0.62:r;const a2=i*Math.PI/8*2;}for(let k=0;k<2;k++){for(let i=0;i<=4;i++){const a=k*Math.PI/4+i*Math.PI/2+Math.PI/4;const px=cx+r*Math.cos(a),py=cy-r*Math.sin(a);i?x.lineTo(px,py):x.moveTo(px,py)}}x.stroke();x.beginPath();x.arc(cx,cy,r*0.32,0,Math.PI*2);x.stroke()}
+async function drawCert(lv,pts,ok,time,by){
+  try{await Promise.all([document.fonts.load('700 30px "PT Serif"'),document.fonts.load('400 30px "PT Serif"')])}catch(e){}
+  const W=1240,H=1754,c=document.createElement("canvas");c.width=W;c.height=H;const x=c.getContext("2d");
+  const SF=(w,s)=>`${w} ${s}px "PT Serif", Georgia, serif`;
+  // paper
+  const bg=x.createRadialGradient(W/2,H*0.45,100,W/2,H/2,H*0.75);bg.addColorStop(0,"#f6eed6");bg.addColorStop(1,"#e4d29f");
+  x.fillStyle=bg;x.fillRect(0,0,W,H);
+  // fine pattern
+  x.strokeStyle="rgba(160,128,60,.16)";x.lineWidth=1;
+  for(let yy=0;yy<H+30;yy+=26)for(let xx=(yy/26%2)*13;xx<W+30;xx+=26)star6(x,xx,yy,9);
+  // corner lattice
+  const corner=(ox,oy)=>{for(let i=0;i<3;i++)for(let j=0;j<3-i;j++){const px=ox+(ox<W/2?1:-1)*i*92,py=oy+(oy<H/2?1:-1)*j*92;
+    x.strokeStyle="rgba(196,166,96,.7)";x.lineWidth=10;star6(x,px,py,50);x.strokeStyle="rgba(255,250,235,.9)";x.lineWidth=3;star6(x,px,py,50);}};
+  corner(W-70,70);corner(70,H-70);
+  // fade center so text reads
+  const fg=x.createRadialGradient(W/2,H/2,200,W/2,H/2,700);fg.addColorStop(0,"rgba(248,242,222,.85)");fg.addColorStop(1,"rgba(248,242,222,0)");x.fillStyle=fg;x.fillRect(0,0,W,H);
+  // borders
+  x.strokeStyle="#b39550";x.lineWidth=3;x.strokeRect(40,40,W-80,H-80);x.lineWidth=1.5;x.strokeRect(54,54,W-108,H-108);
+  // own emblem
+  const ex=W/2,ey=220;
+  x.fillStyle="#c9a64e";x.beginPath();x.arc(ex,ey,92,0,Math.PI*2);x.fill();
+  x.fillStyle="#1f6f68";x.beginPath();x.arc(ex,ey,80,0,Math.PI*2);x.fill();
+  x.strokeStyle="#f3d98a";x.lineWidth=2;x.beginPath();x.arc(ex,ey,70,0,Math.PI*2);x.stroke();
+  // open book
+  x.fillStyle="#fff7e0";x.beginPath();x.moveTo(ex,ey+30);x.quadraticCurveTo(ex-30,ey+16,ex-52,ey+26);x.lineTo(ex-52,ey-14);x.quadraticCurveTo(ex-30,ey-24,ex,ey-10);x.closePath();x.fill();
+  x.beginPath();x.moveTo(ex,ey+30);x.quadraticCurveTo(ex+30,ey+16,ex+52,ey+26);x.lineTo(ex+52,ey-14);x.quadraticCurveTo(ex+30,ey-24,ex,ey-10);x.closePath();x.fill();
+  x.fillStyle="#f3d98a";x.textAlign="center";x.font=SF(700,26);x.fillText("ZM",ex,ey-30);
+  x.font=SF(700,14);x.fillText("TARIX",ex,ey+52);
+  // header
+  x.fillStyle="#1b1b1b";x.font=SF(700,25);
+  x.fillText("ZULPANOV METHODS TARIX O‘QUV PLATFORMASI",W/2,375);
+  x.fillText("TARIX FANIDAN BILIM VA MALAKALARNI BAHOLASH TIZIMI",W/2,410);
+  x.fillRect(110,440,W-220,4);
+  x.font=SF(700,30);x.fillText("FANNI BILISH DARAJASI",W/2,510);x.fillText("TO‘G‘RISIDA SERTIFIKAT",W/2,550);
+  const lab=(t,y,X=120)=>{x.textAlign="left";x.fillStyle="#2a2a2a";x.font=SF(400,24);x.fillText(t,X,y)};
+  const val=(t,y,X)=>{x.textAlign="left";x.fillStyle="#111";x.font=SF(700,25);x.fillText(t,X,y)};
+  const hl=y=>{x.fillStyle="rgba(120,100,60,.35)";x.fillRect(110,y,W-220,2)};
+  const no="ZM"+String(new Date().getFullYear()).slice(-2)+" "+String(Date.now()).slice(-6);
+  lab("Sertifikat raqami:",610);val(no,610,640);hl(640);
+  const up=s=>s.toLocaleUpperCase("uz").replace(/'/g,"‘");
+  lab("Familiyasi:",700);val(up(LN),700,400);
+  lab("Ismi:",755);val(up(FN),755,400);
+  lab("Test mavzusi:",810);x.textAlign="left";x.fillStyle="#111";x.font=SF(700,22);x.fillText(set.title.replace(/'/g,"\u2018"),400,810);
+  lab("O‘quv markazi:",865);val("ZULPANOV METHODS",865,400);
+  sticker(x,W-300,665,180,232,isGirl(FN,LN));
+  hl(925);
+  lab("Fan:",990);val(set.subj,990,640);
+  lab("Umumiy to‘plagan bali:",1045);val(String(pts),1045,640);
+  lab("Umumiy ballga nisbatan foiz ko‘rsatkichi:",1100);val(pts+" %",1100,640);
+  lab("Sertifikat darajasi:",1155);val(lv,1155,640);
+  x.textAlign="left";x.fillStyle="#111";x.font=SF(700,24);x.fillText("Bo‘limlar bo‘yicha test sinovi natijalari:",115,1235);
+  const ent=Object.entries(by),stp=ent.length>1?Math.min(38,165/(ent.length-1)):38,fz=stp<34?21:23;let yy=1280;ent.forEach(([k,[a]])=>{x.textAlign="left";x.font=SF(400,fz);x.fillStyle="#2a2a2a";x.fillText(k.replace(/'/g,"\u2018"),128,yy);x.textAlign="right";x.fillText(String(Math.round(a*PPQ*10)/10),W-125,yy);yy+=stp});
+  hl(1460);
+  const d=new Date(),dd=t=>String(t.getDate()).padStart(2,"0")+"."+String(t.getMonth()+1).padStart(2,"0")+"."+t.getFullYear();
+  const exp=new Date(d);exp.setFullYear(exp.getFullYear()+1);exp.setDate(exp.getDate()-1);
+  x.textAlign="left";x.font=SF(400,22);x.fillStyle="#2a2a2a";x.fillText("Berilgan sanasi: ",120,1510);let w1=x.measureText("Berilgan sanasi: ").width;x.font=SF(700,23);x.fillStyle="#111";x.fillText(dd(d),120+w1,1510);
+  x.textAlign="right";x.font=SF(700,23);x.fillText(dd(exp),W-120,1510);let w2=x.measureText(dd(exp)).width;x.font=SF(400,22);x.fillStyle="#2a2a2a";x.fillText("Amal qilish muddati: ",W-120-w2,1510);
+  // QR
+  const qs=150,qx=W/2-qs/2,qy=1545;x.fillStyle="#fff";x.fillRect(qx-8,qy-8,qs+16,qs+16);
+  try{qrcode.stringToBytes=qrcode.stringToBytesFuncs["UTF-8"];const q=qrcode(0,"M");
+    q.addData(`ZULPANOV METHODS TARIX\nSertifikat: ${no}\n${LN} ${FN}\n${set.title}\nBall: ${pts}\nDaraja: ${lv}\nSana: ${dd(d)}`);q.make();
+    const n=q.getModuleCount(),m=qs/n;x.fillStyle="#000";for(let r=0;r<n;r++)for(let cc=0;cc<n;cc++)if(q.isDark(r,cc))x.fillRect(qx+cc*m,qy+r*m,Math.ceil(m),Math.ceil(m));
+  }catch(e){}
+  x.fillStyle="#1b1b1b";x.font=SF(700,24);x.textAlign="right";x.fillText("Ustoz",qx-25,qy+qs/2+8);
+  x.textAlign="left";x.fillText("A.ZULPANOV",qx+qs+25,qy+qs/2+8);
+  $("cert").src=c.toDataURL("image/png");
+}
+document.querySelectorAll(".filter button").forEach(b=>b.onclick=()=>setFilter(b.dataset.f));
+function setFilter(f){
+  document.querySelectorAll(".filter button").forEach(b=>b.classList.toggle("on",b.dataset.f===f));
+  document.querySelectorAll(".rv").forEach(r=>r.style.display=(f==="all"||r.dataset.k===f)?"":"none");
+}
+// ================== TURNIR REJIMI ==================
+// >>> Firebase sozlamasini shu yerga qo'ying (firebaseConfig obyektini to'liq):
+const FIREBASE_CONFIG = {};
+// >>> Ustoz paneli paroli (o'zgartiring):
+const HOST_PIN = "7777";
+
+const DBA = (() => {
+  const useMQ = !(FIREBASE_CONFIG && FIREBASE_CONFIG.databaseURL) && (window.ZM_FORCE === "mqtt" || /^https?:$/.test(location.protocol));
+  if (useMQ) {
+    const PFX = "zulpanovtarix/v2/", BROKERS = ["wss://broker.emqx.io:8084/mqtt", "wss://broker.hivemq.com:8884/mqtt"];
+    const SRC = "https://unpkg.com/mqtt@5.10.1/dist/mqtt.min.js";
+    let client = null, ready = null, off = 0, tree = {}, pend = false;
+    const subs = new Set(), codes = new Map();
+    const clone = v => v === undefined ? null : JSON.parse(JSON.stringify(v));
+    const getAt = (o, p) => { const v = p.split("/").filter(Boolean).reduce((a, k) => a == null ? a : a[k], o); return v === undefined ? null : v; };
+    const setAt = (o, p, v) => { const ks = p.split("/").filter(Boolean); let c = o; ks.slice(0, -1).forEach(k => { if (typeof c[k] !== "object" || c[k] === null) c[k] = {}; c = c[k]; }); c[ks[ks.length - 1]] = v; };
+    const notify = () => { if (pend) return; pend = true; setTimeout(() => { pend = false; subs.forEach(s => s.cb(clone(getAt(tree, s.p)))); }, 30); };
+    const toPath = t => t.slice(PFX.length).replace(/^(t\/\d+)\/p\//, "$1/players/");
+    const toTopic = p => PFX + p.replace(/^(t\/\d+)\/players\//, "$1/p/");
+    function onMsg(topic, buf, packet) {
+      let v; try { v = JSON.parse(String(buf)); } catch (e) { return; }
+      const p = toPath(topic);
+      if (/\/meta$/.test(p) && v && v.ts && !(packet && packet.retain)) off = v.ts - Date.now();
+      setAt(tree, p, v); notify();
+    }
+    const load = src => new Promise((r, j) => { const s = document.createElement("script"); s.src = src; s.onload = r; s.onerror = j; document.head.appendChild(s); });
+    const init = () => ready || (ready = (async () => {
+      if (!window.mqtt) await load(SRC);
+      return await new Promise((res, rej) => {
+        let bi = 0;
+        const tryB = () => {
+          const c = mqtt.connect(BROKERS[bi], { clientId: "zm" + Math.random().toString(16).slice(2, 12), clean: true, connectTimeout: 6000, reconnectPeriod: 2000 });
+          let ok = false;
+          c.on("connect", () => { if (!ok) { ok = true; client = c; res(c); } else codes.forEach((_, code) => c.subscribe(PFX + "t/" + code + "/#", { qos: 1 })); });
+          c.on("message", onMsg); c.on("error", () => {});
+          setTimeout(() => { if (!ok) { try { c.end(true); } catch (e) {} bi++; if (bi < BROKERS.length) tryB(); else rej(new Error("conn")); } }, 7000);
+        };
+        tryB();
+      });
+    })());
+    const codeOf = p => p.split("/")[1];
+    const ensure = code => { if (!codes.has(code)) codes.set(code, new Promise(r => client.subscribe(PFX + "t/" + code + "/#", { qos: 1 }, () => setTimeout(r, 1500)))); return codes.get(code); };
+    const pub = (p, v) => { if (/\/meta$/.test(p)) v = { ...v, ts: Date.now() + off }; setAt(tree, p, v); notify(); client.publish(toTopic(p), JSON.stringify(v), { retain: true, qos: 1 }); };
+    return {
+      kind: "mqtt", init,
+      async get(p) { await init(); await ensure(codeOf(p)); return clone(getAt(tree, p)); },
+      async set(p, v) { await init(); await ensure(codeOf(p)); if (/^t\/\d+$/.test(p)) pub(p + "/meta", v.meta); else pub(p, v); },
+      async update(p, v) { await init(); await ensure(codeOf(p)); pub(p, { ...(getAt(tree, p) || {}), ...v }); },
+      on(p, cb) { const s = { p, cb }; subs.add(s); init().then(() => ensure(codeOf(p))).then(() => { if (subs.has(s)) cb(clone(getAt(tree, p))); }); return () => subs.delete(s); },
+      now() { return Date.now() + off; }
+    };
+  }
+  if (FIREBASE_CONFIG && FIREBASE_CONFIG.databaseURL) {
+    let ready = null, off = 0;
+    const load = src => new Promise((r, j) => { const s = document.createElement("script"); s.src = src; s.onload = r; s.onerror = j; document.head.appendChild(s); });
+    const init = () => ready || (ready = (async () => {
+      await load("https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js");
+      await load("https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js");
+      firebase.initializeApp(FIREBASE_CONFIG);
+      const d = firebase.database();
+      d.ref(".info/serverTimeOffset").on("value", s => off = s.val() || 0);
+      return d;
+    })());
+    return {
+      kind: "fb", init,
+      async get(p) { const d = await init(); return (await d.ref(p).get()).val(); },
+      async set(p, v) { const d = await init(); return d.ref(p).set(v); },
+      async update(p, v) { const d = await init(); return d.ref(p).update(v); },
+      on(p, cb) { let r, stop = false; init().then(d => { if (stop) return; r = d.ref(p); r.on("value", s => cb(s.val())); }); return () => { stop = true; r && r.off(); }; },
+      now() { return Date.now() + off; }
+    };
+  }
+  // Sinov rejimi: faqat shu brauzerdagi oynalar orasida ishlaydi
+  const K = "zm_mockdb", bc = ("BroadcastChannel" in window) ? new BroadcastChannel("zm_mock") : null, subs = new Set();
+  const load = () => { try { return JSON.parse(localStorage.getItem(K) || "{}"); } catch (e) { return {}; } };
+  const getAt = (o, p) => { const v = p.split("/").filter(Boolean).reduce((a, k) => a == null ? a : a[k], o); return v === undefined ? null : v; };
+  const setAt = (o, p, v) => { const ks = p.split("/").filter(Boolean); let c = o; ks.slice(0, -1).forEach(k => { if (typeof c[k] !== "object" || c[k] === null) c[k] = {}; c = c[k]; }); if (v === null) delete c[ks[ks.length - 1]]; else c[ks[ks.length - 1]] = v; };
+  const fire = () => { const o = load(); subs.forEach(s => s.cb(JSON.parse(JSON.stringify(getAt(o, s.p))))); };
+  if (bc) bc.onmessage = fire;
+  const save = o => { try { localStorage.setItem(K, JSON.stringify(o)); } catch (e) {} bc && bc.postMessage(1); setTimeout(fire, 0); };
+  return {
+    kind: "mock", init: async () => 1,
+    async get(p) { return getAt(load(), p); },
+    async set(p, v) { const o = load(); setAt(o, p, v); save(o); },
+    async update(p, v) { const o = load(); Object.entries(v).forEach(([k, x]) => setAt(o, p + "/" + k, x)); save(o); },
+    on(p, cb) { const s = { p, cb }; subs.add(s); setTimeout(() => cb(getAt(load(), p)), 0); return () => subs.delete(s); },
+    now() { return Date.now(); }
+  };
+})();
+
+const T = (() => {
+  const st = { role: null, code: null, meta: null, players: {}, pid: null, Q: [], perms: [], ans: [], cur: 0, lock: false, unsub: [], timer: null, ended: false };
+  const ss = { get(k) { try { return sessionStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { sessionStorage.setItem(k, v); } catch (e) {} } };
+  const ls = { get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} } };
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const tz = () => $("tz");
+  const rng = seed => () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+  const shuf = (a, r) => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const setById = id => SETS.find(s => s.id === id);
+  function buildQ(meta) {
+    const s = setById(meta.set), r = rng(meta.seed);
+    let Q = s.qs ? s.qs.slice() : shuf(SETS.filter(x => x.qs && x.g === s.g).flatMap(x => x.qs), r).slice(0, 20);
+    const perms = Q.map(() => shuf([0, 1, 2, 3], r));
+    return { Q, perms };
+  }
+  const fmt = ms => { ms = Math.max(0, ms); const s = Math.ceil(ms / 1000); return String(Math.floor(s / 60)).padStart(2, "0") + ":" + String(s % 60).padStart(2, "0"); };
+  const ranked = () => Object.entries(st.players || {}).filter(([k, p]) => p && p.n).map(([k, p]) => ({ k, ...p }))
+    .sort((a, b) => (b.s || 0) - (a.s || 0) || (a.t || 0) - (b.t || 0) || String(a.n).localeCompare(String(b.n)));
+  const ppq = () => 100 / (st.meta ? st.meta.n : 20);
+  const pts = s => Math.round((s || 0) * ppq() * 10) / 10;
+  const medal = i => i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : (i + 1);
+  function clear() { st.unsub.forEach(f => f()); st.unsub = []; clearInterval(st.timer); st.timer = null; }
+
+  // ---------- reyting jadvali (FLIP animatsiya bilan) ----------
+  function board(el, list, { big = false, limit = 0, n = 20 } = {}) {
+    if (!el) return;
+    const prev = new Map(); el.querySelectorAll("[data-k]").forEach(r => prev.set(r.dataset.k, r.getBoundingClientRect().top));
+    el.innerHTML = "";
+    let shown = list;
+    if (limit && list.length > limit) {
+      const me = list.findIndex(p => p.k === st.pid);
+      shown = list.slice(0, limit); if (me >= limit) shown = shown.concat([list[me]]);
+    }
+    if (!shown.length) { el.innerHTML = '<div class="sub" style="text-align:center;margin:10px 0">Hali ishtirokchilar yo\'q</div>'; return; }
+    shown.forEach(p => {
+      const i = list.indexOf(p);
+      const r = document.createElement("div"); r.className = "trow" + (p.k === st.pid ? " me" : "") + (big ? " big" : ""); r.dataset.k = p.k;
+      r.innerHTML = `<div class="tr-r">${medal(i)}</div><div class="tr-n"><div class="tr-nm"></div><div class="tr-bar"><i style="width:${Math.min(100, (p.a || 0) / n * 100)}%"></i></div></div><div class="tr-s">${pts(p.s)}<small>${p.d ? " ✓" : ""}</small></div>`;
+      r.querySelector(".tr-nm").textContent = p.n + (p.k === st.pid ? " (siz)" : "");
+      el.appendChild(r);
+    });
+    el.querySelectorAll("[data-k]").forEach(r => {
+      const p = prev.get(r.dataset.k); if (p == null) return;
+      const dy = p - r.getBoundingClientRect().top; if (!dy) return;
+      r.style.transition = "none"; r.style.transform = `translateY(${dy}px)`;
+      requestAnimationFrame(() => requestAnimationFrame(() => { r.style.transition = "transform .55s cubic-bezier(.2,.8,.2,1)"; r.style.transform = ""; }));
+    });
+  }
+  function podium(list) {
+    const top = [list[1], list[0], list[2]], h = [110, 150, 85], c = ["#c0c7d0", "#e8b93f", "#c98a4b"];
+    return `<div class="podium">${top.map((p, j) => p ? `<div class="pd"><div class="pd-n">${esc(p.n)}</div><div class="pd-s">${pts(p.s)} ball</div><div class="pd-b" style="height:${h[j]}px;background:${c[j]}">${[2, 1, 3][j]}</div></div>` : '<div class="pd"></div>').join("")}</div>`;
+  }
+
+  // ================== O'QUVCHI ==================
+  function openJoin(code = "") {
+    clear(); st.role = "student"; st.meta = null; st.Q = []; show("tz");
+    tz().innerHTML = `<div class="card">
+      <h1>🏆 Turnirga qo'shilish</h1><p class="sub">Ustoz bergan 4 xonali kodni va ism-familiyangizni kiriting.</p>
+      <label>Turnir kodi</label><input id="tjc" inputmode="numeric" maxlength="4" placeholder="0000" style="font-size:28px;letter-spacing:.3em;text-align:center">
+      <div class="row"><div style="flex:1"><label>Ism</label><input id="tjf" placeholder="Aziz"></div><div style="flex:1"><label>Familiya</label><input id="tjl" placeholder="Karimov"></div></div>
+      <div id="tjerr" style="color:var(--bad);font-size:14px;margin:-6px 0 12px"></div>
+      <button class="btn" id="tjgo">Qo'shilish</button>
+      <button class="btn ghost" style="margin-top:10px" onclick="show('start')">Orqaga</button></div>`;
+    $("tjc").value = code; $("tjf").value = ls.get("zm_fn") || ""; $("tjl").value = ls.get("zm_ln") || "";
+    $("tjgo").onclick = join;
+  }
+  async function join() {
+    const code = $("tjc").value.trim(), f = $("tjf").value.trim(), l = $("tjl").value.trim(), err = m => $("tjerr").textContent = m;
+    if (!/^\d{4}$/.test(code)) return err("Kod 4 ta raqamdan iborat bo'lishi kerak.");
+    if (f.length < 2 || l.length < 2) return err("Ism va familiyani to'liq yozing.");
+    $("tjgo").disabled = true; err("");
+    let meta; try { meta = await DBA.get(`t/${code}/meta`); } catch (e) { $("tjgo").disabled = false; return err("Ulanib bo'lmadi. Internetni tekshiring."); }
+    if (!meta) { $("tjgo").disabled = false; return err("Bunday kodli turnir topilmadi."); }
+    if (meta.phase === "end") { $("tjgo").disabled = false; return err("Bu turnir allaqachon tugagan."); }
+    const cap = s => s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
+    FN = cap(f); LN = cap(l); name = FN + " " + LN; ls.set("zm_fn", f); ls.set("zm_ln", l);
+    st.code = code; st.pid = ss.get("zm_pid_" + code) || ("p" + Math.random().toString(36).slice(2, 10)); ss.set("zm_pid_" + code, st.pid);
+    const me = await DBA.get(`t/${code}/players/${st.pid}`);
+    if (!me) await DBA.set(`t/${code}/players/${st.pid}`, { n: name, s: 0, a: 0, t: 0, d: 0 });
+    else await DBA.update(`t/${code}/players/${st.pid}`, { n: name });
+    try { st.ans = JSON.parse(ss.get("zm_ans_" + code + st.pid) || "[]"); } catch (e) { st.ans = []; }
+    st.cur = st.ans.length; st.ended = false;
+    st.unsub.push(DBA.on(`t/${code}/players`, v => { st.players = v || {}; sBoard(); }));
+    st.unsub.push(DBA.on(`t/${code}/meta`, v => { if (!v) return; const ph = st.meta && st.meta.phase; st.meta = v; if (!st.Q.length || ph === undefined) { const b = buildQ(v); st.Q = b.Q; st.perms = b.perms; } sRoute(ph !== v.phase); }));
+    st.timer = setInterval(sTick, 250);
+  }
+  function sRoute(changed) {
+    const m = st.meta;
+    if (m.phase === "lobby") return sLobby();
+    if (m.phase === "end") return sEnd();
+    if (m.phase === "run") { if (changed || !$("tqa") && !$("twait")) { if (st.cur >= st.Q.length || myDone()) sWait(); else sPlay(); } }
+  }
+  const myDone = () => { const p = st.players[st.pid]; return p && p.d; };
+  function sLobby() {
+    tz().innerHTML = `<div class="card" style="text-align:center"><div style="font-size:44px">⏳</div><h1>Ustoz boshlashini kuting</h1>
+      <p class="sub"><b></b>, siz <b>${st.code}</b> turniriga qo'shildingiz. Test: ${esc(setById(st.meta.set).title)} · ${st.meta.n} savol · ${Math.round(st.meta.dur / 60000)} daqiqa</p>
+      <div class="tnote">Ishtirokchilar: <b id="tcnt">0</b></div></div><div class="card" style="margin-top:12px"><div id="tbd"></div></div>`;
+    tz().querySelector(".sub b").textContent = name; sBoard();
+  }
+  function sPlay() {
+    tz().innerHTML = `<div class="top"><span id="tqn"></span><span id="ttm" class="ttm">⏱ --:--</span></div><div class="bar"><i id="tpb"></i></div>
+      <div class="card" id="tqa"></div>
+      <div class="card" style="margin-top:12px"><div style="display:flex;justify-content:space-between;font-size:13px;color:var(--mu);margin-bottom:8px"><b style="color:var(--tx)">🏆 Jonli reyting</b><span id="tmy"></span></div><div id="tbd"></div></div>`;
+    sQ(); sBoard();
+  }
+  function sQ() {
+    const el = $("tqa"); if (!el) return;
+    const m = st.meta, now = DBA.now();
+    if (now < m.startAt) { el.innerHTML = `<div style="text-align:center;padding:30px 0"><div class="sub">Turnir boshlanishiga</div><div style="font-size:64px;font-weight:800" id="tcd">${Math.ceil((m.startAt - now) / 1000)}</div></div>`; return; }
+    if (st.cur >= st.Q.length) return finishMine();
+    const q = st.Q[st.cur], perm = st.perms[st.cur];
+    $("tqn").textContent = `${st.cur + 1}-savol / ${st.Q.length}`; $("tpb").style.width = (st.cur / st.Q.length * 100) + "%";
+    el.innerHTML = `<span class="tag"></span><div class="q"></div><div id="tops"></div>`;
+    el.querySelector(".tag").textContent = q.t; el.querySelector(".q").textContent = q.q;
+    perm.forEach((oi, k) => {
+      const b = document.createElement("button"); b.className = "opt"; b.innerHTML = `<span class="l">${"ABCD"[k]}</span><span></span>`; b.lastChild.textContent = q.o[oi];
+      b.onclick = () => answer(oi, b); $("tops").appendChild(b);
+    });
+    st.lock = false;
+  }
+  async function answer(oi, btn) {
+    if (st.lock) return; st.lock = true;
+    const q = st.Q[st.cur], ok = oi === q.a;
+    st.ans[st.cur] = oi; ss.set("zm_ans_" + st.code + st.pid, JSON.stringify(st.ans));
+    btn.classList.add(ok ? "okk" : "bad");
+    if (!ok) [...$("tops").children].forEach((b, k) => { if (st.perms[st.cur][k] === q.a) b.classList.add("okk"); });
+    const s = st.ans.filter((a, i) => a === st.Q[i].a).length;
+    st.cur++;
+    DBA.update(`t/${st.code}/players/${st.pid}`, { s, a: st.cur, t: DBA.now() - st.meta.startAt, d: st.cur >= st.Q.length ? 1 : 0 });
+    setTimeout(() => { if (st.meta.phase !== "run") return; if (st.cur >= st.Q.length) finishMine(); else sQ(); }, 900);
+  }
+  function finishMine() {
+    if (!myDone()) DBA.update(`t/${st.code}/players/${st.pid}`, { d: 1, a: Math.max(st.cur, (st.players[st.pid] || {}).a || 0) });
+    sWait();
+  }
+  function sWait() {
+    tz().innerHTML = `<div class="card" id="twait" style="text-align:center"><div style="font-size:40px">✅</div><h1>Javoblaringiz qabul qilindi</h1><p class="sub">Boshqalar tugatishini kuting. Natijalar ustoz turnirni yakunlaganda e'lon qilinadi.</p><div class="ttm" id="ttm" style="font-size:20px"></div></div>
+      <div class="card" style="margin-top:12px"><div style="display:flex;justify-content:space-between;font-size:13px;color:var(--mu);margin-bottom:8px"><b style="color:var(--tx)">🏆 Jonli reyting</b><span id="tmy"></span></div><div id="tbd"></div></div>`;
+    sBoard();
+  }
+  function sBoard() {
+    const list = ranked(); if ($("tcnt")) $("tcnt").textContent = list.length;
+    board($("tbd"), list, { limit: st.meta && st.meta.phase === "lobby" ? 0 : 8, n: st.meta ? st.meta.n : 20 });
+    const i = list.findIndex(p => p.k === st.pid); if ($("tmy") && i >= 0) $("tmy").textContent = `Siz: ${i + 1}-o'rin / ${list.length}`;
+  }
+  function sTick() {
+    const m = st.meta; if (!m || m.phase !== "run") return;
+    const now = DBA.now();
+    if (now < m.startAt) { if ($("tcd")) $("tcd").textContent = Math.ceil((m.startAt - now) / 1000); else if ($("tqa")) sQ(); return; }
+    if ($("tcd")) sQ();
+    const left = m.startAt + m.dur - now;
+    if ($("ttm")) { $("ttm").textContent = "⏱ " + fmt(left); $("ttm").classList.toggle("low", left < 60000); }
+    if (left <= 0 && $("tqa") && !myDone()) finishMine();
+  }
+  function sEnd() {
+    clearInterval(st.timer);
+    const list = ranked(), i = list.findIndex(p => p.k === st.pid);
+    tz().innerHTML = `<div class="card" style="text-align:center"><h1>🏁 Turnir yakunlandi</h1>${podium(list)}
+      ${i >= 0 ? `<div class="tnote" style="margin-top:14px">Siz <b>${i + 1}-o'rin</b>dasiz · ${pts(list[i].s)} ball</div>` : ""}
+      <button class="btn" id="tmine" style="margin-top:16px">Xatolarim va sertifikatim</button></div>
+      <div class="card" style="margin-top:12px"><b>To'liq reyting</b><div id="tbd" style="margin-top:10px"></div></div>`;
+    board($("tbd"), list, { n: st.meta.n });
+    $("tmine").onclick = () => {
+      set = setById(st.meta.set); Q = st.Q; order = st.Q.map((q, i) => ({ i, idx: st.perms[i] }));
+      ans = st.Q.map((q, i) => st.ans[i] === undefined ? null : st.ans[i]);
+      const me = st.players[st.pid] || {}; t0 = Date.now() - (me.t || 0);
+      finish();
+    };
+  }
+
+  // ================== USTOZ ==================
+  function openHost() {
+    clear(); st.role = "host"; show("tz");
+    tz().innerHTML = `<div class="card"><h1>👨‍🏫 Ustoz paneli</h1><p class="sub">Turnir yaratish uchun parolni kiriting.</p>
+      <input id="thp" type="password" placeholder="Parol"><div id="therr" style="color:var(--bad);font-size:14px;margin:-6px 0 12px"></div>
+      <button class="btn" id="thgo">Kirish</button><button class="btn ghost" style="margin-top:10px" onclick="show('start')">Orqaga</button></div>`;
+    $("thgo").onclick = () => { if ($("thp").value === HOST_PIN) { ls.set("zm_host", "1"); hSetup(); } else $("therr").textContent = "Parol noto'g'ri."; };
+    if (ls.get("zm_host") === "1") hSetup();
+  }
+  function hSetup() {
+    let opts = "", g = null;
+    SETS.forEach(s => { if (s.g !== g) { if (g) opts += "</optgroup>"; g = s.g; opts += `<optgroup label="${esc(g)}">`; } opts += `<option value="${s.id}">${esc((s.n === "∑" ? "" : s.n + " · ") + s.title)} (${s.qs ? s.qs.length : 20} savol)</option>`; });
+    opts += "</optgroup>";
+    tz().innerHTML = `<div class="card"><h1>🏆 Yangi turnir</h1>
+      ${DBA.kind === "mock" ? '<div class="tnote warn">Sinov rejimi: Firebase hali ulanmagan. Turnir faqat shu qurilmadagi oynalar orasida ishlaydi.</div>' : ""}
+      <label>Test</label><select id="ths">${opts}</select>
+      <label>Vaqt (daqiqa)</label><input id="thd" type="number" min="1" max="180">
+      <button class="btn" id="thc">Turnirni ochish</button><button class="btn ghost" style="margin-top:10px" onclick="show('start')">Bosh sahifa</button></div>`;
+    const sd = () => { const s = setById($("ths").value); $("thd").value = s.qs && s.qs.length > 30 ? 40 : 15; }; $("ths").onchange = sd; sd();
+    $("thc").onclick = hCreate;
+  }
+  async function hCreate() {
+    $("thc").disabled = true;
+    const s = setById($("ths").value), dur = Math.max(1, +$("thd").value || 15) * 60000;
+    let code; for (let k = 0; k < 20; k++) { code = String(1000 + Math.floor(Math.random() * 9000)); if (!(await DBA.get(`t/${code}/meta`))) break; }
+    const meta = { phase: "lobby", set: s.id, seed: Math.floor(Math.random() * 1e9), dur, n: s.qs ? s.qs.length : 20, c: DBA.now() };
+    await DBA.set(`t/${code}`, { meta });
+    hAttach(code);
+  }
+  function hAttach(code) {
+    clear(); st.role = "host"; st.code = code; st.pid = null; st.meta = null; ls.set("zm_hostcode", code);
+    st.unsub.push(DBA.on(`t/${code}/players`, v => { st.players = v || {}; hBoard(); hAuto(); }));
+    st.unsub.push(DBA.on(`t/${code}/meta`, v => { if (!v) return; const ph = st.meta && st.meta.phase; st.meta = v; if (ph !== v.phase || !$("thb")) hRoute(); }));
+    st.timer = setInterval(hTick, 250);
+  }
+  const link = () => location.href.split("#")[0] + "#turnir-" + st.code;
+  function hRoute() {
+    const m = st.meta, s = setById(m.set);
+    if (m.phase === "end") return hEnd();
+    tz().innerHTML = `<div class="card" style="text-align:center">
+      <div class="sub" style="margin-bottom:4px">${esc(s.title)} · ${m.n} savol · ${Math.round(m.dur / 60000)} daqiqa</div>
+      ${m.phase === "lobby" ? `<div class="sub" style="margin:0">Turnir kodi</div><div class="tcode">${st.code}</div>
+        <div class="sub">O'quvchilar saytni ochib «Turnir rejimi»ni bosadi va shu kodni kiritadi.<br><span class="tlink"></span></div>
+        <div class="row"><button class="btn ghost" id="thcp">Havolani nusxalash</button><button class="btn" id="thst">▶ Boshlash</button></div>`
+      : `<div class="row" style="align-items:center"><div style="flex:1;text-align:left"><div class="sub" style="margin:0">Kod: <b>${st.code}</b> · Ishtirokchilar: <b id="tcnt">0</b> · Tugatganlar: <b id="tdn">0</b></div></div><div class="ttm" id="ttm" style="font-size:26px">--:--</div></div>
+        <button class="btn" id="thend" style="margin-top:12px;background:var(--bad)">■ Turnirni yakunlash</button>`}
+      </div><div class="card" style="margin-top:12px"><b>${m.phase === "lobby" ? "Qo'shilganlar: <span id='tcnt'>0</span>" : "🏆 Jonli reyting"}</b><div id="thb" style="margin-top:10px"></div></div>`;
+    if ($("thst")) {
+      tz().querySelector(".tlink").textContent = link();
+      $("thcp").onclick = () => { navigator.clipboard && navigator.clipboard.writeText(link()).then(() => $("thcp").textContent = "Nusxalandi ✓", () => {}); };
+      $("thst").onclick = () => { $("thst").disabled = true; DBA.update(`t/${st.code}/meta`, { phase: "run", startAt: DBA.now() + 5000 }); };
+    }
+    if ($("thend")) $("thend").onclick = () => DBA.update(`t/${st.code}/meta`, { phase: "end" });
+    hBoard();
+  }
+  function hBoard() {
+    const list = ranked(); if ($("tcnt")) $("tcnt").textContent = list.length; if ($("tdn")) $("tdn").textContent = list.filter(p => p.d).length;
+    board($("thb"), list, { big: true, n: st.meta ? st.meta.n : 20 });
+  }
+  function hAuto() {
+    const m = st.meta; if (!m || m.phase !== "run") return;
+    const list = ranked();
+    if ((list.length && list.every(p => p.d)) || DBA.now() > m.startAt + m.dur + 3000) DBA.update(`t/${st.code}/meta`, { phase: "end" });
+  }
+  let lastHB = 0;
+  function hTick() {
+    const m = st.meta; if (!m) return;
+    if (DBA.kind === "mqtt" && m.phase !== "end" && Date.now() - lastHB > 3000) { lastHB = Date.now(); DBA.update(`t/${st.code}/meta`, {}); }
+    if (m.phase !== "run") return;
+    const now = DBA.now(), left = now < m.startAt ? m.startAt - now : m.startAt + m.dur - now;
+    if ($("ttm")) { $("ttm").textContent = now < m.startAt ? "Start: " + Math.ceil(left / 1000) : fmt(left); $("ttm").classList.toggle("low", now >= m.startAt && left < 60000); }
+    hAuto();
+  }
+  function hEnd() {
+    clearInterval(st.timer);
+    const list = ranked();
+    tz().innerHTML = `<div class="card" style="text-align:center"><h1>🏁 Turnir natijalari</h1><div class="sub">${esc(setById(st.meta.set).title)} · ${list.length} ishtirokchi</div>${podium(list)}
+      <div class="row" style="margin-top:16px"><button class="btn ghost" id="thcr">Natijalarni nusxalash</button><button class="btn" id="thnew">Yangi turnir</button></div></div>
+      <div class="card" style="margin-top:12px"><b>To'liq reyting</b><div id="thb" style="margin-top:10px"></div></div>`;
+    board($("thb"), list, { big: true, n: st.meta.n });
+    $("thnew").onclick = hSetup;
+    $("thcr").onclick = () => {
+      const txt = `🏆 Turnir natijalari — ${setById(st.meta.set).title}\n` + list.map((p, i) => `${i + 1}. ${p.n} — ${pts(p.s)} ball (${p.s || 0}/${st.meta.n})`).join("\n");
+      navigator.clipboard && navigator.clipboard.writeText(txt).then(() => $("thcr").textContent = "Nusxalandi ✓", () => {});
+    };
+  }
+
+  function boot() {
+    const h = location.hash;
+    if (h.startsWith("#turnir")) openJoin((h.split("-")[1] || "").slice(0, 4));
+    else if (h === "#ustoz") openHost();
+  }
+  return { openJoin, openHost, boot, st };
+})();
+setTimeout(T.boot, 0);
+
+</script>
+</body>
+</html>
