@@ -3315,11 +3315,16 @@ const T = (() => {
     if (meta.phase === "end") { $("tjgo").disabled = false; return err("Bu turnir allaqachon tugagan."); }
     const cap = s => s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
     FN = cap(f); LN = cap(l); name = FN + " " + LN; ls.set("zm_fn", f); ls.set("zm_ln", l);
-    st.code = code; st.pid = ss.get("zm_pid_" + code) || ("p" + Math.random().toString(36).slice(2, 10)); ss.set("zm_pid_" + code, st.pid);
+    const nk = s => String(s || "").toLowerCase().replace(/[ʻʼ'`‘’]/g, "").replace(/\s+/g, " ").trim(), key = nk(name);
+    let all = {}; try { all = (await DBA.get(`t/${code}/players`)) || {}; } catch (e) {}
+    const saved = ls.get("zm_pid_" + code + "_" + key);
+    const taken = Object.entries(all).find(([k, p]) => p && nk(p.n) === key);
+    if (taken && taken[0] !== saved) { $("tjgo").disabled = false; return err(`«${name}» bu turnirda allaqachon qatnashgan. Har bir o'quvchi turnirda faqat bir marta qatnasha oladi.`); }
+    st.code = code; st.pid = saved || ("p" + Math.random().toString(36).slice(2, 10)); ls.set("zm_pid_" + code + "_" + key, st.pid);
     const me = await DBA.get(`t/${code}/players/${st.pid}`);
     if (!me) await DBA.set(`t/${code}/players/${st.pid}`, { n: name, s: 0, a: 0, t: 0, d: 0 });
     else await DBA.update(`t/${code}/players/${st.pid}`, { n: name });
-    try { st.ans = JSON.parse(ss.get("zm_ans_" + code + st.pid) || "[]"); } catch (e) { st.ans = []; }
+    try { st.ans = JSON.parse(ls.get("zm_ans_" + code + st.pid) || "[]"); } catch (e) { st.ans = []; }
     st.cur = st.ans.length; st.ended = false;
     st.unsub.push(DBA.on(`t/${code}/players`, v => { st.players = v || {}; sBoard(); }));
     st.unsub.push(DBA.on(`t/${code}/meta`, v => { if (!v) return; const ph = st.meta && st.meta.phase; st.meta = v; if (!st.Q.length || ph === undefined) { const b = buildQ(v); st.Q = b.Q; st.perms = b.perms; } sRoute(ph !== v.phase); }));
@@ -3362,7 +3367,7 @@ const T = (() => {
   async function answer(oi, btn) {
     if (st.lock) return; st.lock = true;
     const q = st.Q[st.cur], ok = oi === q.a;
-    st.ans[st.cur] = oi; ss.set("zm_ans_" + st.code + st.pid, JSON.stringify(st.ans));
+    st.ans[st.cur] = oi; ls.set("zm_ans_" + st.code + st.pid, JSON.stringify(st.ans));
     btn.classList.add(ok ? "okk" : "bad");
     if (!ok) [...$("tops").children].forEach((b, k) => { if (st.perms[st.cur][k] === q.a) b.classList.add("okk"); });
     if (ok) { st.streak = (st.streak || 0) + 1; FX.correct(btn, "+" + (Math.round(ppq() * 10) / 10)); if (st.streak >= 3) { FX.toast(`🔥 ${st.streak} ta ketma-ket to'g'ri!`, "fire"); setTimeout(FX.S.streak, 250); } }
