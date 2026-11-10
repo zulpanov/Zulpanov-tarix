@@ -112,6 +112,16 @@ select{width:100%;padding:13px 14px;border-radius:10px;border:1px solid var(--li
 .mr{margin-bottom:10px}.mh{display:flex;justify-content:space-between;gap:10px;font-size:13px;margin-bottom:4px}.mh span{color:var(--mu)}
 .live-dot{width:12px;height:12px;border-radius:50%;background:var(--bad);box-shadow:0 0 0 0 rgba(224,82,82,.7);animation:livep 1.4s infinite;flex:none}
 @keyframes livep{0%{box-shadow:0 0 0 0 rgba(224,82,82,.7)}100%{box-shadow:0 0 0 12px rgba(224,82,82,0)}}
+.accbox{margin-bottom:14px}.acctabs{display:flex;gap:6px;margin-bottom:6px}.acctabs button{flex:1;padding:10px;border-radius:10px;border:1px solid var(--line);background:var(--card2);color:var(--mu);font-family:inherit;font-size:14px;font-weight:600;cursor:pointer}.acctabs button.on{background:var(--ac);border-color:var(--ac);color:#fff}
+.accerr{color:var(--bad);font-size:14px;margin:-6px 0 12px;min-height:4px}
+.accin{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.accin .btn{flex:none}
+.avatar{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--ac2),#1f6f68);display:grid;place-items:center;font-weight:800;color:#fff;flex:none;text-transform:uppercase}.avatar.sm{width:36px;height:36px;font-size:13px}
+.acrow{display:flex;gap:10px;padding:12px 2px;border-bottom:1px solid var(--line)}.acrow:last-child{border-bottom:0}
+.cred{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;margin:6px 0 2px}.cred code{background:var(--bg);padding:2px 7px;border-radius:6px;font-size:13px;color:#f3c79c}
+.lnk{background:none;border:0;color:var(--ac2);font-family:inherit;font-size:12px;cursor:pointer;padding:2px 0}
+.acact{display:flex;gap:14px;flex-wrap:wrap;margin-top:4px}
+.adminbar{background:linear-gradient(135deg,#2a2420,#17212c);border:1px solid var(--ac);border-radius:16px;padding:12px 14px;margin-bottom:12px}.adm-t{font-size:11px;font-weight:800;letter-spacing:.12em;color:var(--ac)}
+details summary::-webkit-details-marker{color:var(--ac)}
 .streak{display:inline-block;margin-left:8px;color:#ff9a4d;font-weight:800}
 .btn.sm{width:auto;padding:8px 12px;font-size:13px}
 .sndbtn{margin-left:auto;background:var(--card2);border:1px solid var(--line);color:var(--tx);border-radius:10px;width:38px;height:38px;font-size:18px;cursor:pointer}
@@ -129,13 +139,12 @@ select{width:100%;padding:13px 14px;border-radius:10px;border:1px solid var(--li
 <div class="wrap">
   <div class="brand"><div class="logo">ZM</div><div><b>ZULPANOV METHODS TARIX</b><small>Tarix testlari · turnirlar</small></div><button class="sndbtn" id="snd" title="Ovoz" onclick="this.textContent=FX.toggleSound()?'🔊':'🔇'">🔊</button></div>
 
-  <div class="card tcard" id="tCard"><div style="font-size:34px">🏆</div><div style="flex:1"><b>Turnir rejimi</b><div class="sub" style="margin:2px 0 0">Ustoz bergan kod bilan sinfdoshlaringiz bilan jonli bellashing</div></div><button class="btn" style="width:auto;padding:10px 16px" onclick="T.openJoin()">Kirish</button></div>
+  <div class="card accbox" id="acc"><div class="sub" style="margin:0">Yuklanmoqda…</div></div>
+  <div class="card tcard" id="tCard"><div style="font-size:34px">🏆</div><div style="flex:1"><b>Turnir rejimi</b><div class="sub" style="margin:2px 0 0">Ustoz bergan kod bilan sinfdoshlaringiz bilan jonli bellashing</div></div><button class="btn" style="width:auto;padding:10px 16px" onclick="if(ACCT.cur)T.openJoin();else{FX.toast('🔐 Avval login va parolingiz bilan kiring');$('acc').scrollIntoView({behavior:'smooth'})}">Kirish</button></div>
   <section id="tz" class="hide"></section>
   <section id="start" class="card">
     <h1>Mavzulashtirilgan tahliliy testlar</h1>
     <p class="sub">Har bir test 100 ballik: 20 savollik testda har bir to'g'ri javob — 5 ball, 45 savollik testda — taxminan 2,2 ball. Natijaga qarab ismingiz yozilgan sertifikat beriladi: 45+ → C, 50+ → C+, 55+ → B, 60+ → B+, 65+ → A, 70+ → A+.</p>
-    <div class="row"><div style="flex:1"><label for="fn">Ism</label><input id="fn" placeholder="Aziz" autocomplete="off"></div>
-    <div style="flex:1"><label for="ln">Familiya</label><input id="ln" placeholder="Karimov" autocomplete="off"></div></div>
     <label>Mavzuni tanlang</label>
     <div class="topics" id="tps"></div>
     <button class="btn" id="go" disabled>Testni boshlash</button>
@@ -175,7 +184,7 @@ select{width:100%;padding:13px 14px;border-radius:10px;border:1px solid var(--li
   </section>
 </div>
 
-<div style="text-align:center;margin:-40px 0 30px"><a href="#ustoz" onclick="T.openHost();return false" style="color:var(--mu);font-size:12px">Ustoz paneli</a></div>
+<div style="text-align:center;margin:-40px 0 30px"><a href="#ustoz" onclick="T.openHost();return false" style="color:var(--mu);font-size:12px">⚙️ Admin panel</a></div>
 <div class="modal" id="mdl"><div class="card">
   <p style="font-weight:700;font-size:17px;margin-bottom:6px">Testni yakunlaysizmi?</p>
   <p class="sub" id="mtx"></p>
@@ -2743,13 +2752,12 @@ SETS.forEach(s=>{
   b.onclick=()=>{set=s;document.querySelectorAll(".tp").forEach(x=>x.classList.toggle("sel",x===b));chk()};
   $("tps").appendChild(b);
 });
-function chk(){$("go").disabled=!(set&&$("fn").value.trim().length>=2&&$("ln").value.trim().length>=2)}
-$("fn").oninput=chk;$("ln").oninput=chk;
+function chk(){const a=typeof ACCT!=="undefined"&&ACCT.cur;$("go").disabled=!(set&&a);$("go").textContent=a?"Testni boshlash":"Avval tizimga kiring ↑"}
 $("go").onclick=start;
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
 function start(){
   FROM_T=false;
-  const cap=s=>s.charAt(0).toUpperCase()+s.slice(1).toLowerCase();FN=cap($("fn").value.trim());LN=cap($("ln").value.trim());name=FN+" "+LN;
+  const ac=ACCT.cur;if(!ac)return;FN=ac.f;LN=ac.l;name=FN+" "+LN;
   if(!set.qs){Q=shuffle(SETS.filter(s=>s.qs&&s.g===set.g).flatMap(s=>s.qs)).slice(0,20)}else{Q=set.qs}
   order=Q.map((q,i)=>({i,idx:shuffle([0,1,2,3])}));
   ans=Array(Q.length).fill(null);cur=0;t0=Date.now();
@@ -2758,7 +2766,7 @@ function start(){
   show("quiz");render();
 }
 function fmt(ms){const s=Math.floor(ms/1000);return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0")}
-function show(id){["start","quiz","res","tz"].forEach(s=>$(s).classList.toggle("hide",s!==id));$("tCard").classList.toggle("hide",id!=="start");window.scrollTo(0,0)}
+function show(id){["start","quiz","res","tz"].forEach(s=>$(s).classList.toggle("hide",s!==id));$("tCard").classList.toggle("hide",id!=="start");$("acc").classList.toggle("hide",id!=="start");window.scrollTo(0,0)}
 function render(){
   const {i,idx}=order[cur],q=Q[i];
   $("cnt").textContent=`${cur+1}-savol / ${Q.length}`;
@@ -3030,7 +3038,10 @@ let FROM_T = false;
 function saveResult(r) {
   try {
     const id = Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
-    DBA.set("r/" + id, { ...r, at: DBA.now() }).catch(() => {});
+    const ac = typeof ACCT !== "undefined" && ACCT.cur; if (ac) r.u = ac.login;
+    const rec = { ...r, at: DBA.now() };
+    DBA.set("r/" + id, rec).catch(() => {});
+    if (ac) DBA.set("h/" + ac.login + "/" + id, { ttl: rec.ttl, mode: rec.mode, ok: rec.ok, tot: rec.tot, pts: rec.pts, lv: rec.lv, at: rec.at }).catch(() => {});
   } catch (e) {}
 }
 
@@ -3045,14 +3056,14 @@ const STAT = (() => {
   const list = () => Object.entries(data || {}).filter(([k, v]) => v && v.n && v.at).map(([k, v]) => ({ id: k, ...v })).sort((a, b) => b.at - a.at);
   function filtered() {
     const now = Date.now(), lim = per === "day" ? 86400e3 : per === "week" ? 7 * 86400e3 : per === "month" ? 30 * 86400e3 : Infinity;
-    return list().filter(r => (!q || norm(r.n).includes(norm(q))) && (!fset || r.set === fset) && (now - r.at <= lim));
+    return list().filter(r => (!q || norm(r.n + " " + (r.u || "")).includes(norm(q))) && (!fset || r.set === fset) && (now - r.at <= lim));
   }
   const lvColor = lv => !lv ? "var(--bad)" : /A/.test(lv) ? "var(--ok)" : /B/.test(lv) ? "var(--ac2)" : "var(--ac)";
   function open() {
-    if (typeof T !== "undefined") T.leave();
+    if (typeof T !== "undefined") T.leave(); if (typeof ACC !== "undefined") ACC.leave();
     show("tz");
-    $("tz").innerHTML = `<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
-      <h1 style="margin:0">📊 Statistika</h1><div class="row" style="flex:0 0 auto"><button class="btn ghost sm" id="stCsv">⬇ Excel (CSV)</button><button class="btn ghost sm" onclick="T.openHost()">← Panel</button></div></div>
+    $("tz").innerHTML = `${adminNav("stat")}<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+      <h1 style="margin:0">📊 Statistika</h1><div class="row" style="flex:0 0 auto"><button class="btn ghost sm" id="stCsv">⬇ Excel (CSV)</button></div></div>
       <div class="sub" id="stNote" style="margin:6px 0 14px">Yuklanmoqda…</div>
       <div class="stcards" id="stCards"></div>
       <div class="row" style="gap:8px;flex-wrap:wrap;margin-top:14px">
@@ -3087,7 +3098,7 @@ const STAT = (() => {
   }
   function row(r) {
     return `<div class="strow" data-id="${esc(r.id)}"><div class="st-ic">${r.mode === "turnir" ? "🏆" : "📝"}</div>
-      <div class="st-m"><b>${esc(r.n)}</b><div class="st-s">${esc(r.ttl || "")}${r.mode === "turnir" ? ` · ${r.rank}-o'rin / ${r.cnt}` : ""}</div><div class="st-s">${dt(r.at)} · ${ago(r.at)}${r.dur ? " · ⏱ " + fmt(r.dur) : ""}</div></div>
+      <div class="st-m"><b>${esc(r.n)}</b>${r.u ? ` <span class="st-s">@${esc(r.u)}</span>` : ""}<div class="st-s">${esc(r.ttl || "")}${r.mode === "turnir" ? ` · ${r.rank}-o'rin / ${r.cnt}` : ""}</div><div class="st-s">${dt(r.at)} · ${ago(r.at)}${r.dur ? " · ⏱ " + fmt(r.dur) : ""}</div></div>
       <div class="st-r"><div class="st-p">${r.pts}</div><div class="st-s">${r.ok}/${r.tot}</div>${r.lv ? `<span class="st-lv" style="background:${lvColor(r.lv)}">${esc(r.lv)}</span>` : ""}</div></div>`;
   }
   function render() {
@@ -3097,7 +3108,7 @@ const STAT = (() => {
       B.innerHTML = `<div class="card">${rs.slice(0, 200).map(row).join("")}</div>`;
       B.querySelectorAll(".strow").forEach(el => el.onclick = () => showDetail(rs.find(r => r.id === el.dataset.id)));
     } else if (tab === "stu") {
-      const g = {}; rs.forEach(r => { const k = norm(r.n); (g[k] = g[k] || { n: r.n, rs: [] }).rs.push(r); });
+      const g = {}; rs.forEach(r => { const k = r.u || norm(r.n); (g[k] = g[k] || { n: r.n, rs: [] }).rs.push(r); });
       const arr = Object.values(g).map(x => ({ ...x, avg: Math.round(x.rs.reduce((a, r) => a + r.pts, 0) / x.rs.length), best: Math.max(...x.rs.map(r => r.pts)), last: x.rs[0].at })).sort((a, b) => b.avg - a.avg);
       B.innerHTML = `<div class="card"><div class="sub" style="margin-top:0">O'rtacha ball bo'yicha reyting. Ismni bossangiz, o'sha o'quvchining natijalari chiqadi.</div>${arr.map((x, i) => `<div class="strow" data-n="${esc(x.n)}"><div class="st-ic">${i < 3 ? ["🥇", "🥈", "🥉"][i] : i + 1}</div>
         <div class="st-m"><b>${esc(x.n)}</b><div class="st-s">${x.rs.length} ta test · eng yaxshi: ${x.best} · oxirgi: ${ago(x.last)}</div><div class="tr-bar" style="margin-top:6px"><i style="width:${x.avg}%"></i></div></div>
@@ -3144,6 +3155,207 @@ const STAT = (() => {
   return { open };
 })();
 
+// ================== O'QUVCHI HISOBI (login / parol) ==================
+const ACCT = (() => {
+  const L = { get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }, del(k) { try { localStorage.removeItem(k); } catch (e) {} } };
+  let cur = null, ready = false;
+  const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const normLogin = s => String(s || "").trim().toLowerCase();
+  const cap = s => { s = String(s || "").trim(); return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase(); };
+  function apply() {
+    if (cur) { FN = cur.f; LN = cur.l; name = cur.f + " " + cur.l; }
+    renderBox(); if (typeof chk === "function") chk();
+  }
+  async function restore() {
+    let s = null; try { s = JSON.parse(L.get("zm_user") || "null"); } catch (e) {}
+    if (s && s.u) {
+      cur = { login: s.u, f: s.f, l: s.l, g: s.g || "" }; apply(); // darhol ko'rsatamiz, keyin tekshiramiz
+      try {
+        const r = await DBA.get("u/" + s.u);
+        if (!cur || cur.login !== s.u) { ready = true; return; }
+        if (!r || r.p !== s.p || r.b) { logout(r && r.b ? "Hisobingiz ustoz tomonidan bloklangan." : "Hisobingizga qayta kiring."); }
+        else { cur = { login: s.u, f: r.f, l: r.l, g: r.g || "" }; L.set("zm_user", JSON.stringify({ u: s.u, p: r.p, f: r.f, l: r.l, g: r.g || "" })); DBA.update("u/" + s.u, { last: DBA.now() }); apply(); }
+      } catch (e) {}
+      ready = true; return;
+    }
+    ready = true; renderBox();
+  }
+  function logout(msg) { cur = null; L.del("zm_user"); L.del("zm_active"); renderBox(msg); if (typeof chk === "function") chk(); }
+  function renderBox(msg) {
+    const box = $("acc"); if (!box) return;
+    if (cur) {
+      box.innerHTML = `<div class="accin"><div class="avatar">${esc((cur.f[0] || "") + (cur.l[0] || ""))}</div><div style="flex:1;min-width:0"><b class="accn"></b><div class="st-s">@${esc(cur.login)}${cur.g ? " · " + esc(cur.g) : ""}</div></div>
+        <button class="btn ghost sm" id="accH">📈 Natijalarim</button><button class="btn ghost sm" id="accX">Chiqish</button></div>`;
+      box.querySelector(".accn").textContent = cur.f + " " + cur.l;
+      $("accX").onclick = () => logout(); $("accH").onclick = history;
+      return;
+    }
+    box.innerHTML = `<div class="acctabs"><button data-m="in" class="on">Kirish</button><button data-m="up">Ro'yxatdan o'tish</button></div><div id="accF"></div>`;
+    const tabs = box.querySelector(".acctabs");
+    tabs.onclick = e => { const b = e.target.closest("button"); if (!b) return; [...tabs.children].forEach(x => x.classList.toggle("on", x === b)); form(b.dataset.m); };
+    form("in", msg);
+  }
+  function form(mode, msg) {
+    const F = $("accF");
+    if (mode === "in") {
+      F.innerHTML = `<p class="sub" style="margin:4px 0 12px">Test ishlash va turnirda qatnashish uchun login va parolingiz bilan kiring.</p>
+        <label>Login</label><input id="aL" autocomplete="username" autocapitalize="none" placeholder="masalan: ali_valiyev">
+        <label>Parol</label><input id="aP" type="password" autocomplete="current-password" placeholder="••••">
+        <div class="accerr" id="aE"></div><button class="btn" id="aGo">Kirish</button>`;
+      $("aGo").onclick = login; $("aP").onkeydown = e => { if (e.key === "Enter") login(); };
+    } else {
+      F.innerHTML = `<p class="sub" style="margin:4px 0 12px">Bir marta ro'yxatdan o'tasiz, keyingi safar shu login va parol bilan kirasiz.</p>
+        <div class="row"><div style="flex:1"><label>Ism</label><input id="rF" placeholder="Ali"></div><div style="flex:1"><label>Familiya</label><input id="rLn" placeholder="Valiyev"></div></div>
+        <label>Sinf yoki guruh</label><input id="rG" placeholder="masalan: 7-A yoki 1-guruh">
+        <label>Login (lotin harflari, raqam, _ belgisi)</label><input id="rL" autocapitalize="none" placeholder="ali_valiyev">
+        <div class="row"><div style="flex:1"><label>Parol</label><input id="rP" type="password" placeholder="kamida 4 belgi"></div><div style="flex:1"><label>Parolni takrorlang</label><input id="rP2" type="password"></div></div>
+        <div class="tnote" style="font-size:12px">⚠️ Boshqa joylarda (Telegram, Instagram, pochta) ishlatadigan parolingizni yozmang. Bu parolni ustozingiz ko'ra oladi.</div>
+        <div class="accerr" id="aE"></div><button class="btn" id="rGo">Ro'yxatdan o'tish</button>`;
+      $("rGo").onclick = register;
+    }
+    if (msg) $("aE").textContent = msg;
+  }
+  async function login() {
+    const u = normLogin($("aL").value), p = $("aP").value, E = m => $("aE").textContent = m;
+    if (!u || !p) return E("Login va parolni kiriting.");
+    $("aGo").disabled = true; E("");
+    let r; try { r = await DBA.get("u/" + u); } catch (e) { $("aGo").disabled = false; return E("Ulanib bo'lmadi. Internetni tekshiring."); }
+    $("aGo").disabled = false;
+    if (!r) return E("Bunday login topilmadi. Avval ro'yxatdan o'ting.");
+    if (r.p !== p) return E("Parol noto'g'ri.");
+    if (r.b) return E("Hisobingiz ustoz tomonidan bloklangan.");
+    cur = { login: u, f: r.f, l: r.l, g: r.g || "" };
+    L.set("zm_user", JSON.stringify({ u, p, f: r.f, l: r.l, g: r.g || "" }));
+    DBA.update("u/" + u, { last: DBA.now() });
+    apply(); FX.toast(`👋 Xush kelibsiz, ${esc(r.f)}!`, "up");
+  }
+  async function register() {
+    const f = cap($("rF").value), l = cap($("rLn").value), g = $("rG").value.trim().slice(0, 40), u = normLogin($("rL").value), p = $("rP").value, p2 = $("rP2").value, E = m => $("aE").textContent = m;
+    if (f.length < 2 || l.length < 2) return E("Ism va familiyani to'liq yozing.");
+    if (!/^[a-z0-9_]{3,20}$/.test(u)) return E("Login 3–20 ta lotin harfi, raqam yoki _ belgisidan iborat bo'lsin (bo'sh joysiz).");
+    if (p.length < 4) return E("Parol kamida 4 belgidan iborat bo'lsin.");
+    if (p !== p2) return E("Parollar bir xil emas.");
+    $("rGo").disabled = true; E("");
+    try {
+      const [cfg, ex] = await Promise.all([DBA.get("c/main"), DBA.get("u/" + u)]);
+      if (cfg && cfg.regOff) { $("rGo").disabled = false; return E("Ro'yxatdan o'tish hozir yopiq. Ustozingizga murojaat qiling."); }
+      if (ex) { $("rGo").disabled = false; return E("Bu login band. Boshqa login tanlang."); }
+      await DBA.set("u/" + u, { f, l, g, p, c: DBA.now(), last: DBA.now() });
+    } catch (e) { $("rGo").disabled = false; return E("Ulanib bo'lmadi. Internetni tekshiring."); }
+    cur = { login: u, f, l, g };
+    L.set("zm_user", JSON.stringify({ u, p, f, l, g }));
+    apply(); FX.toast("🎉 Ro'yxatdan o'tdingiz!", "up"); FX.burst(innerWidth / 2, 160, 50, 7);
+  }
+  function history() {
+    if (!cur) return;
+    show("tz");
+    $("tz").innerHTML = `<div class="card"><div style="display:flex;justify-content:space-between;align-items:center"><h1 style="margin:0">📈 Mening natijalarim</h1><button class="btn ghost sm" onclick="show('start')">← Orqaga</button></div><div class="sub" id="hN" style="margin-top:6px">Yuklanmoqda…</div><div class="stcards" id="hC" style="margin-top:10px"></div></div><div class="card" style="margin-top:12px" id="hL"></div>`;
+    const un = DBA.on("h/" + cur.login, v => {
+      if (!$("hL")) { un(); return; }
+      const rs = Object.values(v || {}).filter(r => r && r.at).sort((a, b) => b.at - a.at);
+      $("hN").textContent = rs.length ? `Jami ${rs.length} ta natija` : "Hali test ishlamadingiz. Birinchi testingizni boshlang!";
+      const avg = rs.length ? Math.round(rs.reduce((a, r) => a + r.pts, 0) / rs.length) : 0, best = rs.length ? Math.max(...rs.map(r => r.pts)) : 0;
+      $("hC").innerHTML = [["📝", rs.length, "Testlar"], ["📈", avg, "O'rtacha"], ["🏅", best, "Eng yuqori"], ["🏆", rs.filter(r => r.mode === "turnir" && r.rank === 1).length, "Turnir g'alabasi"]].map(([i, v, l]) => `<div class="stc"><div class="stc-i">${i}</div><b>${v}</b><span>${l}</span></div>`).join("");
+      const d2 = n => String(n).padStart(2, "0"), dt = ms => { const d = new Date(ms); return `${d2(d.getDate())}.${d2(d.getMonth() + 1)}.${d.getFullYear()} ${d2(d.getHours())}:${d2(d.getMinutes())}`; };
+      $("hL").innerHTML = rs.length ? rs.map(r => `<div class="strow" style="cursor:default"><div class="st-ic">${r.mode === "turnir" ? "🏆" : "📝"}</div><div class="st-m"><b>${esc(r.ttl)}</b><div class="st-s">${dt(r.at)}${r.mode === "turnir" ? ` · ${r.rank}-o'rin / ${r.cnt}` : ""}</div></div><div class="st-r"><div class="st-p">${r.pts}</div><div class="st-s">${r.ok}/${r.tot}</div>${r.lv ? `<span class="st-lv" style="background:var(--ok)">${esc(r.lv)}</span>` : ""}</div></div>`).join("") : '<div class="sub" style="text-align:center;margin:0">Natijalar shu yerda paydo bo\'ladi.</div>';
+    });
+  }
+  return { restore, get cur() { return cur; }, logout, renderBox, history };
+})();
+
+// ================== ADMIN: O'QUVCHILAR HISOBLARI ==================
+const ACC = (() => {
+  let users = {}, res = {}, cfg = {}, unsubs = [], q = "", showAll = false, shown = new Set();
+  const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const d2 = n => String(n).padStart(2, "0"), dt = ms => { if (!ms) return "—"; const d = new Date(ms); return `${d2(d.getDate())}.${d2(d.getMonth() + 1)}.${d.getFullYear()} ${d2(d.getHours())}:${d2(d.getMinutes())}`; };
+  function open() {
+    if (typeof T !== "undefined") T.leave();
+    unsubs.forEach(f => f()); unsubs = [];
+    show("tz");
+    $("tz").innerHTML = `${adminNav("acc")}<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap"><h1 style="margin:0">👥 O'quvchilar hisoblari</h1>
+      <div class="row" style="flex:0 0 auto"><button class="btn ghost sm" id="acShow">👁 Parollarni ko'rsatish</button><button class="btn ghost sm" id="acCsv">⬇ CSV</button></div></div>
+      <div class="sub" id="acN" style="margin:6px 0 12px">Yuklanmoqda…</div>
+      <div class="tnote" style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><div style="flex:1">Ro'yxatdan o'tish: <b id="acReg">…</b></div><button class="btn sm" id="acRegB">…</button></div>
+      <input id="acQ" placeholder="🔎 Ism, login yoki sinf bo'yicha qidirish" style="margin:0">
+      </div>
+      <details class="card" style="margin-top:12px" id="acAdd"><summary style="cursor:pointer;font-weight:700">➕ O'quvchini o'zim qo'shaman</summary>
+        <div class="row" style="margin-top:12px"><div style="flex:1"><label>Ism</label><input id="nF"></div><div style="flex:1"><label>Familiya</label><input id="nL"></div></div>
+        <label>Sinf yoki guruh</label><input id="nG">
+        <div class="row"><div style="flex:1"><label>Login</label><input id="nU" autocapitalize="none"></div><div style="flex:1"><label>Parol</label><input id="nP"></div></div>
+        <div class="accerr" id="nE"></div><button class="btn" id="nGo">Qo'shish</button></details>
+      <div id="acL" style="margin-top:12px"></div>`;
+    $("acQ").value = q; $("acQ").oninput = e => { q = e.target.value; render(); };
+    $("acShow").onclick = () => { showAll = !showAll; $("acShow").textContent = showAll ? "🙈 Parollarni yashirish" : "👁 Parollarni ko'rsatish"; render(); };
+    $("acCsv").onclick = csv;
+    $("acRegB").onclick = () => DBA.update("c/main", { regOff: cfg.regOff ? 0 : 1 });
+    $("nGo").onclick = add;
+    $("nF").oninput = $("nL").oninput = () => { if (!$("nU").dataset.t) $("nU").value = translit($("nF").value + "_" + $("nL").value); };
+    $("nU").oninput = () => $("nU").dataset.t = "1";
+    unsubs.push(DBA.on("u", v => { users = v || {}; render(); }));
+    unsubs.push(DBA.on("r", v => { res = v || {}; render(); }));
+    unsubs.push(DBA.on("c/main", v => { cfg = v || {}; if ($("acReg")) { $("acReg").textContent = cfg.regOff ? "yopiq 🔒" : "ochiq ✅"; $("acRegB").textContent = cfg.regOff ? "Ochish" : "Yopish"; } }));
+  }
+  const translit = s => s.toLowerCase().replace(/[ʻʼ'`‘’]/g, "").replace(/sh/g, "sh").replace(/[^a-z0-9_]/g, "").slice(0, 20);
+  async function add() {
+    const cap = s => { s = s.trim(); return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase(); };
+    const f = cap($("nF").value), l = cap($("nL").value), g = $("nG").value.trim(), u = $("nU").value.trim().toLowerCase(), p = $("nP").value.trim(), E = m => $("nE").textContent = m;
+    if (f.length < 2 || l.length < 2) return E("Ism va familiyani yozing.");
+    if (!/^[a-z0-9_]{3,20}$/.test(u)) return E("Login 3–20 ta lotin harfi, raqam yoki _ dan iborat bo'lsin.");
+    if (p.length < 4) return E("Parol kamida 4 belgi.");
+    if (users[u]) return E("Bu login band.");
+    await DBA.set("u/" + u, { f, l, g, p, c: DBA.now() });
+    E(""); ["nF", "nL", "nG", "nU", "nP"].forEach(id => $(id).value = ""); delete $("nU").dataset.t;
+    FX.toast(`✅ ${esc(f)} ${esc(l)} qo'shildi`, "up");
+  }
+  function stats(u) { const rs = Object.values(res).filter(r => r && r.u === u); return { n: rs.length, avg: rs.length ? Math.round(rs.reduce((a, r) => a + (r.pts || 0), 0) / rs.length) : null }; }
+  function render() {
+    const L = $("acL"); if (!L) return;
+    const nq = q.trim().toLowerCase();
+    const arr = Object.entries(users).filter(([u, x]) => x && x.f).map(([u, x]) => ({ u, ...x, ...stats(u) }))
+      .filter(x => !nq || (x.f + " " + x.l + " " + x.u + " " + (x.g || "")).toLowerCase().includes(nq))
+      .sort((a, b) => (a.g || "").localeCompare(b.g || "") || (a.l + a.f).localeCompare(b.l + b.f));
+    if ($("acN")) $("acN").textContent = `Jami ${Object.keys(users).length} ta o'quvchi. Ro'yxat jonli yangilanadi.`;
+    if (!arr.length) { L.innerHTML = `<div class="card" style="text-align:center"><p class="sub" style="margin:0">${Object.keys(users).length ? "Hech kim topilmadi." : "Hali hech kim ro'yxatdan o'tmagan."}</p></div>`; return; }
+    L.innerHTML = `<div class="card">${arr.map(x => `<div class="acrow" data-u="${esc(x.u)}">
+        <div class="avatar sm">${esc((x.f[0] || "") + (x.l[0] || ""))}</div>
+        <div class="st-m"><b>${esc(x.f)} ${esc(x.l)}</b>${x.b ? ' <span class="st-lv" style="background:var(--bad)">bloklangan</span>' : ""}
+          <div class="st-s">${x.g ? esc(x.g) + " · " : ""}ro'yxat: ${dt(x.c)} · oxirgi kirish: ${dt(x.last)}</div>
+          <div class="cred"><span>Login: <code>${esc(x.u)}</code></span><span>Parol: <code class="pw">${showAll || shown.has(x.u) ? esc(x.p) : "••••••"}</code> <button class="lnk" data-a="eye">${showAll || shown.has(x.u) ? "yashirish" : "ko'rsatish"}</button></span></div>
+          <div class="st-s">${x.n ? `${x.n} ta test · o'rtacha ${x.avg} ball` : "hali test ishlamagan"}</div>
+          <div class="acact"><button class="lnk" data-a="pw">🔑 Parolni o'zgartirish</button><button class="lnk" data-a="blk">${x.b ? "✅ Blokdan chiqarish" : "🚫 Bloklash"}</button><button class="lnk" data-a="del" style="color:var(--bad)">🗑 O'chirish</button></div>
+          <div class="pwbox"></div></div></div>`).join("")}</div>`;
+    L.querySelectorAll(".acrow").forEach(row => {
+      const u = row.dataset.u;
+      row.onclick = e => {
+        const b = e.target.closest("button"); if (!b) return; const a = b.dataset.a;
+        if (a === "eye") { shown.has(u) ? shown.delete(u) : shown.add(u); render(); }
+        if (a === "blk") DBA.update("u/" + u, { b: users[u].b ? 0 : 1 });
+        if (a === "del") { if (b.dataset.ok) { DBA.set("u/" + u, null); } else { b.dataset.ok = 1; b.textContent = "Rostdan o'chirilsinmi? Yana bosing"; setTimeout(() => { if (b.isConnected) { delete b.dataset.ok; b.textContent = "🗑 O'chirish"; } }, 4000); } }
+        if (a === "pw") {
+          const box = row.querySelector(".pwbox");
+          box.innerHTML = `<div class="row" style="margin-top:8px"><input placeholder="Yangi parol" style="margin:0;flex:2"><button class="btn sm" data-a="pwok" style="flex:1">Saqlash</button></div>`;
+          box.querySelector("input").focus();
+        }
+        if (a === "pwok") { const v = row.querySelector(".pwbox input").value.trim(); if (v.length < 4) { FX.toast("Parol kamida 4 belgi"); return; } DBA.update("u/" + u, { p: v }); FX.toast("🔑 Parol yangilandi", "up"); }
+      };
+    });
+  }
+  function csv() {
+    const cell = v => `"${String(v == null ? "" : v).replace(/"/g, '""')}"`;
+    const rows = [["Familiya", "Ism", "Sinf/guruh", "Login", "Parol", "Ro'yxatdan o'tgan", "Oxirgi kirish", "Testlar soni", "O'rtacha ball", "Holat"].map(cell).join(";")]
+      .concat(Object.entries(users).filter(([u, x]) => x && x.f).map(([u, x]) => { const s = stats(u); return [x.l, x.f, x.g, u, x.p, dt(x.c), dt(x.last), s.n, s.avg == null ? "" : s.avg, x.b ? "bloklangan" : "faol"].map(cell).join(";"); }));
+    const blob = new Blob(["﻿" + rows.join("\n")], { type: "text/csv;charset=utf-8" });
+    const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "oquvchilar_" + new Date().toISOString().slice(0, 10) + ".csv"; document.body.appendChild(a); a.click(); a.remove();
+  }
+  return { open, leave() { unsubs.forEach(f => f()); unsubs = []; } };
+})();
+
+function adminNav(active) {
+  const b = (k, l, fn) => `<button class="${k === active ? "on" : ""}" onclick="${fn}">${l}</button>`;
+  return `<div class="adminbar"><div class="adm-t">⚙️ ADMIN PANEL</div><div class="sttabs" style="margin:6px 0 0">${b("tur", "🏆 Turnirlar", "T.openHost()")}${b("acc", "👥 O'quvchilar", "ACC.open()")}${b("stat", "📊 Statistika", "STAT.open()")}${b("out", "🚪 Chiqish", "adminLogout()")}</div></div>`;
+}
+function adminLogout() { try { localStorage.removeItem("zm_host"); } catch (e) {} if (typeof T !== "undefined") T.leave(); ACC.leave(); show("start"); }
+
 // ================== TURNIR REJIMI ==================
 // >>> Firebase sozlamasini shu yerga qo'ying (firebaseConfig obyektini to'liq):
 const FIREBASE_CONFIG = {};
@@ -3186,8 +3398,8 @@ const DBA = (() => {
         tryB();
       });
     })());
-    const codeOf = p => { const s = p.split("/"); return s[0] === "t" ? "t/" + s[1] : s[0]; };
-    const ensure = sc => { if (!codes.has(sc)) codes.set(sc, new Promise(r => client.subscribe(PFX + sc + "/#", { qos: 1 }, () => setTimeout(r, 1500)))); return codes.get(sc); };
+    const codeOf = p => { const s = p.split("/"); return (s[0] === "t" || s[0] === "u" || s[0] === "h") && s[1] ? s[0] + "/" + s[1] : s[0]; };
+    const ensure = sc => { if (!codes.has(sc)) codes.set(sc, new Promise(r => client.subscribe(PFX + sc + "/#", { qos: 1 }, () => setTimeout(r, 700)))); return codes.get(sc); };
     const pub = (p, v) => {
       if (v === null) { delAt(tree, p); notify(); client.publish(toTopic(p), "", { retain: true, qos: 1 }); return; } if (/\/meta$/.test(p)) v = { ...v, ts: Date.now() + off }; setAt(tree, p, v); notify(); client.publish(toTopic(p), JSON.stringify(v), { retain: true, qos: 1 }); };
     return {
@@ -3293,40 +3505,40 @@ const T = (() => {
 
   // ================== O'QUVCHI ==================
   function openJoin(code = "") {
-    clear(); st.role = "student"; st.meta = null; st.Q = []; show("tz");
+    clear(); st.role = "student"; st.meta = null; st.Q = [];
+    if (!ACCT.cur) { show("start"); FX.toast("🔐 Avval login va parolingiz bilan kiring"); return; }
+    show("tz");
     tz().innerHTML = `<div class="card">
-      <h1>🏆 Turnirga qo'shilish</h1><p class="sub">Ustoz bergan 4 xonali kodni va ism-familiyangizni kiriting.</p>
+      <h1>🏆 Turnirga qo'shilish</h1><p class="sub">Ustoz bergan 4 xonali kodni kiriting.</p>
+      <div class="tnote">👤 <b id="tjn"></b></div>
       <label>Turnir kodi</label><input id="tjc" inputmode="numeric" maxlength="4" placeholder="0000" style="font-size:28px;letter-spacing:.3em;text-align:center">
-      <div class="row"><div style="flex:1"><label>Ism</label><input id="tjf" placeholder="Aziz"></div><div style="flex:1"><label>Familiya</label><input id="tjl" placeholder="Karimov"></div></div>
       <div id="tjerr" style="color:var(--bad);font-size:14px;margin:-6px 0 12px"></div>
       <button class="btn" id="tjgo">Qo'shilish</button>
       <button class="btn ghost" style="margin-top:10px" onclick="show('start')">Orqaga</button></div>`;
-    $("tjc").value = code; $("tjf").value = ls.get("zm_fn") || ""; $("tjl").value = ls.get("zm_ln") || "";
+    $("tjn").textContent = ACCT.cur.f + " " + ACCT.cur.l + " (@" + ACCT.cur.login + ")";
+    $("tjc").value = code;
     $("tjgo").onclick = join;
   }
   async function join(auto) {
     auto = auto === true;
     st.celebrated = false; st.streak = 0; st.myRank = 0; st.ps = {};
-    const code = $("tjc").value.trim(), f = $("tjf").value.trim(), l = $("tjl").value.trim(), err = m => $("tjerr").textContent = m;
+    const ac = ACCT.cur; if (!ac) { show("start"); return; }
+    const code = $("tjc").value.trim(), err = m => $("tjerr").textContent = m;
     if (!/^\d{4}$/.test(code)) return err("Kod 4 ta raqamdan iborat bo'lishi kerak.");
-    if (f.length < 2 || l.length < 2) return err("Ism va familiyani to'liq yozing.");
     $("tjgo").disabled = true; err("");
     let meta; try { meta = await DBA.get(`t/${code}/meta`); } catch (e) { $("tjgo").disabled = false; return err("Ulanib bo'lmadi. Internetni tekshiring."); }
     const giveUp = m => { $("tjgo").disabled = false; if (auto) { ls.del("zm_active"); show("start"); return; } return err(m); };
     if (!meta) return giveUp("Bunday kodli turnir topilmadi.");
-    const cap = s => s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
-    FN = cap(f); LN = cap(l); name = FN + " " + LN; ls.set("zm_fn", f); ls.set("zm_ln", l);
-    const nk = s => String(s || "").toLowerCase().replace(/[ʻʼ'`‘’]/g, "").replace(/\s+/g, " ").trim(), key = nk(name);
-    let all = {}; try { all = (await DBA.get(`t/${code}/players`)) || {}; } catch (e) {}
-    const saved = ls.get("zm_pid_" + code + "_" + key);
-    if (meta.phase === "end" && !saved) return giveUp("Bu turnir allaqachon tugagan.");
-    const taken = Object.entries(all).find(([k, p]) => p && nk(p.n) === key);
-    if (taken && taken[0] !== saved) { if (auto) return giveUp(""); $("tjgo").disabled = false; return err(`«${name}» bu turnirda allaqachon qatnashgan. Har bir o'quvchi turnirda faqat bir marta qatnasha oladi.`); }
-    st.code = code; st.pid = saved || ("p" + Math.random().toString(36).slice(2, 10)); ls.set("zm_pid_" + code + "_" + key, st.pid); ls.set("zm_active", JSON.stringify({ code, f, l }));
+    FN = ac.f; LN = ac.l; name = FN + " " + LN;
+    st.code = code; st.pid = ac.login;
+    const was = await DBA.get(`t/${code}/players/${st.pid}`);
+    if (meta.phase === "end" && !was) return giveUp("Bu turnir allaqachon tugagan.");
+    ls.set("zm_active", JSON.stringify({ code, u: ac.login }));
     const me = await DBA.get(`t/${code}/players/${st.pid}`);
-    if (!me) await DBA.set(`t/${code}/players/${st.pid}`, { n: name, s: 0, a: 0, t: 0, d: 0 });
-    else await DBA.update(`t/${code}/players/${st.pid}`, { n: name });
+    if (!me) await DBA.set(`t/${code}/players/${st.pid}`, { n: name, u: ac.login, s: 0, a: 0, t: 0, d: 0 });
+    else await DBA.update(`t/${code}/players/${st.pid}`, { n: name, u: ac.login });
     try { st.ans = JSON.parse(ls.get("zm_ans_" + code + st.pid) || "[]"); } catch (e) { st.ans = []; }
+    if (me && (me.a || 0) > st.ans.length) { while (st.ans.length < me.a) st.ans.push(null); }
     st.cur = st.ans.length; st.ended = false;
     st.unsub.push(DBA.on(`t/${code}/players`, v => { st.players = v || {}; sBoard(); }));
     st.unsub.push(DBA.on(`t/${code}/meta`, v => { if (!v) return; const ph = st.meta && st.meta.phase; st.meta = v; if (!st.Q.length || ph === undefined) { const b = buildQ(v); st.Q = b.Q; st.perms = b.perms; } sRoute(ph !== v.phase); }));
@@ -3425,7 +3637,7 @@ const T = (() => {
   // ================== USTOZ ==================
   function openHost() {
     clear(); st.role = "host"; show("tz");
-    tz().innerHTML = `<div class="card"><h1>👨‍🏫 Ustoz paneli</h1><p class="sub">Turnir yaratish uchun parolni kiriting.</p>
+    tz().innerHTML = `<div class="card"><h1>⚙️ Admin panel</h1><p class="sub">Ustoz uchun boshqaruv bo'limi. Parolni kiriting.</p>
       <input id="thp" type="password" placeholder="Parol"><div id="therr" style="color:var(--bad);font-size:14px;margin:-6px 0 12px"></div>
       <button class="btn" id="thgo">Kirish</button><button class="btn ghost" style="margin-top:10px" onclick="show('start')">Orqaga</button></div>`;
     $("thgo").onclick = () => { if ($("thp").value === HOST_PIN) { ls.set("zm_host", "1"); hSetup(); } else $("therr").textContent = "Parol noto'g'ri."; };
@@ -3436,12 +3648,13 @@ const T = (() => {
     let opts = "", g = null;
     SETS.forEach(s => { if (s.g !== g) { if (g) opts += "</optgroup>"; g = s.g; opts += `<optgroup label="${esc(g)}">`; } opts += `<option value="${s.id}">${esc((s.n === "∑" ? "" : s.n + " · ") + s.title)} (${s.qs ? s.qs.length : 20} savol)</option>`; });
     opts += "</optgroup>";
-    tz().innerHTML = `<div class="card" id="tact"><h1 style="display:flex;align-items:center;gap:8px"><span class="live-dot"></span>Davom etayotgan turnirlar</h1><div id="tactl"><div class="sub" style="margin:0">Yuklanmoqda…</div></div></div>
+    if (typeof ACC !== "undefined") ACC.leave();
+    tz().innerHTML = `${adminNav("tur")}<div class="card" id="tact"><h1 style="display:flex;align-items:center;gap:8px"><span class="live-dot"></span>Davom etayotgan turnirlar</h1><div id="tactl"><div class="sub" style="margin:0">Yuklanmoqda…</div></div></div>
       <div class="card" style="margin-top:12px"><h1>🏆 Yangi turnir</h1>
       ${DBA.kind === "mock" ? '<div class="tnote warn">Sinov rejimi: Firebase hali ulanmagan. Turnir faqat shu qurilmadagi oynalar orasida ishlaydi.</div>' : ""}
       <label>Test</label><select id="ths">${opts}</select>
       <label>Vaqt (daqiqa)</label><input id="thd" type="number" min="1" max="180">
-      <button class="btn" id="thc">Turnirni ochish</button><button class="btn ghost" style="margin-top:10px" onclick="STAT.open()">📊 Statistika va natijalar</button><button class="btn ghost" style="margin-top:10px" onclick="show('start')">Bosh sahifa</button></div>`;
+      <button class="btn" id="thc">Turnirni ochish</button><button class="btn ghost" style="margin-top:10px" onclick="show('start')">Bosh sahifa</button></div>`;
     const sd = () => { const s = setById($("ths").value); $("thd").value = s.qs && s.qs.length > 30 ? 40 : 15; }; $("ths").onchange = sd; sd();
     $("thc").onclick = hCreate;
     st.unsub.push(DBA.on("a", v => hActive(v || {})));
@@ -3527,7 +3740,7 @@ const T = (() => {
     if (!st.celebrated) { st.celebrated = true; setTimeout(() => { FX.rain(260); FX.S.win(); }, 1500); }
     if (!st.meta.saved && list.length) {
       const s = setById(st.meta.set);
-      list.forEach((p, i) => DBA.set(`r/${st.code}${st.meta.seed % 1000}_${p.k}`, { n: p.n, set: s.id, ttl: s.title, mode: "turnir", code: st.code, ok: p.s || 0, tot: st.meta.n, pts: Math.round((p.s || 0) * ppq()), lv: level(Math.round((p.s || 0) * ppq())) || "", dur: p.t || 0, rank: i + 1, cnt: list.length, at: DBA.now() }));
+      list.forEach((p, i) => { const rid = `${st.code}${st.meta.seed % 1000}_${p.k}`, rk = { n: p.n, u: p.u || "", set: s.id, ttl: s.title, mode: "turnir", code: st.code, ok: p.s || 0, tot: st.meta.n, pts: Math.round((p.s || 0) * ppq()), lv: level(Math.round((p.s || 0) * ppq())) || "", dur: p.t || 0, rank: i + 1, cnt: list.length, at: DBA.now() }; if (p.u) DBA.set(`h/${p.u}/${rid}`, { ttl: rk.ttl, mode: "turnir", ok: rk.ok, tot: rk.tot, pts: rk.pts, lv: rk.lv, rank: rk.rank, cnt: rk.cnt, at: rk.at }); DBA.set(`r/${rid}`, { n: p.n, set: s.id, ttl: s.title, mode: "turnir", code: st.code, ok: p.s || 0, tot: st.meta.n, pts: Math.round((p.s || 0) * ppq()), lv: level(Math.round((p.s || 0) * ppq())) || "", dur: p.t || 0, rank: i + 1, cnt: list.length, at: DBA.now(), u: p.u || "" }); });
       DBA.update(`t/${st.code}/meta`, { saved: 1 });
     }
     $("thnew").onclick = hSetup;
@@ -3538,10 +3751,11 @@ const T = (() => {
   }
 
   function boot() {
+    ACCT.restore();
     const h = location.hash;
     if (h.startsWith("#turnir")) openJoin((h.split("-")[1] || "").slice(0, 4));
     else if (h === "#ustoz") openHost();
-    else if (!h || h === "#") { let a = null; try { a = JSON.parse(ls.get("zm_active") || "null"); } catch (e) {} if (a && a.code) { openJoin(a.code); $("tjf").value = a.f || ""; $("tjl").value = a.l || ""; $("tjerr").textContent = "Turniringizga qayta ulanmoqda…"; join(true); } }
+    else if (!h || h === "#") { let a = null; try { a = JSON.parse(ls.get("zm_active") || "null"); } catch (e) {} if (a && a.code && ACCT.cur && a.u === ACCT.cur.login) { openJoin(a.code); $("tjerr").textContent = "Turniringizga qayta ulanmoqda…"; join(true); } }
     else if (h === "#statistika") { openHost(); if (ls.get("zm_host") === "1") STAT.open(); }
   }
   return { openJoin, openHost, boot, st, leave: clear };
