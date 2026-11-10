@@ -88,12 +88,44 @@ select{width:100%;padding:13px 14px;border-radius:10px;border:1px solid var(--li
 .podium{display:flex;align-items:flex-end;justify-content:center;gap:10px;margin-top:18px}
 .pd{flex:1;max-width:150px;display:flex;flex-direction:column;align-items:center}
 .pd-n{font-weight:700;font-size:14px;margin-bottom:2px;word-break:break-word}.pd-s{font-size:12px;color:var(--mu);margin-bottom:6px}
-.pd-b{width:100%;border-radius:10px 10px 0 0;display:grid;place-items:center;font-size:34px;font-weight:800;color:#1d2b38}
+.pd-b{width:100%;border-radius:10px 10px 0 0;display:grid;place-items:center;font-size:34px;font-weight:800;color:#1d2b38;transform-origin:bottom;animation:rise .9s cubic-bezier(.2,.9,.3,1.2) both}
+.pd:nth-child(1) .pd-b{animation-delay:.5s}.pd:nth-child(2) .pd-b{animation-delay:1s}.pd:nth-child(3) .pd-b{animation-delay:0s}
+.pd-n,.pd-s{animation:fadeup .5s both}.pd:nth-child(1) .pd-n,.pd:nth-child(1) .pd-s{animation-delay:1.2s}.pd:nth-child(2) .pd-n,.pd:nth-child(2) .pd-s{animation-delay:1.7s}.pd:nth-child(3) .pd-n,.pd:nth-child(3) .pd-s{animation-delay:.7s}
+.pd:nth-child(2) .pd-n:before{content:"👑";display:block;font-size:30px;animation:bob 1.4s ease-in-out infinite}
+@keyframes rise{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+@keyframes fadeup{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes bob{50%{transform:translateY(-6px)}}
+@keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.06)}100%{transform:scale(1)}}
+@keyframes shake{20%,60%{transform:translateX(-7px)}40%,80%{transform:translateX(7px)}}
+@keyframes glow{0%{box-shadow:0 0 0 0 rgba(47,179,107,.7)}100%{box-shadow:0 0 0 18px rgba(47,179,107,0)}}
+@keyframes flash{0%{background:#2b5a3f}100%{background:var(--card2)}}
+@keyframes zoomin{0%{transform:scale(.3);opacity:0}60%{transform:scale(1.15);opacity:1}100%{transform:scale(1)}}
+.opt.okk{animation:pop .45s,glow .8s}.opt.bad{animation:shake .45s}.opt.pick{animation:pop .3s}
+.trow.flash{animation:flash 1.2s}
+.floattxt{position:absolute;z-index:1000;font-weight:800;font-size:24px;pointer-events:none;animation:floatup 1.2s ease-out forwards}
+@keyframes floatup{from{opacity:1;transform:translateY(0) scale(.8)}to{opacity:0;transform:translateY(-70px) scale(1.25)}}
+#toasts{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:1001;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none}
+.toast{background:#1e2a37;border:1px solid var(--ac);color:var(--tx);padding:10px 18px;border-radius:999px;font-weight:700;font-size:15px;box-shadow:0 8px 30px rgba(0,0,0,.4);animation:zoomin .45s both;transition:opacity .4s,transform .4s}
+.toast.out{opacity:0;transform:translateY(-10px)}.toast.fire{border-color:#ff7a3d;background:linear-gradient(90deg,#3a1f12,#2a2420)}.toast.up{border-color:var(--ok)}
+.bigcd{font-size:96px;font-weight:800;animation:zoomin .5s both;color:var(--ac)}
+.celebrate{font-size:22px;font-weight:800;margin-top:12px;animation:zoomin .6s 2s both}
+.mr{margin-bottom:10px}.mh{display:flex;justify-content:space-between;gap:10px;font-size:13px;margin-bottom:4px}.mh span{color:var(--mu)}
+.streak{display:inline-block;margin-left:8px;color:#ff9a4d;font-weight:800}
+.btn.sm{width:auto;padding:8px 12px;font-size:13px}
+.sndbtn{margin-left:auto;background:var(--card2);border:1px solid var(--line);color:var(--tx);border-radius:10px;width:38px;height:38px;font-size:18px;cursor:pointer}
+.stcards{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:8px}
+.stc{background:var(--card2);border-radius:12px;padding:10px;text-align:center}.stc b{display:block;font-size:22px}.stc span{font-size:11px;color:var(--mu)}.stc-i{font-size:18px}
+.sttabs{display:flex;gap:6px;overflow-x:auto;margin:14px 0 10px;padding-bottom:2px}
+.sttabs button{flex:none;padding:9px 12px;border-radius:999px;border:1px solid var(--line);background:var(--card2);color:var(--mu);font-family:inherit;font-size:13px;cursor:pointer}
+.sttabs button.on{background:var(--ac);border-color:var(--ac);color:#fff}
+.strow{display:flex;gap:10px;align-items:center;padding:10px 4px;border-bottom:1px solid var(--line);cursor:pointer}.strow:last-child{border-bottom:0}
+.st-ic{width:30px;text-align:center;font-size:18px;font-weight:800;color:var(--mu)}.st-m{flex:1;min-width:0}.st-s{font-size:12px;color:var(--mu)}
+.st-r{text-align:right}.st-p{font-size:20px;font-weight:800}.st-lv{display:inline-block;margin-top:2px;padding:1px 8px;border-radius:999px;font-size:11px;font-weight:700;color:#fff}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <div class="brand"><div class="logo">ZM</div><div><b>ZULPANOV METHODS TARIX</b><small>Jahon tarixi · 11-sinf</small></div></div>
+  <div class="brand"><div class="logo">ZM</div><div><b>ZULPANOV METHODS TARIX</b><small>Tarix testlari · turnirlar</small></div><button class="sndbtn" id="snd" title="Ovoz" onclick="this.textContent=FX.toggleSound()?'🔊':'🔇'">🔊</button></div>
 
   <div class="card tcard" id="tCard"><div style="font-size:34px">🏆</div><div style="flex:1"><b>Turnir rejimi</b><div class="sub" style="margin:2px 0 0">Ustoz bergan kod bilan sinfdoshlaringiz bilan jonli bellashing</div></div><button class="btn" style="width:auto;padding:10px 16px" onclick="T.openJoin()">Kirish</button></div>
   <section id="tz" class="hide"></section>
@@ -2664,6 +2696,7 @@ $("fn").oninput=chk;$("ln").oninput=chk;
 $("go").onclick=start;
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
 function start(){
+  FROM_T=false;
   const cap=s=>s.charAt(0).toUpperCase()+s.slice(1).toLowerCase();FN=cap($("fn").value.trim());LN=cap($("ln").value.trim());name=FN+" "+LN;
   if(set.id==="mix"){Q=shuffle(SETS.filter(s=>s.qs&&s.g===set.g).flatMap(s=>s.qs)).slice(0,20)}else{Q=set.qs}
   order=Q.map((q,i)=>({i,idx:shuffle([0,1,2,3])}));
@@ -2685,7 +2718,7 @@ function render(){
     b.className="opt"+(ans[cur]===oi?" sel":"");
     b.innerHTML=`<span class="l">${L[k]}</span><span></span>`;
     b.lastChild.textContent=q.o[oi];
-    b.onclick=()=>{ans[cur]=oi;render();if(cur<Q.length-1)setTimeout(()=>{cur++;render()},250)};
+    b.onclick=()=>{ans[cur]=oi;render();const nb=$("ops").children[k];nb&&nb.classList.add("pick");FX.S.tick();if(cur<Q.length-1)setTimeout(()=>{cur++;render()},300)};
     $("ops").appendChild(b);
   });
   $("prev").disabled=cur===0;
@@ -2710,7 +2743,7 @@ function finish(){
   let ok=0;const by={};
   order.forEach(({i},k)=>{const q=Q[i],g=ans[k]===q.a;if(g)ok++;const key=set.id==="mix"?q.m:q.t.split(" · ")[0];by[key]=by[key]||[0,0];by[key][1]++;if(g)by[key][0]++});
   PPQ=100/Q.length;const pts=Math.round(ok*PPQ);
-  $("who").textContent=name+" · "+set.title;$("pts").textContent=pts;
+  $("who").textContent=name+" · "+set.title;FX.countUp($("pts"),pts);
   $("sOk").textContent=ok;$("sBad").textContent=Q.length-ok;$("sT").textContent=time;
   const lv=level(pts);
   $("gr").textContent=lv?lv+" sertifikati":"Sertifikat uchun kamida 45 ball kerak";$("gr").style.background=lv?(pts>=65?"var(--ok)":pts>=55?"var(--ac2)":"var(--ac)"):"var(--bad)";
@@ -2736,6 +2769,8 @@ function finish(){
     box.appendChild(d);
   });
   setFilter("all");show("res");
+  if(lv){setTimeout(()=>{FX.rain(pts>=70?220:120);FX.S.win()},900)}
+  if(!FROM_T)saveResult({n:name,set:set.id,ttl:set.title,mode:"test",ok,tot:Q.length,pts,lv:lv||"",dur:Date.now()-t0,sec:by});
 }
 function level(p){return p>=70?"A+":p>=65?"A":p>=60?"B+":p>=55?"B":p>=50?"C+":p>=45?"C":null}
 function isGirl(fn,ln){
@@ -2862,6 +2897,201 @@ function setFilter(f){
   document.querySelectorAll(".filter button").forEach(b=>b.classList.toggle("on",b.dataset.f===f));
   document.querySelectorAll(".rv").forEach(r=>r.style.display=(f==="all"||r.dataset.k===f)?"":"none");
 }
+// ================== EFFEKTLAR: konfetti, ovoz, toast ==================
+const FX = (() => {
+  let cv, cx, parts = [], run = false, actx = null;
+  let sound = (() => { try { return localStorage.getItem("zm_snd") !== "0"; } catch (e) { return true; } })();
+  function canvas() {
+    if (cv) return;
+    cv = document.createElement("canvas"); cv.style.cssText = "position:fixed;inset:0;pointer-events:none;z-index:999";
+    document.body.appendChild(cv); cx = cv.getContext("2d");
+    const rs = () => { cv.width = innerWidth * devicePixelRatio; cv.height = innerHeight * devicePixelRatio; cx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0); };
+    rs(); addEventListener("resize", rs);
+  }
+  const COLS = ["#e8893f", "#2fa59a", "#f3c74f", "#2fb36b", "#ff6b9a", "#6aa8ff", "#ffffff"];
+  function loop() {
+    cx.clearRect(0, 0, innerWidth, innerHeight);
+    parts = parts.filter(p => p.life > 0);
+    parts.forEach(p => {
+      p.vy += p.g; p.vx *= 0.99; p.x += p.vx; p.y += p.vy; p.r += p.vr; p.life--;
+      cx.save(); cx.globalAlpha = Math.min(1, p.life / 30); cx.translate(p.x, p.y); cx.rotate(p.r); cx.fillStyle = p.c;
+      if (p.sh === 0) cx.fillRect(-p.s / 2, -p.s / 4, p.s, p.s / 2); else { cx.beginPath(); cx.arc(0, 0, p.s / 2.5, 0, 7); cx.fill(); }
+      cx.restore();
+    });
+    if (parts.length) requestAnimationFrame(loop); else { run = false; cx.clearRect(0, 0, innerWidth, innerHeight); }
+  }
+  function burst(x, y, n = 40, power = 7) {
+    canvas();
+    for (let i = 0; i < n; i++) { const a = Math.random() * Math.PI * 2, v = power * (0.4 + Math.random()); parts.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v - power * 0.6, g: 0.22, r: Math.random() * 6, vr: (Math.random() - .5) * .3, s: 6 + Math.random() * 6, c: COLS[i % COLS.length], sh: i % 2, life: 60 + Math.random() * 40 }); }
+    if (!run) { run = true; requestAnimationFrame(loop); }
+  }
+  function rain(n = 160) {
+    canvas();
+    for (let i = 0; i < n; i++) parts.push({ x: Math.random() * innerWidth, y: -20 - Math.random() * innerHeight * 0.6, vx: (Math.random() - .5) * 2, vy: 2 + Math.random() * 3, g: 0.05, r: Math.random() * 6, vr: (Math.random() - .5) * .25, s: 7 + Math.random() * 7, c: COLS[i % COLS.length], sh: i % 2, life: 200 + Math.random() * 80 });
+    if (!run) { run = true; requestAnimationFrame(loop); }
+  }
+  function tone(seq) {
+    if (!sound) return;
+    try {
+      actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+      let t = actx.currentTime;
+      seq.forEach(([f, d, type = "sine", vol = 0.12]) => {
+        const o = actx.createOscillator(), g = actx.createGain(); o.type = type; o.frequency.value = f;
+        g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(vol, t + 0.015); g.gain.exponentialRampToValueAtTime(0.0001, t + d);
+        o.connect(g); g.connect(actx.destination); o.start(t); o.stop(t + d + 0.02); t += d * 0.75;
+      });
+    } catch (e) {}
+  }
+  const S = {
+    ok: () => tone([[660, .12], [880, .12], [1175, .22]]),
+    bad: () => tone([[220, .22, "triangle", .1], [180, .3, "triangle", .08]]),
+    streak: () => tone([[784, .1], [988, .1], [1175, .1], [1568, .3]]),
+    up: () => tone([[523, .1], [784, .18]]),
+    win: () => tone([[523, .18], [659, .18], [784, .18], [1047, .35], [784, .14], [1047, .6]]),
+    tick: () => tone([[1000, .06, "square", .04]])
+  };
+  function toast(html, cls = "") {
+    let box = document.getElementById("toasts");
+    if (!box) { box = document.createElement("div"); box.id = "toasts"; document.body.appendChild(box); }
+    const t = document.createElement("div"); t.className = "toast " + cls; t.innerHTML = html; box.appendChild(t);
+    setTimeout(() => t.classList.add("out"), 2200); setTimeout(() => t.remove(), 2700);
+  }
+  function floatText(el, txt, color = "var(--ok)") {
+    const r = el.getBoundingClientRect(), f = document.createElement("div");
+    f.className = "floattxt"; f.textContent = txt; f.style.left = (r.right - 70) + "px"; f.style.top = (r.top + window.scrollY) + "px"; f.style.color = color;
+    document.body.appendChild(f); setTimeout(() => f.remove(), 1200);
+  }
+  function correct(el, txt) {
+    const r = el.getBoundingClientRect(); burst(r.left + r.width / 2, r.top + r.height / 2, 34, 6); if (txt) floatText(el, txt); S.ok();
+    if (navigator.vibrate) try { navigator.vibrate(30); } catch (e) {}
+  }
+  function wrong() { S.bad(); if (navigator.vibrate) try { navigator.vibrate([60, 40, 60]); } catch (e) {} }
+  function countUp(el, to, ms = 1200) {
+    const t0 = performance.now(); const step = now => { const k = Math.min(1, (now - t0) / ms), e = 1 - Math.pow(1 - k, 3); el.textContent = Math.round(to * e); if (k < 1) requestAnimationFrame(step); }; requestAnimationFrame(step);
+  }
+  function toggleSound() { sound = !sound; try { localStorage.setItem("zm_snd", sound ? "1" : "0"); } catch (e) {} if (sound) S.ok(); return sound; }
+  return { burst, rain, S, toast, correct, wrong, countUp, toggleSound, get sound() { return sound; } };
+})();
+
+// ================== NATIJALARNI SAQLASH ==================
+let FROM_T = false;
+function saveResult(r) {
+  try {
+    const id = Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+    DBA.set("r/" + id, { ...r, at: DBA.now() }).catch(() => {});
+  } catch (e) {}
+}
+
+// ================== STATISTIKA (ustoz uchun) ==================
+const STAT = (() => {
+  let data = {}, unsub = null, tab = "res", q = "", fset = "", per = "all", detail = null;
+  const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const d2 = n => String(n).padStart(2, "0");
+  const dt = ms => { const d = new Date(ms); return `${d2(d.getDate())}.${d2(d.getMonth() + 1)}.${d.getFullYear()} ${d2(d.getHours())}:${d2(d.getMinutes())}`; };
+  const ago = ms => { const s = (Date.now() - ms) / 1000; if (s < 60) return "hozirgina"; if (s < 3600) return Math.floor(s / 60) + " daqiqa oldin"; if (s < 86400) return Math.floor(s / 3600) + " soat oldin"; return Math.floor(s / 86400) + " kun oldin"; };
+  const norm = s => String(s || "").trim().toLowerCase().replace(/\s+/g, " ");
+  const list = () => Object.entries(data || {}).filter(([k, v]) => v && v.n && v.at).map(([k, v]) => ({ id: k, ...v })).sort((a, b) => b.at - a.at);
+  function filtered() {
+    const now = Date.now(), lim = per === "day" ? 86400e3 : per === "week" ? 7 * 86400e3 : per === "month" ? 30 * 86400e3 : Infinity;
+    return list().filter(r => (!q || norm(r.n).includes(norm(q))) && (!fset || r.set === fset) && (now - r.at <= lim));
+  }
+  const lvColor = lv => !lv ? "var(--bad)" : /A/.test(lv) ? "var(--ok)" : /B/.test(lv) ? "var(--ac2)" : "var(--ac)";
+  function open() {
+    if (typeof T !== "undefined") T.leave();
+    show("tz");
+    $("tz").innerHTML = `<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+      <h1 style="margin:0">📊 Statistika</h1><div class="row" style="flex:0 0 auto"><button class="btn ghost sm" id="stCsv">⬇ Excel (CSV)</button><button class="btn ghost sm" onclick="T.openHost()">← Panel</button></div></div>
+      <div class="sub" id="stNote" style="margin:6px 0 14px">Yuklanmoqda…</div>
+      <div class="stcards" id="stCards"></div>
+      <div class="row" style="gap:8px;flex-wrap:wrap;margin-top:14px">
+        <input id="stQ" placeholder="🔎 O'quvchi ismi" style="flex:2;min-width:140px;margin:0">
+        <select id="stSet" style="flex:2;min-width:140px;margin:0"><option value="">Barcha testlar</option>${SETS.filter(s => s.qs || s.id === "mix").map(s => `<option value="${s.id}">${esc((s.n === "∑" ? "" : s.n + " · ") + s.title)}</option>`).join("")}</select>
+        <select id="stPer" style="flex:1;min-width:110px;margin:0"><option value="all">Hammasi</option><option value="day">Bugun</option><option value="week">7 kun</option><option value="month">30 kun</option></select>
+      </div></div>
+      <div class="sttabs" id="stTabs">${[["res", "🕒 Oxirgi natijalar"], ["stu", "👥 O'quvchilar"], ["tst", "📚 Testlar"], ["tur", "🏆 Turnirlar"]].map(([k, l]) => `<button data-t="${k}" class="${k === tab ? "on" : ""}">${l}</button>`).join("")}</div>
+      <div id="stBody"></div>
+      <div style="text-align:center;margin-top:18px"><button class="btn ghost sm" id="stClr" style="color:var(--bad)">Barcha natijalarni o'chirish</button></div>`;
+    $("stQ").value = q; $("stSet").value = fset; $("stPer").value = per;
+    $("stQ").oninput = e => { q = e.target.value; detail = null; render(); };
+    $("stSet").onchange = e => { fset = e.target.value; render(); };
+    $("stPer").onchange = e => { per = e.target.value; render(); };
+    $("stTabs").onclick = e => { const b = e.target.closest("button"); if (!b) return; tab = b.dataset.t; detail = null; [...$("stTabs").children].forEach(x => x.classList.toggle("on", x === b)); render(); };
+    $("stCsv").onclick = csv;
+    let armed = false;
+    $("stClr").onclick = () => {
+      if (!armed) { armed = true; $("stClr").textContent = "Rostdan ham o'chirilsinmi? Yana bir marta bosing"; setTimeout(() => { armed = false; if ($("stClr")) $("stClr").textContent = "Barcha natijalarni o'chirish"; }, 4000); return; }
+      Object.keys(data || {}).forEach(k => DBA.set("r/" + k, null)); $("stClr").textContent = "O'chirildi";
+    };
+    if (unsub) unsub();
+    unsub = DBA.on("r", v => { data = v || {}; if ($("stBody")) render(); });
+    if (DBA.kind === "mock") $("stNote").textContent = "Sinov rejimi: natijalar faqat shu qurilmada saqlanadi.";
+  }
+  function cards(rs) {
+    const stu = new Set(rs.map(r => norm(r.n))).size, avg = rs.length ? Math.round(rs.reduce((a, r) => a + (r.pts || 0), 0) / rs.length) : 0;
+    const certs = rs.filter(r => r.lv).length, tur = new Set(rs.filter(r => r.mode === "turnir").map(r => r.code)).size;
+    $("stCards").innerHTML = [["📝", rs.length, "Topshirilgan test"], ["👥", stu, "O'quvchi"], ["📈", avg, "O'rtacha ball"], ["🎓", certs, "Sertifikat olgan"], ["🏆", tur, "Turnir"]]
+      .map(([i, v, l]) => `<div class="stc"><div class="stc-i">${i}</div><b>${v}</b><span>${l}</span></div>`).join("");
+    $("stNote").textContent = DBA.kind === "mock" ? "Sinov rejimi: natijalar faqat shu qurilmada saqlanadi." : `Jami ${list().length} ta natija. Ma'lumotlar jonli yangilanadi.`;
+  }
+  function row(r) {
+    return `<div class="strow" data-id="${esc(r.id)}"><div class="st-ic">${r.mode === "turnir" ? "🏆" : "📝"}</div>
+      <div class="st-m"><b>${esc(r.n)}</b><div class="st-s">${esc(r.ttl || "")}${r.mode === "turnir" ? ` · ${r.rank}-o'rin / ${r.cnt}` : ""}</div><div class="st-s">${dt(r.at)} · ${ago(r.at)}${r.dur ? " · ⏱ " + fmt(r.dur) : ""}</div></div>
+      <div class="st-r"><div class="st-p">${r.pts}</div><div class="st-s">${r.ok}/${r.tot}</div>${r.lv ? `<span class="st-lv" style="background:${lvColor(r.lv)}">${esc(r.lv)}</span>` : ""}</div></div>`;
+  }
+  function render() {
+    const rs = filtered(); cards(rs); const B = $("stBody");
+    if (!rs.length) { B.innerHTML = `<div class="card" style="text-align:center"><div style="font-size:40px">🗂</div><p class="sub" style="margin:8px 0 0">Hozircha natijalar yo'q. O'quvchilar test yoki turnir ishlagach, shu yerda paydo bo'ladi.</p></div>`; return; }
+    if (tab === "res") {
+      B.innerHTML = `<div class="card">${rs.slice(0, 200).map(row).join("")}</div>`;
+      B.querySelectorAll(".strow").forEach(el => el.onclick = () => showDetail(rs.find(r => r.id === el.dataset.id)));
+    } else if (tab === "stu") {
+      const g = {}; rs.forEach(r => { const k = norm(r.n); (g[k] = g[k] || { n: r.n, rs: [] }).rs.push(r); });
+      const arr = Object.values(g).map(x => ({ ...x, avg: Math.round(x.rs.reduce((a, r) => a + r.pts, 0) / x.rs.length), best: Math.max(...x.rs.map(r => r.pts)), last: x.rs[0].at })).sort((a, b) => b.avg - a.avg);
+      B.innerHTML = `<div class="card"><div class="sub" style="margin-top:0">O'rtacha ball bo'yicha reyting. Ismni bossangiz, o'sha o'quvchining natijalari chiqadi.</div>${arr.map((x, i) => `<div class="strow" data-n="${esc(x.n)}"><div class="st-ic">${i < 3 ? ["🥇", "🥈", "🥉"][i] : i + 1}</div>
+        <div class="st-m"><b>${esc(x.n)}</b><div class="st-s">${x.rs.length} ta test · eng yaxshi: ${x.best} · oxirgi: ${ago(x.last)}</div><div class="tr-bar" style="margin-top:6px"><i style="width:${x.avg}%"></i></div></div>
+        <div class="st-r"><div class="st-p">${x.avg}</div><div class="st-s">o'rtacha</div></div></div>`).join("")}</div>`;
+      B.querySelectorAll(".strow").forEach(el => el.onclick = () => { q = el.dataset.n; $("stQ").value = q; tab = "res"; [...$("stTabs").children].forEach(x => x.classList.toggle("on", x.dataset.t === "res")); render(); });
+    } else if (tab === "tst") {
+      const g = {}; rs.forEach(r => { (g[r.set] = g[r.set] || { ttl: r.ttl, rs: [], sec: {} }).rs.push(r); Object.entries(r.sec || {}).forEach(([k, [a, b]]) => { const s = g[r.set].sec[k] = g[r.set].sec[k] || [0, 0]; s[0] += a; s[1] += b; }); });
+      B.innerHTML = Object.values(g).sort((a, b) => b.rs.length - a.rs.length).map(x => {
+        const avg = Math.round(x.rs.reduce((a, r) => a + r.pts, 0) / x.rs.length), cert = x.rs.filter(r => r.lv).length;
+        const secs = Object.entries(x.sec).map(([k, [a, b]]) => [k, Math.round(a / b * 100)]).sort((a, b) => a[1] - b[1]);
+        return `<div class="card" style="margin-bottom:12px"><b>${esc(x.ttl)}</b><div class="st-s" style="margin:4px 0 12px">${x.rs.length} marta ishlangan · o'rtacha ${avg} ball · ${cert} ta sertifikat</div>
+          ${secs.length ? `<div class="sub" style="margin:0 0 8px">Bo'limlar bo'yicha o'zlashtirish (eng qiyini tepada):</div>` + secs.map(([k, p]) => `<div class="mr"><div class="mh"><b>${esc(k)}</b><span>${p}%</span></div><div class="bar" style="margin:0"><i style="width:${p}%;background:${p < 50 ? "var(--bad)" : p < 70 ? "var(--ac)" : "var(--ok)"}"></i></div></div>`).join("") : ""}</div>`;
+      }).join("");
+    } else if (tab === "tur") {
+      const g = {}; rs.filter(r => r.mode === "turnir").forEach(r => { (g[r.code + "_" + r.ttl] = g[r.code + "_" + r.ttl] || { code: r.code, ttl: r.ttl, rs: [] }).rs.push(r); });
+      const arr = Object.values(g).map(x => ({ ...x, at: Math.max(...x.rs.map(r => r.at)) })).sort((a, b) => b.at - a.at);
+      B.innerHTML = arr.length ? arr.map(x => { const rr = x.rs.slice().sort((a, b) => a.rank - b.rank);
+        return `<div class="card" style="margin-bottom:12px"><div style="display:flex;justify-content:space-between"><b>🏆 ${esc(x.ttl)}</b><span class="st-s">Kod ${esc(x.code)}</span></div>
+        <div class="st-s" style="margin:4px 0 10px">${dt(x.at)} · ${rr.length} ishtirokchi</div>${rr.map(r => `<div class="trow"><div class="tr-r">${r.rank <= 3 ? ["🥇", "🥈", "🥉"][r.rank - 1] : r.rank}</div><div class="tr-n"><div class="tr-nm">${esc(r.n)}</div></div><div class="tr-s">${r.pts}</div></div>`).join("")}</div>`; }).join("")
+        : `<div class="card" style="text-align:center"><p class="sub" style="margin:0">Hali turnir o'tkazilmagan.</p></div>`;
+    }
+  }
+  function showDetail(r) {
+    if (!r) return;
+    const secs = Object.entries(r.sec || {});
+    const box = document.createElement("div"); box.className = "modal on"; box.innerHTML = `<div class="card" style="max-width:420px;width:100%">
+      <div style="display:flex;justify-content:space-between;align-items:center"><b style="font-size:18px"></b><button class="btn ghost sm" style="width:auto">✕</button></div>
+      <div class="st-s" style="margin:4px 0 12px"></div>
+      <div class="stcards" style="grid-template-columns:repeat(3,1fr)"><div class="stc"><b>${r.pts}</b><span>Ball</span></div><div class="stc"><b>${r.ok}/${r.tot}</b><span>To'g'ri</span></div><div class="stc"><b>${r.lv || "—"}</b><span>Daraja</span></div></div>
+      ${secs.length ? '<div class="sub" style="margin:14px 0 8px">Bo\'limlar bo\'yicha:</div>' + secs.map(([k, [a, b]]) => { const p = Math.round(a / b * 100); return `<div class="mr"><div class="mh"><b>${esc(k)}</b><span>${a}/${b} · ${p}%</span></div><div class="bar" style="margin:0"><i style="width:${p}%"></i></div></div>`; }).join("") : ""}
+      </div>`;
+    box.querySelector("b").textContent = r.n;
+    box.querySelector(".st-s").textContent = `${r.ttl} · ${r.mode === "turnir" ? "Turnir, " + r.rank + "-o'rin" : "Mustaqil test"} · ${dt(r.at)}${r.dur ? " · ⏱ " + fmt(r.dur) : ""}`;
+    box.onclick = e => { if (e.target === box || e.target.closest("button")) box.remove(); };
+    document.body.appendChild(box);
+  }
+  function csv() {
+    const rs = filtered(), cell = v => `"${String(v == null ? "" : v).replace(/"/g, '""')}"`;
+    const lines = [["Sana", "O'quvchi", "Test", "Rejim", "To'g'ri", "Savollar", "Ball", "Daraja", "Vaqt", "O'rin"].map(cell).join(";")]
+      .concat(rs.map(r => [dt(r.at), r.n, r.ttl, r.mode === "turnir" ? "Turnir" : "Test", r.ok, r.tot, r.pts, r.lv || "", r.dur ? fmt(r.dur) : "", r.rank ? r.rank + "/" + r.cnt : ""].map(cell).join(";")));
+    const blob = new Blob(["﻿" + lines.join("\n")], { type: "text/csv;charset=utf-8" });
+    const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "natijalar_" + new Date().toISOString().slice(0, 10) + ".csv"; document.body.appendChild(a); a.click(); a.remove();
+  }
+  return { open };
+})();
+
 // ================== TURNIR REJIMI ==================
 // >>> Firebase sozlamasini shu yerga qo'ying (firebaseConfig obyektini to'liq):
 const FIREBASE_CONFIG = {};
@@ -2880,10 +3110,12 @@ const DBA = (() => {
     const setAt = (o, p, v) => { const ks = p.split("/").filter(Boolean); let c = o; ks.slice(0, -1).forEach(k => { if (typeof c[k] !== "object" || c[k] === null) c[k] = {}; c = c[k]; }); c[ks[ks.length - 1]] = v; };
     const notify = () => { if (pend) return; pend = true; setTimeout(() => { pend = false; subs.forEach(s => s.cb(clone(getAt(tree, s.p)))); }, 30); };
     const toPath = t => t.slice(PFX.length).replace(/^(t\/\d+)\/p\//, "$1/players/");
+    const delAt = (o, p) => { const ks = p.split("/").filter(Boolean); let c = o; for (const k of ks.slice(0, -1)) { if (!c[k]) return; c = c[k]; } delete c[ks[ks.length - 1]]; };
     const toTopic = p => PFX + p.replace(/^(t\/\d+)\/players\//, "$1/p/");
     function onMsg(topic, buf, packet) {
-      let v; try { v = JSON.parse(String(buf)); } catch (e) { return; }
       const p = toPath(topic);
+      if (!buf || !buf.length) { delAt(tree, p); notify(); return; }
+      let v; try { v = JSON.parse(String(buf)); } catch (e) { return; }
       if (/\/meta$/.test(p) && v && v.ts && !(packet && packet.retain)) off = v.ts - Date.now();
       setAt(tree, p, v); notify();
     }
@@ -2895,16 +3127,17 @@ const DBA = (() => {
         const tryB = () => {
           const c = mqtt.connect(BROKERS[bi], { clientId: "zm" + Math.random().toString(16).slice(2, 12), clean: true, connectTimeout: 6000, reconnectPeriod: 2000 });
           let ok = false;
-          c.on("connect", () => { if (!ok) { ok = true; client = c; res(c); } else codes.forEach((_, code) => c.subscribe(PFX + "t/" + code + "/#", { qos: 1 })); });
+          c.on("connect", () => { if (!ok) { ok = true; client = c; res(c); } else codes.forEach((_, sc) => c.subscribe(PFX + sc + "/#", { qos: 1 })); });
           c.on("message", onMsg); c.on("error", () => {});
           setTimeout(() => { if (!ok) { try { c.end(true); } catch (e) {} bi++; if (bi < BROKERS.length) tryB(); else rej(new Error("conn")); } }, 7000);
         };
         tryB();
       });
     })());
-    const codeOf = p => p.split("/")[1];
-    const ensure = code => { if (!codes.has(code)) codes.set(code, new Promise(r => client.subscribe(PFX + "t/" + code + "/#", { qos: 1 }, () => setTimeout(r, 1500)))); return codes.get(code); };
-    const pub = (p, v) => { if (/\/meta$/.test(p)) v = { ...v, ts: Date.now() + off }; setAt(tree, p, v); notify(); client.publish(toTopic(p), JSON.stringify(v), { retain: true, qos: 1 }); };
+    const codeOf = p => { const s = p.split("/"); return s[0] === "t" ? "t/" + s[1] : s[0]; };
+    const ensure = sc => { if (!codes.has(sc)) codes.set(sc, new Promise(r => client.subscribe(PFX + sc + "/#", { qos: 1 }, () => setTimeout(r, 1500)))); return codes.get(sc); };
+    const pub = (p, v) => {
+      if (v === null) { delAt(tree, p); notify(); client.publish(toTopic(p), "", { retain: true, qos: 1 }); return; } if (/\/meta$/.test(p)) v = { ...v, ts: Date.now() + off }; setAt(tree, p, v); notify(); client.publish(toTopic(p), JSON.stringify(v), { retain: true, qos: 1 }); };
     return {
       kind: "mqtt", init,
       async get(p) { await init(); await ensure(codeOf(p)); return clone(getAt(tree, p)); },
@@ -2989,6 +3222,7 @@ const T = (() => {
     shown.forEach(p => {
       const i = list.indexOf(p);
       const r = document.createElement("div"); r.className = "trow" + (p.k === st.pid ? " me" : "") + (big ? " big" : ""); r.dataset.k = p.k;
+      st.ps = st.ps || {}; if (st.ps[p.k] != null && (p.s || 0) > st.ps[p.k]) r.classList.add("flash"); st.ps[p.k] = p.s || 0;
       r.innerHTML = `<div class="tr-r">${medal(i)}</div><div class="tr-n"><div class="tr-nm"></div><div class="tr-bar"><i style="width:${Math.min(100, (p.a || 0) / n * 100)}%"></i></div></div><div class="tr-s">${pts(p.s)}<small>${p.d ? " ✓" : ""}</small></div>`;
       r.querySelector(".tr-nm").textContent = p.n + (p.k === st.pid ? " (siz)" : "");
       el.appendChild(r);
@@ -3019,6 +3253,7 @@ const T = (() => {
     $("tjgo").onclick = join;
   }
   async function join() {
+    st.celebrated = false; st.streak = 0; st.myRank = 0; st.ps = {};
     const code = $("tjc").value.trim(), f = $("tjf").value.trim(), l = $("tjl").value.trim(), err = m => $("tjerr").textContent = m;
     if (!/^\d{4}$/.test(code)) return err("Kod 4 ta raqamdan iborat bo'lishi kerak.");
     if (f.length < 2 || l.length < 2) return err("Ism va familiyani to'liq yozing.");
@@ -3060,7 +3295,7 @@ const T = (() => {
   function sQ() {
     const el = $("tqa"); if (!el) return;
     const m = st.meta, now = DBA.now();
-    if (now < m.startAt) { el.innerHTML = `<div style="text-align:center;padding:30px 0"><div class="sub">Turnir boshlanishiga</div><div style="font-size:64px;font-weight:800" id="tcd">${Math.ceil((m.startAt - now) / 1000)}</div></div>`; return; }
+    if (now < m.startAt) { el.innerHTML = `<div style="text-align:center;padding:30px 0"><div class="sub">Tayyor turing!</div><div class="bigcd" id="tcd">${Math.ceil((m.startAt - now) / 1000)}</div></div>`; return; }
     if (st.cur >= st.Q.length) return finishMine();
     const q = st.Q[st.cur], perm = st.perms[st.cur];
     $("tqn").textContent = `${st.cur + 1}-savol / ${st.Q.length}`; $("tpb").style.width = (st.cur / st.Q.length * 100) + "%";
@@ -3078,6 +3313,8 @@ const T = (() => {
     st.ans[st.cur] = oi; ss.set("zm_ans_" + st.code + st.pid, JSON.stringify(st.ans));
     btn.classList.add(ok ? "okk" : "bad");
     if (!ok) [...$("tops").children].forEach((b, k) => { if (st.perms[st.cur][k] === q.a) b.classList.add("okk"); });
+    if (ok) { st.streak = (st.streak || 0) + 1; FX.correct(btn, "+" + (Math.round(ppq() * 10) / 10)); if (st.streak >= 3) { FX.toast(`🔥 ${st.streak} ta ketma-ket to'g'ri!`, "fire"); setTimeout(FX.S.streak, 250); } }
+    else { st.streak = 0; FX.wrong(); }
     const s = st.ans.filter((a, i) => a === st.Q[i].a).length;
     st.cur++;
     DBA.update(`t/${st.code}/players/${st.pid}`, { s, a: st.cur, t: DBA.now() - st.meta.startAt, d: st.cur >= st.Q.length ? 1 : 0 });
@@ -3095,26 +3332,29 @@ const T = (() => {
   function sBoard() {
     const list = ranked(); if ($("tcnt")) $("tcnt").textContent = list.length;
     board($("tbd"), list, { limit: st.meta && st.meta.phase === "lobby" ? 0 : 8, n: st.meta ? st.meta.n : 20 });
-    const i = list.findIndex(p => p.k === st.pid); if ($("tmy") && i >= 0) $("tmy").textContent = `Siz: ${i + 1}-o'rin / ${list.length}`;
+    const i = list.findIndex(p => p.k === st.pid); if ($("tmy") && i >= 0) $("tmy").innerHTML = `Siz: <b style="color:var(--tx)">${i + 1}-o'rin</b> / ${list.length}${st.streak >= 2 ? `<span class="streak">🔥${st.streak}</span>` : ""}`;
+    if (i >= 0 && st.meta && st.meta.phase === "run") { if (st.myRank && i + 1 < st.myRank) { FX.toast(i === 0 ? "👑 Siz birinchi o'rindasiz!" : `⬆ ${i + 1}-o'ringa ko'tarildingiz!`, "up"); FX.S.up(); } st.myRank = i + 1; }
   }
   function sTick() {
     const m = st.meta; if (!m || m.phase !== "run") return;
     const now = DBA.now();
-    if (now < m.startAt) { if ($("tcd")) $("tcd").textContent = Math.ceil((m.startAt - now) / 1000); else if ($("tqa")) sQ(); return; }
-    if ($("tcd")) sQ();
+    if (now < m.startAt) { const n = Math.ceil((m.startAt - now) / 1000); if ($("tcd")) { if ($("tcd").textContent != n) { const e = $("tcd"); e.textContent = n; e.style.animation = "none"; void e.offsetWidth; e.style.animation = ""; FX.S.tick(); } } else if ($("tqa")) sQ(); return; }
+    if ($("tcd")) { FX.toast("🚀 Boshladik!", "up"); sQ(); }
     const left = m.startAt + m.dur - now;
     if ($("ttm")) { $("ttm").textContent = "⏱ " + fmt(left); $("ttm").classList.toggle("low", left < 60000); }
     if (left <= 0 && $("tqa") && !myDone()) finishMine();
   }
   function sEnd() {
-    clearInterval(st.timer);
+    clearInterval(st.timer); st.myRank = 0;
     const list = ranked(), i = list.findIndex(p => p.k === st.pid);
     tz().innerHTML = `<div class="card" style="text-align:center"><h1>🏁 Turnir yakunlandi</h1>${podium(list)}
       ${i >= 0 ? `<div class="tnote" style="margin-top:14px">Siz <b>${i + 1}-o'rin</b>dasiz · ${pts(list[i].s)} ball</div>` : ""}
       <button class="btn" id="tmine" style="margin-top:16px">Xatolarim va sertifikatim</button></div>
       <div class="card" style="margin-top:12px"><b>To'liq reyting</b><div id="tbd" style="margin-top:10px"></div></div>`;
     board($("tbd"), list, { n: st.meta.n });
-    $("tmine").onclick = () => {
+    if (!st.celebrated) { st.celebrated = true; setTimeout(() => { FX.rain(i >= 0 && i < 3 ? 260 : 120); FX.S.win(); }, 1500); }
+    if (i >= 0 && i < 3) tz().querySelector(".tnote").insertAdjacentHTML("afterend", `<div class="celebrate">${["🥇 Tabriklaymiz, siz G'OLIBSIZ!", "🥈 Ajoyib natija — 2-o'rin!", "🥉 Zo'r — 3-o'rin!"][i]}</div>`);
+    $("tmine").onclick = () => { FROM_T = true;
       set = setById(st.meta.set); Q = st.Q; order = st.Q.map((q, i) => ({ i, idx: st.perms[i] }));
       ans = st.Q.map((q, i) => st.ans[i] === undefined ? null : st.ans[i]);
       const me = st.players[st.pid] || {}; t0 = Date.now() - (me.t || 0);
@@ -3132,6 +3372,7 @@ const T = (() => {
     if (ls.get("zm_host") === "1") hSetup();
   }
   function hSetup() {
+    st.celebrated = false;
     let opts = "", g = null;
     SETS.forEach(s => { if (s.g !== g) { if (g) opts += "</optgroup>"; g = s.g; opts += `<optgroup label="${esc(g)}">`; } opts += `<option value="${s.id}">${esc((s.n === "∑" ? "" : s.n + " · ") + s.title)} (${s.qs ? s.qs.length : 20} savol)</option>`; });
     opts += "</optgroup>";
@@ -3139,7 +3380,7 @@ const T = (() => {
       ${DBA.kind === "mock" ? '<div class="tnote warn">Sinov rejimi: Firebase hali ulanmagan. Turnir faqat shu qurilmadagi oynalar orasida ishlaydi.</div>' : ""}
       <label>Test</label><select id="ths">${opts}</select>
       <label>Vaqt (daqiqa)</label><input id="thd" type="number" min="1" max="180">
-      <button class="btn" id="thc">Turnirni ochish</button><button class="btn ghost" style="margin-top:10px" onclick="show('start')">Bosh sahifa</button></div>`;
+      <button class="btn" id="thc">Turnirni ochish</button><button class="btn ghost" style="margin-top:10px" onclick="STAT.open()">📊 Statistika va natijalar</button><button class="btn ghost" style="margin-top:10px" onclick="show('start')">Bosh sahifa</button></div>`;
     const sd = () => { const s = setById($("ths").value); $("thd").value = s.qs && s.qs.length > 30 ? 40 : 15; }; $("ths").onchange = sd; sd();
     $("thc").onclick = hCreate;
   }
@@ -3152,6 +3393,7 @@ const T = (() => {
     hAttach(code);
   }
   function hAttach(code) {
+    st.celebrated = false; st.ps = {};
     clear(); st.role = "host"; st.code = code; st.pid = null; st.meta = null; ls.set("zm_hostcode", code);
     st.unsub.push(DBA.on(`t/${code}/players`, v => { st.players = v || {}; hBoard(); hAuto(); }));
     st.unsub.push(DBA.on(`t/${code}/meta`, v => { if (!v) return; const ph = st.meta && st.meta.phase; st.meta = v; if (ph !== v.phase || !$("thb")) hRoute(); }));
@@ -3202,6 +3444,12 @@ const T = (() => {
       <div class="row" style="margin-top:16px"><button class="btn ghost" id="thcr">Natijalarni nusxalash</button><button class="btn" id="thnew">Yangi turnir</button></div></div>
       <div class="card" style="margin-top:12px"><b>To'liq reyting</b><div id="thb" style="margin-top:10px"></div></div>`;
     board($("thb"), list, { big: true, n: st.meta.n });
+    if (!st.celebrated) { st.celebrated = true; setTimeout(() => { FX.rain(260); FX.S.win(); }, 1500); }
+    if (!st.meta.saved && list.length) {
+      const s = setById(st.meta.set);
+      list.forEach((p, i) => DBA.set(`r/${st.code}${st.meta.seed % 1000}_${p.k}`, { n: p.n, set: s.id, ttl: s.title, mode: "turnir", code: st.code, ok: p.s || 0, tot: st.meta.n, pts: Math.round((p.s || 0) * ppq()), lv: level(Math.round((p.s || 0) * ppq())) || "", dur: p.t || 0, rank: i + 1, cnt: list.length, at: DBA.now() }));
+      DBA.update(`t/${st.code}/meta`, { saved: 1 });
+    }
     $("thnew").onclick = hSetup;
     $("thcr").onclick = () => {
       const txt = `🏆 Turnir natijalari — ${setById(st.meta.set).title}\n` + list.map((p, i) => `${i + 1}. ${p.n} — ${pts(p.s)} ball (${p.s || 0}/${st.meta.n})`).join("\n");
@@ -3213,8 +3461,9 @@ const T = (() => {
     const h = location.hash;
     if (h.startsWith("#turnir")) openJoin((h.split("-")[1] || "").slice(0, 4));
     else if (h === "#ustoz") openHost();
+    else if (h === "#statistika") { openHost(); if (ls.get("zm_host") === "1") STAT.open(); }
   }
-  return { openJoin, openHost, boot, st };
+  return { openJoin, openHost, boot, st, leave: clear };
 })();
 setTimeout(T.boot, 0);
 
