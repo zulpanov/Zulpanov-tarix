@@ -3483,7 +3483,7 @@ function adminLogout() { try { localStorage.removeItem("zm_admin"); localStorage
 const FIREBASE_CONFIG = {};
 // >>> Ustoz paneli paroli (o'zgartiring):
 // >>> Admin login va parol (parolning o'zi kodda saqlanmaydi, faqat SHA-256 izi):
-const ADMIN = { login: "zulpanov", salt: "52bea5c2a4e5c0c0", hash: "0c75f168e324e8b7027bf42d2df7270b2e820f6dba0a55cd200281bb48d0f144" };
+const ADMIN = { login: "zulpanov", salt: "d325ce6694515af7", hash: "47a3754c2847314f87b070934ef6c8ecc9480f5d2b974cfd8b8931ed370782ec" };
 async function sha256hex(s) { const b = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s)); return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, "0")).join(""); }
 function isAdmin() { try { const s = JSON.parse(localStorage.getItem("zm_admin") || "null"); return !!(s && s.k === ADMIN.hash && s.exp > Date.now()); } catch (e) { return false; } }
 
