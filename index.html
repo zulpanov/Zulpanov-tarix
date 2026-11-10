@@ -133,16 +133,97 @@ details summary::-webkit-details-marker{color:var(--ac)}
 .strow{display:flex;gap:10px;align-items:center;padding:10px 4px;border-bottom:1px solid var(--line);cursor:pointer}.strow:last-child{border-bottom:0}
 .st-ic{width:30px;text-align:center;font-size:18px;font-weight:800;color:var(--mu)}.st-m{flex:1;min-width:0}.st-s{font-size:12px;color:var(--mu)}
 .st-r{text-align:right}.st-p{font-size:20px;font-weight:800}.st-lv{display:inline-block;margin-top:2px;padding:1px 8px;border-radius:999px;font-size:11px;font-weight:700;color:#fff}
+body{background:radial-gradient(1200px 600px at 110% -10%,rgba(232,137,63,.13),transparent 60%),radial-gradient(900px 500px at -20% 10%,rgba(47,165,154,.12),transparent 60%),var(--bg);background-attachment:fixed}
+.wrap{padding-bottom:110px}
+.brand{position:sticky;top:0;z-index:50;background:rgba(15,23,32,.82);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);margin:-18px -16px 18px;padding:12px 16px;border-bottom:1px solid rgba(43,58,74,.6)}
+.hdrav{margin-left:auto;width:38px;height:38px;border-radius:50%;border:2px solid var(--ac);background:linear-gradient(135deg,var(--ac2),#1f6f68);color:#fff;font-weight:800;font-size:13px;cursor:pointer;font-family:inherit;text-transform:uppercase}
+.hdrav+.sndbtn{margin-left:8px}
+/* ---------- AUTH ---------- */
+#auth{animation:fadeup .5s both}
+.hero{position:relative;text-align:center;padding:26px 10px 22px;margin-bottom:6px;overflow:hidden;border-radius:24px;
+  background:radial-gradient(circle at 50% 0%,rgba(232,137,63,.28),transparent 65%),linear-gradient(180deg,#1b2632,#141d27);border:1px solid var(--line)}
+.hero:before{content:"";position:absolute;inset:0;opacity:.07;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cg fill='none' stroke='%23f3c74f' stroke-width='1.4'%3E%3Crect x='17' y='17' width='26' height='26'/%3E%3Crect x='17' y='17' width='26' height='26' transform='rotate(45 30 30)'/%3E%3Ccircle cx='30' cy='30' r='6'/%3E%3C/g%3E%3C/svg%3E");background-size:60px}
+.hero>*{position:relative}
+.hero-logo{width:86px;height:86px;margin:0 auto 14px;border-radius:26px;display:grid;place-items:center;background:linear-gradient(135deg,#f0a45a,#c9622a);box-shadow:0 12px 40px rgba(232,137,63,.45),inset 0 1px 0 rgba(255,255,255,.3);animation:float 4s ease-in-out infinite}
+.hero-logo span{font-weight:800;font-size:32px;color:#fff;letter-spacing:.02em}
+@keyframes float{50%{transform:translateY(-6px)}}
+.hero-t{font-size:30px;line-height:1.08;letter-spacing:.04em;font-weight:800;margin-bottom:10px}
+.hero-t em{font-style:normal;background:linear-gradient(90deg,var(--ac),#f3c74f);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero-s{color:var(--mu);font-size:14px;max-width:420px;margin:0 auto 16px}
+.pills{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+.pills span{font-size:12px;padding:6px 11px;border-radius:999px;background:rgba(255,255,255,.05);border:1px solid var(--line)}
+.authcard{margin-top:14px;padding:20px;border-color:rgba(232,137,63,.35);box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.acctabs{background:var(--bg);padding:4px;border-radius:14px;margin-bottom:14px}
+.acctabs button{border:0;background:transparent;border-radius:10px;transition:.2s}
+.acctabs button.on{background:var(--ac);box-shadow:0 6px 18px rgba(232,137,63,.35)}
+.authcard input{background:var(--bg)}
+.adminlink{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:14px;padding:14px;border-radius:14px;border:1px dashed var(--line);background:transparent;color:var(--mu);font-family:inherit;font-size:14px;cursor:pointer;transition:.2s}
+.adminlink:hover{border-color:var(--ac);color:var(--tx)}
+/* ---------- HOME ---------- */
+#home{animation:fadeup .45s both}
+.welcome{position:relative;overflow:hidden;background:linear-gradient(135deg,#243446,#17212c 60%);border-color:#33475c}
+.welcome:after{content:"";position:absolute;right:-40px;top:-40px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(232,137,63,.35),transparent 70%)}
+.wl-top{display:flex;align-items:center;gap:12px;position:relative;z-index:1}
+.wl-top .avatar{width:54px;height:54px;font-size:19px;border:2px solid rgba(255,255,255,.2)}
+.wl-hi{font-size:13px;color:var(--mu)}.wl-n{font-size:21px;font-weight:800;line-height:1.2}
+.wl-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px;position:relative;z-index:1}
+.wl-stats div{background:rgba(0,0,0,.22);border-radius:12px;padding:10px;text-align:center}
+.wl-stats b{display:block;font-size:22px}.wl-stats span{font-size:11px;color:var(--mu)}
+.tiles{display:grid;gap:12px;margin:14px 0}
+.tile{position:relative;display:flex;align-items:center;gap:14px;text-align:left;padding:18px 16px;border-radius:20px;border:1px solid var(--line);color:var(--tx);font-family:inherit;cursor:pointer;overflow:hidden;transition:transform .2s,box-shadow .2s}
+.tile:hover,.tile:active{transform:translateY(-2px);box-shadow:0 14px 34px rgba(0,0,0,.35)}
+.tile .ti{flex:none;width:56px;height:56px;border-radius:16px;display:grid;place-items:center;font-size:28px;box-shadow:inset 0 1px 0 rgba(255,255,255,.25)}
+.tile b{display:block;font-size:17px;margin-bottom:3px}.tile span{display:block;font-size:13px;color:var(--mu);line-height:1.35}
+.tile .ar{margin-left:auto;font-size:22px;color:var(--mu);transition:transform .2s}.tile:hover .ar{transform:translateX(4px);color:var(--tx)}
+.tile.t1{background:linear-gradient(135deg,rgba(47,165,154,.18),var(--card) 60%)}.tile.t1 .ti{background:linear-gradient(135deg,#3cc1b4,#1f6f68)}
+.tile.t2{background:linear-gradient(135deg,rgba(232,137,63,.22),var(--card) 60%);border-color:rgba(232,137,63,.4)}.tile.t2 .ti{background:linear-gradient(135deg,#f3b25f,#c9622a)}
+.tile.t3{background:linear-gradient(135deg,rgba(106,168,255,.18),var(--card) 60%)}.tile.t3 .ti{background:linear-gradient(135deg,#7fb4ff,#3d5fbf)}
+.tile .badge{position:absolute;top:10px;right:12px;font-size:10px;font-weight:800;letter-spacing:.08em;padding:3px 8px;border-radius:999px;background:var(--bad);color:#fff;animation:livep 1.6s infinite}
+.lastres{display:flex;align-items:center;gap:12px}
+/* ---------- BOTTOM NAV ---------- */
+.bnav{position:fixed;left:50%;transform:translateX(-50%);bottom:max(10px,env(safe-area-inset-bottom));width:min(560px,calc(100% - 20px));display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:6px;border-radius:20px;z-index:60;
+  background:rgba(23,33,44,.88);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--line);box-shadow:0 12px 40px rgba(0,0,0,.45)}
+.bnav button{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 2px;border:0;border-radius:14px;background:transparent;color:var(--mu);font-family:inherit;font-size:20px;cursor:pointer;transition:.2s}
+.bnav button span{font-size:10px;font-weight:600}
+.bnav button.on{background:rgba(232,137,63,.16);color:var(--tx)}.bnav button.on span{color:var(--ac)}
+/* ---------- STAT (student) ---------- */
+.chart{display:flex;align-items:flex-end;gap:6px;height:150px;padding:10px 4px 0;border-bottom:1px solid var(--line)}
+.chart .cb{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%}
+.chart .cb i{display:block;width:100%;max-width:28px;border-radius:7px 7px 3px 3px;transform-origin:bottom;animation:rise .8s cubic-bezier(.2,.9,.3,1.1) both}
+.chart .cb small{font-size:10px;color:var(--mu);margin-bottom:3px}
+.hsec h3{font-size:15px;margin-bottom:10px}
+
 </style>
 </head>
 <body>
 <div class="wrap">
-  <div class="brand"><div class="logo">ZM</div><div><b>ZULPANOV METHODS TARIX</b><small>Tarix testlari · turnirlar</small></div><button class="sndbtn" id="snd" title="Ovoz" onclick="this.textContent=FX.toggleSound()?'🔊':'🔇'">🔊</button></div>
+  <header class="brand"><div class="logo">ZM</div><div><b>ZULPANOV METHODS TARIX</b><small>Tarix testlari · turnirlar</small></div><button class="hdrav hide" id="hdrAv" onclick="goHome()" title="Bosh sahifa"></button><button class="sndbtn" id="snd" title="Ovoz" onclick="this.textContent=FX.toggleSound()?'🔊':'🔇'">🔊</button></header>
 
-  <div class="card accbox" id="acc"><div class="sub" style="margin:0">Yuklanmoqda…</div></div>
-  <div class="card tcard" id="tCard"><div style="font-size:34px">🏆</div><div style="flex:1"><b>Turnir rejimi</b><div class="sub" style="margin:2px 0 0">Ustoz bergan kod bilan sinfdoshlaringiz bilan jonli bellashing</div></div><button class="btn" style="width:auto;padding:10px 16px" onclick="if(ACCT.cur)T.openJoin();else{FX.toast('🔐 Avval login va parolingiz bilan kiring');$('acc').scrollIntoView({behavior:'smooth'})}">Kirish</button></div>
+  <section id="auth" class="hide">
+    <div class="hero">
+      <div class="hero-logo"><span>ZM</span></div>
+      <h1 class="hero-t">ZULPANOV<br><em>METHODS</em> TARIX</h1>
+      <p class="hero-s">Tarixni o'rganish endi o'yin kabi qiziqarli: mavzulashtirilgan testlar, jonli turnirlar va shaxsiy statistika — barchasi bir joyda.</p>
+      <div class="pills"><span>📚 Testlar</span><span>🏆 Jonli turnirlar</span><span>📊 Statistika</span><span>🎓 Sertifikat</span></div>
+    </div>
+    <div class="card authcard"><div id="acc"><div class="sub" style="margin:0;text-align:center">Yuklanmoqda…</div></div></div>
+    <button class="adminlink" onclick="T.openHost()">⚙️ Ustoz uchun: Admin panel</button>
+  </section>
+
+  <section id="home" class="hide">
+    <div class="card welcome">
+      <div class="wl-top"><div class="avatar" id="wlAv"></div><div style="flex:1;min-width:0"><div class="wl-hi" id="wlHi">Xush kelibsiz</div><div class="wl-n" id="wlN"></div><div class="st-s" id="wlG"></div></div><button class="btn ghost sm" id="wlX">Chiqish</button></div>
+      <div class="wl-stats"><div><b id="wlT">0</b><span>Ishlangan test</span></div><div><b id="wlA">—</b><span>O'rtacha ball</span></div><div><b id="wlB">—</b><span>Eng yuqori</span></div></div>
+    </div>
+    <div class="tiles">
+      <button class="tile t1" onclick="goTests()"><div class="ti">📚</div><div><b>Mavzulashtirilgan testlar</b><span>Mavzuni tanlang, test ishlang va sertifikat oling</span></div><div class="ar">›</div></button>
+      <button class="tile t2" onclick="T.openJoin()"><div class="ti">🏆</div><div><b>Turnirda qatnashish</b><span>Ustoz bergan kod bilan sinfdoshlaringiz bilan jonli bellashing</span></div><div class="ar">›</div><span class="badge hide" id="tBadge">JONLI</span></button>
+      <button class="tile t3" onclick="ACCT.history()"><div class="ti">📊</div><div><b>Statistika</b><span>Natijalaringiz, o'sish dinamikasi va yutuqlaringiz</span></div><div class="ar">›</div></button>
+    </div>
+    <div class="card" id="homeLast" style="display:none"></div>
+  </section>
   <section id="tz" class="hide"></section>
-  <section id="start" class="card">
+  <section id="start" class="card hide">
     <h1>Mavzulashtirilgan tahliliy testlar</h1>
     <p class="sub">Har bir test 100 ballik: 20 savollik testda har bir to'g'ri javob — 5 ball, 45 savollik testda — taxminan 2,2 ball. Natijaga qarab ismingiz yozilgan sertifikat beriladi: 45+ → C, 50+ → C+, 55+ → B, 60+ → B+, 65+ → A, 70+ → A+.</p>
     <label>Mavzuni tanlang</label>
@@ -177,14 +258,14 @@ details summary::-webkit-details-marker{color:var(--ac)}
       </div>
       <div class="mast" id="mast"></div>
       <div id="certBox" style="margin-bottom:18px"><img id="cert" alt="Sertifikat" style="width:100%;border-radius:12px;display:block"><p style="font-size:12px;color:var(--mu);margin-top:8px">📲 Saqlash uchun sertifikat ustiga barmog'ingizni bosib turing → "Rasmni saqlash"</p></div>
-      <button class="btn" id="again">Bosh sahifaga qaytish</button>
+      <button class="btn" id="again">🏠 Bosh sahifaga qaytish</button>
     </div>
     <div class="filter"><button class="on" data-f="all">Hammasi</button><button data-f="wrong">Xatolar</button><button data-f="good">To'g'rilar</button></div>
     <div id="rvl"></div>
   </section>
 </div>
 
-<div style="text-align:center;margin:-40px 0 30px"><a href="#ustoz" onclick="T.openHost();return false" style="color:var(--mu);font-size:12px">⚙️ Admin panel</a></div>
+<nav class="bnav hide" id="bnav"><button data-g="home">🏠<span>Bosh sahifa</span></button><button data-g="tests">📚<span>Testlar</span></button><button data-g="turnir">🏆<span>Turnir</span></button><button data-g="stat">📊<span>Statistika</span></button></nav>
 <div class="modal" id="mdl"><div class="card">
   <p style="font-weight:700;font-size:17px;margin-bottom:6px">Testni yakunlaysizmi?</p>
   <p class="sub" id="mtx"></p>
@@ -2766,7 +2847,11 @@ function start(){
   show("quiz");render();
 }
 function fmt(ms){const s=Math.floor(ms/1000);return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0")}
-function show(id){["start","quiz","res","tz"].forEach(s=>$(s).classList.toggle("hide",s!==id));$("tCard").classList.toggle("hide",id!=="start");$("acc").classList.toggle("hide",id!=="start");window.scrollTo(0,0)}
+function show(id){["auth","home","start","quiz","res","tz"].forEach(s=>$(s).classList.toggle("hide",s!==id));setNav({home:"home",start:"tests",res:"tests"}[id]||null);window.scrollTo(0,0)}
+function setNav(active){const on=!!(active&&typeof ACCT!=="undefined"&&ACCT.cur);$("bnav").classList.toggle("hide",!on);[...$("bnav").children].forEach(b=>b.classList.toggle("on",b.dataset.g===active));const av=$("hdrAv");if(av){const c=typeof ACCT!=="undefined"&&ACCT.cur;av.classList.toggle("hide",!c);if(c)av.textContent=(c.f[0]||"")+(c.l[0]||"")}}
+function goHome(){if(typeof ACCT!=="undefined"&&ACCT.cur){show("home");ACCT.renderHome()}else show("auth")}
+function goTests(){show("start")}
+document.addEventListener("click",e=>{const b=e.target.closest("#bnav button");if(!b)return;const g=b.dataset.g;if(g==="home")goHome();else if(g==="tests")goTests();else if(g==="turnir")T.openJoin();else if(g==="stat")ACCT.history()});
 function render(){
   const {i,idx}=order[cur],q=Q[i];
   $("cnt").textContent=`${cur+1}-savol / ${Q.length}`;
@@ -2795,7 +2880,7 @@ $("next").onclick=()=>{
 };
 $("mNo").onclick=()=>$("mdl").classList.remove("on");
 $("mYes").onclick=()=>{$("mdl").classList.remove("on");finish()};
-$("again").onclick=()=>show("start");
+$("again").onclick=()=>goHome();
 
 function finish(){
   clearInterval(tick);
@@ -3162,9 +3247,10 @@ const ACCT = (() => {
   const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const normLogin = s => String(s || "").trim().toLowerCase();
   const cap = s => { s = String(s || "").trim(); return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase(); };
-  function apply() {
+  function apply(nav) {
     if (cur) { FN = cur.f; LN = cur.l; name = cur.f + " " + cur.l; }
-    renderBox(); if (typeof chk === "function") chk();
+    renderBox(); if (typeof chk === "function") chk(); setNav(document.querySelector("#bnav button.on") ? document.querySelector("#bnav button.on").dataset.g : null);
+    if (nav) goHome(); else if (cur && !$("home").classList.contains("hide")) renderHome();
   }
   async function restore() {
     let s = null; try { s = JSON.parse(L.get("zm_user") || "null"); } catch (e) {}
@@ -3180,16 +3266,10 @@ const ACCT = (() => {
     }
     ready = true; renderBox();
   }
-  function logout(msg) { cur = null; L.del("zm_user"); L.del("zm_active"); renderBox(msg); if (typeof chk === "function") chk(); }
+  function logout(msg) { cur = null; L.del("zm_user"); L.del("zm_active"); if (hUn) { hUn(); hUn = null; } renderBox(msg); if (typeof chk === "function") chk(); show("auth"); }
   function renderBox(msg) {
     const box = $("acc"); if (!box) return;
-    if (cur) {
-      box.innerHTML = `<div class="accin"><div class="avatar">${esc((cur.f[0] || "") + (cur.l[0] || ""))}</div><div style="flex:1;min-width:0"><b class="accn"></b><div class="st-s">@${esc(cur.login)}${cur.g ? " · " + esc(cur.g) : ""}</div></div>
-        <button class="btn ghost sm" id="accH">📈 Natijalarim</button><button class="btn ghost sm" id="accX">Chiqish</button></div>`;
-      box.querySelector(".accn").textContent = cur.f + " " + cur.l;
-      $("accX").onclick = () => logout(); $("accH").onclick = history;
-      return;
-    }
+    if (cur) { box.innerHTML = ""; return; }
     box.innerHTML = `<div class="acctabs"><button data-m="in" class="on">Kirish</button><button data-m="up">Ro'yxatdan o'tish</button></div><div id="accF"></div>`;
     const tabs = box.querySelector(".acctabs");
     tabs.onclick = e => { const b = e.target.closest("button"); if (!b) return; [...tabs.children].forEach(x => x.classList.toggle("on", x === b)); form(b.dataset.m); };
@@ -3227,7 +3307,7 @@ const ACCT = (() => {
     cur = { login: u, f: r.f, l: r.l, g: r.g || "" };
     L.set("zm_user", JSON.stringify({ u, p, f: r.f, l: r.l, g: r.g || "" }));
     DBA.update("u/" + u, { last: DBA.now() });
-    apply(); FX.toast(`👋 Xush kelibsiz, ${esc(r.f)}!`, "up");
+    apply(true); FX.toast(`👋 Xush kelibsiz, ${esc(r.f)}!`, "up");
   }
   async function register() {
     const f = cap($("rF").value), l = cap($("rLn").value), g = $("rG").value.trim().slice(0, 40), u = normLogin($("rL").value), p = $("rP").value, p2 = $("rP2").value, E = m => $("aE").textContent = m;
@@ -3244,23 +3324,63 @@ const ACCT = (() => {
     } catch (e) { $("rGo").disabled = false; return E("Ulanib bo'lmadi. Internetni tekshiring."); }
     cur = { login: u, f, l, g };
     L.set("zm_user", JSON.stringify({ u, p, f, l, g }));
-    apply(); FX.toast("🎉 Ro'yxatdan o'tdingiz!", "up"); FX.burst(innerWidth / 2, 160, 50, 7);
+    apply(true); FX.toast("🎉 Ro'yxatdan o'tdingiz!", "up"); FX.burst(innerWidth / 2, 160, 50, 7);
   }
-  function history() {
+  let hUn = null, hData = {}, hLogin = null, hListeners = new Set();
+  function watchH() {
     if (!cur) return;
-    show("tz");
-    $("tz").innerHTML = `<div class="card"><div style="display:flex;justify-content:space-between;align-items:center"><h1 style="margin:0">📈 Mening natijalarim</h1><button class="btn ghost sm" onclick="show('start')">← Orqaga</button></div><div class="sub" id="hN" style="margin-top:6px">Yuklanmoqda…</div><div class="stcards" id="hC" style="margin-top:10px"></div></div><div class="card" style="margin-top:12px" id="hL"></div>`;
-    const un = DBA.on("h/" + cur.login, v => {
-      if (!$("hL")) { un(); return; }
-      const rs = Object.values(v || {}).filter(r => r && r.at).sort((a, b) => b.at - a.at);
-      $("hN").textContent = rs.length ? `Jami ${rs.length} ta natija` : "Hali test ishlamadingiz. Birinchi testingizni boshlang!";
-      const avg = rs.length ? Math.round(rs.reduce((a, r) => a + r.pts, 0) / rs.length) : 0, best = rs.length ? Math.max(...rs.map(r => r.pts)) : 0;
-      $("hC").innerHTML = [["📝", rs.length, "Testlar"], ["📈", avg, "O'rtacha"], ["🏅", best, "Eng yuqori"], ["🏆", rs.filter(r => r.mode === "turnir" && r.rank === 1).length, "Turnir g'alabasi"]].map(([i, v, l]) => `<div class="stc"><div class="stc-i">${i}</div><b>${v}</b><span>${l}</span></div>`).join("");
-      const d2 = n => String(n).padStart(2, "0"), dt = ms => { const d = new Date(ms); return `${d2(d.getDate())}.${d2(d.getMonth() + 1)}.${d.getFullYear()} ${d2(d.getHours())}:${d2(d.getMinutes())}`; };
-      $("hL").innerHTML = rs.length ? rs.map(r => `<div class="strow" style="cursor:default"><div class="st-ic">${r.mode === "turnir" ? "🏆" : "📝"}</div><div class="st-m"><b>${esc(r.ttl)}</b><div class="st-s">${dt(r.at)}${r.mode === "turnir" ? ` · ${r.rank}-o'rin / ${r.cnt}` : ""}</div></div><div class="st-r"><div class="st-p">${r.pts}</div><div class="st-s">${r.ok}/${r.tot}</div>${r.lv ? `<span class="st-lv" style="background:var(--ok)">${esc(r.lv)}</span>` : ""}</div></div>`).join("") : '<div class="sub" style="text-align:center;margin:0">Natijalar shu yerda paydo bo\'ladi.</div>';
-    });
+    if (hLogin === cur.login && hUn) return;
+    if (hUn) hUn(); hLogin = cur.login; hData = {};
+    hUn = DBA.on("h/" + cur.login, v => { hData = v || {}; hListeners.forEach(f => f()); });
   }
-  return { restore, get cur() { return cur; }, logout, renderBox, history };
+  const recs = () => Object.values(hData || {}).filter(r => r && r.at).sort((a, b) => b.at - a.at);
+  const d2 = n => String(n).padStart(2, "0"), dt = ms => { const d = new Date(ms); return `${d2(d.getDate())}.${d2(d.getMonth() + 1)}.${d.getFullYear()} ${d2(d.getHours())}:${d2(d.getMinutes())}`; };
+  const lvCol = lv => !lv ? "#5b6b7b" : /A/.test(lv) ? "var(--ok)" : /B/.test(lv) ? "var(--ac2)" : "var(--ac)";
+  function greet() { const h = new Date().getHours(); return h < 11 ? "Xayrli tong ☀️" : h < 17 ? "Xayrli kun 👋" : "Xayrli kech 🌙"; }
+  function renderHome() {
+    if (!cur) return;
+    $("wlAv").textContent = (cur.f[0] || "") + (cur.l[0] || ""); $("wlN").textContent = cur.f + " " + cur.l;
+    $("wlG").textContent = "@" + cur.login + (cur.g ? " · " + cur.g : ""); $("wlHi").textContent = greet();
+    $("wlX").onclick = () => logout();
+    watchH();
+    const fill = () => {
+      if (!$("wlT")) return;
+      const rs = recs();
+      $("wlT").textContent = rs.length;
+      $("wlA").textContent = rs.length ? Math.round(rs.reduce((a, r) => a + (r.pts || 0), 0) / rs.length) : "—";
+      $("wlB").textContent = rs.length ? Math.max(...rs.map(r => r.pts || 0)) : "—";
+      const L = $("homeLast");
+      if (rs.length) { const r = rs[0]; L.style.display = ""; L.innerHTML = `<div class="sub" style="margin:0 0 8px">Oxirgi natijangiz</div><div class="lastres"><div class="st-ic" style="font-size:26px">${r.mode === "turnir" ? "🏆" : "📝"}</div><div class="st-m"><b>${esc(r.ttl)}</b><div class="st-s">${dt(r.at)}${r.mode === "turnir" ? ` · ${r.rank}-o'rin` : ""}</div></div><div class="st-r"><div class="st-p">${r.pts}</div>${r.lv ? `<span class="st-lv" style="background:${lvCol(r.lv)}">${esc(r.lv)}</span>` : ""}</div></div>`; }
+      else { L.style.display = ""; L.innerHTML = `<div class="lastres"><div style="font-size:30px">🚀</div><div><b>Birinchi testingizni boshlang!</b><div class="st-s">«Mavzulashtirilgan testlar» bo'limidan mavzu tanlang.</div></div></div>`; }
+    };
+    hListeners.add(fill); fill();
+    if (!aUn) aUn = DBA.on("a", v => { const now = DBA.now(); const live = Object.values(v || {}).some(x => x && x.ph !== "end" && now - (x.c || 0) < 6 * 3600e3); if ($("tBadge")) $("tBadge").classList.toggle("hide", !live); });
+  }
+  let aUn = null;
+  function history() {
+    if (!cur) { show("auth"); return; }
+    show("tz"); setNav("stat");
+    $("tz").innerHTML = `<div class="card welcome" style="padding-bottom:18px"><div class="wl-top"><div style="font-size:34px">📊</div><div style="flex:1"><div class="wl-n">Mening statistikam</div><div class="st-s" id="hN">Yuklanmoqda…</div></div></div>
+      <div class="wl-stats" style="grid-template-columns:repeat(4,1fr)"><div><b id="sT">0</b><span>Testlar</span></div><div><b id="sA">—</b><span>O'rtacha</span></div><div><b id="sB">—</b><span>Eng yuqori</span></div><div><b id="sW">0</b><span>🏆 G'alaba</span></div></div></div>
+      <div class="card hsec" style="margin-top:12px"><h3>📈 Natijalar dinamikasi</h3><div id="hCh"></div></div>
+      <div class="card hsec" style="margin-top:12px"><h3>📚 Testlar bo'yicha</h3><div id="hT"></div></div>
+      <div class="card hsec" style="margin-top:12px"><h3>🕒 Barcha natijalar</h3><div id="hL"></div></div>`;
+    watchH();
+    const fill = () => {
+      if (!$("hL")) { hListeners.delete(fill); return; }
+      const rs = recs();
+      $("hN").textContent = rs.length ? `Jami ${rs.length} ta natija · ${cur.f} ${cur.l}` : "Hali natija yo'q — birinchi testingizni ishlang!";
+      $("sT").textContent = rs.length; $("sA").textContent = rs.length ? Math.round(rs.reduce((a, r) => a + r.pts, 0) / rs.length) : "—";
+      $("sB").textContent = rs.length ? Math.max(...rs.map(r => r.pts)) : "—"; $("sW").textContent = rs.filter(r => r.mode === "turnir" && r.rank === 1).length;
+      const last = rs.slice(0, 12).reverse();
+      $("hCh").innerHTML = last.length ? `<div class="chart">${last.map((r, i) => `<div class="cb" title="${esc(r.ttl)}"><small>${r.pts}</small><i style="height:${Math.max(4, r.pts)}%;background:${lvCol(r.lv)};animation-delay:${i * 60}ms"></i></div>`).join("")}</div><div class="st-s" style="margin-top:6px">Oxirgi ${last.length} ta natija (chapdan o'ngga — eskidan yangiga). Rang — sertifikat darajasi.</div>` : '<div class="sub" style="margin:0">Natijalar paydo bo\'lgach, bu yerda grafik chiziladi.</div>';
+      const g = {}; rs.forEach(r => { (g[r.ttl] = g[r.ttl] || []).push(r.pts); });
+      $("hT").innerHTML = Object.keys(g).length ? Object.entries(g).map(([t, a]) => { const av = Math.round(a.reduce((x, y) => x + y, 0) / a.length); return `<div class="mr"><div class="mh"><b>${esc(t)}</b><span>${a.length} marta · o'rtacha ${av}</span></div><div class="bar" style="margin:0"><i style="width:${av}%;background:${av >= 70 ? "var(--ok)" : av >= 45 ? "var(--ac)" : "var(--bad)"}"></i></div></div>`; }).join("") : '<div class="sub" style="margin:0">—</div>';
+      $("hL").innerHTML = rs.length ? rs.map(r => `<div class="strow" style="cursor:default"><div class="st-ic">${r.mode === "turnir" ? "🏆" : "📝"}</div><div class="st-m"><b>${esc(r.ttl)}</b><div class="st-s">${dt(r.at)}${r.mode === "turnir" ? ` · ${r.rank}-o'rin / ${r.cnt}` : ""}</div></div><div class="st-r"><div class="st-p">${r.pts}</div><div class="st-s">${r.ok}/${r.tot}</div>${r.lv ? `<span class="st-lv" style="background:${lvCol(r.lv)}">${esc(r.lv)}</span>` : ""}</div></div>`).join("") : '<div class="sub" style="margin:0;text-align:center">Natijalar shu yerda paydo bo\'ladi.</div>';
+    };
+    hListeners.add(fill); fill();
+  }
+  return { restore, get cur() { return cur; }, logout, renderBox, history, renderHome };
 })();
 
 // ================== ADMIN: O'QUVCHILAR HISOBLARI ==================
@@ -3354,7 +3474,7 @@ function adminNav(active) {
   const b = (k, l, fn) => `<button class="${k === active ? "on" : ""}" onclick="${fn}">${l}</button>`;
   return `<div class="adminbar"><div class="adm-t">⚙️ ADMIN PANEL</div><div class="sttabs" style="margin:6px 0 0">${b("tur", "🏆 Turnirlar", "T.openHost()")}${b("acc", "👥 O'quvchilar", "ACC.open()")}${b("stat", "📊 Statistika", "STAT.open()")}${b("out", "🚪 Chiqish", "adminLogout()")}</div></div>`;
 }
-function adminLogout() { try { localStorage.removeItem("zm_host"); } catch (e) {} if (typeof T !== "undefined") T.leave(); ACC.leave(); show("start"); }
+function adminLogout() { try { localStorage.removeItem("zm_host"); } catch (e) {} if (typeof T !== "undefined") T.leave(); ACC.leave(); goHome(); }
 
 // ================== TURNIR REJIMI ==================
 // >>> Firebase sozlamasini shu yerga qo'ying (firebaseConfig obyektini to'liq):
@@ -3506,15 +3626,15 @@ const T = (() => {
   // ================== O'QUVCHI ==================
   function openJoin(code = "") {
     clear(); st.role = "student"; st.meta = null; st.Q = [];
-    if (!ACCT.cur) { show("start"); FX.toast("🔐 Avval login va parolingiz bilan kiring"); return; }
-    show("tz");
+    if (!ACCT.cur) { show("auth"); FX.toast("🔐 Avval login va parolingiz bilan kiring"); return; }
+    show("tz"); setNav("turnir");
     tz().innerHTML = `<div class="card">
-      <h1>🏆 Turnirga qo'shilish</h1><p class="sub">Ustoz bergan 4 xonali kodni kiriting.</p>
+      <div style="text-align:center"><div class="hero-logo" style="width:70px;height:70px;border-radius:22px"><span style="font-size:32px">🏆</span></div><h1>Turnirga qo'shilish</h1><p class="sub">Ustoz bergan 4 xonali kodni kiriting.</p></div>
       <div class="tnote">👤 <b id="tjn"></b></div>
       <label>Turnir kodi</label><input id="tjc" inputmode="numeric" maxlength="4" placeholder="0000" style="font-size:28px;letter-spacing:.3em;text-align:center">
       <div id="tjerr" style="color:var(--bad);font-size:14px;margin:-6px 0 12px"></div>
       <button class="btn" id="tjgo">Qo'shilish</button>
-      <button class="btn ghost" style="margin-top:10px" onclick="show('start')">Orqaga</button></div>`;
+      </div>`;
     $("tjn").textContent = ACCT.cur.f + " " + ACCT.cur.l + " (@" + ACCT.cur.login + ")";
     $("tjc").value = code;
     $("tjgo").onclick = join;
@@ -3522,12 +3642,12 @@ const T = (() => {
   async function join(auto) {
     auto = auto === true;
     st.celebrated = false; st.streak = 0; st.myRank = 0; st.ps = {};
-    const ac = ACCT.cur; if (!ac) { show("start"); return; }
+    const ac = ACCT.cur; if (!ac) { show("auth"); return; }
     const code = $("tjc").value.trim(), err = m => $("tjerr").textContent = m;
     if (!/^\d{4}$/.test(code)) return err("Kod 4 ta raqamdan iborat bo'lishi kerak.");
     $("tjgo").disabled = true; err("");
     let meta; try { meta = await DBA.get(`t/${code}/meta`); } catch (e) { $("tjgo").disabled = false; return err("Ulanib bo'lmadi. Internetni tekshiring."); }
-    const giveUp = m => { $("tjgo").disabled = false; if (auto) { ls.del("zm_active"); show("start"); return; } return err(m); };
+    const giveUp = m => { $("tjgo").disabled = false; if (auto) { ls.del("zm_active"); goHome(); return; } return err(m); };
     if (!meta) return giveUp("Bunday kodli turnir topilmadi.");
     FN = ac.f; LN = ac.l; name = FN + " " + LN;
     st.code = code; st.pid = ac.login;
@@ -3558,6 +3678,7 @@ const T = (() => {
     tz().querySelector(".sub b").textContent = name; sBoard();
   }
   function sPlay() {
+    setNav(null);
     tz().innerHTML = `<div class="top"><span id="tqn"></span><span id="ttm" class="ttm">⏱ --:--</span></div><div class="bar"><i id="tpb"></i></div>
       <div class="card" id="tqa"></div>
       <div class="card" style="margin-top:12px"><div style="display:flex;justify-content:space-between;font-size:13px;color:var(--mu);margin-bottom:8px"><b style="color:var(--tx)">🏆 Jonli reyting</b><span id="tmy"></span></div><div id="tbd"></div></div>`;
@@ -3639,7 +3760,7 @@ const T = (() => {
     clear(); st.role = "host"; show("tz");
     tz().innerHTML = `<div class="card"><h1>⚙️ Admin panel</h1><p class="sub">Ustoz uchun boshqaruv bo'limi. Parolni kiriting.</p>
       <input id="thp" type="password" placeholder="Parol"><div id="therr" style="color:var(--bad);font-size:14px;margin:-6px 0 12px"></div>
-      <button class="btn" id="thgo">Kirish</button><button class="btn ghost" style="margin-top:10px" onclick="show('start')">Orqaga</button></div>`;
+      <button class="btn" id="thgo">Kirish</button><button class="btn ghost" style="margin-top:10px" onclick="goHome()">Orqaga</button></div>`;
     $("thgo").onclick = () => { if ($("thp").value === HOST_PIN) { ls.set("zm_host", "1"); hSetup(); } else $("therr").textContent = "Parol noto'g'ri."; };
     if (ls.get("zm_host") === "1") hSetup();
   }
@@ -3654,7 +3775,7 @@ const T = (() => {
       ${DBA.kind === "mock" ? '<div class="tnote warn">Sinov rejimi: Firebase hali ulanmagan. Turnir faqat shu qurilmadagi oynalar orasida ishlaydi.</div>' : ""}
       <label>Test</label><select id="ths">${opts}</select>
       <label>Vaqt (daqiqa)</label><input id="thd" type="number" min="1" max="180">
-      <button class="btn" id="thc">Turnirni ochish</button><button class="btn ghost" style="margin-top:10px" onclick="show('start')">Bosh sahifa</button></div>`;
+      <button class="btn" id="thc">Turnirni ochish</button><button class="btn ghost" style="margin-top:10px" onclick="goHome()">Saytga qaytish</button></div>`;
     const sd = () => { const s = setById($("ths").value); $("thd").value = s.qs && s.qs.length > 30 ? 40 : 15; }; $("ths").onchange = sd; sd();
     $("thc").onclick = hCreate;
     st.unsub.push(DBA.on("a", v => hActive(v || {})));
@@ -3755,8 +3876,8 @@ const T = (() => {
     const h = location.hash;
     if (h.startsWith("#turnir")) openJoin((h.split("-")[1] || "").slice(0, 4));
     else if (h === "#ustoz") openHost();
-    else if (!h || h === "#") { let a = null; try { a = JSON.parse(ls.get("zm_active") || "null"); } catch (e) {} if (a && a.code && ACCT.cur && a.u === ACCT.cur.login) { openJoin(a.code); $("tjerr").textContent = "Turniringizga qayta ulanmoqda…"; join(true); } }
     else if (h === "#statistika") { openHost(); if (ls.get("zm_host") === "1") STAT.open(); }
+    else { let a = null; try { a = JSON.parse(ls.get("zm_active") || "null"); } catch (e) {} if (a && a.code && ACCT.cur && a.u === ACCT.cur.login) { openJoin(a.code); $("tjerr").textContent = "Turniringizga qayta ulanmoqda…"; join(true); } else goHome(); }
   }
   return { openJoin, openHost, boot, st, leave: clear };
 })();
