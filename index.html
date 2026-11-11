@@ -266,6 +266,10 @@ body{background:radial-gradient(1200px 600px at 110% -10%,rgba(232,137,63,.13),t
 @keyframes pulse{50%{transform:scale(1.25)}}
 .pwab{display:flex;align-items:center;gap:12px;padding:12px 14px;margin-top:12px;border:1px solid rgba(232,137,63,.45);background:linear-gradient(135deg,rgba(232,137,63,.16),rgba(47,165,154,.10))}.pwab img{width:46px;height:46px;border-radius:12px;flex:none}.pwab b{display:block;font-size:15px}.pwab span{font-size:12.5px;color:var(--mu)}.pwab .btn{width:auto;padding:9px 14px;font-size:14px;flex:none}.pwab .x{background:none;border:0;color:var(--mu);font-size:18px;cursor:pointer;padding:4px;flex:none}
 .pwam{position:fixed;inset:0;z-index:95;background:rgba(0,0,0,.6);display:flex;align-items:flex-end;justify-content:center;padding:14px}.pwam .card{width:min(520px,100%);animation:zoomin .3s both}.pwam ol{padding-left:20px;line-height:1.9;font-size:15px;margin:10px 0 14px}.pwam kbd{background:var(--card2);border:1px solid var(--line);border-radius:6px;padding:1px 6px;font-family:inherit}
+.tp.lock{opacity:.6}.tp.lock .n{background:var(--card2);color:var(--mu)}.tp .lk{margin-left:auto;font-size:18px;flex:none}
+.msa-c{border:1px solid var(--line);border-radius:14px;padding:10px 12px;margin-bottom:10px;background:var(--card2)}.msa-h{display:flex;align-items:center;gap:8px}.msa-h b{flex:1;font-size:14px}.msa-h small{color:var(--mu)}
+.sw{position:relative;width:46px;height:26px;flex:none;border-radius:20px;background:var(--line);border:0;cursor:pointer;transition:.2s}.sw::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.2s}.sw.on{background:var(--ok)}.sw.on::after{left:23px}
+.msa-g{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.msa-g button{border:1px solid var(--line);background:var(--card);color:var(--mu);border-radius:20px;padding:4px 10px;font-size:12px;font-family:inherit;cursor:pointer}.msa-g button.on{background:rgba(47,165,154,.2);border-color:var(--ac2);color:var(--tx)}
 </style>
 </head>
 <body>
@@ -2906,10 +2910,28 @@ let PPQ=5,FN="",LN="",Q=[],order=[],ans=[],cur=0,t0=0,tick=null,name="",set=null
 const L=["A","B","C","D"];
 
 let VIEW={k:"cls"};
+// ===== Milliy sertifikat variantlariga ustoz ruxsati (c/ms/<id> = {on, g:[guruhlar]}) =====
+const MSACC=(()=>{let acc={},un=null;
+  const watch=()=>{if(un)return;try{DBA}catch(e){return}un=DBA.on("c/ms",v=>{acc=v||{};if(VIEW.k==="ms"||VIEW.k==="mscls")try{renderTopics()}catch(e){}if(typeof MSADM!=="undefined")MSADM.refresh()})};
+  const saved=s=>{try{const c=ACCT.cur;return !!(c&&localStorage.getItem("zm_ms_"+c.uid+"_"+s.id))}catch(e){return false}};
+  function can(s){try{if(isAdmin())return true}catch(e){}const a=acc[s.id];if(!a||!a.on)return false;const g=Array.isArray(a.g)?a.g:[];if(!g.length)return true;const c=typeof ACCT!=="undefined"&&ACCT.cur;return !!(c&&g.includes(c.g))}
+  return{watch,can,saved,get acc(){return acc}}})();
 const clsOf=g=>String(g||"").split(" · ")[0].trim(),fanOf=g=>{const p=String(g||"").split(" · ");return p.length>1?p.slice(1).join(" · "):"Testlar"};
 function renderTopics(){
   const box=$("tps"),grid=$("clsGrid");if(!box)return;const E=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   box.innerHTML="";grid.innerHTML="";
+  MSACC.watch();
+  if(VIEW.k==="mscls"){
+    $("stH").textContent="🎓 Milliy sertifikat testlari";$("stS").textContent="Sinfingizni tanlang. Variantlar ustoz ruxsat bergandan keyin ochiladi.";$("stBox").classList.add("hide");BK(goHome);setNav("ms");
+    const ms=SETS.filter(s=>s.ms),have={};ms.forEach(s=>{const c=clsOf(s.g);(have[c]=have[c]||{n:0,o:0,f:new Set()});have[c].n++;if(MSACC.can(s))have[c].o++;have[c].f.add(fanOf(s.g))});
+    const std=["6-sinf","7-sinf","8-sinf","9-sinf","10-sinf","11-sinf"];const extra=Object.keys(have).filter(c=>!std.includes(c));
+    std.concat(extra).forEach((c,i)=>{const x=have[c],num=(c.match(/\d+/)||[""])[0];
+      const b=document.createElement("button");b.className="clsc"+(x?"":" off");b.style.animationDelay=(i*50)+"ms";
+      b.innerHTML=`<div class="clsn">${E(num||"✦")}</div><b>${E(c)}</b><span>${x?`${x.n} ta variant · ${x.o?`🔓 ${x.o} tasi ochiq`:"🔒 hali yopiq"}<br>${E([...x.f].join(", "))}`:"tez orada"}</span>`;
+      if(x)b.onclick=()=>{VIEW={k:"ms",cls:c};set=null;renderTopics();window.scrollTo(0,0)};
+      grid.appendChild(b)});
+    return;
+  }
   if(VIEW.k==="cls"){
     $("stH").textContent="📚 Mavzulashtirilgan testlar";$("stS").textContent="Sinfingizni tanlang";$("stBox").classList.add("hide");BK(goHome);
     const reg=SETS.filter(s=>!s.ms);const have={};reg.forEach(s=>{const c=clsOf(s.g);(have[c]=have[c]||{n:0,f:new Set()});if(s.qs)have[c].n++;have[c].f.add(fanOf(s.g))});
@@ -2921,17 +2943,18 @@ function renderTopics(){
       grid.appendChild(b)});
     return;
   }
-  $("stBox").classList.remove("hide");BK(()=>{if(VIEW.k==="set"){VIEW={k:"cls"};set=null;renderTopics();window.scrollTo(0,0)}else goHome()});
+  $("stBox").classList.remove("hide");BK(()=>{if(VIEW.k==="set"){VIEW={k:"cls"};set=null;renderTopics();window.scrollTo(0,0)}else if(VIEW.k==="ms"){VIEW={k:"mscls"};set=null;renderTopics();window.scrollTo(0,0)}else goHome()});
   let list;
-  if(VIEW.k==="ms"){list=SETS.filter(s=>s.ms);$("stH").textContent="🎓 Milliy sertifikat testlari";$("stS").textContent="45 topshiriqli to'liq imtihon varianti: yopiq testlar, moslashtirish va yozma javoblar";}
+  if(VIEW.k==="ms"){list=SETS.filter(s=>s.ms&&(!VIEW.cls||clsOf(s.g)===VIEW.cls));$("stH").textContent="🎓 "+(VIEW.cls?VIEW.cls+" · ":"")+"Milliy sertifikat";$("stS").textContent="45 topshiriqli to'liq imtihon varianti. 🔒 belgili variantlar ustoz ruxsat bergandan keyin ochiladi.";}
   else{list=SETS.filter(s=>!s.ms&&clsOf(s.g)===VIEW.cls);$("stH").textContent="📚 "+VIEW.cls;$("stS").textContent="Mavzuni tanlang";}
   if(!list.length){box.innerHTML='<div class="sub" style="text-align:center;margin:10px 0">Hozircha testlar yo\'q. Tez orada qo\'shiladi.</div>'}
   let lg=null;const gs=[];list.forEach(s=>{if(!gs.includes(s.g))gs.push(s.g)});
   gs.forEach(g=>list.filter(s=>s.g===g).forEach(s=>{
     if(s.g!==lg){lg=s.g;box.insertAdjacentHTML("beforeend",`<div style="font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ac2);margin-top:6px">${E(VIEW.k==="ms"?s.g:fanOf(s.g))}</div>`)}
-    const b=document.createElement("button");b.className="tp"+(set&&set.id===s.id?" sel":"");
-    b.innerHTML=`<div class="n">${E(s.n)}</div><div><b>${E(s.title)}</b><span>${E(s.sub)}</span></div>`;
-    b.onclick=()=>{set=s;document.querySelectorAll(".tp").forEach(x=>x.classList.toggle("sel",x===b));chk()};
+    const lock=s.ms&&!MSACC.can(s)&&!MSACC.saved(s);if(lock&&set&&set.id===s.id)set=null;
+    const b=document.createElement("button");b.className="tp"+(set&&set.id===s.id?" sel":"")+(lock?" lock":"");
+    b.innerHTML=`<div class="n">${E(s.n)}</div><div><b>${E(s.title)}</b><span>${lock?"🔒 Ustoz hali ruxsat bermagan":E(s.sub)}</span></div>${s.ms?`<span class="lk">${lock?"🔒":"🔓"}</span>`:""}`;
+    b.onclick=()=>{if(lock){FX.toast("🔒 Bu variant hali yopiq. Ustoz ruxsat berganda ochiladi.");return}set=s;document.querySelectorAll(".tp").forEach(x=>x.classList.toggle("sel",x===b));chk()};
     box.appendChild(b);
   }));
   try{chk()}catch(e){}
@@ -2942,6 +2965,7 @@ $("go").onclick=start;
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
 function start(){
   FROM_T=false;TEAMWIN="";HWCUR=HWNEXT;HWNEXT=null;
+  if(set.ms&&!HWCUR&&!MSACC.can(set)&&!MSACC.saved(set)){FX.toast("🔒 Bu variant hali yopiq. Ustoz ruxsat berganda ochiladi.");return}
   if(set.ms){const ac=ACCT.cur;if(!ac)return;FN=ac.f;LN=ac.l;name=FN+" "+LN;return MS.start()}
   const ac=ACCT.cur;if(!ac)return;FN=ac.f;LN=ac.l;name=FN+" "+LN;
   if(!set.qs){Q=shuffle(SETS.filter(s=>s.qs&&!s.ms&&s.g===set.g).flatMap(s=>s.qs)).slice(0,20)}else{Q=set.qs}
@@ -2957,7 +2981,7 @@ function show(id){["auth","home","start","quiz","res","tz"].forEach(s=>$(s).clas
 function setNav(active){const on=!!(active&&typeof ACCT!=="undefined"&&ACCT.cur);$("bnav").classList.toggle("hide",!on);[...$("bnav").children].forEach(b=>b.classList.toggle("on",b.dataset.g===active));const av=$("hdrAv");if(av){const c=typeof ACCT!=="undefined"&&ACCT.cur;av.classList.toggle("hide",!c);if(c)av.textContent=(c.f[0]||"")+(c.l[0]||"")}}
 function goHome(){if(typeof ACCT!=="undefined"&&ACCT.cur){show("home");ACCT.renderHome()}else show("auth")}
 function goTests(){VIEW={k:"cls"};set=null;show("start");renderTopics()}
-function goMS(){VIEW={k:"ms"};set=null;show("start");renderTopics();setNav("ms")}
+function goMS(){VIEW={k:"mscls"};set=null;show("start");renderTopics();setNav("ms")}
 document.addEventListener("DOMContentLoaded",()=>{});
 setTimeout(()=>{$("bkB").onclick=()=>{if(BKfn)BKfn()};$("bkH").onclick=()=>goHome()},0);
 document.addEventListener("click",e=>{const b=e.target.closest("#bnav button");if(!b)return;const g=b.dataset.g;if(g==="home")goHome();else if(g==="tests")goTests();else if(g==="ms")goMS();else if(g==="turnir")T.openJoin();else if(g==="stat")ACCT.history()});
@@ -3355,6 +3379,34 @@ const STAT = (() => {
 })();
 
 // ================== O'QUVCHI HISOBI (login / parol) ==================
+// Ustoz paneli: Milliy sertifikat variantlariga ruxsat berish
+const MSADM = (() => {
+  const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  let gs = [], openCls = null;
+  async function open() {
+    if (!isAdmin()) return T.openHost();
+    T.leave(); if (typeof ACC !== "undefined") ACC.leave(); show("tz"); MSACC.watch();
+    gs = await TGB.groups();
+    $("tz").innerHTML = `${adminNav("ms")}<div class="card"><h1>🎓 Milliy sertifikat variantlari</h1><div class="sub" style="margin:0">Variantni yoqsangiz, o'quvchilarga ochiladi. Guruhni belgilasangiz — faqat o'sha guruhlarga. Hech qaysi guruh belgilanmasa — hammaga ochiq.<br>Uy vazifasi sifatida berilgan variant yopiq bo'lsa ham vazifa orqali ochiladi.</div></div><div id="msaL" style="margin-top:12px"></div>`;
+    refresh();
+  }
+  function refresh() {
+    const el = $("msaL"); if (!el) return;
+    const acc = MSACC.acc, ms = SETS.filter(s => s.ms), cls = []; ms.forEach(s => { const c = clsOf(s.g); if (!cls.includes(c)) cls.push(c); });
+    cls.sort((a, b) => (parseInt(a) || 99) - (parseInt(b) || 99));
+    el.innerHTML = cls.map(c => { const L = ms.filter(s => clsOf(s.g) === c), on = L.filter(s => acc[s.id] && acc[s.id].on).length;
+      return `<div class="card" style="margin-bottom:12px"><div style="display:flex;align-items:center;gap:8px"><h1 style="margin:0;flex:1">${esc(c)}</h1><small style="color:var(--mu)">${on}/${L.length} ochiq</small></div>
+        <div class="row" style="margin:10px 0"><button class="btn sm ghost" data-all="${esc(c)}" data-v="1">🔓 Hammasini ochish</button><button class="btn sm ghost" data-all="${esc(c)}" data-v="0">🔒 Hammasini yopish</button></div>
+        ${L.map(s => { const a = acc[s.id] || {}, g = Array.isArray(a.g) ? a.g : [];
+          return `<div class="msa-c"><div class="msa-h"><b>${esc(s.title.replace("Milliy sertifikat: ", ""))}</b><small>${a.on ? (g.length ? "🔓 " + esc(g.join(", ")) : "🔓 hammaga") : "🔒 yopiq"}</small><button class="sw${a.on ? " on" : ""}" data-sw="${s.id}" title="Ochish / yopish"></button></div>
+            ${a.on && gs.length ? `<div class="msa-g"><button class="${g.length ? "" : "on"}" data-g="${s.id}" data-n="">Hammaga</button>${gs.map(n => `<button class="${g.includes(n) ? "on" : ""}" data-g="${s.id}" data-n="${esc(n)}">${esc(n)}</button>`).join("")}</div>` : ""}</div>`; }).join("")}</div>`; }).join("") || '<div class="sub">Hali Milliy sertifikat variantlari yo\'q.</div>';
+    el.querySelectorAll("[data-sw]").forEach(b => b.onclick = () => { const id = b.dataset.sw, a = MSACC.acc[id] || {}; DBA.set("c/ms/" + id, a.on ? null : { on: true, g: a.g || [] }); FX.toast(a.on ? "🔒 Variant yopildi" : "🔓 Variant ochildi", "up"); });
+    el.querySelectorAll("[data-g]").forEach(b => b.onclick = () => { const id = b.dataset.g, n = b.dataset.n, a = MSACC.acc[id] || { on: true }; let g = Array.isArray(a.g) ? a.g.slice() : [];
+      if (!n) g = []; else g = g.includes(n) ? g.filter(x => x !== n) : g.concat(n); DBA.set("c/ms/" + id, { on: true, g }); });
+    el.querySelectorAll("[data-all]").forEach(b => b.onclick = () => { const c = b.dataset.all, v = b.dataset.v === "1"; SETS.filter(s => s.ms && clsOf(s.g) === c).forEach(s => DBA.set("c/ms/" + s.id, v ? { on: true, g: (MSACC.acc[s.id] || {}).g || [] } : null)); FX.toast(v ? "🔓 Hammasi ochildi" : "🔒 Hammasi yopildi", "up"); });
+  }
+  return { open, refresh };
+})();
 // ================== TELEGRAM BOT (Serverless) bilan bog'lanish ==================
 const TGB = (() => {
   const w = () => window.Telegram && Telegram.WebApp;
@@ -3755,7 +3807,7 @@ const ACC = (() => {
 function adminNav(active) {
   if (active !== "hw" && typeof HW !== "undefined") HW.leaveAdmin();
   const b = (k, l, fn) => `<button class="${k === active ? "on" : ""}" onclick="${fn}">${l}</button>`;
-  return `<div class="adminbar"><div class="adm-t">⚙️ ADMIN PANEL · @${ADMIN.login}</div><div class="sttabs" style="margin:6px 0 0">${b("tur", "🏆 Turnirlar", "T.openHost()")}${b("acc", "👥 O'quvchilar", "ACC.open()")}${b("hw", "📝 Vazifalar", "HW.open()")}${b("cq", "✏️ Savollar", "CQ.open()")}${b("stat", "📊 Statistika", "STAT.open()")}${b("bot", "🤖 Bot", "BOTP.open()")}${b("out", "🚪 Chiqish", "adminLogout()")}</div></div>`;
+  return `<div class="adminbar"><div class="adm-t">⚙️ ADMIN PANEL · @${ADMIN.login}</div><div class="sttabs" style="margin:6px 0 0">${b("tur", "🏆 Turnirlar", "T.openHost()")}${b("acc", "👥 O'quvchilar", "ACC.open()")}${b("hw", "📝 Vazifalar", "HW.open()")}${b("cq", "✏️ Savollar", "CQ.open()")}${b("ms", "🎓 Sertifikat", "MSADM.open()")}${b("stat", "📊 Statistika", "STAT.open()")}${b("bot", "🤖 Bot", "BOTP.open()")}${b("out", "🚪 Chiqish", "adminLogout()")}</div></div>`;
 }
 function adminLogout() { try { localStorage.removeItem("zm_admin"); localStorage.removeItem("zm_host"); } catch (e) {} if (AUTH.FB) AUTH.signOut(); if (typeof T !== "undefined") T.leave(); ACC.leave(); goHome(); }
 
