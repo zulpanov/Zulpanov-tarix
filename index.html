@@ -6,7 +6,7 @@
 <title>ZULPANOV METHODS TARIX</title>
 <script>
 // ===== Telegram Mini App: faqat Telegram ichida ochilganda yuklanadi =====
-window.TG_BOT = "";   // bot username (@ belgisisiz), masalan: zulpanov_tarix_bot
+window.TG_BOT = "alimqul_tarix_testbot";   // bot username (@ belgisisiz), masalan: zulpanov_tarix_bot
 window.TG_APP = "";   // BotFather /newapp da berilgan qisqa nom, masalan: app
 (function(){var h=location.hash||"",q=location.search||"";if(!/tgWebApp/.test(h+q))return;window.IN_TG=true;
   var m=(h+"&"+q).match(/tgWebAppStartParam=([^&]+)/);window.TG_START=m?decodeURIComponent(m[1]):"";
@@ -4802,7 +4802,7 @@ const T = (() => {
     st.unsub.push(DBA.on(`t/${code}/meta`, v => { if (!v) return; const ph = st.meta && st.meta.phase; st.meta = v; if (ph !== v.phase || !$("thb")) hRoute(); }));
     st.timer = setInterval(hTick, 250);
   }
-  const link = () => (window.TG_BOT && window.TG_APP) ? `https://t.me/${window.TG_BOT}/${window.TG_APP}?startapp=turnir-${st.code}` : location.href.split("#")[0].split("?")[0] + "#turnir-" + st.code;
+  const link = () => window.TG_BOT ? (window.TG_APP ? `https://t.me/${window.TG_BOT}/${window.TG_APP}?startapp=turnir-${st.code}` : `https://t.me/${window.TG_BOT}?startapp=turnir-${st.code}`) : location.href.split("#")[0].split("?")[0] + "#turnir-" + st.code;
   function hRoute() {
     const m = st.meta, s = { title: mTitle(m) };
     DBA.set(`a/${st.code}`, m.phase === "end" ? null : { code: st.code, set: m.set, ttl: (m.team ? "👥 " : "") + s.title, ph: m.phase, c: m.c || DBA.now() });
