@@ -3713,12 +3713,12 @@ const ACCT = (() => {
     } else {
       F.innerHTML = `<p class="sub" style="margin:4px 0 12px">Bir marta ro'yxatdan o'tasiz, keyingi safar shu login va parol bilan kirasiz.</p>
         <div class="row"><div style="flex:1"><label>Ism</label><input id="rF" placeholder="Ali"></div><div style="flex:1"><label>Familiya</label><input id="rLn" placeholder="Valiyev"></div></div>
-        <label>Sinf yoki guruh</label><input id="rG" placeholder="masalan: 7-A yoki 1-guruh">
+        
         <label>Login (lotin harflari, raqam, _ belgisi)</label><input id="rL" autocapitalize="none" placeholder="ali_valiyev">
         <div class="row"><div style="flex:1"><label>Parol</label><input id="rP" type="password" placeholder="kamida 6 belgi"></div><div style="flex:1"><label>Parolni takrorlang</label><input id="rP2" type="password"></div></div>
         <div class="tnote" style="font-size:12px">⚠️ Boshqa joylarda (Telegram, Instagram, pochta) ishlatadigan parolingizni yozmang. Bu parolni ustozingiz ko'ra oladi.</div>
         <div class="accerr" id="aE"></div><button class="btn" id="rGo">Ro'yxatdan o'tish</button>`;
-      $("rGo").onclick = register; HW.fillRegGroups();
+      $("rGo").onclick = register;
     }
     if (msg) $("aE").textContent = msg;
   }
@@ -3750,7 +3750,7 @@ const ACCT = (() => {
     apply(true); FX.toast(`👋 Xush kelibsiz, ${esc(r.f)}!`, "up"); TGB.link(u, p);
   }
   async function register() {
-    const f = cap($("rF").value), l = cap($("rLn").value), g = $("rG").value.trim().slice(0, 40), u = normLogin($("rL").value), p = $("rP").value, p2 = $("rP2").value, E = m => $("aE").textContent = m;
+    const f = cap($("rF").value), l = cap($("rLn").value), g = "", u = normLogin($("rL").value), p = $("rP").value, p2 = $("rP2").value, E = m => $("aE").textContent = m;
     if (f.length < 2 || l.length < 2) return E("Ism va familiyani to'liq yozing.");
     if (!/^[a-z0-9_]{3,20}$/.test(u)) return E("Login 3–20 ta lotin harfi, raqam yoki _ belgisidan iborat bo'lsin (bo'sh joysiz).");
     if (["zulpanov", "admin", "ustoz", "administrator"].includes(u)) return E("Bu login band. Boshqa login tanlang.");
