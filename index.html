@@ -2,7 +2,7 @@
 <html lang="uz">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>ZULPANOV METHODS TARIX</title>
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0f1720">
@@ -358,6 +358,11 @@ body.adm #tz h1{font-size:18px}body.adm #tz .card{padding:16px}
 .tpk>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:12px;margin:0;color:var(--tx);font-size:14px}.tpk>summary::-webkit-details-marker{display:none}
 .tpk>summary:before{content:"▸";color:var(--mu);transition:.2s}.tpk[open]>summary:before{transform:rotate(90deg)}.tpk>summary b{flex:1}.tpk-n{color:var(--mu);font-size:12px}.tpk.has .tpk-n{color:#67E8F9;font-weight:700}
 .tpk>summary .lnk{font-size:12px}.tpk[open]{padding-bottom:6px}.tpk-i{padding:7px 12px;font-size:13.5px}.tpk-i input{width:18px;height:18px;accent-color:#8B5CF6}
+
+/* ===== iOS: kattalashib ketishning oldini olish ===== */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;touch-action:manipulation}
+html,body{overflow-x:hidden;max-width:100%}
+button,a,label,summary,.tile,.tile2,.opt,.tp{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 </style>
 </head>
 <body>
@@ -5424,7 +5429,7 @@ const T = (() => {
     CQ.watch();
     if (AUTH.FB) { show("auth"); await AUTH.ready().catch(() => {}); }
     ACCT.restore();
-    if (window.IN_TG) { try { const w = Telegram.WebApp; w.ready(); w.expand(); w.disableVerticalSwipes && w.disableVerticalSwipes(); w.setHeaderColor && w.setHeaderColor("#0f1720"); w.setBackgroundColor && w.setBackgroundColor("#0f1720"); } catch (e) {} }
+    if (window.IN_TG) { try { const w = Telegram.WebApp; w.ready(); w.expand(); w.disableVerticalSwipes && w.disableVerticalSwipes(); w.setHeaderColor && w.setHeaderColor("#0A0720"); w.setBackgroundColor && w.setBackgroundColor("#0A0720"); } catch (e) {} }
     const h = window.IN_TG ? (/^turnir-\d{4}$/.test(window.TG_START || "") ? "#" + window.TG_START : "") : location.hash;
     if (window.IN_TG && h && ACCT.cur) { openJoin(h.split("-")[1]); join(true); return; }
     if (h.startsWith("#turnir")) openJoin((h.split("-")[1] || "").slice(0, 4));
