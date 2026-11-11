@@ -3344,6 +3344,66 @@ const STAT = (() => {
 })();
 
 // ================== O'QUVCHI HISOBI (login / parol) ==================
+// ================== TELEGRAM BOT (Serverless) bilan bog'lanish ==================
+const TGB = (() => {
+  const w = () => window.Telegram && Telegram.WebApp;
+  const on = () => { try { return !!(window.IN_TG && w() && w().Serverless && typeof w().Serverless.call === "function"); } catch (e) { return false; } };
+  const call = (name, input = {}) => new Promise((res, rej) => { if (!on()) return rej(new Error("off")); try { w().Serverless.call(name, input, (err, r) => err ? rej(err) : res(r)); } catch (e) { rej(e); } });
+  function link(login, pw, admin) { if (!on()) return; const c = typeof ACCT !== "undefined" && ACCT.cur; call("link", { login, pw, admin: !!admin, name: !admin && c ? c.f + " " + c.l : "", grp: !admin && c ? c.g || "" : "" }).catch(() => {}); }
+  const groups = async () => { try { const v = await DBA.get("grp"); return Object.values(v || {}).filter(x => x && x.n).map(x => x.n).sort((a, b) => a.localeCompare(b)); } catch (e) { return []; } };
+  const msg = e => (e && (e.message || e.description)) || "Xatolik";
+  return { on, call, link, groups, msg };
+})();
+// Ustoz paneli: 🤖 Bot bo'limi
+const BOTP = (() => {
+  const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  async function open() {
+    if (!isAdmin()) return T.openHost();
+    T.leave(); if (typeof ACC !== "undefined") ACC.leave(); show("tz");
+    const gs = await TGB.groups(), gopt = `<option value="">Barcha guruhlar</option>` + gs.map(g => `<option>${esc(g)}</option>`).join("");
+    $("tz").innerHTML = `${adminNav("bot")}
+      ${TGB.on() ? "" : `<div class="tnote warn">Bot bilan ishlash uchun admin panelni <b>Telegram'dagi bot ichidan</b> oching (bot → 📚 Testlar → Admin panel). Oddiy brauzerda bu bo'lim ishlamaydi.</div>`}
+      <div class="card"><h1>🤖 Telegram bot</h1><div class="sub" id="bpS" style="margin:0">${TGB.on() ? "Yuklanmoqda…" : "—"}</div></div>
+      <div class="card" style="margin-top:12px"><h1>📊 Ota-onalarga hisobot</h1><div class="sub">Har bir ota-onaga farzandining shu davrdagi natijalari yuboriladi. Ota-ona botga farzandining «Statistika» sahifasidagi havola orqali ulanadi.</div>
+        <div class="row"><div style="flex:1"><label>Davr</label><select id="bpP"><option value="7">Oxirgi 7 kun</option><option value="14">Oxirgi 14 kun</option><option value="30">Oxirgi 30 kun</option></select></div><div style="flex:1"><label>Guruh</label><select id="bpG">${gopt}</select></div></div>
+        <button class="btn" id="bpR">📊 Hisobotlarni yuborish</button><div class="accerr" id="bpRe"></div></div>
+      <div class="card" style="margin-top:12px"><h1>✉️ Xabar yuborish</h1>
+        <div class="row"><div style="flex:1"><label>Kimga</label><select id="bpT"><option value="stu">O'quvchilarga</option><option value="par">Ota-onalarga</option><option value="all">Hammaga</option></select></div><div style="flex:1"><label>Guruh</label><select id="bpG2">${gopt}</select></div></div>
+        <label>Xabar matni</label><textarea id="bpM" rows="4" placeholder="Masalan: Ertaga soat 15:00 da dars bo'ladi." style="width:100%"></textarea>
+        <button class="btn" id="bpB">✉️ Yuborish</button><div class="accerr" id="bpBe"></div></div>`;
+    if (!TGB.on()) { ["bpR", "bpB"].forEach(id => $(id).disabled = true); return; }
+    TGB.call("stats").then(s => { $("bpS").innerHTML = `Botga ulangan o'quvchilar: <b>${s.students}</b> · ota-onalar: <b>${s.parents}</b> (${s.kids} ta o'quvchining)` + (Object.keys(s.groups || {}).length ? "<br>" + Object.entries(s.groups).map(([g, n]) => `${esc(g)}: ${n}`).join(" · ") : ""); }).catch(e => { $("bpS").textContent = "Bot bilan bog'lanib bo'lmadi: " + TGB.msg(e) + ". Admin panelga bot ichidan qayta kiring."; });
+    $("bpR").onclick = report; $("bpB").onclick = broadcast;
+  }
+  async function report() {
+    const b = $("bpR"), E = m => $("bpRe").textContent = m; b.disabled = true; E("Tayyorlanmoqda…");
+    try {
+      const days = +$("bpP").value, grp = $("bpG").value, from = Date.now() - days * 86400e3;
+      const [res, us] = await Promise.all([DBA.get("r"), DBA.get(AUTH.FB ? "users" : "u")]);
+      const ulist = Object.entries(us || {}).map(([k, x]) => ({ login: (x && x.login) || k, f: x && x.f, l: x && x.l, g: (x && x.g) || "" })).filter(x => x.f && (!grp || x.g === grp));
+      const by = {}; Object.values(res || {}).forEach(r => { if (r && r.u && (r.at || 0) >= from) (by[r.u] = by[r.u] || []).push(r); });
+      const items = ulist.map(u => {
+        const rs = (by[u.login] || []).sort((a, b) => b.at - a.at), n = rs.length, avg = n ? Math.round(rs.reduce((a, r) => a + (r.pts || 0), 0) / n) : 0, best = n ? Math.max(...rs.map(r => r.pts || 0)) : 0;
+        const lines = rs.slice(0, 5).map(r => `• ${esc(r.ttl || "Test")} — <b>${r.pts || 0}</b> ball${r.lv ? " (" + r.lv + ")" : ""}`).join("\n");
+        const text = `📊 <b>Haftalik hisobot</b> — ${esc(u.f + " " + u.l)}\n<i>Oxirgi ${days} kun</i>\n\n` + (n ? `✅ Ishlangan testlar: <b>${n}</b>\n📈 O'rtacha ball: <b>${avg}</b>\n🏅 Eng yuqori: <b>${best}</b>\n\n${lines}` : "⚠️ Bu davrda birorta ham test ishlanmagan.") + `\n\n<i>ZULPANOV METHODS TARIX</i>`;
+        return { u: u.login, text };
+      });
+      const r = await TGB.call("reports", { items });
+      E(""); FX.toast(`📊 ${r.sent} ta ota-onaga yuborildi`, "up");
+      $("bpRe").textContent = r.parents ? `Yuborildi: ${r.sent}${r.failed ? ` · yetib bormadi: ${r.failed}` : ""}` : "Hali birorta ota-ona botga ulanmagan.";
+    } catch (e) { E("Xatolik: " + TGB.msg(e)); }
+    b.disabled = false;
+  }
+  async function broadcast() {
+    const b = $("bpB"), text = $("bpM").value.trim(), E = m => $("bpBe").textContent = m;
+    if (!text) return E("Xabar matnini yozing.");
+    b.disabled = true; E("Yuborilmoqda…");
+    try { const r = await TGB.call("broadcast", { to: $("bpT").value, grp: $("bpG2").value, text }); E(`Yuborildi: ${r.sent}${r.failed ? ` · yetib bormadi: ${r.failed}` : ""}`); if (r.sent) { $("bpM").value = ""; FX.toast("✉️ Xabar yuborildi", "up"); } }
+    catch (e) { E("Xatolik: " + TGB.msg(e)); }
+    b.disabled = false;
+  }
+  return { open };
+})();
 const ACCT = (() => {
   const L = { get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }, del(k) { try { localStorage.removeItem(k); } catch (e) {} } };
   let cur = null, ready = false;
@@ -3425,7 +3485,7 @@ const ACCT = (() => {
         cur = { uid, login: u, f: r.f, l: r.l, g: r.g || "" };
         L.set("zm_user", JSON.stringify({ uid, u, f: r.f, l: r.l, g: r.g || "" }));
         DBA.update("users/" + uid, { last: DBA.now() });
-        apply(true); FX.toast(`👋 Xush kelibsiz, ${esc(r.f)}!`, "up"); return;
+        apply(true); FX.toast(`👋 Xush kelibsiz, ${esc(r.f)}!`, "up"); TGB.link(u, p); return;
       } catch (e) { $("aGo").disabled = false; return E(AUTH.msg(e)); }
     }
     let r; try { r = await DBA.get("u/" + u); } catch (e) { $("aGo").disabled = false; return E("Ulanib bo'lmadi. Internetni tekshiring."); }
@@ -3436,7 +3496,7 @@ const ACCT = (() => {
     cur = { uid: u, login: u, f: r.f, l: r.l, g: r.g || "" };
     L.set("zm_user", JSON.stringify({ u, p, f: r.f, l: r.l, g: r.g || "" }));
     DBA.update("u/" + u, { last: DBA.now() });
-    apply(true); FX.toast(`👋 Xush kelibsiz, ${esc(r.f)}!`, "up");
+    apply(true); FX.toast(`👋 Xush kelibsiz, ${esc(r.f)}!`, "up"); TGB.link(u, p);
   }
   async function register() {
     const f = cap($("rF").value), l = cap($("rLn").value), g = $("rG").value.trim().slice(0, 40), u = normLogin($("rL").value), p = $("rP").value, p2 = $("rP2").value, E = m => $("aE").textContent = m;
@@ -3457,7 +3517,7 @@ const ACCT = (() => {
         await DBA.set("pw/" + uid, p);
         cur = { uid, login: u, f, l, g };
         L.set("zm_user", JSON.stringify({ uid, u, f, l, g }));
-        apply(true); FX.toast("🎉 Ro'yxatdan o'tdingiz!", "up"); FX.burst(innerWidth / 2, 160, 50, 7); return;
+        apply(true); FX.toast("🎉 Ro'yxatdan o'tdingiz!", "up"); FX.burst(innerWidth / 2, 160, 50, 7); TGB.link(u, p); return;
       } catch (e) { $("rGo").disabled = false; return E(AUTH.msg(e)); }
     }
     try {
@@ -3468,7 +3528,7 @@ const ACCT = (() => {
     } catch (e) { $("rGo").disabled = false; return E("Ulanib bo'lmadi. Internetni tekshiring."); }
     cur = { uid: u, login: u, f, l, g };
     L.set("zm_user", JSON.stringify({ u, p, f, l, g }));
-    apply(true); FX.toast("🎉 Ro'yxatdan o'tdingiz!", "up"); FX.burst(innerWidth / 2, 160, 50, 7);
+    apply(true); FX.toast("🎉 Ro'yxatdan o'tdingiz!", "up"); FX.burst(innerWidth / 2, 160, 50, 7); TGB.link(u, p);
   }
   let hUn = null, hData = {}, hLogin = null, hListeners = new Set();
   function watchH() {
@@ -3485,7 +3545,7 @@ const ACCT = (() => {
     if (!cur) return;
     $("wlAv").textContent = (cur.f[0] || "") + (cur.l[0] || ""); $("wlN").textContent = cur.f + " " + cur.l;
     $("wlG").textContent = "@" + cur.login + (cur.g ? " · " + cur.g : ""); $("wlHi").textContent = greet();
-    $("wlX").onclick = () => logout();
+    $("wlX").onclick = () => { if (TGB.on()) TGB.call("unlink").catch(() => {}); logout(); };
     watchH();
     const fill = () => {
       if (!$("wlT")) return;
@@ -3510,7 +3570,9 @@ const ACCT = (() => {
       <div class="card hsec" style="margin-top:12px"><h3>🏅 Daraja va nishonlar</h3><div id="hBd"></div></div>
       <div class="card hsec" style="margin-top:12px"><h3>📈 Natijalar dinamikasi</h3><div id="hCh"></div></div>
       <div class="card hsec" style="margin-top:12px"><h3>📚 Testlar bo'yicha</h3><div id="hT"></div></div>
-      <div class="card hsec" style="margin-top:12px"><h3>🕒 Barcha natijalar</h3><div id="hL"></div></div>`;
+      <div class="card hsec" style="margin-top:12px"><h3>🕒 Barcha natijalar</h3><div id="hL"></div></div>
+      ${window.TG_BOT ? `<div class="card hsec" style="margin-top:12px"><h3>👨‍👩‍👦 Ota-onamni ulash</h3><div class="sub" style="margin:0 0 10px">Ota-onangiz shu havolani bossa, Telegram bot orqali natijalaringizni ko'rib boradi.</div><button class="btn" id="hPar">✈️ Ota-onamga yuborish</button></div>` : ""}`;
+    if ($("hPar")) $("hPar").onclick = () => { const l = `https://t.me/${window.TG_BOT}?start=p_${cur.login}`, u = `https://t.me/share/url?url=${encodeURIComponent(l)}&text=${encodeURIComponent("Assalomu alaykum! Tarix bo'yicha natijalarimni shu bot orqali kuzatib boring 👇")}`; try { if (window.IN_TG && Telegram.WebApp.openTelegramLink) return Telegram.WebApp.openTelegramLink(u); } catch (e) {} window.open(u, "_blank"); };
     watchH();
     const fill = () => {
       if (!$("hL")) { hListeners.delete(fill); return; }
@@ -3528,7 +3590,7 @@ const ACCT = (() => {
     hListeners.add(fill); fill();
   }
   function drop() { cur = null; L.del("zm_user"); L.del("zm_active"); if (hUn) { hUn(); hUn = null; } hLogin = null; }
-  return { get recs() { return recs(); }, restore, get cur() { return cur; }, logout, renderBox, history, renderHome, drop };
+  return { login, get recs() { return recs(); }, restore, get cur() { return cur; }, logout, renderBox, history, renderHome, drop };
 })();
 
 // ================== ADMIN: O'QUVCHILAR HISOBLARI ==================
@@ -3643,7 +3705,7 @@ const ACC = (() => {
 function adminNav(active) {
   if (active !== "hw" && typeof HW !== "undefined") HW.leaveAdmin();
   const b = (k, l, fn) => `<button class="${k === active ? "on" : ""}" onclick="${fn}">${l}</button>`;
-  return `<div class="adminbar"><div class="adm-t">⚙️ ADMIN PANEL · @${ADMIN.login}</div><div class="sttabs" style="margin:6px 0 0">${b("tur", "🏆 Turnirlar", "T.openHost()")}${b("acc", "👥 O'quvchilar", "ACC.open()")}${b("hw", "📝 Vazifalar", "HW.open()")}${b("cq", "✏️ Savollar", "CQ.open()")}${b("stat", "📊 Statistika", "STAT.open()")}${b("out", "🚪 Chiqish", "adminLogout()")}</div></div>`;
+  return `<div class="adminbar"><div class="adm-t">⚙️ ADMIN PANEL · @${ADMIN.login}</div><div class="sttabs" style="margin:6px 0 0">${b("tur", "🏆 Turnirlar", "T.openHost()")}${b("acc", "👥 O'quvchilar", "ACC.open()")}${b("hw", "📝 Vazifalar", "HW.open()")}${b("cq", "✏️ Savollar", "CQ.open()")}${b("stat", "📊 Statistika", "STAT.open()")}${b("bot", "🤖 Bot", "BOTP.open()")}${b("out", "🚪 Chiqish", "adminLogout()")}</div></div>`;
 }
 function adminLogout() { try { localStorage.removeItem("zm_admin"); localStorage.removeItem("zm_host"); } catch (e) {} if (AUTH.FB) AUTH.signOut(); if (typeof T !== "undefined") T.leave(); ACC.leave(); goHome(); }
 
@@ -3722,6 +3784,7 @@ const HW = (() => {
     const s = setOf($("hwS").value), rec = { set: s.id, ttl: s.title, g: $("hwTo").value, due, c: DBA.now() }, note = $("hwN").value.trim();
     if (note) rec.note = note;
     E(""); await DBA.set("hw/w" + Date.now().toString(36), rec); $("hwN").value = ""; FX.toast("✅ Vazifa berildi", "up");
+    if (TGB.on()) { const d = new Date(due); TGB.call("notifyHw", { ttl: rec.ttl, grp: rec.g === "*" ? "" : rec.g, note: note || "", due: `${d2(d.getDate())}.${d2(d.getMonth() + 1)} ${d2(d.getHours())}:${d2(d.getMinutes())}` }).then(r => FX.toast(`📨 Botda ${r.sent} ta o'quvchiga xabar ketdi`, "up")).catch(() => {}); }
   }
   function renderAdmin() {
     const L = $("hwL"); if (!L) return;
@@ -4712,7 +4775,7 @@ const T = (() => {
       if (!l || !p) return E("Login va parolni kiriting.");
       if (AUTH.FB) {
         $("thgo").disabled = true; E("");
-        const done = () => { ACCT.drop(); FX.toast("✅ Admin panelga xush kelibsiz", "up"); hSetup(); };
+        const done = () => { TGB.link(l, p, true); ACCT.drop(); FX.toast("✅ Admin panelga xush kelibsiz", "up"); hSetup(); };
         try {
           await AUTH.signIn(l, p);
           if (AUTH.isAdmin) return done();
@@ -4728,7 +4791,7 @@ const T = (() => {
       }
       let hx = ""; try { hx = await sha256hex(ADMIN.salt + ":" + l + ":" + p); } catch (e) { return E("Brauzeringiz bu amalni qo'llamaydi. Boshqa brauzerdan kiring."); }
       if (l === ADMIN.login && hx === ADMIN.hash) {
-        ls.del("zm_afail"); ls.set("zm_admin", JSON.stringify({ k: ADMIN.hash, exp: Date.now() + 12 * 3600e3 }));
+        ls.del("zm_afail"); ls.set("zm_admin", JSON.stringify({ k: ADMIN.hash, exp: Date.now() + 12 * 3600e3 })); TGB.link(l, p, true);
         FX.toast("✅ Admin panelga xush kelibsiz", "up"); hSetup();
       } else {
         const f = +(ls.get("zm_afail") || 0) + 1; ls.set("zm_afail", f);
@@ -4811,7 +4874,7 @@ const T = (() => {
       <div class="sub" style="margin-bottom:4px">${esc(s.title)} · ${m.n} savol · ${Math.round(m.dur / 60000)} daqiqa</div>
       ${m.phase === "lobby" ? `<div class="sub" style="margin:0">Turnir kodi</div><div class="tcode">${st.code}</div>
         <div class="sub">O'quvchilar saytni ochib «Turnir rejimi»ni bosadi va shu kodni kiritadi.<br><span class="tlink"></span></div>
-        <div class="row"><button class="btn ghost" id="thcp">Havolani nusxalash</button><button class="btn ghost" id="thtg">✈️ Telegram'da ulashish</button></div><button class="btn" id="thst" style="margin-top:10px">▶ Boshlash</button>`
+        <div class="row"><button class="btn ghost" id="thcp">Havolani nusxalash</button><button class="btn ghost" id="thtg">✈️ Telegram'da ulashish</button></div>${TGB.on() ? `<div class="row" style="margin-top:10px;align-items:center"><select id="tanG" style="margin:0;flex:1"><option value="">Barcha o'quvchilar</option></select><button class="btn ghost" id="tanB" style="flex:1">📣 Botda e'lon qilish</button></div>` : ""}<button class="btn" id="thst" style="margin-top:10px">▶ Boshlash</button>`
       : `<div class="row" style="align-items:center"><div style="flex:1;text-align:left"><div class="sub" style="margin:0">Kod: <b>${st.code}</b> · Ishtirokchilar: <b id="tcnt">0</b> · Tugatganlar: <b id="tdn">0</b></div></div><div class="ttm" id="ttm" style="font-size:26px">--:--</div></div>
         <button class="btn" id="thend" style="margin-top:12px;background:var(--bad)">■ Turnirni yakunlash</button>`}
       ${m.team ? `<div id="thw" class="tnote" style="margin-top:12px"></div><button class="btn ghost" id="thpj">🖥 Proyektor rejimi</button>` : ""}
@@ -4821,6 +4884,8 @@ const T = (() => {
     if (st.proj) hProj();
     if ($("thst")) {
       tz().querySelector(".tlink").textContent = link();
+      if ($("tanB")) { TGB.groups().then(gs => { if ($("tanG")) $("tanG").insertAdjacentHTML("beforeend", gs.map(g => `<option>${esc(g)}</option>`).join("")); });
+        $("tanB").onclick = () => { $("tanB").disabled = true; TGB.call("announce", { code: st.code, ttl: mTitle(m), team: !!m.team, n: m.n, dur: Math.round(m.dur / 60000), grp: $("tanG").value }).then(r => { $("tanB").textContent = `✅ ${r.sent} kishiga yuborildi`; FX.toast(`📣 ${r.sent} ta o'quvchiga e'lon yuborildi`, "up"); }).catch(e => { $("tanB").disabled = false; FX.toast("Bot: " + TGB.msg(e)); }); }; }
       $("thtg").onclick = () => { const u = `https://t.me/share/url?url=${encodeURIComponent(link())}&text=${encodeURIComponent(`${m.team ? "👥 Jamoaviy turnir" : "🏆 Turnir"}! Kod: ${st.code}\n${mTitle(m)}`)}`; try { if (window.IN_TG && Telegram.WebApp.openTelegramLink) return Telegram.WebApp.openTelegramLink(u); } catch (e) {} window.open(u, "_blank"); };
       $("thcp").onclick = () => { navigator.clipboard && navigator.clipboard.writeText(link()).then(() => $("thcp").textContent = "Nusxalandi ✓", () => {}); };
       $("thst").onclick = () => { $("thst").disabled = true; DBA.update(`t/${st.code}/meta`, { phase: "run", startAt: DBA.now() + 5000 }); };
@@ -4921,7 +4986,9 @@ const T = (() => {
   async function boot() {
     CQ.watch();
     if (AUTH.FB) { show("auth"); await AUTH.ready().catch(() => {}); }
-    ACCT.restore();
+    const rp = ACCT.restore();
+    if (window.IN_TG && !ACCT.cur && TGB.on()) { try { await rp; } catch (e) {} }
+    if (window.IN_TG && !ACCT.cur && TGB.on()) { try { const me = await TGB.call("me"); if (me && me.login && me.pw && !me.admin && $("aL")) { $("aL").value = me.login; $("aP").value = me.pw; await ACCT.login(); } } catch (e) {} }
     if (window.IN_TG) { try { const w = Telegram.WebApp; w.ready(); w.expand(); w.disableVerticalSwipes && w.disableVerticalSwipes(); w.setHeaderColor && w.setHeaderColor("#0f1720"); w.setBackgroundColor && w.setBackgroundColor("#0f1720"); } catch (e) {} }
     const h = window.IN_TG ? (/^turnir-\d{4}$/.test(window.TG_START || "") ? "#" + window.TG_START : "") : location.hash;
     if (window.IN_TG && h && ACCT.cur) { openJoin(h.split("-")[1]); join(true); return; }

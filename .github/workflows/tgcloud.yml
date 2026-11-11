@@ -1,0 +1,39 @@
+name: Telegram bot (Serverless) deploy
+on:
+  push:
+    branches: [main]
+    paths: ["tgcloud/**", "tgcloud.jsonc", "index.html", "ms11.js", "img/**", ".github/workflows/tgcloud.yml"]
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency: { group: tgcloud, cancel-in-progress: false }
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - name: Build Mini App folder
+        run: mkdir -p dist && cp index.html ms11.js dist/ && cp -r img dist/
+      - name: Push + migrate
+        id: dep
+        continue-on-error: true
+        env:
+          TGCLOUD_TOKEN: ${{ secrets.TGCLOUD_TOKEN }}
+          CI: "1"
+        run: |
+          set -o pipefail
+          if [ -z "$TGCLOUD_TOKEN" ]; then echo "TGCLOUD_TOKEN secret topilmadi" | tee log.txt; exit 1; fi
+          { npx -y -p @tgcloud/cli@0.2.0 tgcloud push --force --no-pager && npx -y -p @tgcloud/cli@0.2.0 tgcloud migrate --yes --no-pager; } 2>&1 | tee log.txt
+      - name: Save log to deploy-log branch
+        if: always()
+        run: |
+          echo "status=${{ steps.dep.outcome }} sha=${GITHUB_SHA} at=$(date -u +%FT%TZ)" > /tmp/head.txt
+          cat /tmp/head.txt log.txt > /tmp/log.txt 2>/dev/null || cp /tmp/head.txt /tmp/log.txt
+          git config user.name "github-actions"; git config user.email "actions@github.com"
+          git fetch origin deploy-log || true
+          git checkout -B deploy-log
+          git rm -rq --cached . >/dev/null 2>&1 || true
+          find . -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
+          cp /tmp/log.txt log.txt && git add log.txt && git commit -qm "deploy log ${GITHUB_SHA::7}" && git push -f origin deploy-log
