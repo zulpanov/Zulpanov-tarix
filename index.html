@@ -2927,11 +2927,11 @@ function render(){
     b.className="opt"+(ans[cur]===oi?" sel":"");
     b.innerHTML=`<span class="l">${L[k]}</span><span></span>`;
     b.lastChild.textContent=q.o[oi];
-    b.onclick=()=>{ans[cur]=oi;render();const nb=$("ops").children[k];nb&&nb.classList.add("pick");FX.S.tick();if(cur<Q.length-1)setTimeout(()=>{cur++;render()},300)};
+    b.onclick=()=>{ans[cur]=oi;render();const nb=$("ops").children[k];nb&&nb.classList.add("pick");FX.S.tick()};
     $("ops").appendChild(b);
   });
   $("prev").disabled=cur===0;
-  $("next").textContent=cur===Q.length-1?"Yakunlash ✓":"Keyingi →";
+  $("next").textContent=cur===Q.length-1?"Yakunlash ✓":(ans[cur]!==null?"Yuborish ➤":"O‘tkazish →");$("next").classList.toggle("ghost",cur<Q.length-1&&ans[cur]===null);
   $("dots").innerHTML="";
   order.forEach((_,k)=>{const d=document.createElement("button");d.className="dot"+(ans[k]!==null?" ans":"")+(k===cur?" cur":"");d.textContent=k+1;d.onclick=()=>{cur=k;render()};$("dots").appendChild(d)});
 }
@@ -4429,19 +4429,20 @@ const T = (() => {
     if (st.cur >= st.Q.length) return finishMine();
     const q = st.Q[st.cur], perm = st.perms[st.cur];
     $("tqn").textContent = `${st.cur + 1}-savol / ${st.Q.length}`; $("tpb").style.width = (st.cur / st.Q.length * 100) + "%";
-    el.innerHTML = `<span class="tag"></span><div class="q"></div><div id="tops"></div>`;
+    el.innerHTML = `<span class="tag"></span><div class="q"></div><div id="tops"></div><button class="btn" id="tsend" disabled style="margin-top:14px">Javobni yuborish ➤</button>`;
     el.querySelector(".tag").textContent = q.t; el.querySelector(".q").textContent = q.q;
     perm.forEach((oi, k) => {
       const b = document.createElement("button"); b.className = "opt"; b.innerHTML = `<span class="l">${"ABCD"[k]}</span><span></span>`; b.lastChild.textContent = q.o[oi];
-      b.onclick = () => answer(oi, b); $("tops").appendChild(b);
+      b.onclick = () => { if (st.lock) return; st.pick = { oi, b }; [...$("tops").children].forEach(x => x.classList.toggle("sel", x === b)); $("tsend").disabled = false; FX.S.tick && FX.S.tick(); }; $("tops").appendChild(b);
     });
-    st.lock = false;
+    st.pick = null; st.lock = false;
+    $("tsend").onclick = () => { if (!st.pick || st.lock) return; $("tsend").disabled = true; answer(st.pick.oi, st.pick.b); };
   }
   async function answer(oi, btn) {
     if (st.lock) return; st.lock = true;
     const q = st.Q[st.cur], ok = oi === q.a; GAME.track(q, ok);
     st.ans[st.cur] = oi; ls.set("zm_ans_" + st.code + st.pid, JSON.stringify(st.ans));
-    btn.classList.add(ok ? "okk" : "bad");
+    btn.classList.remove("sel"); btn.classList.add(ok ? "okk" : "bad");
     if (!ok) [...$("tops").children].forEach((b, k) => { if (st.perms[st.cur][k] === q.a) b.classList.add("okk"); });
     if (ok) { st.streak = (st.streak || 0) + 1; FX.correct(btn, "+" + (Math.round(ppq() * 10) / 10)); if (st.streak >= 3) { FX.toast(`🔥 ${st.streak} ta ketma-ket to'g'ri!`, "fire"); setTimeout(FX.S.streak, 250); } }
     else { st.streak = 0; FX.wrong(); }
