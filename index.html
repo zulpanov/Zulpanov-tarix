@@ -130,6 +130,19 @@ details summary::-webkit-details-marker{color:var(--ac)}
 .msvenn{width:100%;max-width:420px;display:block;margin:-6px auto 12px}.msvenn .vt{fill:var(--tx);font-size:22px;font-weight:800;font-family:Inter,sans-serif}.msvenn .vn{fill:var(--tx);font-size:14px;font-weight:700;font-family:Inter,sans-serif}
 .msmo{display:grid;grid-template-columns:repeat(2,1fr);gap:6px 12px;padding:10px 12px;background:var(--bg);border-radius:10px;margin:-6px 0 14px;font-size:14px}
 .msmq{padding:10px 0;border-top:1px solid var(--line);font-size:15px}.msml{display:flex;gap:6px;margin-top:8px}.msml button{flex:1;padding:9px 0;border-radius:9px;border:1px solid var(--line);background:var(--card2);color:var(--tx);font-weight:700;font-family:inherit;cursor:pointer}.msml button.on{background:var(--ac);border-color:var(--ac);color:#fff}
+.lvrow{display:flex;align-items:center;gap:12px;background:rgba(0,0,0,.22);border-radius:14px;padding:10px 12px}
+.lvic{font-size:30px;width:46px;height:46px;display:grid;place-items:center;border-radius:12px;background:linear-gradient(135deg,rgba(243,199,79,.25),rgba(232,137,63,.2))}
+.lvn{display:flex;justify-content:space-between;font-size:14px;margin-bottom:5px}.lvn span{color:var(--mu);font-size:12px}
+.lvbar{height:8px;border-radius:9px;background:var(--bg);overflow:hidden;margin-bottom:4px}.lvbar i{display:block;height:100%;border-radius:9px;background:linear-gradient(90deg,#f3c74f,var(--ac));transition:width .8s}
+.strk{display:flex;flex-direction:column;align-items:center;font-size:20px;filter:grayscale(1);opacity:.5}.strk b{font-size:14px}.strk.on{filter:none;opacity:1;animation:bob 1.6s ease-in-out infinite}
+.tiles2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:-2px 0 14px}
+.tile2{display:flex;flex-direction:column;align-items:flex-start;gap:3px;padding:14px;border-radius:18px;border:1px solid var(--line);background:linear-gradient(135deg,rgba(255,107,154,.14),var(--card) 65%);color:var(--tx);font-family:inherit;cursor:pointer;text-align:left;transition:transform .2s}
+.tile2+.tile2{background:linear-gradient(135deg,rgba(243,199,79,.16),var(--card) 65%)}.tile2:hover{transform:translateY(-2px)}
+.tile2 .ti2{font-size:24px;margin-bottom:4px}.tile2 b{font-size:15px}.tile2 span{font-size:12px;color:var(--mu)}.tile2.dim{opacity:.7}
+.bdg{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px}
+.bd{text-align:center;padding:10px 6px;border-radius:12px;background:var(--card2);border:1px solid var(--line);filter:grayscale(1);opacity:.45}
+.bd.on{filter:none;opacity:1;border-color:rgba(243,199,79,.5);background:linear-gradient(180deg,rgba(243,199,79,.12),var(--card2))}
+.bdi{font-size:26px}.bd b{display:block;font-size:12px;margin-top:2px}.bd span{display:block;font-size:10px;color:var(--mu);line-height:1.25;margin-top:2px}
 .streak{display:inline-block;margin-left:8px;color:#ff9a4d;font-weight:800}
 .btn.sm{width:auto;padding:8px 12px;font-size:13px}
 .sndbtn{margin-left:auto;background:var(--card2);border:1px solid var(--line);color:var(--tx);border-radius:10px;width:38px;height:38px;font-size:18px;cursor:pointer}
@@ -221,6 +234,7 @@ body{background:radial-gradient(1200px 600px at 110% -10%,rgba(232,137,63,.13),t
   <section id="home" class="hide">
     <div class="card welcome">
       <div class="wl-top"><div class="avatar" id="wlAv"></div><div style="flex:1;min-width:0"><div class="wl-hi" id="wlHi">Xush kelibsiz</div><div class="wl-n" id="wlN"></div><div class="st-s" id="wlG"></div></div><button class="btn ghost sm" id="wlX">Chiqish</button></div>
+      <div id="wlLv" style="position:relative;z-index:1;margin-top:14px"></div>
       <div class="wl-stats"><div><b id="wlT">0</b><span>Ishlangan test</span></div><div><b id="wlA">—</b><span>O'rtacha ball</span></div><div><b id="wlB">—</b><span>Eng yuqori</span></div></div>
     </div>
     <div id="homeHW"></div>
@@ -229,6 +243,7 @@ body{background:radial-gradient(1200px 600px at 110% -10%,rgba(232,137,63,.13),t
       <button class="tile t2" onclick="T.openJoin()"><div class="ti">🏆</div><div><b>Turnirda qatnashish</b><span>Ustoz bergan kod bilan sinfdoshlaringiz bilan jonli bellashing</span></div><div class="ar">›</div><span class="badge hide" id="tBadge">JONLI</span></button>
       <button class="tile t3" onclick="ACCT.history()"><div class="ti">📊</div><div><b>Statistika</b><span>Natijalaringiz, o'sish dinamikasi va yutuqlaringiz</span></div><div class="ar">›</div></button>
     </div>
+    <div class="tiles2"><button class="tile2" id="errT" onclick="GAME.startErrors()"><div class="ti2">🔁</div><b>Xatolarim</b><span id="errN">—</span></button><button class="tile2" onclick="GAME.board()"><div class="ti2">🏅</div><b>Haftalik reyting</b><span>Top o'quvchilar</span></button></div>
     <div class="card" id="homeLast" style="display:none"></div>
   </section>
   <section id="tz" class="hide"></section>
@@ -2955,14 +2970,14 @@ function finish(){
   clearInterval(tick);
   const time=fmt(Date.now()-t0);
   let ok=0;const by={};
-  order.forEach(({i},k)=>{const q=Q[i],g=ans[k]===q.a;if(g)ok++;const key=!set.qs?q.m:q.t.split(" · ")[0];by[key]=by[key]||[0,0];by[key][1]++;if(g)by[key][0]++});
+  order.forEach(({i},k)=>{const q=Q[i],g=ans[k]===q.a;if(g)ok++;if(!FROM_T)GAME.track(q,g);const key=!set.qs?q.m:q.t.split(" · ")[0];by[key]=by[key]||[0,0];by[key][1]++;if(g)by[key][0]++});
   PPQ=100/Q.length;const pts=Math.round(ok*PPQ);
   $("who").textContent=name+" · "+set.title;FX.countUp($("pts"),pts);
   $("sOk").textContent=ok;$("sBad").textContent=Q.length-ok;$("sT").textContent=time;
   const lv=level(pts);
   $("gr").textContent=lv?lv+" sertifikati":"Sertifikat uchun kamida 45 ball kerak";$("gr").style.background=lv?(pts>=65?"var(--ok)":pts>=55?"var(--ac2)":"var(--ac)"):"var(--bad)";
-  $("certBox").style.display=lv?"":"none";
-  if(lv)drawCert(lv,pts,ok,time,by);
+  const showC=lv&&set.id!=="err";$("certBox").style.display=showC?"":"none";
+  if(showC)drawCert(lv,pts,ok,time,by);
   const m=$("mast");m.innerHTML="";
   if(Object.keys(by).length>1){
     m.innerHTML='<div style="font-size:13px;color:var(--mu);margin-bottom:10px">Mavzular bo\'yicha o\'zlashtirish</div>';
@@ -3465,15 +3480,17 @@ const ACCT = (() => {
       if (rs.length) { const r = rs[0]; L.style.display = ""; L.innerHTML = `<div class="sub" style="margin:0 0 8px">Oxirgi natijangiz</div><div class="lastres"><div class="st-ic" style="font-size:26px">${r.mode === "turnir" ? "🏆" : "📝"}</div><div class="st-m"><b>${esc(r.ttl)}</b><div class="st-s">${dt(r.at)}${r.mode === "turnir" ? ` · ${r.rank}-o'rin` : ""}</div></div><div class="st-r"><div class="st-p">${r.pts}</div>${r.lv ? `<span class="st-lv" style="background:${lvCol(r.lv)}">${esc(r.lv)}</span>` : ""}</div></div>`; }
       else { L.style.display = ""; L.innerHTML = `<div class="lastres"><div style="font-size:30px">🚀</div><div><b>Birinchi testingizni boshlang!</b><div class="st-s">«Mavzulashtirilgan testlar» bo'limidan mavzu tanlang.</div></div></div>`; }
     };
-    hListeners.add(fill); hListeners.add(HW.renderStudent); fill(); HW.renderStudent();
+    hListeners.add(fill); hListeners.add(HW.renderStudent); hListeners.add(GAME.homeRender); fill(); HW.renderStudent(); GAME.homeRender();
+    if (!annL) { annL = () => GAME.announce(recs()); hListeners.add(annL); }
     if (!aUn) aUn = DBA.on("a", v => { const now = DBA.now(); const live = Object.values(v || {}).some(x => x && x.ph !== "end" && now - (x.c || 0) < 6 * 3600e3); if ($("tBadge")) $("tBadge").classList.toggle("hide", !live); });
   }
-  let aUn = null;
+  let aUn = null, annL = null;
   function history() {
     if (!cur) { show("auth"); return; }
     show("tz"); setNav("stat");
     $("tz").innerHTML = `<div class="card welcome" style="padding-bottom:18px"><div class="wl-top"><div style="font-size:34px">📊</div><div style="flex:1"><div class="wl-n">Mening statistikam</div><div class="st-s" id="hN">Yuklanmoqda…</div></div></div>
       <div class="wl-stats" style="grid-template-columns:repeat(4,1fr)"><div><b id="sT">0</b><span>Testlar</span></div><div><b id="sA">—</b><span>O'rtacha</span></div><div><b id="sB">—</b><span>Eng yuqori</span></div><div><b id="sW">0</b><span>🏆 G'alaba</span></div></div></div>
+      <div class="card hsec" style="margin-top:12px"><h3>🏅 Daraja va nishonlar</h3><div id="hBd"></div></div>
       <div class="card hsec" style="margin-top:12px"><h3>📈 Natijalar dinamikasi</h3><div id="hCh"></div></div>
       <div class="card hsec" style="margin-top:12px"><h3>📚 Testlar bo'yicha</h3><div id="hT"></div></div>
       <div class="card hsec" style="margin-top:12px"><h3>🕒 Barcha natijalar</h3><div id="hL"></div></div>`;
@@ -3481,6 +3498,7 @@ const ACCT = (() => {
     const fill = () => {
       if (!$("hL")) { hListeners.delete(fill); return; }
       const rs = recs();
+      $("hBd").innerHTML = GAME.statBlock();
       $("hN").textContent = rs.length ? `Jami ${rs.length} ta natija · ${cur.f} ${cur.l}` : "Hali natija yo'q — birinchi testingizni ishlang!";
       $("sT").textContent = rs.length; $("sA").textContent = rs.length ? Math.round(rs.reduce((a, r) => a + r.pts, 0) / rs.length) : "—";
       $("sB").textContent = rs.length ? Math.max(...rs.map(r => r.pts)) : "—"; $("sW").textContent = rs.filter(r => r.mode === "turnir" && r.rank === 1).length;
@@ -3880,6 +3898,119 @@ const MS = (() => {
   return { start: startMS, check, prep };
 })();
 
+// ================== O'YINLASHTIRISH: XP, darajalar, nishonlar, xatolar, reyting ==================
+const GAME = (() => {
+  const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const LEVELS = [[0, "Boshlovchi", "🌱"], [300, "Izlanuvchi", "🔎"], [800, "Bilimdon", "📘"], [1600, "Tarixchi", "📜"], [3000, "Ustoz", "🎓"], [5000, "Akademik", "👑"]];
+  const KEYQ = {}; // savol kaliti -> savol
+  SETS.filter(s => s.qs).forEach(s => s.qs.forEach((q, i) => { if (!q._k) { q._k = s.id + "_" + i; KEYQ[q._k] = q; } }));
+  const xpOf = r => (r.ok || 0) * 10 + (r.lv ? 20 : 0) + (r.mode === "turnir" ? (r.rank === 1 ? 50 : r.rank === 2 ? 30 : r.rank === 3 ? 20 : 0) : 0);
+  const dayKey = ms => { const d = new Date(ms); return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate(); };
+  function weekStart(ms) { const d = new Date(ms); const w = (d.getDay() + 6) % 7; d.setHours(0, 0, 0, 0); d.setDate(d.getDate() - w); return d.getTime(); }
+  const weekKey = ms => { const d = new Date(weekStart(ms)); return "w" + d.getFullYear() + String(d.getMonth() + 1).padStart(2, "0") + String(d.getDate()).padStart(2, "0"); };
+  function streak(rs) {
+    const days = new Set(rs.map(r => dayKey(r.at))); let n = 0; const d = new Date();
+    if (!days.has(dayKey(d.getTime()))) d.setDate(d.getDate() - 1);
+    while (days.has(dayKey(d.getTime()))) { n++; d.setDate(d.getDate() - 1); }
+    return n;
+  }
+  function level(xp) { let i = 0; LEVELS.forEach((l, k) => { if (xp >= l[0]) i = k; }); const cur = LEVELS[i], nx = LEVELS[i + 1]; return { i, name: cur[1], ic: cur[2], from: cur[0], to: nx ? nx[0] : null, next: nx ? nx[1] : null, pct: nx ? Math.round((xp - cur[0]) / (nx[0] - cur[0]) * 100) : 100 }; }
+  function badges(rs, fixed) {
+    const tur = rs.filter(r => r.mode === "turnir");
+    const st = Math.max(streak(rs), +(localStorage.getItem("zm_beststreak_" + (ACCT.cur || {}).uid) || 0));
+    return [
+      ["🎯", "Birinchi qadam", "Birinchi testni ishlash", rs.length >= 1],
+      ["📚", "Tirishqoq", "10 ta test ishlash", rs.length >= 10],
+      ["🏛", "Tarix ixlosmandi", "50 ta test ishlash", rs.length >= 50],
+      ["💯", "Mukammal", "Testdan 100 ball olish", rs.some(r => r.pts >= 100)],
+      ["🏅", "A+ sohibi", "A+ sertifikati olish", rs.some(r => r.lv === "A+")],
+      ["🔥", "Olov", "3 kun ketma-ket test ishlash", st >= 3],
+      ["⚡", "Chaqmoq", "7 kun ketma-ket test ishlash", st >= 7],
+      ["🏆", "Chempion", "Turnirda 1-o'rin olish", tur.some(r => r.rank === 1)],
+      ["🥉", "Sovrindor", "Turnirda 3 talikka kirish", tur.some(r => r.rank <= 3)],
+      ["🧹", "Xatolarni tuzatuvchi", "10 ta xatoni tuzatish", fixed >= 10],
+      ["🎓", "Imtihonga tayyor", "Milliy sertifikat variantini ishlash", rs.some(r => r.tot === 55)]
+    ].map(([ic, n, d, ok]) => ({ ic, n, d, ok }));
+  }
+  // ---- xatolar ----
+  let MX = {}, mxUn = null, mxUid = null, lbUn = null;
+  function watch() {
+    const c = ACCT.cur; if (!c) return;
+    if (mxUid === c.uid && mxUn) return;
+    if (mxUn) mxUn(); mxUid = c.uid; MX = {};
+    mxUn = DBA.on("mx/" + c.uid, v => { MX = v || {}; homeRender(); });
+  }
+  const errList = () => Object.entries(MX || {}).filter(([k, v]) => v && KEYQ[k]).map(([k, v]) => ({ k, ...v, q: KEYQ[k] }));
+  function track(q, ok) {
+    const c = ACCT.cur; if (!c || !q || !q._k) return;
+    const p = "mx/" + c.uid + "/" + q._k, had = MX[q._k];
+    if (ok) { if (had) { DBA.set(p, null); const f = "zm_fixed_" + c.uid; try { localStorage.setItem(f, +(localStorage.getItem(f) || 0) + 1); } catch (e) {} } }
+    else DBA.set(p, { c: ((had && had.c) || 0) + 1, at: DBA.now() });
+  }
+  const fixedCount = () => { try { return +(localStorage.getItem("zm_fixed_" + (ACCT.cur || {}).uid) || 0); } catch (e) { return 0; } };
+  function startErrors() {
+    const l = errList().sort((a, b) => (b.c || 0) - (a.c || 0) || b.at - a.at).slice(0, 20);
+    if (!l.length) { FX.toast("🎉 Xatolaringiz yo'q!"); return; }
+    set = { id: "err", n: "🔁", title: "Xatolar ustida ishlash", qs: l.map(x => x.q), g: "—", subj: "Tarix" };
+    start();
+  }
+  // ---- daraja/nishon o'zgarishi ----
+  function announce(rs) {
+    const c = ACCT.cur; if (!c) return;
+    const xp = rs.reduce((a, r) => a + xpOf(r), 0), lv = level(xp), K = "zm_lv_" + c.uid, B = "zm_bd_" + c.uid;
+    const st = streak(rs); try { const bk = "zm_beststreak_" + c.uid; if (st > +(localStorage.getItem(bk) || 0)) localStorage.setItem(bk, st); } catch (e) {}
+    let pl = null, pb = null; try { pl = localStorage.getItem(K); pb = JSON.parse(localStorage.getItem(B) || "null"); } catch (e) {}
+    const got = badges(rs, fixedCount()).filter(b => b.ok).map(b => b.n);
+    if (pl !== null && lv.i > +pl) { setTimeout(() => { FX.toast(`${lv.ic} Yangi daraja: <b>${lv.name}</b>!`, "up"); FX.rain(160); FX.S.win(); }, 2500); }
+    if (pb) got.filter(n => !pb.includes(n)).forEach((n, i) => { const b = badges(rs, fixedCount()).find(x => x.n === n); setTimeout(() => { FX.toast(`${b.ic} Yangi nishon: <b>${esc(n)}</b>`, "fire"); FX.S.streak(); }, 3500 + i * 1500); });
+    try { localStorage.setItem(K, lv.i); localStorage.setItem(B, JSON.stringify(got)); } catch (e) {}
+    // haftalik reyting
+    const wk = weekKey(DBA.now()), ws = weekStart(DBA.now()), wxp = rs.filter(r => r.at >= ws).reduce((a, r) => a + xpOf(r), 0);
+    if (wxp > 0) DBA.set(`lb/${wk}/${c.uid}`, { n: c.f + " " + c.l, g: c.g || "", xp: wxp, lv: lv.i, at: DBA.now() });
+  }
+  // ---- bosh sahifa ----
+  function homeRender() {
+    const c = ACCT.cur, box = $("wlLv"); if (!c || !box) return;
+    watch();
+    const rs = ACCT.recs, xp = rs.reduce((a, r) => a + xpOf(r), 0), lv = level(xp), st = streak(rs), ne = errList().length;
+    box.innerHTML = `<div class="lvrow"><div class="lvic">${lv.ic}</div><div style="flex:1;min-width:0"><div class="lvn"><b>${lv.name}</b><span>${xp} XP${lv.to ? ` / ${lv.to}` : ""}</span></div><div class="lvbar"><i style="width:${lv.pct}%"></i></div><div class="st-s">${lv.next ? `Keyingi daraja: ${lv.next}` : "Eng yuqori daraja!"}</div></div><div class="strk${st ? " on" : ""}" title="Ketma-ket kunlar">🔥<b>${st}</b></div></div>`;
+    if ($("errN")) { $("errN").textContent = ne ? ne + " ta xato" : "xato yo'q"; $("errT").classList.toggle("dim", !ne); }
+  }
+  // ---- statistika sahifasiga nishonlar ----
+  function statBlock() {
+    const rs = ACCT.recs, xp = rs.reduce((a, r) => a + xpOf(r), 0), lv = level(xp), bs = badges(rs, fixedCount());
+    return `<div class="lvrow" style="margin-bottom:14px"><div class="lvic">${lv.ic}</div><div style="flex:1"><div class="lvn"><b>${lv.name}</b><span>${xp} XP</span></div><div class="lvbar"><i style="width:${lv.pct}%"></i></div></div></div>
+      <div class="bdg">${bs.map(b => `<div class="bd${b.ok ? " on" : ""}" title="${esc(b.d)}"><div class="bdi">${b.ic}</div><b>${esc(b.n)}</b><span>${esc(b.d)}</span></div>`).join("")}</div>
+      <div class="st-s" style="margin-top:10px">XP qanday beriladi: har bir to'g'ri javob — 10 XP, sertifikat — +20 XP, turnirda 1-o'rin — +50, 2-o'rin — +30, 3-o'rin — +20 XP.</div>`;
+  }
+  // ---- haftalik reyting ----
+  let lbTab = "g";
+  function board() {
+    const c = ACCT.cur; if (!c) { show("auth"); return; }
+    show("tz"); setNav(null);
+    const ws = weekStart(DBA.now()), we = new Date(ws + 6 * 86400e3), d0 = new Date(ws), f = d => String(d.getDate()).padStart(2, "0") + "." + String(d.getMonth() + 1).padStart(2, "0");
+    $("tz").innerHTML = `<div class="card welcome"><div class="wl-top"><div style="font-size:34px">🏅</div><div style="flex:1"><div class="wl-n">Haftalik reyting</div><div class="st-s">${f(d0)} – ${f(we)} · har dushanba yangilanadi</div></div></div></div>
+      <div class="sttabs" id="lbT"><button data-t="g" class="${lbTab === "g" ? "on" : ""}">👥 Guruhim${c.g ? ": " + esc(c.g) : ""}</button><button data-t="a" class="${lbTab === "a" ? "on" : ""}">🌍 Barcha o'quvchilar</button></div>
+      <div id="lbP"></div><div class="card" id="lbL"></div><button class="btn ghost" style="margin-top:12px" onclick="goHome()">🏠 Bosh sahifa</button>`;
+    $("lbT").onclick = e => { const b = e.target.closest("button"); if (!b) return; lbTab = b.dataset.t; [...$("lbT").children].forEach(x => x.classList.toggle("on", x === b)); draw(); };
+    let data = {};
+    const draw = () => {
+      if (!$("lbL")) return;
+      const nk = s => String(s || "").trim().toLowerCase();
+      const arr = Object.entries(data || {}).filter(([k, v]) => v && v.n && (lbTab === "a" || nk(v.g) === nk(c.g))).map(([k, v]) => ({ k, ...v })).sort((a, b) => b.xp - a.xp || a.at - b.at);
+      const top = [arr[1], arr[0], arr[2]], hh = [90, 120, 70], cl = ["#c0c7d0", "#e8b93f", "#c98a4b"];
+      $("lbP").innerHTML = arr.length ? `<div class="card"><div class="podium" style="margin-top:4px">${top.map((p, j) => p ? `<div class="pd"><div class="pd-n">${esc(p.n)}</div><div class="pd-s">${p.xp} XP</div><div class="pd-b" style="height:${hh[j]}px;background:${cl[j]}">${[2, 1, 3][j]}</div></div>` : '<div class="pd"></div>').join("")}</div></div>` : "";
+      const me = arr.findIndex(p => p.k === c.uid);
+      $("lbL").innerHTML = arr.length ? arr.slice(0, 30).map((p, i) => `<div class="trow${p.k === c.uid ? " me" : ""}"><div class="tr-r">${i < 3 ? ["🥇", "🥈", "🥉"][i] : i + 1}</div><div class="tr-n"><div class="tr-nm">${esc(p.n)}${p.k === c.uid ? " (siz)" : ""}</div><div class="st-s">${LEVELS[p.lv || 0][2]} ${LEVELS[p.lv || 0][1]}${lbTab === "a" && p.g ? " · " + esc(p.g) : ""}</div></div><div class="tr-s">${p.xp}<small style="color:var(--mu)"> XP</small></div></div>`).join("")
+        + (me >= 30 ? `<div class="st-s" style="text-align:center;margin-top:8px">Siz: ${me + 1}-o'rin</div>` : "") + (me < 0 ? `<div class="st-s" style="text-align:center;margin-top:8px">Bu hafta hali test ishlamadingiz — birinchi testdan keyin reytingda paydo bo'lasiz.</div>` : "")
+        : `<div style="text-align:center"><div style="font-size:36px">🏁</div><p class="sub" style="margin:6px 0 0">Bu hafta hali hech kim test ishlamagan. Birinchi bo'ling!</p></div>`;
+    };
+    if (lbUn) lbUn(); lbUn = DBA.on("lb/" + weekKey(DBA.now()), v => { data = v || {}; draw(); });
+    draw();
+  }
+  return { track, startErrors, homeRender, statBlock, board, announce, xpOf, level, errList };
+})();
+
 // ================== TURNIR REJIMI ==================
 // >>> Firebase sozlamasini shu yerga qo'ying (firebaseConfig obyektini to'liq):
 const FIREBASE_CONFIG = {};
@@ -3925,7 +4056,7 @@ const DBA = (() => {
         tryB();
       });
     })());
-    const codeOf = p => { const s = p.split("/"); return (s[0] === "t" || s[0] === "u" || s[0] === "h") && s[1] ? s[0] + "/" + s[1] : s[0]; };
+    const codeOf = p => { const s = p.split("/"); return (s[0] === "t" || s[0] === "u" || s[0] === "h" || s[0] === "mx" || s[0] === "lb" || s[0] === "hwr") && s[1] ? s[0] + "/" + s[1] : s[0]; };
     const ensure = sc => { if (!codes.has(sc)) codes.set(sc, new Promise(r => client.subscribe(PFX + sc + "/#", { qos: 1 }, () => setTimeout(r, 700)))); return codes.get(sc); };
     const pub = (p, v) => {
       if (v === null) { delAt(tree, p); notify(); client.publish(toTopic(p), "", { retain: true, qos: 1 }); return; } if (/\/meta$/.test(p)) v = { ...v, ts: Date.now() + off }; setAt(tree, p, v); notify(); client.publish(toTopic(p), JSON.stringify(v), { retain: true, qos: 1 }); };
@@ -4162,7 +4293,7 @@ const T = (() => {
   }
   async function answer(oi, btn) {
     if (st.lock) return; st.lock = true;
-    const q = st.Q[st.cur], ok = oi === q.a;
+    const q = st.Q[st.cur], ok = oi === q.a; GAME.track(q, ok);
     st.ans[st.cur] = oi; ls.set("zm_ans_" + st.code + st.pid, JSON.stringify(st.ans));
     btn.classList.add(ok ? "okk" : "bad");
     if (!ok) [...$("tops").children].forEach((b, k) => { if (st.perms[st.cur][k] === q.a) b.classList.add("okk"); });
