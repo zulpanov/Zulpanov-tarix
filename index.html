@@ -382,6 +382,40 @@ button,a,label,summary,.tile,.tile2,.opt,.tp{touch-action:manipulation;-webkit-t
 .tle-s{flex:none;font-size:11px;font-weight:800;padding:2px 8px;border-radius:8px}
 .tle .tle-k{display:block;font-size:12.5px;color:var(--mu);margin-top:3px;line-height:1.35}
 .tle .tp #go{margin:11px 0 0;height:44px;padding:0;font-size:14.5px}
+
+/* ===== TEST: FOKUS ===== */
+#quiz{padding-bottom:96px}
+.fq-top{display:flex;align-items:center;gap:10px;margin:2px 0 12px}
+.fq-x{width:40px;height:40px;flex:none;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);color:var(--tx);font-size:16px;cursor:pointer;font-family:inherit}
+.fq-m{flex:1;min-width:0;text-align:center;font-size:13px;color:var(--mu);line-height:1.25}.fq-m b{color:var(--tx);font-size:15px}.fq-m small{display:block;font-size:11.5px;color:#67E8F9;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fq-tm{--p:0;width:50px;height:50px;flex:none;border-radius:50%;padding:4px;background:conic-gradient(#22D3EE calc(var(--p)*1%),rgba(255,255,255,.1) 0)}.fq-tm span{display:grid;place-items:center;width:100%;height:100%;border-radius:50%;background:#0A0720;font-size:11px;font-weight:700}
+.fq-seg{display:flex;gap:3px;margin-bottom:20px}.fq-seg i{flex:1;height:5px;border-radius:3px;background:rgba(255,255,255,.1)}.fq-seg i.d{background:rgba(139,92,246,.75)}.fq-seg i.c{background:linear-gradient(90deg,#7C3AED,#22D3EE);box-shadow:0 0 8px rgba(34,211,238,.6)}
+.fq-tag{background:rgba(34,211,238,.12);color:#22D3EE;padding:5px 11px;border-radius:20px;letter-spacing:.1em}
+.fq-q{font-size:21px;font-weight:700;line-height:1.35;margin:10px 0 20px}
+#quiz .opt{align-items:center;gap:14px;padding:14px 15px;border-radius:18px;border:1.5px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);font-size:16px}
+#quiz .opt .l{width:34px;height:34px;border-radius:11px;background:rgba(0,0,0,.35);font-size:14px}
+#quiz .opt .t{flex:1}#quiz .opt .ck{display:none;flex:none;width:24px;height:24px;border-radius:50%;background:#8B5CF6;color:#fff;place-items:center;font-size:13px}
+#quiz .opt.sel{border-color:#8B5CF6;background:rgba(139,92,246,.18);box-shadow:0 0 0 4px rgba(139,92,246,.15)}#quiz .opt.sel .l{background:#8B5CF6;color:#fff}#quiz .opt.sel .ck{display:grid}
+.fq-ft{position:fixed;left:50%;transform:translateX(-50%);bottom:max(14px,env(safe-area-inset-bottom));width:min(560px,calc(100% - 28px));display:flex;gap:10px;z-index:40}
+.fq-ft .btn{margin:0;height:56px;border-radius:18px}.fq-ft .fq-g{width:56px;flex:none;padding:0;font-size:20px;background:rgba(20,16,50,.9);backdrop-filter:blur(10px)}.fq-ft #next{flex:1;font-size:16px}
+.fq-ft #next.ghost{background:rgba(20,16,50,.9);backdrop-filter:blur(10px)}
+.fq-sheet{position:fixed;inset:0;z-index:60;background:rgba(5,3,20,.6);display:flex;align-items:flex-end;justify-content:center}.fq-sheet.hide{display:none}
+.fq-sh{width:min(560px,100%);background:#141033;border:1px solid rgba(255,255,255,.12);border-bottom:0;border-radius:26px 26px 0 0;padding:12px 18px calc(24px + env(safe-area-inset-bottom));animation:upin .2s ease}
+.fq-sh .grab{width:44px;height:5px;border-radius:5px;background:rgba(255,255,255,.2);margin:0 auto 12px}.fq-shh{display:flex;justify-content:space-between;align-items:center}.fq-shh small{color:var(--mu);font-size:12px}
+.fq-sh .dots{margin-top:12px;gap:8px}.fq-sh .dot{width:44px;height:40px;border-radius:12px;font-size:13px}
+/* ===== TURNIR: O'YIN ===== */
+.kh-top{display:flex;align-items:center;gap:8px;margin:2px 0 10px}.kh-c{padding:7px 12px;border-radius:20px;background:rgba(255,255,255,.08);font-size:13px;font-weight:700;white-space:nowrap}.kh-sp{flex:1}
+.kh-tb{position:relative;height:12px;border-radius:12px;background:rgba(255,255,255,.1);overflow:hidden}.kh-tb i{position:absolute;left:0;top:0;bottom:0;width:100%;border-radius:12px;background:linear-gradient(90deg,#22C55E,#FACC15);transition:width 1s linear}.kh-tb.low i{background:linear-gradient(90deg,#EF4444,#F97316)}
+.kh-tl{display:flex;justify-content:space-between;font-size:12px;color:var(--mu);margin:6px 2px 14px}.kh-tl .ttm{font-size:12px}
+.kh-q{text-align:center;padding:22px 18px;border-radius:24px;background:#fff;color:#1f1147;font-size:19px;font-weight:700;line-height:1.35;box-shadow:0 10px 30px rgba(0,0,0,.35)}.kh-q .tag{display:block;color:#7C3AED;margin-bottom:6px;font-size:10.5px}
+.kh-g{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.kh-o{position:relative;min-height:112px;border:0;border-radius:18px;padding:12px;display:flex;flex-direction:column;justify-content:space-between;align-items:flex-start;text-align:left;font-family:inherit;font-size:15.5px;font-weight:700;color:#fff;cursor:pointer;box-shadow:0 6px 0 rgba(0,0,0,.35);transition:transform .1s,opacity .2s}
+.kh-o:active{transform:translateY(3px);box-shadow:0 3px 0 rgba(0,0,0,.35)}.kh-o .sh{font-size:24px;opacity:.9}
+.kh-o.k0{background:#E21B3C}.kh-o.k1{background:#1368CE}.kh-o.k2{background:#D89E00}.kh-o.k3{background:#26890C}
+.kh-g.done .kh-o{opacity:.35}.kh-g.done .kh-o.okk,.kh-g.done .kh-o.bad{opacity:1}
+.kh-o.okk{outline:4px solid #fff;outline-offset:-4px;animation:pop .45s}.kh-o.okk:after{content:"✓";position:absolute;right:10px;top:8px;width:28px;height:28px;border-radius:50%;background:#fff;color:#16A34A;display:grid;place-items:center;font-size:16px;font-weight:900}
+.kh-o.bad{animation:shake .45s}.kh-o.bad:after{content:"✕";position:absolute;right:10px;top:8px;width:28px;height:28px;border-radius:50%;background:#fff;color:#DC2626;display:grid;place-items:center;font-size:15px;font-weight:900}
+.kh-hint{text-align:center;font-size:12.5px;color:#FCD34D;font-weight:700;margin-top:12px}
 </style>
 </head>
 <body>
@@ -427,18 +461,15 @@ button,a,label,summary,.tile,.tile2,.opt,.tp{touch-action:manipulation;-webkit-t
   </section>
 
   <section id="quiz" class="hide">
-    <div class="top"><span id="cnt"></span><span id="tm">⏱ 00:00</span></div>
-    <div class="bar"><i id="pb"></i></div>
-    <div class="card">
-      <span class="tag" id="tg"></span>
-      <div class="q" id="qt"></div>
+    <div class="fq-top"><button class="fq-x" id="qx" title="Testdan chiqish">✕</button><div class="fq-m"><span id="cnt"></span><small id="qset"></small></div><div class="fq-tm" id="tmr"><span id="tm">00:00</span></div></div>
+    <div class="fq-seg" id="pb"></div>
+    <div class="fq-body">
+      <span class="tag fq-tag" id="tg"></span>
+      <div class="q fq-q" id="qt"></div>
       <div id="ops"></div>
-      <div class="row" style="margin-top:8px">
-        <button class="btn ghost" id="prev">← Oldingi</button>
-        <button class="btn" id="next">Keyingi →</button>
-      </div>
-      <div class="dots" id="dots"></div>
     </div>
+    <div class="fq-ft"><button class="btn ghost fq-g" id="qnav" title="Savollar ro'yxati">☰</button><button class="btn ghost fq-g" id="prev" title="Oldingi">‹</button><button class="btn" id="next">Yuborish ➤</button></div>
+    <div class="fq-sheet hide" id="qsheet"><div class="fq-sh"><div class="grab"></div><div class="fq-shh"><b>Savollar</b><small id="qshn"></small></div><div class="dots" id="dots"></div></div></div>
   </section>
 
   <section id="res" class="hide">
@@ -3103,9 +3134,10 @@ function start(){
   if(!set.qs){Q=shuffle(SETS.filter(s=>s.qs&&!s.ms&&s.g===set.g).flatMap(s=>s.qs)).slice(0,20)}else if(set.qs.length>30&&!HWCUR){Q=shuffle(set.qs.slice()).slice(0,25)}else{Q=set.qs}
   order=Q.map((q,i)=>({i,idx:shuffle([0,1,2,3])}));
   ans=Array(Q.length).fill(null);cur=0;t0=Date.now();
-  clearInterval(tick);$("tm").textContent="⏱ 00:00";
-  tick=setInterval(()=>$("tm").textContent="⏱ "+fmt(Date.now()-t0),1000);
-  show("quiz");render();
+  clearInterval(tick);$("tm").textContent="00:00";
+  tick=setInterval(()=>$("tm").textContent=fmt(Date.now()-t0),1000);
+  try{$("qset").textContent=(set&&set.n?(clsOf(set.g)||"")+" · "+set.n:(set&&set.title)||"")}catch(e){$("qset").textContent=""}
+  $("qsheet").classList.add("hide");show("quiz");render();window.scrollTo(0,0);
 }
 function fmt(ms){const s=Math.floor(ms/1000);return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0")}
 var BKfn;function BK(fn){BKfn=fn;const hm=["home","auth"].some(i=>$(i)&&!$(i).classList.contains("hide"));$("bkb").classList.toggle("hide",!fn||hm)}
@@ -3119,26 +3151,33 @@ setTimeout(()=>{$("bkB").onclick=()=>{if(BKfn)BKfn()};$("bkH").onclick=()=>goHom
 document.addEventListener("click",e=>{const b=e.target.closest("#bnav button");if(!b)return;const g=b.dataset.g;if(g==="home")goHome();else if(g==="tests")goTests();else if(g==="ms")goMS();else if(g==="turnir")T.openJoin();else if(g==="stat")ACCT.history()});
 function render(){
   const {i,idx}=order[cur],q=Q[i];
-  $("cnt").textContent=`${cur+1}-savol / ${Q.length}`;
-  $("pb").style.width=(ans.filter(a=>a!==null).length/Q.length*100)+"%";
+  const nA=ans.filter(a=>a!==null).length;
+  $("cnt").innerHTML=`Savol <b>${cur+1}</b> / ${Q.length}`;
+  $("tmr").style.setProperty("--p",Math.round(nA/Q.length*100));
+  $("pb").innerHTML=order.map((_,k)=>`<i class="${k===cur?"c":ans[k]!==null?"d":""}"></i>`).join("");
+  $("qshn").textContent=`${nA} / ${Q.length} javob berildi`;
   $("tg").textContent=q.t;$("qt").textContent=q.q;
   $("ops").innerHTML="";
   idx.forEach((oi,k)=>{
     const b=document.createElement("button");
     b.className="opt"+(ans[cur]===oi?" sel":"");
-    b.innerHTML=`<span class="l">${L[k]}</span><span></span>`;
-    b.lastChild.textContent=q.o[oi];
+    b.innerHTML=`<span class="l">${L[k]}</span><span class="t"></span><span class="ck">✓</span>`;
+    b.querySelector(".t").textContent=q.o[oi];
     b.onclick=()=>{ans[cur]=oi;render();const nb=$("ops").children[k];nb&&nb.classList.add("pick");FX.S.tick()};
     $("ops").appendChild(b);
   });
   $("prev").disabled=cur===0;
   $("next").textContent=cur===Q.length-1?"Yakunlash ✓":(ans[cur]!==null?"Yuborish ➤":"O‘tkazish →");$("next").classList.toggle("ghost",cur<Q.length-1&&ans[cur]===null);
   $("dots").innerHTML="";
-  order.forEach((_,k)=>{const d=document.createElement("button");d.className="dot"+(ans[k]!==null?" ans":"")+(k===cur?" cur":"");d.textContent=k+1;d.onclick=()=>{cur=k;render()};$("dots").appendChild(d)});
+  order.forEach((_,k)=>{const d=document.createElement("button");d.className="dot"+(ans[k]!==null?" ans":"")+(k===cur?" cur":"");d.textContent=k+1;d.onclick=()=>{cur=k;$("qsheet").classList.add("hide");render();window.scrollTo(0,0)};$("dots").appendChild(d)});
 }
-$("prev").onclick=()=>{if(cur>0){cur--;render()}};
+$("qnav").onclick=()=>$("qsheet").classList.toggle("hide");
+$("qsheet").onclick=e=>{if(e.target.id==="qsheet")$("qsheet").classList.add("hide")};
+let qxAt=0;$("qx").onclick=()=>{if(Date.now()-qxAt>3000){qxAt=Date.now();FX.toast("Testdan chiqish uchun ✕ ni yana bir marta bosing. Natija saqlanmaydi.");return}
+  qxAt=0;clearInterval(tick);$("qsheet").classList.add("hide");if(HWCUR){HWCUR=null;goHome();return}renderTopics();show("start");window.scrollTo(0,0)};
+$("prev").onclick=()=>{if(cur>0){cur--;render();window.scrollTo(0,0)}};
 $("next").onclick=()=>{
-  if(cur<Q.length-1){cur++;render();return}
+  if(cur<Q.length-1){cur++;render();window.scrollTo(0,0);return}
   const left=ans.filter(a=>a===null).length;
   $("mtx").textContent=left?`${left} ta savolga javob berilmagan. Ular xato hisoblanadi.`:"Barcha savollarga javob berdingiz.";
   $("mdl").classList.add("on");
@@ -5030,27 +5069,27 @@ const T = (() => {
   }
   function sPlay() {
     setNav(null); BK(null);
-    if (isTeam()) { tz().innerHTML = `<div class="top"><span id="tqn"></span><span id="ttm" class="ttm">⏱ --:--</span></div><div class="bar"><i id="tpb"></i></div>${teamCards()}<div class="card" id="tqa"></div>${mateCard()}`; st.prevP = null; sQ(); sBoard(); return; }
-    tz().innerHTML = `<div class="top"><span id="tqn"></span><span id="ttm" class="ttm">⏱ --:--</span></div><div class="bar"><i id="tpb"></i></div>
-      <div class="card" id="tqa"></div>
+    const khTop = `<div class="kh-top"><span class="kh-c" id="tsk">🔥 0</span><span class="kh-c" id="trk">🏅 —</span><span class="kh-sp"></span><span class="kh-c" id="tqn"></span></div><div class="kh-tb" id="tkb"><i id="tpb"></i></div><div class="kh-tl"><span>Bir bosishda javob beriladi ⚡</span><span id="ttm" class="ttm">⏱ --:--</span></div>`;
+    if (isTeam()) { tz().innerHTML = `${khTop}<div id="tqa"></div>${teamCards()}${mateCard()}`; st.prevP = null; sQ(); sBoard(); return; }
+    tz().innerHTML = `${khTop}
+      <div id="tqa"></div>
       <div class="card" style="margin-top:12px"><div style="display:flex;justify-content:space-between;font-size:13px;color:var(--mu);margin-bottom:8px"><b style="color:var(--tx)">🏆 Jonli reyting</b><span id="tmy"></span></div><div id="tbd"></div></div>`;
     sQ(); sBoard();
   }
   function sQ() {
     const el = $("tqa"); if (!el) return;
     const m = st.meta, now = DBA.now();
-    if (now < m.startAt) { el.innerHTML = `<div style="text-align:center;padding:30px 0"><div class="sub">Tayyor turing!</div><div class="bigcd" id="tcd">${Math.ceil((m.startAt - now) / 1000)}</div></div>`; return; }
+    if (now < m.startAt) { el.innerHTML = `<div class="card" style="text-align:center;padding:30px 0"><div class="sub">Tayyor turing!</div><div class="bigcd" id="tcd">${Math.ceil((m.startAt - now) / 1000)}</div></div>`; return; }
     if (st.cur >= st.Q.length) return finishMine();
     const q = st.Q[st.cur], perm = st.perms[st.cur];
-    $("tqn").textContent = `${st.cur + 1}-savol / ${st.Q.length}`; $("tpb").style.width = (st.cur / st.Q.length * 100) + "%";
-    el.innerHTML = `<span class="tag"></span><div class="q"></div><div id="tops"></div><button class="btn" id="tsend" disabled style="margin-top:14px">Javobni yuborish ➤</button>`;
+    $("tqn").textContent = `${st.cur + 1}/${st.Q.length}`; if ($("tsk")) $("tsk").textContent = "🔥 " + (st.streak || 0);
+    el.innerHTML = `<div class="kh-q"><span class="tag"></span><div class="q"></div></div><div class="kh-g" id="tops"></div>`;
     el.querySelector(".tag").textContent = q.t; el.querySelector(".q").textContent = q.q;
     perm.forEach((oi, k) => {
-      const b = document.createElement("button"); b.className = "opt"; b.innerHTML = `<span class="l">${"ABCD"[k]}</span><span></span>`; b.lastChild.textContent = q.o[oi];
-      b.onclick = () => { if (st.lock) return; st.pick = { oi, b }; [...$("tops").children].forEach(x => x.classList.toggle("sel", x === b)); $("tsend").disabled = false; FX.S.tick && FX.S.tick(); }; $("tops").appendChild(b);
+      const b = document.createElement("button"); b.className = "opt kh-o k" + k; b.innerHTML = `<span class="sh">${"▲◆●■"[k]}</span><span></span>`; b.lastChild.textContent = q.o[oi];
+      b.onclick = () => { if (st.lock) return; FX.S.tick && FX.S.tick(); $("tops").classList.add("done"); answer(oi, b); }; $("tops").appendChild(b);
     });
-    st.pick = null; st.lock = false;
-    $("tsend").onclick = () => { if (!st.pick || st.lock) return; $("tsend").disabled = true; answer(st.pick.oi, st.pick.b); };
+    st.pick = null; st.lock = false; try { BK(null); } catch (e) {}
   }
   async function answer(oi, btn) {
     if (st.lock) return; st.lock = true;
@@ -5079,7 +5118,7 @@ const T = (() => {
     if (isTeam()) return sTeamBoard();
     const list = ranked(); if ($("tcnt")) $("tcnt").textContent = list.length;
     board($("tbd"), list, { limit: st.meta && st.meta.phase === "lobby" ? 0 : 8, n: st.meta ? st.meta.n : 20 });
-    const i = list.findIndex(p => p.k === st.pid); if ($("tmy") && i >= 0) $("tmy").innerHTML = `Siz: <b style="color:var(--tx)">${i + 1}-o'rin</b> / ${list.length}${st.streak >= 2 ? `<span class="streak">🔥${st.streak}</span>` : ""}`;
+    const i = list.findIndex(p => p.k === st.pid); if ($("trk") && i >= 0) $("trk").textContent = `🏅 ${i + 1}-o'rin`; if ($("tmy") && i >= 0) $("tmy").innerHTML = `Siz: <b style="color:var(--tx)">${i + 1}-o'rin</b> / ${list.length}${st.streak >= 2 ? `<span class="streak">🔥${st.streak}</span>` : ""}`;
     if (i >= 0 && st.meta && st.meta.phase === "run") { if (st.myRank && i + 1 < st.myRank) { FX.toast(i === 0 ? "👑 Siz birinchi o'rindasiz!" : `⬆ ${i + 1}-o'ringa ko'tarildingiz!`, "up"); FX.S.up(); } st.myRank = i + 1; }
   }
   function sTick() {
@@ -5089,6 +5128,7 @@ const T = (() => {
     if ($("tcd")) { FX.toast("🚀 Boshladik!", "up"); sQ(); }
     const left = m.startAt + m.dur - now;
     if ($("ttm")) { $("ttm").textContent = "⏱ " + fmt(left); $("ttm").classList.toggle("low", left < 60000); }
+    if ($("tpb") && $("tkb")) { $("tpb").style.width = Math.max(0, Math.min(100, left / m.dur * 100)) + "%"; $("tkb").classList.toggle("low", left < 60000); }
     if (left <= 0 && $("tqa") && !myDone()) finishMine();
   }
   function sEnd() {
