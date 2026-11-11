@@ -127,6 +127,7 @@ details summary::-webkit-details-marker{color:var(--ac)}
 .msbar .ttm{font-size:20px}.mssec{font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--ac);margin:20px 0 10px}
 .msq{margin-bottom:12px}.msit{font-size:15px;line-height:1.55;margin:-6px 0 14px;padding:10px 12px;background:var(--bg);border-radius:10px}
 .mstb{width:100%;border-collapse:collapse;margin:-6px 0 14px;font-size:14px}.mstb th{background:#1f4e79;color:#fff;text-align:left;padding:8px}.mstb td{padding:8px;border-bottom:1px solid var(--line);vertical-align:top}.mstb tr:nth-child(even) td{background:rgba(255,255,255,.03)}
+.msimg{display:block;width:100%;max-width:560px;margin:-6px auto 14px;border-radius:10px;background:#fff}
 .msvenn{width:100%;max-width:420px;display:block;margin:-6px auto 12px}.msvenn .vt{fill:var(--tx);font-size:22px;font-weight:800;font-family:Inter,sans-serif}.msvenn .vn{fill:var(--tx);font-size:14px;font-weight:700;font-family:Inter,sans-serif}
 .msmo{display:grid;grid-template-columns:repeat(2,1fr);gap:6px 12px;padding:10px 12px;background:var(--bg);border-radius:10px;margin:-6px 0 14px;font-size:14px}
 .msmq{padding:10px 0;border-top:1px solid var(--line);font-size:15px}.msml{display:flex;gap:6px;margin-top:8px}.msml button{flex:1;padding:9px 0;border-radius:9px;border:1px solid var(--line);background:var(--card2);color:var(--tx);font-weight:700;font-family:inherit;cursor:pointer}.msml button.on{background:var(--ac);border-color:var(--ac);color:#fff}
@@ -2616,6 +2617,7 @@ var qrcode = function() {
 }));
 
 </script>
+<script src="ms11.js?v=1"></script>
 <script>
 const ERON=[
 {t:"Eron · 1979-yil inqilobi",q:"Darslikka ko'ra, 1979-yilgi inqilob tarixda birinchi marta nimani birlashtirdi?",o:["Monarxiyani parlament bilan","Islomiy boshqaruvni umumdemokratik institutlar bilan","Sotsializmni bozor iqtisodiyoti bilan","Dunyoviy davlatni diniy sud bilan"],a:1,e:"1979-yilgi inqilob tarixda birinchi marta Eron Islom Respublikasida islomiy boshqaruvni umumdemokratik institutlar bilan birlashtirdi."},
@@ -2843,6 +2845,15 @@ const SETS=[
  {id:"u7l",n:"43–46",title:"O‘zbekiston tarixi: 43–46-mavzular",sub:"Muhaddislar, alloma-faqihlar, Ma’mun akademiyasi · 25 savol",qs:Q7_L,g:"7-sinf · O‘zbekiston tarixi",subj:"O‘zbekiston tarixi (7-sinf)"},
  {id:"u7m",n:"47–52",title:"O‘zbekiston tarixi: 47–52-mavzular",sub:"Xorazmiy, Farg‘oniy, Forobiy · 25 savol",qs:Q7_M,g:"7-sinf · O‘zbekiston tarixi",subj:"O‘zbekiston tarixi (7-sinf)"},
  {id:"u7n",n:"53–56",title:"O‘zbekiston tarixi: 53–56-mavzular",sub:"Beruniy, Ibn Sino · 25 savol",qs:Q7_N,g:"7-sinf · O‘zbekiston tarixi",subj:"O‘zbekiston tarixi (7-sinf)"},
+ {id:"ms11v1",n:"1",title:"Milliy sertifikat: 1-variant (1–3-mavzular)",sub:"Xalqaro munosabatlar, Sharqiy Yevropa, SSSRning parchalanishi · 45 topshiriq · 120 daqiqa",qs:null,ms:MS11[0],g:"11-sinf · Jahon tarixi",subj:"Jahon tarixi (11-sinf)"},
+ {id:"ms11v2",n:"2",title:"Milliy sertifikat: 2-variant (4–6-mavzular)",sub:"Rossiya, Ukraina, Belarus, Moldova, Kavkazorti · 45 topshiriq · 120 daqiqa",qs:null,ms:MS11[1],g:"11-sinf · Jahon tarixi",subj:"Jahon tarixi (11-sinf)"},
+ {id:"ms11v3",n:"3",title:"Milliy sertifikat: 3-variant (7–9-mavzular)",sub:"Markaziy Osiyo, G‘arb integratsiyasi, AQSh · 45 topshiriq · 120 daqiqa",qs:null,ms:MS11[2],g:"11-sinf · Jahon tarixi",subj:"Jahon tarixi (11-sinf)"},
+ {id:"ms11v4",n:"4",title:"Milliy sertifikat: 4-variant (10–12-mavzular)",sub:"Germaniya, Buyuk Britaniya, Fransiya · 45 topshiriq · 120 daqiqa",qs:null,ms:MS11[3],g:"11-sinf · Jahon tarixi",subj:"Jahon tarixi (11-sinf)"},
+ {id:"ms11v5",n:"5",title:"Milliy sertifikat: 5-variant (13–15-mavzular)",sub:"Italiya, Osiyo, Afrika, Lotin Amerikasi, Xitoy · 45 topshiriq · 120 daqiqa",qs:null,ms:MS11[4],g:"11-sinf · Jahon tarixi",subj:"Jahon tarixi (11-sinf)"},
+ {id:"ms11v6",n:"6",title:"Milliy sertifikat: 6-variant (16–18-mavzular)",sub:"Yaponiya va Koreya, Janubi-sharqiy Osiyo, Hindiston · 45 topshiriq · 120 daqiqa",qs:null,ms:MS11[5],g:"11-sinf · Jahon tarixi",subj:"Jahon tarixi (11-sinf)"},
+ {id:"ms11v7",n:"7",title:"Milliy sertifikat: 7-variant (19–21-mavzular)",sub:"Turkiya, Eron, Pokiston va Afg‘oniston · 45 topshiriq · 120 daqiqa",qs:null,ms:MS11[6],g:"11-sinf · Jahon tarixi",subj:"Jahon tarixi (11-sinf)"},
+ {id:"ms11v8",n:"8",title:"Milliy sertifikat: 8-variant (22–24-mavzular)",sub:"Suriya va Iroq, Ko‘rfaz mamlakatlari, Falastin va Isroil · 45 topshiriq · 120 daqiqa",qs:null,ms:MS11[7],g:"11-sinf · Jahon tarixi",subj:"Jahon tarixi (11-sinf)"},
+ {id:"ms11v9",n:"9",title:"Milliy sertifikat: 9-variant (25–29-mavzular)",sub:"Lotin Amerikasi, Afrika, global muammolar, ilm-fan va madaniyat · 45 topshiriq · 120 daqiqa",qs:null,ms:MS11[8],g:"11-sinf · Jahon tarixi",subj:"Jahon tarixi (11-sinf)"},
  {id:"ms7v1",n:"MS",title:"Milliy sertifikat: 1-variant (1–13-mavzular)",sub:"45 topshiriq · to'liq imtihon formati · 120 daqiqa",qs:null,ms:MS7_1,g:"7-sinf · O‘zbekiston tarixi",subj:"O‘zbekiston tarixi (7-sinf)"},
  {id:"mix7",n:"∑",title:"Aralash nazorat (7-sinf)",sub:"1–56-mavzular · barcha savollardan tasodifiy 20 ta",qs:null,g:"7-sinf · O‘zbekiston tarixi",subj:"O‘zbekiston tarixi (7-sinf)"},
  {id:"eron",n:"20",title:"Eron Islom Respublikasi",sub:"20-mavzu · 20 savol",qs:ERON},
@@ -3786,7 +3797,29 @@ const MS = (() => {
   // --- yozma javoblarni tekshirish ---
   const norm = s => String(s || "").toLowerCase().replace(/[ʻʼ'`‘’"«»]/g, "").replace(/[–—−]/g, "-").replace(/\b(asrlar|asr|yillar|yil|ta)\b/g, "").replace(/[\s.,;:!?()]/g, "").replace(/x/g, "h");
   function lev(a, b) { const m = a.length, n = b.length, d = Array.from({ length: m + 1 }, (_, i) => [i]); for (let j = 1; j <= n; j++) d[0][j] = j; for (let i = 1; i <= m; i++) for (let j = 1; j <= n; j++) d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1)); return d[m][n]; }
-  function check(v, acc) { const x = norm(v); if (!x) return false; return acc.some(a => { const y = norm(a); if (x === y) return true; if (/^\d/.test(y) || y.length < 5) return false; return lev(x, y) <= (y.length >= 9 ? 2 : 1); }); }
+  // yozma javob: raqamlar aniq mos kelishi, matn esa kamida 60% o'xshash bo'lishi kerak
+  const nums = s => (String(s || "").match(/\d+(?:[.,]\d+)?/g) || []).map(x => parseFloat(x.replace(",", ".")));
+  const letters = s => norm(String(s || "").replace(/\d+(?:[.,]\d+)?/g, " ")).replace(/-/g, "");
+  const sim = (x, y) => { const m = Math.max(x.length, y.length); return m ? 1 - lev(x, y) / m : 1; };
+  const GEN = /^(sessiya|yil|asr|ta|marta|nafar|foiz|kishi|kun|oy|mln|million|milliard|mlrd)/;
+  function check1(v, a) {
+    const nv = nums(v), na = nums(a);
+    if (na.length) {
+      const lv = letters(v), la = letters(a);
+      if (!nv.length && la.length >= 4 && !GEN.test(la)) return sim(norm(v), norm(a)) >= 0.6; // masalan: COVID-19, Minsk-2
+      if (nv.length !== na.length || nv.some((x, i) => x !== na[i])) return false;
+      if (!lv) return !la || GEN.test(la);
+      if (!la) return true;
+      return sim(lv, la) >= 0.6 || (lv.length >= 3 && (la.includes(lv) || lv.includes(la)));
+    }
+    if (nv.length) return false;
+    const x = norm(v), y = norm(a);
+    if (!x || !y) return false;
+    if (x === y) return true;
+    const sx = norm(String(v).split(/\s+va\s+|,/).map(t => t.trim()).sort().join(" ")), sy = norm(String(a).split(/\s+va\s+|,/).map(t => t.trim()).sort().join(" "));
+    return sim(x, y) >= 0.6 || sim(sx, sy) >= 0.6;
+  }
+  function check(v, acc) { if (!String(v || "").trim()) return false; return acc.some(a => check1(v, a)); }
   // --- holat ---
   let D = null, S = null, timer = null;
   const key = () => "zm_ms_" + (ACCT.cur ? ACCT.cur.uid : "x") + "_" + set.id;
@@ -3824,9 +3857,10 @@ const MS = (() => {
       if (q.mt) body += `<table class="mstb"><tr><th>${esc(q.mt.h[0])}</th><th>${esc(q.mt.h[1])}</th></tr>${Array.from({ length: Math.max(q.mt.l.length, q.mt.r.length) }, (_, k) => `<tr><td>${esc(q.mt.l[k] || "")}</td><td>${esc(q.mt.r[k] || "")}</td></tr>`).join("")}</table>`;
       if (q.tbl) body += `<table class="mstb"><tr>${q.tbl.c.map(c => `<th>${esc(c)}</th>`).join("")}</tr>${q.tbl.r.map(r => `<tr>${r.map(c => `<td>${c.length === 1 ? `<b>${esc(c)}</b>` : esc(c)}</td>`).join("")}</tr>`).join("")}</table>`;
       if (q.venn) body += vennSVG(q.venn[0], q.venn[1]);
+      if (q.img) body += `<img class="msimg" src="${esc(q.img)}" alt="" loading="lazy">`;
       if (q.after) body += `<div class="msit" style="white-space:pre-line">${esc(q.after)}</div>`;
       body += `<div class="msopts">${S.perm[i].map((oi, k) => `<button class="opt${S.m[i] === oi ? " sel" : ""}" data-q="${i}" data-o="${oi}"><span class="l">${L4[k]}</span><span>${esc(q.o[oi])}</span></button>`).join("")}</div>`;
-      h.push(`<div class="card msq" id="msq${i}"><span class="tag">${i + 1}-savol · ${esc(q.t)}</span>${body}</div>`);
+      h.push(`<div class="card msq" id="msq${i}"><span class="tag">${i + 1}-savol${q.t ? " · " + esc(q.t) : ""}</span>${body}</div>`);
     });
     h.push(`<div class="mssec">33–35. Moslashtirish</div><div class="card"><div class="q">33–35-topshiriqlarga mos javoblarni (A–F) javob variantlaridan tanlang.</div>
       <div class="msmo">${D.match.opts.map((o, k) => `<span><b>${L6[k]})</b> <i>${esc(o)}</i></span>`).join("")}</div>
@@ -3867,7 +3901,7 @@ const MS = (() => {
     rv.forEach(r => {
       const d = document.createElement("div"); d.className = "rv " + (r.g ? "good" : "wrong"); d.dataset.k = r.g ? "good" : "wrong";
       d.innerHTML = `<span class="tag"></span><div class="q" style="white-space:pre-line"></div>` + (r.g ? "" : `<div class="ans-line y">✗ Sizning javobingiz: <span></span></div>`) + `<div class="ans-line c">✓ To'g'ri javob: <span></span></div>` + (r.e ? `<div class="exp"></div>` : "");
-      d.querySelector(".tag").textContent = `${r.n}. ${r.t} · ${r.g ? "+" + (Math.round(PPQ * 10) / 10) + " ball" : "0 ball"}`;
+      d.querySelector(".tag").textContent = `${r.n}. ${r.t ? r.t + " · " : ""}${r.g ? "+" + (Math.round(PPQ * 10) / 10) + " ball" : "0 ball"}`;
       d.querySelector(".q").textContent = r.q; if (!r.g) d.querySelector(".y span").textContent = r.y; d.querySelector(".c span").textContent = r.c; if (r.e) d.querySelector(".exp").textContent = "💡 " + r.e;
       box.appendChild(d);
     });
