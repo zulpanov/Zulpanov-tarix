@@ -157,6 +157,7 @@ textarea:focus{outline:2px solid var(--ac);border-color:transparent}
 .clsn{position:absolute;right:-6px;bottom:-22px;font-size:84px;font-weight:800;color:rgba(232,137,63,.13);line-height:1}
 .clsc.off{opacity:.45;cursor:default}.clsc.off .clsn{color:rgba(255,255,255,.05)}
 .tile.t4{background:linear-gradient(135deg,rgba(243,199,79,.2),var(--card) 60%);border-color:rgba(243,199,79,.4)}.tile.t4 .ti{background:linear-gradient(135deg,#f6d77a,#c9952a)}
+.backbar{display:flex;gap:8px;margin:-6px 0 12px}.backbar button{flex:1;padding:11px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--tx);font-family:inherit;font-size:14px;font-weight:600;cursor:pointer}.backbar button:first-child{flex:0 0 auto;padding:11px 16px}.backbar button:hover{border-color:var(--ac)}
 .streak{display:inline-block;margin-left:8px;color:#ff9a4d;font-weight:800}
 .btn.sm{width:auto;padding:8px 12px;font-size:13px}
 .sndbtn{margin-left:auto;background:var(--card2);border:1px solid var(--line);color:var(--tx);border-radius:10px;width:38px;height:38px;font-size:18px;cursor:pointer}
@@ -234,6 +235,8 @@ body{background:radial-gradient(1200px 600px at 110% -10%,rgba(232,137,63,.13),t
 <div class="wrap">
   <header class="brand"><div class="logo">ZM</div><div><b>ZULPANOV METHODS TARIX</b><small>Tarix testlari · turnirlar</small></div><button class="hdrav hide" id="hdrAv" onclick="goHome()" title="Bosh sahifa"></button><button class="sndbtn" id="snd" title="Ovoz" onclick="this.textContent=FX.toggleSound()?'🔊':'🔇'">🔊</button></header>
 
+  <div class="backbar hide" id="bkb"><button id="bkB">← Orqaga</button><button id="bkH">🏠 Bosh menyu</button></div>
+
   <section id="auth" class="hide">
     <div class="hero">
       <div class="hero-logo"><span>ZM</span></div>
@@ -253,7 +256,7 @@ body{background:radial-gradient(1200px 600px at 110% -10%,rgba(232,137,63,.13),t
     </div>
     <div id="homeHW"></div>
     <div class="tiles">
-      <button class="tile t1" onclick="goTests()"><div class="ti">📚</div><div><b>Mavzulashtirilgan testlar</b><span>Sinfma-sinf: 5–11-sinf mavzulari bo'yicha testlar</span></div><div class="ar">›</div></button>
+      <button class="tile t1" onclick="goTests()"><div class="ti">📚</div><div><b>Mavzulashtirilgan testlar</b><span>Sinfma-sinf: 6–11-sinf mavzulari bo'yicha testlar</span></div><div class="ar">›</div></button>
       <button class="tile t4" onclick="goMS()"><div class="ti">🎓</div><div><b>Milliy sertifikat testlari</b><span>45 topshiriqli to'liq imtihon variantlari, haqiqiy sharoitda</span></div><div class="ar">›</div></button>
       <button class="tile t2" onclick="T.openJoin()"><div class="ti">🏆</div><div><b>Turnirda jonli qatnashish</b><span>Ustoz bergan kod bilan sinfdoshlaringiz bilan jonli bellashing</span></div><div class="ar">›</div><span class="badge hide" id="tBadge">JONLI</span></button>
       <button class="tile t3" onclick="ACCT.history()"><div class="ti">📊</div><div><b>Statistika</b><span>Natijalaringiz, o'sish dinamikasi va yutuqlaringiz</span></div><div class="ar">›</div></button>
@@ -263,7 +266,7 @@ body{background:radial-gradient(1200px 600px at 110% -10%,rgba(232,137,63,.13),t
   </section>
   <section id="tz" class="hide"></section>
   <section id="start" class="hide">
-    <div class="card sthead"><button class="btn ghost sm" id="stBack">←</button><div style="flex:1;min-width:0"><h1 id="stH" style="margin:0">Mavzulashtirilgan testlar</h1><div class="st-s" id="stS"></div></div></div>
+    <div class="card sthead"><div style="flex:1;min-width:0"><h1 id="stH" style="margin:0">Mavzulashtirilgan testlar</h1><div class="st-s" id="stS"></div></div></div>
     <div id="clsGrid" class="clsgrid"></div>
     <div class="card" id="stBox"><div class="topics" id="tps"></div><button class="btn" id="go" disabled>Testni boshlash</button>
     <p class="st-s" style="margin:12px 0 0">Har bir test 100 ballik. Natijaga qarab ismingiz yozilgan sertifikat beriladi: 45+ → C, 50+ → C+, 55+ → B, 60+ → B+, 65+ → A, 70+ → A+.</p></div>
@@ -2929,9 +2932,9 @@ function renderTopics(){
   const box=$("tps"),grid=$("clsGrid");if(!box)return;const E=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   box.innerHTML="";grid.innerHTML="";
   if(VIEW.k==="cls"){
-    $("stH").textContent="📚 Mavzulashtirilgan testlar";$("stS").textContent="Sinfingizni tanlang";$("stBox").classList.add("hide");$("stBack").onclick=()=>goHome();
+    $("stH").textContent="📚 Mavzulashtirilgan testlar";$("stS").textContent="Sinfingizni tanlang";$("stBox").classList.add("hide");BK(goHome);
     const reg=SETS.filter(s=>!s.ms);const have={};reg.forEach(s=>{const c=clsOf(s.g);(have[c]=have[c]||{n:0,f:new Set()});if(s.qs)have[c].n++;have[c].f.add(fanOf(s.g))});
-    const std=["5-sinf","6-sinf","7-sinf","8-sinf","9-sinf","10-sinf","11-sinf"];const extra=Object.keys(have).filter(c=>!std.includes(c));
+    const std=["6-sinf","7-sinf","8-sinf","9-sinf","10-sinf","11-sinf"];const extra=Object.keys(have).filter(c=>!std.includes(c));
     std.concat(extra).forEach((c,i)=>{const x=have[c],num=(c.match(/\d+/)||[""])[0];
       const b=document.createElement("button");b.className="clsc"+(x?"":" off");b.style.animationDelay=(i*50)+"ms";
       b.innerHTML=`<div class="clsn">${E(num||"✦")}</div><b>${E(c)}</b><span>${x?`${x.n} ta test · ${E([...x.f].join(", "))}`:"tez orada"}</span>`;
@@ -2939,7 +2942,7 @@ function renderTopics(){
       grid.appendChild(b)});
     return;
   }
-  $("stBox").classList.remove("hide");$("stBack").onclick=()=>{if(VIEW.k==="set"){VIEW={k:"cls"};set=null;renderTopics()}else goHome()};
+  $("stBox").classList.remove("hide");BK(()=>{if(VIEW.k==="set"){VIEW={k:"cls"};set=null;renderTopics();window.scrollTo(0,0)}else goHome()});
   let list;
   if(VIEW.k==="ms"){list=SETS.filter(s=>s.ms);$("stH").textContent="🎓 Milliy sertifikat testlari";$("stS").textContent="45 topshiriqli to'liq imtihon varianti: yopiq testlar, moslashtirish va yozma javoblar";}
   else{list=SETS.filter(s=>!s.ms&&clsOf(s.g)===VIEW.cls);$("stH").textContent="📚 "+VIEW.cls;$("stS").textContent="Mavzuni tanlang";}
@@ -2970,11 +2973,14 @@ function start(){
   show("quiz");render();
 }
 function fmt(ms){const s=Math.floor(ms/1000);return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0")}
-function show(id){["auth","home","start","quiz","res","tz"].forEach(s=>$(s).classList.toggle("hide",s!==id));setNav(id==="start"&&typeof VIEW!=="undefined"&&VIEW.k==="ms"?"ms":({home:"home",start:"tests",res:"tests"}[id]||null));window.scrollTo(0,0)}
+var BKfn;function BK(fn){BKfn=fn;$("bkb").classList.toggle("hide",!fn)}
+function show(id){["auth","home","start","quiz","res","tz"].forEach(s=>$(s).classList.toggle("hide",s!==id));BK(id==="res"?(()=>{if(FROM_T)goHome();else{renderTopics();show("start")}}):id==="start"?BKfn:null);setNav(id==="start"&&typeof VIEW!=="undefined"&&VIEW.k==="ms"?"ms":({home:"home",start:"tests",res:"tests"}[id]||null));window.scrollTo(0,0)}
 function setNav(active){const on=!!(active&&typeof ACCT!=="undefined"&&ACCT.cur);$("bnav").classList.toggle("hide",!on);[...$("bnav").children].forEach(b=>b.classList.toggle("on",b.dataset.g===active));const av=$("hdrAv");if(av){const c=typeof ACCT!=="undefined"&&ACCT.cur;av.classList.toggle("hide",!c);if(c)av.textContent=(c.f[0]||"")+(c.l[0]||"")}}
 function goHome(){if(typeof ACCT!=="undefined"&&ACCT.cur){show("home");ACCT.renderHome()}else show("auth")}
-function goTests(){VIEW={k:"cls"};set=null;renderTopics();show("start")}
-function goMS(){VIEW={k:"ms"};set=null;renderTopics();show("start");setNav("ms")}
+function goTests(){VIEW={k:"cls"};set=null;show("start");renderTopics()}
+function goMS(){VIEW={k:"ms"};set=null;show("start");renderTopics();setNav("ms")}
+document.addEventListener("DOMContentLoaded",()=>{});
+setTimeout(()=>{$("bkB").onclick=()=>{if(BKfn)BKfn()};$("bkH").onclick=()=>goHome()},0);
 document.addEventListener("click",e=>{const b=e.target.closest("#bnav button");if(!b)return;const g=b.dataset.g;if(g==="home")goHome();else if(g==="tests")goTests();else if(g==="ms")goMS();else if(g==="turnir")T.openJoin();else if(g==="stat")ACCT.history()});
 function render(){
   const {i,idx}=order[cur],q=Q[i];
@@ -3527,7 +3533,7 @@ const ACCT = (() => {
   let aUn = null, annL = null;
   function history() {
     if (!cur) { show("auth"); return; }
-    show("tz"); setNav("stat");
+    show("tz"); setNav("stat"); BK(goHome);
     $("tz").innerHTML = `<div class="card welcome" style="padding-bottom:18px"><div class="wl-top"><div style="font-size:34px">📊</div><div style="flex:1"><div class="wl-n">Mening statistikam</div><div class="st-s" id="hN">Yuklanmoqda…</div></div></div>
       <div class="wl-stats" style="grid-template-columns:repeat(4,1fr)"><div><b id="sT">0</b><span>Testlar</span></div><div><b id="sA">—</b><span>O'rtacha</span></div><div><b id="sB">—</b><span>Eng yuqori</span></div><div><b id="sW">0</b><span>🏆 G'alaba</span></div></div></div>
       <div class="card hsec" style="margin-top:12px"><h3>🏅 Daraja va nishonlar</h3><div id="hBd"></div></div>
@@ -4028,11 +4034,11 @@ const GAME = (() => {
   let lbTab = "g";
   function board() {
     const c = ACCT.cur; if (!c) { show("auth"); return; }
-    show("tz"); setNav(null);
+    show("tz"); setNav(null); BK(goHome);
     const ws = weekStart(DBA.now()), we = new Date(ws + 6 * 86400e3), d0 = new Date(ws), f = d => String(d.getDate()).padStart(2, "0") + "." + String(d.getMonth() + 1).padStart(2, "0");
     $("tz").innerHTML = `<div class="card welcome"><div class="wl-top"><div style="font-size:34px">🏅</div><div style="flex:1"><div class="wl-n">Haftalik reyting</div><div class="st-s">${f(d0)} – ${f(we)} · har dushanba yangilanadi</div></div></div></div>
       <div class="sttabs" id="lbT"><button data-t="g" class="${lbTab === "g" ? "on" : ""}">👥 Guruhim${c.g ? ": " + esc(c.g) : ""}</button><button data-t="a" class="${lbTab === "a" ? "on" : ""}">🌍 Barcha o'quvchilar</button></div>
-      <div id="lbP"></div><div class="card" id="lbL"></div><button class="btn ghost" style="margin-top:12px" onclick="goHome()">🏠 Bosh sahifa</button>`;
+      <div id="lbP"></div><div class="card" id="lbL"></div>`;
     $("lbT").onclick = e => { const b = e.target.closest("button"); if (!b) return; lbTab = b.dataset.t; [...$("lbT").children].forEach(x => x.classList.toggle("on", x === b)); draw(); };
     let data = {};
     const draw = () => {
@@ -4421,7 +4427,7 @@ const T = (() => {
   function openJoin(code = "") {
     clear(); st.role = "student"; st.meta = null; st.Q = [];
     if (!ACCT.cur) { show("auth"); FX.toast("🔐 Avval login va parolingiz bilan kiring"); return; }
-    show("tz"); setNav("turnir");
+    show("tz"); setNav("turnir"); BK(goHome);
     tz().innerHTML = `<div class="card">
       <div style="text-align:center"><div class="hero-logo" style="width:70px;height:70px;border-radius:22px"><span style="font-size:32px">🏆</span></div><h1>Turnirga qo'shilish</h1><p class="sub">Ustoz bergan 4 xonali kodni kiriting.</p></div>
       <div class="tnote">👤 <b id="tjn"></b></div>
@@ -4472,7 +4478,7 @@ const T = (() => {
     tz().querySelector(".sub b").textContent = name; sBoard();
   }
   function sPlay() {
-    setNav(null);
+    setNav(null); BK(null);
     tz().innerHTML = `<div class="top"><span id="tqn"></span><span id="ttm" class="ttm">⏱ --:--</span></div><div class="bar"><i id="tpb"></i></div>
       <div class="card" id="tqa"></div>
       <div class="card" style="margin-top:12px"><div style="display:flex;justify-content:space-between;font-size:13px;color:var(--mu);margin-bottom:8px"><b style="color:var(--tx)">🏆 Jonli reyting</b><span id="tmy"></span></div><div id="tbd"></div></div>`;
