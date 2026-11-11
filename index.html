@@ -335,6 +335,29 @@ input,select,textarea,button{font-family:inherit}
 .authcard input{height:50px;border-radius:14px;background:rgba(0,0,0,.3);font-size:15px}
 .authcard input:focus{border-color:#8B5CF6;box-shadow:0 0 0 3px rgba(139,92,246,.25);outline:0}
 @media (prefers-reduced-motion:reduce){.planet,.sky-ring,.sat{animation:none}}
+
+/* ===== ADMIN: PANEL + PASTKI MENYU ===== */
+.anav{display:none}body.adm .anav{display:grid}body.adm #bnav{display:none!important}body.adm .wrap{padding-bottom:110px}
+body.adm #bkb{display:none!important}
+.adh{display:flex;align-items:center;gap:10px;margin:2px 0 12px}.adh-t{flex:1;min-width:0}.adh-t small{display:block;font-size:11.5px;color:var(--mu)}.adh-t b{font-size:17px}.adh0 .adh-t b{font-size:18px}
+.adh-b{width:40px;height:40px;flex:none;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);color:var(--tx);font-size:20px;cursor:pointer;font-family:inherit}
+body.adm #tz h1{font-size:18px}body.adm #tz .card{padding:16px}
+.akpis{display:grid;grid-template-columns:1fr 1fr;gap:8px}.akpi{padding:11px 12px;border-radius:16px;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.11);min-width:0}.akpi-l{font-size:12px;color:var(--mu);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.akpi b{font-size:22px}.akpi span{font-size:11.5px;color:var(--mu)}
+.ah{font-size:12px;font-weight:700;margin:16px 2px 9px;color:var(--mu);text-transform:uppercase;letter-spacing:.08em;display:flex;justify-content:space-between}.ah a{color:var(--ac2);text-transform:none;letter-spacing:0;cursor:pointer}
+.agrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px 4px}.agrid button{position:relative;background:none;border:0;color:var(--tx);font-family:inherit;font-size:11.5px;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;padding:0}
+.aic{display:grid;place-items:center;font-style:normal;width:52px;height:52px;border-radius:16px;font-size:23px;box-shadow:0 6px 16px rgba(0,0,0,.3)}
+.c1{background:linear-gradient(135deg,#F59E0B,#EF4444)}.c2{background:linear-gradient(135deg,#06B6D4,#3B82F6)}.c3{background:linear-gradient(135deg,#EC4899,#A855F7)}.c4{background:linear-gradient(135deg,#10B981,#06B6D4)}.c5{background:linear-gradient(135deg,#F2C14E,#B8892F)}.c6{background:linear-gradient(135deg,#8B5CF6,#6366F1)}.c7{background:linear-gradient(135deg,#38BDF8,#0EA5E9)}.c8{background:linear-gradient(135deg,#94A3B8,#475569)}
+.abd{position:absolute;top:-5px;right:calc(50% - 34px);background:#F43F5E;color:#fff;font-size:9.5px;font-weight:800;border-radius:10px;padding:1px 6px;border:2px solid #0A0720}
+.afeed{display:flex;align-items:center;gap:10px;padding:10px 0;font-size:13.5px}.afeed+.afeed{border-top:1px solid rgba(255,255,255,.07)}.afeed div{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.afeed b{font-weight:600}.afp{color:#67E8F9;flex:none}.afeed small{color:var(--mu);font-size:11.5px;flex:none}
+.amore{position:fixed;inset:0;z-index:60;background:rgba(5,3,20,.6);display:flex;align-items:flex-end;justify-content:center}.amore.hide{display:none}
+.amore-s{width:min(560px,100%);background:#141033;border:1px solid rgba(255,255,255,.12);border-bottom:0;border-radius:26px 26px 0 0;padding:12px 16px calc(24px + env(safe-area-inset-bottom));animation:upin .2s ease}
+.amore .grab{width:44px;height:5px;border-radius:5px;background:rgba(255,255,255,.2);margin:0 auto 14px}
+.amore-g{display:grid;grid-template-columns:repeat(3,1fr);gap:14px 6px}.amore-g button{background:none;border:0;color:var(--tx);font-family:inherit;font-size:12px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;padding:6px 0;border-radius:14px}.amore-g button.on{background:rgba(139,92,246,.18)}
+@keyframes upin{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+.tpks{max-height:none;padding:0;overflow:visible}.tpk{padding:0}.tpk+.tpk{border-top:1px solid var(--line)}
+.tpk>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:12px;margin:0;color:var(--tx);font-size:14px}.tpk>summary::-webkit-details-marker{display:none}
+.tpk>summary:before{content:"▸";color:var(--mu);transition:.2s}.tpk[open]>summary:before{transform:rotate(90deg)}.tpk>summary b{flex:1}.tpk-n{color:var(--mu);font-size:12px}.tpk.has .tpk-n{color:#67E8F9;font-weight:700}
+.tpk>summary .lnk{font-size:12px}.tpk[open]{padding-bottom:6px}.tpk-i{padding:7px 12px;font-size:13.5px}.tpk-i input{width:18px;height:18px;accent-color:#8B5CF6}
 </style>
 </head>
 <body>
@@ -350,7 +373,7 @@ input,select,textarea,button{font-family:inherit}
       <div class="sky-t"><h1 class="hero-t">ZULPANOV <em>METHODS</em> TARIX</h1><p class="hero-s">Tarix olamiga xush kelibsiz!</p></div>
     </div>
     <div class="card authcard"><div class="grab"></div><div id="acc"><div class="sub" style="margin:0;text-align:center">Yuklanmoqda…</div></div></div>
-    <button class="adminlink" onclick="T.openHost()">⚙️ Ustoz uchun: Admin panel</button>
+    <button class="adminlink" onclick="isAdmin()?ADASH.open():T.openHost()">⚙️ Ustoz uchun: Admin panel</button>
   </section>
 
   <section id="home" class="hide">
@@ -413,6 +436,9 @@ input,select,textarea,button{font-family:inherit}
   </section>
 </div>
 
+<nav class="bnav anav" id="anav"><button data-a="dash">🏠<span>Panel</span></button><button data-a="tur">🏆<span>Turnir</span></button><button data-a="acc">👥<span>O'quvchi</span></button><button data-a="hw">📝<span>Vazifa</span></button><button data-a="more">☰<span>Yana</span></button></nav>
+<div class="amore hide" id="amore"><div class="amore-s"><div class="grab"></div><div class="amore-g">
+<button data-a="stat"><i class="aic c4">📊</i>Statistika</button><button data-a="cq"><i class="aic c6">✏️</i>Savollar</button><button data-a="ms"><i class="aic c5">🎓</i>Sertifikat</button><button data-a="bot"><i class="aic c7">🤖</i>Telegram bot</button><button data-a="pw"><i class="aic c8">🔑</i>Parol</button><button data-a="out"><i class="aic c1">🚪</i>Chiqish</button></div></div></div>
 <nav class="bnav hide" id="bnav"><button data-g="home">🏠<span>Bosh sahifa</span></button><button data-g="tests">📚<span>Testlar</span></button><button data-g="ms">🎓<span>Sertifikat</span></button><button data-g="turnir">🏆<span>Turnir</span></button><button data-g="stat">📊<span>Statistika</span></button></nav>
 <div class="modal" id="mdl"><div class="card">
   <p style="font-weight:700;font-size:17px;margin-bottom:6px">Testni yakunlaysizmi?</p>
@@ -3042,7 +3068,7 @@ function start(){
 }
 function fmt(ms){const s=Math.floor(ms/1000);return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0")}
 var BKfn;function BK(fn){BKfn=fn;const hm=["home","auth"].some(i=>$(i)&&!$(i).classList.contains("hide"));$("bkb").classList.toggle("hide",!fn||hm)}
-function show(id){["auth","home","start","quiz","res","tz"].forEach(s=>$(s).classList.toggle("hide",s!==id));BK(id==="res"?(()=>{if(FROM_T)goHome();else{renderTopics();show("start")}}):id==="start"?BKfn:null);setNav(id==="start"&&typeof VIEW!=="undefined"&&VIEW.k==="ms"?"ms":({home:"home",start:"tests",res:"tests"}[id]||null));window.scrollTo(0,0)}
+function show(id){document.body.classList.remove("adm");try{$("amore").classList.add("hide")}catch(e){}["auth","home","start","quiz","res","tz"].forEach(s=>$(s).classList.toggle("hide",s!==id));BK(id==="res"?(()=>{if(FROM_T)goHome();else{renderTopics();show("start")}}):id==="start"?BKfn:null);setNav(id==="start"&&typeof VIEW!=="undefined"&&VIEW.k==="ms"?"ms":({home:"home",start:"tests",res:"tests"}[id]||null));window.scrollTo(0,0)}
 function setNav(active){const on=!!(active&&typeof ACCT!=="undefined"&&ACCT.cur);$("bnav").classList.toggle("hide",!on);[...$("bnav").children].forEach(b=>b.classList.toggle("on",b.dataset.g===active));const av=$("hdrAv");if(av){const c=typeof ACCT!=="undefined"&&ACCT.cur;av.classList.toggle("hide",!c);if(c){const k=c.uid+"|"+c.f+c.l;if(av.dataset.k!==k){av.dataset.k=k;av.innerHTML=AV.html(c.uid,c.f+" "+c.l,"fill")}}}}
 function goHome(){if(typeof ACCT!=="undefined"&&ACCT.cur){show("home");ACCT.renderHome()}else show("auth")}
 function goTests(){VIEW={k:"cls"};set=null;show("start");renderTopics()}
@@ -4031,11 +4057,69 @@ const ACC = (() => {
   return { open, leave() { unsubs.forEach(f => f()); unsubs = []; } };
 })();
 
+const ADM_SEC = { dash: ["🏠", "Boshqaruv paneli"], tur: ["🏆", "Turnirlar"], acc: ["👥", "O'quvchilar"], hw: ["📝", "Vazifalar"], cq: ["✏️", "Savollar"], ms: ["🎓", "Sertifikat"], stat: ["📊", "Statistika"], bot: ["🤖", "Telegram bot"], pw: ["🔑", "Parol"] };
+function adminGo(k) {
+  $("amore").classList.add("hide");
+  const f = { dash: () => ADASH.open(), tur: () => T.openHost(), acc: () => ACC.open(), hw: () => HW.open(), cq: () => CQ.open(), ms: () => MSADM.open(), stat: () => STAT.open(), bot: () => BOTP.open(), pw: () => ADMPW.open(), out: () => adminLogout(), more: () => $("amore").classList.toggle("hide") }[k];
+  if (f) f();
+}
 function adminNav(active) {
   if (active !== "hw" && typeof HW !== "undefined") HW.leaveAdmin();
-  const b = (k, l, fn) => `<button class="${k === active ? "on" : ""}" onclick="${fn}">${l}</button>`;
-  return `<div class="adminbar"><div class="adm-t">⚙️ ADMIN PANEL · @${ADMIN.login}</div><div class="sttabs" style="margin:6px 0 0">${b("tur", "🏆 Turnirlar", "T.openHost()")}${b("acc", "👥 O'quvchilar", "ACC.open()")}${b("hw", "📝 Vazifalar", "HW.open()")}${b("cq", "✏️ Savollar", "CQ.open()")}${b("ms", "🎓 Sertifikat", "MSADM.open()")}${b("stat", "📊 Statistika", "STAT.open()")}${b("bot", "🤖 Bot", "BOTP.open()")}${b("pw", "🔑 Parol", "ADMPW.open()")}${b("out", "🚪 Chiqish", "adminLogout()")}</div></div>`;
+  if (active !== "dash" && typeof ADASH !== "undefined") ADASH.leave();
+  document.body.classList.add("adm"); try { setNav(null); } catch (e) {}
+  const main = ["dash", "tur", "acc", "hw"].includes(active) ? active : "more";
+  [...$("anav").children].forEach(b => b.classList.toggle("on", b.dataset.a === main));
+  [...$("amore").querySelectorAll("button")].forEach(b => b.classList.toggle("on", b.dataset.a === active));
+  if (active === "dash") return "";
+  const sc = ADM_SEC[active] || ["⚙️", "Admin"];
+  return `<div class="adh"><button class="adh-b" onclick="adminGo('dash')" title="Panel">‹</button><div class="adh-t"><small>Ustoz paneli</small><b>${sc[0]} ${sc[1]}</b></div><button class="adh-b" onclick="adminGo('more')" title="Bo'limlar">☰</button></div>`;
 }
+document.addEventListener("click", e => { const b = e.target.closest("#anav button,#amore button"); if (b) return adminGo(b.dataset.a); if (e.target.id === "amore") $("amore").classList.add("hide"); });
+const ADASH = (() => {
+  let alive = 0;
+  const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const ago = ms => { const s = (Date.now() - ms) / 1000; if (s < 60) return "hozir"; if (s < 3600) return Math.floor(s / 60) + " daq"; if (s < 86400) return Math.floor(s / 3600) + " soat"; return Math.floor(s / 86400) + " kun"; };
+  const hr = () => { const h = new Date().getHours(); return h < 5 ? "Xayrli tun" : h < 12 ? "Xayrli tong" : h < 18 ? "Xayrli kun" : "Xayrli kech"; };
+  const kpi = (ic, l, v, c, d) => `<div class="akpi"><div class="akpi-l">${ic} ${l}</div><b style="color:${c}">${v}</b> <span>${d}</span></div>`;
+  function open() {
+    if (!isAdmin()) return T.openHost();
+    try { T.leave(); } catch (e) {} try { ACC.leave(); } catch (e) {}
+    show("tz"); BK(null);
+    const S = [["tur", "🏆", "Turnirlar", "c1"], ["acc", "👥", "O'quvchilar", "c2"], ["hw", "📝", "Vazifalar", "c3"], ["cq", "✏️", "Savollar", "c6"], ["ms", "🎓", "Sertifikat", "c5"], ["stat", "📊", "Statistika", "c4"], ["bot", "🤖", "Bot", "c7"], ["pw", "🔑", "Parol", "c8"]];
+    $("tz").innerHTML = `${adminNav("dash")}<div class="adh adh0"><div class="logo" style="width:40px;height:40px;border-radius:12px;font-size:14px">ZM</div><div class="adh-t"><b>Ustoz paneli</b><small>@${esc(ADMIN.login)} · ${hr()}, ustoz!</small></div><button class="adh-b" onclick="adminGo('out')" title="Chiqish">🚪</button></div>
+      <div class="akpis" id="adK">${kpi("👥", "O'quvchilar", "…", "#67E8F9", "")}${kpi("🔥", "Bugun faol", "…", "#F472B6", "")}${kpi("📈", "O'rtacha ball", "…", "#A78BFA", "")}${kpi("📝", "Vazifa", "…", "#34D399", "")}</div>
+      <div class="ah">Bo'limlar</div>
+      <div class="agrid">${S.map(([k, i, n, c]) => `<button onclick="adminGo('${k}')"><i class="aic ${c}">${i}</i>${n}<span class="abd hide" id="adb_${k}"></span></button>`).join("")}</div>
+      <div class="ah">Tezkor amallar</div>
+      <div class="row" style="gap:10px"><button class="btn" style="margin:0" onclick="adminGo('tur')">＋ Turnir</button><button class="btn ghost" style="margin:0" onclick="adminGo('hw')">＋ Vazifa</button></div>
+      <div class="ah">So'nggi faollik <a onclick="adminGo('stat')">Hammasi</a></div>
+      <div class="card" style="padding:4px 14px" id="adF"><div class="sub" style="margin:10px 0">Yuklanmoqda…</div></div>`;
+    load(++alive);
+  }
+  async function load(my) {
+    let r = {}, us = {}, hw = {}, act = {};
+    try { [r, us, hw, act] = await Promise.all([DBA.get("r"), DBA.get(AUTH.FB ? "users" : "u"), DBA.get("hw"), DBA.get("a")]); } catch (e) {}
+    if (my !== alive || !$("adK")) return;
+    r = r || {}; us = us || {}; hw = hw || {}; act = act || {};
+    const now = DBA.now(), d0 = new Date(); d0.setHours(0, 0, 0, 0);
+    const U = Object.entries(us).filter(([k, x]) => x && x.f && !x.moved).map(([k, x]) => ({ ...x, login: x.login || k })), wk = U.filter(x => x.c && now - x.c < 7 * 864e5).length;
+    const R = Object.values(r).filter(x => x && x.at);
+    const today = new Set(R.filter(x => x.at >= +d0).map(x => x.u || x.n)); U.forEach(x => { if (x.last && x.last >= +d0) today.add(x.login); });
+    const r7 = R.filter(x => now - x.at < 7 * 864e5 && typeof x.pts === "number"), avg = r7.length ? Math.round(r7.reduce((a, x) => a + x.pts, 0) / r7.length) : null;
+    const H = Object.entries(hw).filter(([k, x]) => x && x.set).map(([k, x]) => ({ id: k, ...x })).sort((a, b) => (b.c || 0) - (a.c || 0));
+    let hwv = "—", hwd = "vazifa yo'q", hwNew = 0;
+    if (H.length) { const h = H[0]; let sub = {}; try { sub = (await DBA.get("hwr/" + h.id)) || {}; } catch (e) {} const n = Object.keys(sub).length; hwv = `${n}/${U.length || "?"}`; hwd = h.due ? (h.due > now ? "muddat: " + new Date(h.due).toLocaleDateString("uz") : "muddat o'tgan") : "topshirdi"; hwNew = R.filter(x => x.hw && now - x.at < 864e5).length; }
+    if (my !== alive || !$("adK")) return;
+    $("adK").innerHTML = kpi("👥", "O'quvchilar", U.length, "#67E8F9", wk ? `+${wk} bu hafta` : "") + kpi("🔥", "Bugun faol", today.size, "#F472B6", U.length ? Math.round(today.size * 100 / U.length) + "%" : "") + kpi("📈", "O'rtacha ball", avg == null ? "—" : avg, "#A78BFA", "7 kun") + kpi("📝", "Vazifa topshirdi", hwv, "#34D399", hwd);
+    const live = Object.values(act).filter(x => x && x.code && x.ph !== "end" && now - (x.c || 0) < 6 * 3600e3).length;
+    const bd = (k, v) => { const e = $("adb_" + k); if (e) { e.textContent = v; e.classList.toggle("hide", !v); } };
+    bd("tur", live ? "JONLI" : ""); bd("hw", hwNew || "");
+    const ev = R.map(x => ({ at: x.at, ic: x.mode === "turnir" ? "🏆" : x.hw ? "📝" : "✅", t: `<b>${esc(x.n)}</b> · ${esc(x.ttl || x.set || "")}`, p: x.pts }))
+      .concat(U.filter(x => x.c).map(x => ({ at: x.c, ic: "🆕", t: `<b>${esc(x.f + " " + (x.l || ""))}</b> ro'yxatdan o'tdi` }))).sort((a, b) => b.at - a.at).slice(0, 6);
+    $("adF").innerHTML = ev.length ? ev.map(e => `<div class="afeed"><span>${e.ic}</span><div>${e.t}</div>${e.p != null ? `<b class="afp">${e.p}</b>` : ""}<small>${ago(e.at)}</small></div>`).join("") : '<div class="sub" style="margin:10px 0">Hali faollik yo\'q.</div>';
+  }
+  return { open, leave() { alive++; } };
+})();
 function adminLogout() { try { localStorage.removeItem("zm_admin"); localStorage.removeItem("zm_host"); } catch (e) {} if (AUTH.FB) AUTH.signOut(); if (typeof T !== "undefined") T.leave(); ACC.leave(); goHome(); }
 
 // ================== GURUHLAR VA UYGA VAZIFALAR ==================
@@ -5127,7 +5211,7 @@ const T = (() => {
       if (!l || !p) return E("Login va parolni kiriting.");
       if (AUTH.FB) {
         $("thgo").disabled = true; E("");
-        const done = () => { TGB.link(l, p, true); ACCT.drop(); FX.toast("✅ Admin panelga xush kelibsiz", "up"); hSetup(); };
+        const done = () => { TGB.link(l, p, true); ACCT.drop(); FX.toast("✅ Admin panelga xush kelibsiz", "up"); ADASH.open(); };
         try {
           await AUTH.signIn(l, p);
           if (AUTH.isAdmin) return done();
@@ -5145,7 +5229,7 @@ const T = (() => {
       let hx = ""; try { hx = await sha256hex(ADMIN.salt + ":" + l + ":" + p); } catch (e) { return E("Brauzeringiz bu amalni qo'llamaydi. Boshqa brauzerdan kiring."); }
       if (l === ADMIN.login && hx === ADMIN.hash) {
         ls.del("zm_afail"); ls.set("zm_admin", JSON.stringify({ k: ADMIN.hash, exp: Date.now() + 12 * 3600e3 })); TGB.link(l, p, true);
-        FX.toast("✅ Admin panelga xush kelibsiz", "up"); hSetup();
+        FX.toast("✅ Admin panelga xush kelibsiz", "up"); ADASH.open();
       } else {
         const f = +(ls.get("zm_afail") || 0) + 1; ls.set("zm_afail", f);
         if (f >= 5) { ls.set("zm_alock", Date.now() + 60000); ls.set("zm_afail", 0); return E("5 marta xato. 1 daqiqa kuting."); }
@@ -5158,7 +5242,7 @@ const T = (() => {
     if (!isAdmin()) return openHost();
     clear(); st.celebrated = false; st.code = null; st.meta = null;
     const pick = SETS.filter(s => s.qs && !s.ms); const gs = []; pick.forEach(s => { if (!gs.includes(s.g)) gs.push(s.g); });
-    const opts = gs.map(g => `<div class="tpk"><div class="tpk-h"><b>${esc(g)}</b><button class="lnk" data-all="${esc(g)}">hammasini tanlash</button></div>${pick.filter(s => s.g === g).map(s => `<label class="tpk-i"><input type="checkbox" value="${s.id}"><span><b>${esc(s.n)}</b> ${esc(s.title)}</span><small>${s.qs.length}</small></label>`).join("")}</div>`).join("");
+    const opts = gs.map(g => { const it = pick.filter(s => s.g === g); return `<details class="tpk"><summary class="tpk-h"><b>${esc(g)}</b><small class="tpk-n">0/${it.length}</small><button class="lnk" data-all="${esc(g)}">hammasi</button></summary>${it.map(s => `<label class="tpk-i"><input type="checkbox" value="${s.id}"><span><b>${esc(s.n)}</b> ${esc(s.title)}</span><small>${s.qs.length}</small></label>`).join("")}</details>`; }).join("");
     if (typeof ACC !== "undefined") ACC.leave();
     tz().innerHTML = `${adminNav("tur")}<div class="card" id="tact"><h1 style="display:flex;align-items:center;gap:8px"><span class="live-dot"></span>Davom etayotgan turnirlar</h1><div id="tactl"><div class="sub" style="margin:0">Yuklanmoqda…</div></div></div>
       <div class="card" style="margin-top:12px"><h1>🏆 Yangi turnir</h1>
@@ -5166,15 +5250,15 @@ const T = (() => {
       <div class="seg" id="thm"><button data-m="solo" class="on">🏆 Yakka turnir</button><button data-m="team">👥 Jamoaviy turnir</button></div>
       <div id="thteam" class="hide"><div class="row"><div style="flex:1"><label>Jamoalar soni</label><select id="thk">${[2, 3, 4, 5, 6].map(x => `<option${x === 2 ? " selected" : ""}>${x}</option>`).join("")}</select></div><div style="flex:1"><label>Bir jamoada nechta o'quvchi</label><input id="thz" type="number" min="1" max="30" value="5"></div></div>
         <label>Jamoa nomlari (birinchi qo'shilgan o'quvchi — sardor — nomni o'zgartira oladi)</label><div id="thnm"></div></div>
-      <label>Turnir qaysi mavzulardan bo'ladi? (bir yoki bir nechtasini belgilang)</label><div id="ths" class="tpks">${opts}</div>
+      <label>Mavzular (sinfni bosib oching)</label><div id="ths" class="tpks">${opts}</div>
       <div class="tnote" id="thsum">Mavzu tanlanmagan</div>
       <div class="row"><div style="flex:1"><label>Savollar soni</label><input id="thn" type="number" min="5" max="60" value="30"></div><div style="flex:1"><label>Vaqt (daqiqa)</label><input id="thd" type="number" min="1" max="180" value="30"></div></div>
       <div class="accerr" id="thE"></div>
-      <button class="btn" id="thc">Turnirni ochish</button><button class="btn ghost" style="margin-top:10px" onclick="goHome()">Saytga qaytish</button></div>`;
+      <button class="btn" id="thc">🚀 Turnirni ochish</button></div>`;
     const sel = () => [...$("ths").querySelectorAll("input:checked")].map(i => i.value);
-    const sum = () => { $("thE").textContent = ""; const ids = sel(), n = ids.reduce((a, id) => a + setById(id).qs.length, 0); $("thsum").innerHTML = ids.length ? `Tanlandi: <b>${ids.length}</b> ta mavzu bloki, jami <b>${n}</b> ta savol. Turnirda ulardan tasodifiy <b>${Math.min(n, +$("thn").value || 30)}</b> tasi tushadi.` : "Mavzu tanlanmagan"; };
+    const sum = () => { $("thE").textContent = ""; const ids = sel(), n = ids.reduce((a, id) => a + setById(id).qs.length, 0); $("ths").querySelectorAll(".tpk").forEach(d => { const a = d.querySelectorAll("input"), c = d.querySelectorAll("input:checked").length; d.querySelector(".tpk-n").textContent = c + "/" + a.length; d.classList.toggle("has", c > 0); }); $("thsum").innerHTML = ids.length ? `Tanlandi: <b>${ids.length}</b> ta mavzu bloki, jami <b>${n}</b> ta savol. Turnirda ulardan tasodifiy <b>${Math.min(n, +$("thn").value || 30)}</b> tasi tushadi.` : "Mavzu tanlanmagan"; };
     $("ths").onchange = sum; $("thn").oninput = sum;
-    $("ths").onclick = e => { const b = e.target.closest("[data-all]"); if (!b) return; const box = b.closest(".tpk"), ins = [...box.querySelectorAll("input")], on = !ins.every(i => i.checked); ins.forEach(i => i.checked = on); sum(); };
+    $("ths").onclick = e => { const b = e.target.closest("[data-all]"); if (!b) return; e.preventDefault(); const box = b.closest(".tpk"), ins = [...box.querySelectorAll("input")], on = !ins.every(i => i.checked); ins.forEach(i => i.checked = on); sum(); };
     $("thc").onclick = hCreate;
     const nms = () => { const k = +$("thk").value, old = [...$("thnm").querySelectorAll("input")].map(i => i.value); $("thnm").innerHTML = [...Array(k)].map((_, i) => `<div class="tmnm"><span>${TC[i][0]}</span><input maxlength="24" value="${esc(old[i] || TC[i][2])}"></div>`).join(""); };
     nms(); $("thk").onchange = nms;
