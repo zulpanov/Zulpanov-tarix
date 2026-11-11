@@ -320,6 +320,21 @@ input,select,textarea,button{font-family:inherit}
 #home .tile2+.tile2{background:linear-gradient(135deg,rgba(34,211,238,.2),rgba(59,130,246,.1))!important;border-color:rgba(34,211,238,.35)}
 #home .tile2 .ti2{font-size:19px;margin:0}#home .tile2{min-width:0}#home .tile2 b{font-size:14px;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}#home .tile2 span{font-size:11.5px;color:#67E8F9;font-weight:700;white-space:nowrap}#home .tile2+.tile2 span{display:none}
 #home #pwaBox{margin-top:4px}
+
+/* ===== KIRISH: SAYYORA ===== */
+.sky{position:relative;height:350px;margin:0 -4px}
+.planet{position:absolute;left:50%;top:44px;width:170px;height:170px;margin-left:-85px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#C4B5FD,#7C3AED 45%,#3B0F8C 75%);box-shadow:0 0 60px rgba(124,58,237,.7),inset -18px -18px 36px rgba(0,0,0,.4);animation:plf 6s ease-in-out infinite}
+.planet b{position:absolute;inset:0;display:grid;place-items:center;font-size:40px;font-weight:800;color:#fff;text-shadow:0 4px 20px rgba(0,0,0,.4)}
+.sky-ring{position:absolute;left:50%;top:110px;width:290px;height:62px;margin-left:-145px;border:3px solid rgba(34,211,238,.6);border-radius:50%;transform:rotate(-14deg);box-shadow:0 0 20px rgba(34,211,238,.4);animation:plf 6s ease-in-out infinite}
+.sky-ring.front{clip-path:inset(50% 0 0 0);z-index:2}
+.sat{position:absolute;width:44px;height:44px;border-radius:14px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);display:grid;place-items:center;font-size:21px;backdrop-filter:blur(6px);animation:plf 6s ease-in-out infinite}
+@keyframes plf{0%,100%{translate:0 0}50%{translate:0 -8px}}
+.sky-t{position:absolute;left:0;right:0;bottom:6px;text-align:center}.sky-t .hero-t{font-size:24px;letter-spacing:.02em;margin:0 0 4px}.sky-t .hero-s{margin:0 auto;font-size:13.5px}
+.authcard{margin-top:0;border-radius:30px 30px 22px 22px;padding:12px 20px 22px;background:#141033!important;border-color:rgba(255,255,255,.14)!important;box-shadow:0 -16px 40px rgba(0,0,0,.4)}
+.authcard .grab{width:44px;height:5px;border-radius:5px;background:rgba(255,255,255,.2);margin:0 auto 14px}
+.authcard input{height:50px;border-radius:14px;background:rgba(0,0,0,.3);font-size:15px}
+.authcard input:focus{border-color:#8B5CF6;box-shadow:0 0 0 3px rgba(139,92,246,.25);outline:0}
+@media (prefers-reduced-motion:reduce){.planet,.sky-ring,.sat{animation:none}}
 </style>
 </head>
 <body>
@@ -329,13 +344,12 @@ input,select,textarea,button{font-family:inherit}
   <div class="backbar hide" id="bkb"><button id="bkB">← Orqaga</button><button id="bkH">🏠 Bosh menyu</button></div>
 
   <section id="auth" class="hide">
-    <div class="hero">
-      <div class="hero-logo"><span>ZM</span></div>
-      <h1 class="hero-t">ZULPANOV<br><em>METHODS</em> TARIX</h1>
-      <p class="hero-s">Tarixni o'rganish endi o'yin kabi qiziqarli: mavzulashtirilgan testlar, jonli turnirlar va shaxsiy statistika — barchasi bir joyda.</p>
-      <div class="pills"><span>📚 Testlar</span><span>🏆 Jonli turnirlar</span><span>📊 Statistika</span><span>🎓 Sertifikat</span></div>
+    <div class="sky">
+      <div class="sky-ring"></div><div class="planet"><b>ZM</b></div><div class="sky-ring front"></div>
+      <div class="sat" style="left:4%;top:24px">📚</div><div class="sat" style="right:5%;top:14px;animation-delay:-1.5s">🏆</div><div class="sat" style="left:8%;top:196px;animation-delay:-3s">🎓</div><div class="sat" style="right:8%;top:206px;animation-delay:-4.5s">📊</div>
+      <div class="sky-t"><h1 class="hero-t">ZULPANOV <em>METHODS</em> TARIX</h1><p class="hero-s">Tarix olamiga xush kelibsiz!</p></div>
     </div>
-    <div class="card authcard"><div id="acc"><div class="sub" style="margin:0;text-align:center">Yuklanmoqda…</div></div></div>
+    <div class="card authcard"><div class="grab"></div><div id="acc"><div class="sub" style="margin:0;text-align:center">Yuklanmoqda…</div></div></div>
     <button class="adminlink" onclick="T.openHost()">⚙️ Ustoz uchun: Admin panel</button>
   </section>
 
