@@ -123,6 +123,13 @@ select{width:100%;padding:13px 14px;border-radius:10px;border:1px solid var(--li
 .adminbar{background:linear-gradient(135deg,#2a2420,#17212c);border:1px solid var(--ac);border-radius:16px;padding:12px 14px;margin-bottom:12px}.adm-t{font-size:11px;font-weight:800;letter-spacing:.12em;color:var(--ac)}
 details summary::-webkit-details-marker{color:var(--ac)}
 .chipg{font-size:13px;padding:6px 11px;border-radius:999px;background:var(--card2);border:1px solid var(--line)}
+.msbar{position:sticky;top:64px;z-index:40;display:flex;justify-content:space-between;align-items:center;gap:10px;background:rgba(23,33,44,.95);border:1px solid var(--line);border-radius:14px;padding:10px 14px;backdrop-filter:blur(10px)}
+.msbar .ttm{font-size:20px}.mssec{font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--ac);margin:20px 0 10px}
+.msq{margin-bottom:12px}.msit{font-size:15px;line-height:1.55;margin:-6px 0 14px;padding:10px 12px;background:var(--bg);border-radius:10px}
+.mstb{width:100%;border-collapse:collapse;margin:-6px 0 14px;font-size:14px}.mstb th{background:#1f4e79;color:#fff;text-align:left;padding:8px}.mstb td{padding:8px;border-bottom:1px solid var(--line);vertical-align:top}.mstb tr:nth-child(even) td{background:rgba(255,255,255,.03)}
+.msvenn{width:100%;max-width:420px;display:block;margin:-6px auto 12px}.msvenn .vt{fill:var(--tx);font-size:22px;font-weight:800;font-family:Inter,sans-serif}.msvenn .vn{fill:var(--tx);font-size:14px;font-weight:700;font-family:Inter,sans-serif}
+.msmo{display:grid;grid-template-columns:repeat(2,1fr);gap:6px 12px;padding:10px 12px;background:var(--bg);border-radius:10px;margin:-6px 0 14px;font-size:14px}
+.msmq{padding:10px 0;border-top:1px solid var(--line);font-size:15px}.msml{display:flex;gap:6px;margin-top:8px}.msml button{flex:1;padding:9px 0;border-radius:9px;border:1px solid var(--line);background:var(--card2);color:var(--tx);font-weight:700;font-family:inherit;cursor:pointer}.msml button.on{background:var(--ac);border-color:var(--ac);color:#fff}
 .streak{display:inline-block;margin-left:8px;color:#ff9a4d;font-weight:800}
 .btn.sm{width:auto;padding:8px 12px;font-size:13px}
 .sndbtn{margin-left:auto;background:var(--card2);border:1px solid var(--line);color:var(--tx);border-radius:10px;width:38px;height:38px;font-size:18px;cursor:pointer}
@@ -2809,9 +2816,68 @@ const UZ7B=[
 {t:"Mahalliy hokimliklar · manba",q:"X asr arab mualliflari Ibn Xavqal va Istaxriyning qayd etishicha, birgina Binkat (Toshkent)ning nechta darvozasi bo‘lgan?",o:["Yetti","O‘n ikki","Yigirma ikki","Qirq"],a:2,e:"X asrda yashagan arab mualliflari Binkatning yigirma ikkita darvozasi bo‘lganini qayd etgan."}
 ];
 
+const MS7_1 = {
+  dur: 120,
+  mcq: [
+{t:"Kirish",q:"Tariximizda o‘rta asrlar davrining boshlanishi bilan bog‘liq TO‘G‘RI fikrni toping.",o:["Siyosiy maydonda kidariylar, xioniylar, eftaliylar kabi qabila uyushmalari paydo bo‘lgan IV asr oxiri – V asr o‘rtalaridan boshlanadi","476-yilda Rim imperiyasining qulashi bilan boshlanadi","VIII asr boshida arab xalifaligi hukmronligi o‘rnatilishi bilan boshlanadi","VI asr o‘rtalarida Turk xoqonligining tashkil topishi bilan boshlanadi"],a:0,e:"1-mavzu."},
+{t:"G‘arbiy Turk xoqonligi",q:"Oliy hukmdor unvonlari va ular qo‘llanilgan hududlarni moslang.",mt:{h:["Unvon","Hudud"],l:["I. ixrid","II. xudot","III. afshin","IV. malikshoh","V. tudun"],r:["a) Buxoro","b) Kesh","c) Toxariston","d) Ustrushona","e) Choch","f) Xorazm","g) Farg‘ona"]},o:["I-b, II-a, III-d, IV-c, V-e"],auto:"map",dom:"abcdefg",a:0,e:"10–11-mavzular."},
+{t:"Xronologiya",q:"Voqealarni xronologik ketma-ketlikda joylashtiring.",items:["1) Turk xoqonligi tashkil topdi;","2) xioniylar o‘zining kuchaygan pallasiga kirdi;","3) toxarlar (kidariylar) Xorazm va Amudaryo havzasiga kirib keldi;","4) Turk xoqonligi Sharqiy va G‘arbiy xoqonliklarga bo‘linib ketdi;","5) Mahmud Qoshg‘ariy «Devonu lug‘otit-turk» asarini yozdi."],o:["2, 3, 1, 4, 5"],auto:"seq",a:0,e:"IV asr 70-yillari → V asrning 20-yillari → VI asr o‘rtalari → VI asr 80-yillari oxiri → XI asr."},
+{t:"Xorazm",q:"Afrig‘iy podsholarining oldi tomoniga shoh, orqa tomoniga suvoriy tasviri tushirilgan kumush tangalar zarb ettirishi nimadan dalolat beradi?",o:["Xorazm ichki va tashqi savdo munosabatlarida mustaqil bo‘lib olganidan","Xorazm sosoniylarga soliq to‘lab turganidan","Xorazmda hokimiyat harbiylar qo‘lida bo‘lganidan","Xorazm eftaliylarning pul tizimiga qo‘shilganidan"],a:0,e:"3–4-mavzular."},
+{t:"Shaharlar",q:"Shaharlar va ular haqidagi ma’lumotlarni moslang.",mt:{h:["Shahar","Ma’lumot"],l:["I. Poykand","II. Buxoro","III. Panjikent","IV. Zartepa","V. Binkat"],r:["a) X asrda yigirma ikkita darvozasi bo‘lgani qayd etilgan","b) Termiz atrofida, IV–V asrlarda maydoni 17 gektarga yetgan","c) arab manbalarida «Savdogarlar shahri» deb atalgan","d) Alfir qasri ichida yangi saroy qurilgan","e) asosi 21 gektar bo‘lib, yettita darvozasi bo‘lgan","f) hozirgi Ellikqal’a tumanida joylashgan","g) V asrda qadimgi qishloq o‘rnida 18 gektarli yangi shahar barpo etilgan"]},o:["I-c, II-e, III-g, IV-b, V-a"],auto:"map",dom:"abcdefg",a:0,e:"6–7, 12–13-mavzular."},
+{t:"Eftaliylar",q:"Ilk o‘rta asrlarga oid qal’a va istehkomlar hamda ular joylashgan hududlar bo‘yicha TO‘G‘RI juftlikni toping.",o:["Zahoki Maron — Naxshab; Shahri Vayron — Buxoro; Fir qal’asi — Xorazm","Zahoki Maron — Buxoro; Shahri Vayron — Naxshab; Fir qal’asi — Xorazm","Zahoki Maron — Xorazm; Shahri Vayron — Buxoro; Fir qal’asi — Naxshab","Zahoki Maron — Naxshab; Shahri Vayron — Xorazm; Fir qal’asi — Buxoro"],a:0,e:"6–7-mavzular."},
+{t:"Tarixiy shaxs",q:"Tarixiy shaxsni aniqlang: u turk xoqoni Qoracho‘rinning o‘g‘li bo‘lgan; Buxoroga qo‘shin bilan kelib, qo‘zg‘olon yetakchisini qo‘lga olgan; Narshaxiy ma’lumotiga ko‘ra, Buxoro shahristonini qurdirib, yigirma yil podshohlik qilgan.",o:["Sheri Kishvar (El Arslon)","Abruy","To‘n yabg‘u","Tegin Tyanchji"],a:0,e:"11-mavzu."},
+{t:"Eftaliylar",q:"Eftaliylar davlatining dastlabki poytaxti qaysi shaharlar bo‘lgan?",o:["Buxoro yaqinidagi Poykent va Varaxsha","Balx va Termiz","Samarqand va Panjikent","Kat va Tuproqqal’a"],a:0,e:"6-mavzu."},
+{t:"Eftaliylar",q:"Eftaliylar davlatida taxt vorisligi qanday hal qilingan?",o:["Taxtga suloladan loyiq deb topilgan vakil o‘tirgan; nomzodni mo‘tabar kishilar va a’yonlardan iborat kengash aniqlagan","Taxt otadan to‘ng‘ich o‘g‘ilga meros bo‘lib o‘tgan","Hukmdorni sosoniy shohlar tayinlagan","Hukmdor xalq yig‘inida ovoz berish orqali saylangan"],a:0,e:"6-mavzu."},
+{t:"Eftaliylar",q:"Eftaliylar davriga oid NOTO‘G‘RI fikrni toping.",o:["Ipak yo‘li savdosida sosoniy savdogarlari bilan raqobatda xorazmliklar vositachi bo‘lgan","Eftaliylar asosan zardushtiylikka e’tiqod qilgan","Davlatda tangrichilik, buddaviylik, moniylik, mazdakiylik ham tarqalgan","Shaharlarda nestorianlar va yahudiylar jamoalari bo‘lgan"],a:0,e:"Vositachi sug‘diylar bo‘lgan (7-mavzu)."},
+{t:"Eftaliylar",q:"V asrda barpo etilgan sug‘orish tarmoqlari va ular suv bilan ta’minlayotgan hududlar bo‘yicha TO‘G‘RI juftlikni toping.",o:["Zog‘ariq va Bo‘zsuv — Toshkent vohasi va Janubiy Qozog‘iston yerlarining bir qismi; Darg‘om — Samarqand viloyatining janubiy tumanlari","Zog‘ariq va Bo‘zsuv — Samarqand viloyatining janubiy tumanlari; Darg‘om — Toshkent vohasi","Darg‘om va Bo‘zsuv — Xorazm; Zog‘ariq — Farg‘ona vodiysi","Zog‘ariq — Naxshab vohasi; Darg‘om va Bo‘zsuv — Buxoro vohasi"],a:0,e:"7-mavzu."},
+{t:"Turk xoqonligi",q:"Turk xoqonligining tashkil topishi haqida TO‘G‘RI ma’lumotni toping.",o:["VI asr o‘rtalarida Oltoy va Janubiy Sibirdagi turkiy qabilalarni birlashtirgan; asoschisi — Bumin; markazi — Oltoy","V asr boshida Yettisuvda tashkil topgan; asoschisi — Bumin; markazi — Suyab","VI asr o‘rtalarida Orol bo‘yida tashkil topgan; asoschisi — To‘n yabg‘u; markazi — Balx","VII asr boshida Sharqiy Turkistonda tashkil topgan; asoschisi — Tardu; markazi — O‘tukan"],a:0,e:"8–9-mavzular."},
+{t:"Turk xoqonligi",q:"Turk xoqonligining mustahkam markazlashgan davlatga aylana olmasligi sabablari qatoriga KIRMAYDIGANINI toping.",o:["Arab xalifaligining Movarounnahrga yurishlari","Katta qabilalar ittifoqining markaziy hokimiyatga bo‘ysunmaslikka intilishi","Bo‘ysundirilgan hududlarni mahalliy hokimlar orqali boshqarish tartibi","Vizantiya, Xitoy va Eron bilan doimiy raqobat"],a:0,e:"8–9-mavzular."},
+{t:"Turk xoqonligi",q:"Turk xoqonligi bo‘linganidan keyingi xoqonliklar va ularning poytaxtlari bo‘yicha TO‘G‘RI juftlikni toping.",o:["Sharqiy xoqonlik — O‘tukan vodiysi; G‘arbiy xoqonlik — Yettisuv","Sharqiy xoqonlik — Yettisuv; G‘arbiy xoqonlik — O‘tukan vodiysi","Sharqiy xoqonlik — Oltoy; G‘arbiy xoqonlik — Balx","Sharqiy xoqonlik — Urxun; G‘arbiy xoqonlik — Samarqand"],a:0,e:"8–9-mavzular."},
+{t:"Turk xoqonligi",q:"Turk xoqonligiga oid atamalarni ularning ma’nosi bilan moslang.",items:["1) budun (qora budun);  2) yabg‘u (jabg‘u);  3) shad.","a) o‘n ming suvoriyga ega tuman boshi;","b) ko‘chmanchi chorvador aholi;","c) o‘n o‘q budun yoki elning hokimi."],o:["1-b, 2-c, 3-a"],auto:"map",dom:"abc",a:0,e:"8–9-mavzular."},
+{t:"Turk xoqonligi",q:"Turk xoqonligidagi qonunchilik haqida TO‘G‘RI ma’lumotni toping.",o:["Samarqanddagi ibodatxonada saqlangan «Turk qonunnomasi» amalda bo‘lgan; Sug‘dda oldi-sotdi va nikoh shartnomalari yozma tuzilib, muhr bilan tasdiqlangan","«Turk qonunnomasi» Balxdagi saroyda saqlangan; shartnomalar faqat og‘zaki tuzilgan","Davlat faqat urf-odatlar asosida boshqarilgan, yozma qonunlar bo‘lmagan","«Turk qonunnomasi» Xitoydan o‘zlashtirilgan va faqat harbiylarga taalluqli bo‘lgan"],a:0,e:"8–9-mavzular."},
+{t:"Manba",q:"568–569-yillarda Vizantiya imperatori turk elchisidan eftaliylar haqida so‘raganda, elchi «Ular shaharlik sulolalar, oliy hazratlari» deb javob bergan. Ushbu manbadan qanday xulosa chiqarish mumkin?",o:["Eftaliylar vaqt o‘tishi bilan mahalliy aholi bilan aralashib ketgan, ularning davlatida shaharlar juda ko‘p bo‘lgan","Eftaliylar ko‘chmanchi turmush tarzini oxirigacha saqlab qolgan","Eftaliylar Vizantiyaga tobe bo‘lgan","Eftaliylar shaharlarni vayron qilib, aholini qishloqlarga ko‘chirgan"],a:0,e:"7-mavzu."},
+{t:"G‘arbiy Turk xoqonligi",q:"G‘arbiy turk xoqonligi Sharqiy xoqonlikdan nimasi bilan mutlaqo ajralib turgan?",o:["Aholisining kattagina qismi o‘troq dehqonchilik, hunarmandchilik va savdo-sotiq bilan shug‘ullangani bilan","Aholisining barchasi ko‘chmanchi chorvador bo‘lgani bilan","Yozuvga ega bo‘lmagani bilan","Poytaxti O‘tukan vodiysida joylashgani bilan"],a:0,e:"10–11-mavzular."},
+{t:"Mahalliy hokimliklar",q:"Jadvaldagi harflar o‘rniga mos ma’lumotlarni qo‘ying.",tbl:{c:["Hudud","Ma’lumot"],r:[["Toxariston","a"],["b","11 ta yirik mulk birlashgan; Oqsoqollar Kengashi hukmdor hokimiyatini cheklagan"],["Farg‘ona","c"],["d","Lashkarak kumushlari, Tunkat va To‘qkat metali, moviy feruzalar chetga chiqarilgan"],["Iloq","e"]]},after:"Ma’lumotlar: 1) Choch; 2) tosh va tuz qazib olingan; 3) poytaxti Balx bo‘lib, 27 ta viloyatdan iborat bo‘lgan; 4) qo‘rg‘oshin, kumush va oltin qazib olingan; 5) Xorazm; 6) bo‘yoq, rangli shisha buyumlar va dori-darmonlar chiqarilgan; 7) Sug‘d; 8) Ustrushona.",o:["a-3, b-7, c-6, d-1, e-4"],auto:"map",dom:"12345678",a:0,e:"10–13-mavzular."},
+{t:"Eyler-Venn",q:"Eyler-Venn diagrammasining tegishli qismlariga mos ma’lumotlarni joylashtiring.",venn:["Xioniylar","Kidariylar"],after:"a) poytaxti Balx shahri bo‘lgan;\nb) g‘arb tarixchilari ularni «oq xunnlar» deb atagan;\nc) ijtimoiy-iqtisodiy tizimi haqidagi ma’lumotlar bizgacha yetib kelmagan;\nd) tangalari braxmiy yozuvida zarb etilgan;\ne) dastlab Zarafshon vohasini egallagan;\nf) keyinchalik eftaliylar hukmronligi davrida mavqeini yo‘qotgan;\ng) K. Trever ularni IV asrning 70-yillarida kuchaygan deb hisoblagan;\nh) Gupta davlatida 75 yil hukmronlik qilgan.",o:["I-b, e, g; II-a, d, h; III-c, f"],auto:"venn",dom:"abcdefgh",a:0,e:"5-mavzu."},
+{t:"E’tiqodlar",q:"Qadimgi turkiylarning diniy e’tiqodlariga oid TO‘G‘RI fikrlarni toping.",items:["1) Tangrining doimiy makoni osmon bo‘lgani uchun ko‘k rang ilohiy buyuklik ramzi hisoblangan;","2) moniylik ta’limoti «Ezgu fikr, ezgu so‘z, ezgu amal» g‘oyasiga asoslangan;","3) qadimgi turklar shomonlikni «qam» deb atagan;","4) moniylikning arkoni — ibodat, ro‘za va sadaqa bo‘lgan;","5) shomonlikda faqat yagona Osmon xudosiga sig‘inilgan;","6) turkiylar o‘limni bir hayotdan ikkinchi hayotga o‘tish deb bilgan."],o:["1, 3, 4, 6"],auto:"set",n:6,a:0,e:"8–9-mavzular."},
+{t:"Madaniyat",q:"Afrosiyob devoriy rasmlari haqida TO‘G‘RI ma’lumotni toping.",o:["XX asrning 60-yillarida avtomobil yo‘li qurilishi paytida topilgan; tuxum sarig‘iga mineral upa aralashtirib tayyorlangan tempera bilan ishlangan","XIX asrda tasodifan topilgan; moyli bo‘yoqda ishlangan","1991-yilda Buxorodan arxeologlar tomonidan topilgan; faqat ov sahnalari tasvirlangan","XX asrning 30-yillarida topilgan; rasmlarda faqat diniy marosimlar aks etgan"],a:0,e:"10–11-mavzular."},
+{t:"Sabab–oqibat",q:"Buxoroda Abruy boshchiligidagi qo‘zg‘olon ko‘tarilishiga nima sabab bo‘lgan?",o:["Qashshoqlik va dehqonlar asoratiga qarshi norozilik","Arablarning Buxoroga bostirib kirishi","Turk xoqonining Buxoroni Xitoyga topshirishi","Zardushtiylikning taqiqlanishi"],a:0,e:"11-mavzu."},
+{t:"G‘arbiy Turk xoqonligi",q:"Xoqon To‘n yabg‘u mahalliy hukmdorlarga xoqonlikning «yabg‘u» unvonini nima maqsadda bergan?",o:["Viloyat hokimlarini xoqonlik ma’muriyati bilan bevosita bog‘lab, ular ustidan nazoratni kuchaytirish uchun","Ularni soliqlardan butunlay ozod qilish uchun","Ularni xoqon taxtiga voris qilib tayinlash uchun","Ularning qo‘shinlarini tarqatib yuborish uchun"],a:0,e:"10–11-mavzular."},
+{t:"Choch",q:"Choch hokimligiga oid TO‘G‘RI ma’lumotni toping.",o:["Turkiy hukmdorlar davlat ishlarida sug‘diy til va yozuvdan foydalangan; tangalar ham sug‘diy yozuvda zarb etilgan","Davlat ishlarida faqat turkiy run yozuvi qo‘llanilgan","Tangalar arab yozuvida zarb etilgan","Choch hukmdorlari tanga zarb etmagan"],a:0,e:"12–13-mavzular."},
+{t:"Farg‘ona",q:"Farg‘ona hokimligiga oid NOTO‘G‘RI ma’lumotni toping.",o:["Yirik markaziy shaharlari Binkat va Qanha bo‘lgan","Hukmdorlari ixshid deb atalgan","Aholisi paxta va sholi ekkan","Qurama va Qoramozor tog‘lari yonbag‘irlarida yilqichilik rivojlangan"],a:0,e:"Yirik shaharlari — Koson, Axsikat (Xushkat), Quva (12–13-mavzular)."},
+{t:"Ta’lim",q:"Darslikka ko‘ra, ajdodlarimizning farzandlar ta’limiga e’tibori haqida TO‘G‘RI ma’lumotni toping.",o:["Bola 5 yoshga to‘lishi bilan xat-savod va hisob-kitobga jalb etilgan; balog‘atga yetgach, savdo-tijoratni o‘rganish uchun boshqa davlatlarga yuborilgan","Bolalar 10 yoshdan faqat harbiy ishga o‘rgatilgan","Ta’lim faqat ibodatxonalarda va faqat saroy ahli bolalari uchun bo‘lgan","Bolalar 15 yoshgacha o‘qitilmagan"],a:0,e:"10–11-mavzular."},
+{t:"Huquq",q:"Turk xoqonligidagi jinoyat va jazo tizimiga oid NOTO‘G‘RI fikrni toping.",o:["Shaxsga qarshi boshqa jinoyatlar uchun yetkazilgan zarar ikki barobar qilib to‘langan","Isyon ko‘tarish va sotqinlik uchun o‘lim jazosi berilgan","Qasddan odam o‘ldirganlik uchun o‘lim jazosi berilgan","O‘g‘rilik qilgan shaxsning qo‘li yoki oyog‘i kesilgan"],a:0,e:"Zarar o‘n barobar qilib to‘langan (10–11-mavzular)."},
+{t:"Mahalliy hokimliklar",q:"Turk xoqonligining mahalliy sulolalar boshqaruvini saqlab qolishdan maqsadi nima edi?",o:["O‘troq o‘lkalarda siyosiy barqarorlikni ta’minlash, iqtisodiy taraqqiyotni to‘xtatmaslik va harbiy jihatdan ko‘maklashish","Mahalliy aholini boshqa hududlarga ko‘chirib yuborish","Barcha soliqlarni bekor qilish","Sosoniylar bilan urushni to‘xtatish"],a:0,e:"12–13-mavzular."},
+{t:"Sabab–oqibat",q:"Ilk o‘rta asrlarda qishloq hokimlari — «dehqonlar» deb ataluvchi mulkdor tabaqaning paydo bo‘lishiga nima sabab bo‘lgan?",o:["VI asrda unumdor yerlar va suv taqsimotining qabila boshliqlari va ishboshilar nazoratiga o‘tishi","Arab xalifaligining yerlarni harbiylarga taqsimlashi","Ziroatchilarning shaharlarga ko‘chib ketishi","Eftaliylar hukmdorining yerlarni sotuvga chiqarishi"],a:0,e:"2-mavzu."},
+{t:"Sanalar",q:"Voqealar va ular sodir bo‘lgan sanalarni moslang.",mt:{h:["Voqea","Sana"],l:["I. Afrig‘ qarorgohini qadimgi poytaxt Katga ko‘chirdi","II. kidariylar sosoniylar bilan to‘qnashuvda yengildi","III. sosoniy shoh Pero‘z eftaliylarga qarshi urushda halok bo‘ldi","IV. turk elchisi Vizantiya imperatoriga eftaliylar haqida so‘zlab berdi","V. To‘n yabg‘u xoqonlik taxtiga o‘tirdi"],r:["a) 476-yil","b) 484-yil","c) 305-yil","d) 618-yil","e) 456-yil","f) 568–569-yillar","g) 630-yil"]},o:["I-c, II-e, III-b, IV-f, V-d"],auto:"map",dom:"abcdefg",a:0,e:"3–11-mavzular."},
+{t:"G‘arbiy Turk xoqonligi",q:"Quyidagi shaharlardan qaysi biri G‘arbiy turk xoqonligida qarorgoh vazifasini bajargan shaharlar qatorida tilga OLINMAGAN?",o:["Binkat","Suyab (Oq Bishim)","Beshbaliq (Turfan)","Ek-tog‘"],a:0,e:"10–11-mavzular."}
+  ],
+  match: {
+    opts: ["kashovarz", "kadivar", "chokar", "dehqon", "budun", "tudun"],
+    qs: [
+      { q: "O‘z yeridan ayrilib, dehqonlar yerida ishlashga majbur bo‘lgan qaram aholi qanday atalgan?", a: "B" },
+      { q: "Dehqon mulkini qo‘riqlovchi harbiy posbon qanday atalgan?", a: "C" },
+      { q: "Yer va suvdan iborat umumiy mulkka ega bo‘lgan erkin ziroatchi (oddiy qo‘shchi) qanday atalgan?", a: "A" }
+    ]
+  },
+  open: [
+    { intro: "«O‘rta asrlar» tushunchasi xususiy mulkchilik shakli o‘zgarishi davrlari bilan bog‘liq bo‘lib, tariximizda shartli ravishda ishlatiladi.", a: "Bu tushunchani tarix faniga qaysi xalq tarixchilari olib kirgan?", aa: ["italyan", "italiya", "italyanlar"], b: "Rivojlangan o‘rta asrlar qaysi asrlarni o‘z ichiga oladi?", ba: ["IX–XV", "9–15", "IX–XV asrlar", "9-15 asrlar"] },
+    { intro: "Olim Istaxriy: «Xorazm ... ning butun foydasini ola bilgan mamlakatdir».", a: "Iqtibosda tushirib qoldirilgan daryo nomi qanday?", aa: ["Jayhun", "Jayxun"], b: "Bu daryo qaysi tog‘ning shimoliy yonbag‘irlaridagi muzliklardan boshlanadi?", ba: ["Hindiqush", "Hindikush", "Hindukush"] },
+    { intro: "III–X asrlarda Xorazmda mahalliy xorazmshohlar sulolasi hukmronlik qilgan.", a: "Bu sulolaning hukmronlik ramzlaridan biri bo‘lgan yirtqich qush qaysi?", aa: ["burgut", "lochin"], b: "Xorazm poytaxti Tuproqqal’a hozirgi Qoraqalpog‘istonning qaysi tumanida joylashgan?", ba: ["Ellikqal’a", "Ellikqala", "Ellik qal’a"] },
+    { intro: "VIII asrgacha Xorazmda diniy marosimlarni avloddan avlodga saqlab qolish mas’uliyatini zardushtiylik ruhoniylari olgan, suv esa muqaddas sanalgan.", a: "Bu ruhoniylar qanday atalgan?", aa: ["mobadlar", "mobad"], b: "Afsonalarga ko‘ra, Xorazmda suvning saqlovchisi sifatida qadrlangan obraz kim?", ba: ["Xubbi"] },
+    { intro: "Eftaliylar V asr boshlarida Sharqdan kirib kelgan va o‘z yozuviga ega bo‘lgan.", a: "«Eftaliylar» nomi qaysi shohning ismidan olingan?", aa: ["Eftalon", "Vaxshunvar", "Vaxshunvor"], b: "Eftaliylar alifbosi nechta harfdan iborat bo‘lgan?", ba: ["25", "yigirma besh", "25 ta"] },
+    { intro: "Eftaliylarning podshosi Katulf mashhur dostonda tilga olinadi va uning qahramonlaridan biriga o‘xshatiladi.", a: "Bu doston qanday nomlanadi?", aa: ["Shohnoma", "Shoxnoma"], b: "Katulf dostondagi qaysi podshohga o‘xshatilgan?", ba: ["Gatfar"] },
+    { intro: "Turk xoqonligi va Eron sosoniylari eftaliylarga qarshi ittifoq tuzgan; bu ittifoq qarindoshlik rishtalari bilan mustahkamlangan.", a: "Turklarning g‘arbga yurishlariga boshchilik qilgan hukmdor kim?", aa: ["Istami"], b: "Bu hukmdorga kuyov bo‘lgan Eron shohi kim?", ba: ["Xusrav I Anushervon", "Xusrav Anushervon", "Anushervon", "Xusrav I", "Xusrav"] },
+    { intro: "Tangrichilik e’tiqodida to‘rt tomoni teng salb muhim diniy ramz hisoblangan.", a: "Bu ramz qanday atalgan?", aa: ["adji", "aji"], b: "Turkiylar bu ramzni peshanalariga qaysi rangda chizgan?", ba: ["qizil"] },
+    { intro: "Arab alifbosida «ch» harfi bo‘lmagani uchun Choch nomi o‘zgarib ketgan. G‘arbiy turk xoqoni Choch bilan bog‘liq muhim chora ham ko‘rgan.", a: "Arablar «Choch»ni qanday atagan?", aa: ["Shosh"], b: "To‘n yabg‘u xoqon qarorgohini Choch yaqinidagi qaysi mavzega ko‘chirgan?", ba: ["Mingbuloq", "Mingbulоq", "Ming buloq"] },
+    { intro: "Narshaxiyning «Buxoro tarixi» kitobiga ko‘ra, Buxorodagi qo‘zg‘olon paytida mulkdorlar shahardan qochib, yangi shahar qurgan.", a: "Qochganlar qurgan shahar qanday nomlangan?", aa: ["Hamuket", "Hamukat", "Xamuket"], b: "Buxoro tilida «hamuk» so‘zi nimani anglatgan?", ba: ["gavhar"] }
+  ]
+};
+
 const SETS=[
  {id:"uz7a",n:"1–7",title:"O‘zbekiston tarixi: 1–7-mavzular",sub:"Turmush tarzi, Xorazm, xioniylar, kidariylar, eftaliylar · 45 savol",qs:UZ7,g:"7-sinf · O‘zbekiston tarixi",subj:"O‘zbekiston tarixi (7-sinf)"},
  {id:"uz7b",n:"8–13",title:"O‘zbekiston tarixi: 8–13-mavzular",sub:"Turk xoqonligi, G‘arbiy Turk xoqonligi, mahalliy hokimliklar · 45 savol",qs:UZ7B,g:"7-sinf · O‘zbekiston tarixi",subj:"O‘zbekiston tarixi (7-sinf)"},
+ {id:"ms7v1",n:"MS",title:"Milliy sertifikat: 1-variant (1–13-mavzular)",sub:"45 topshiriq · to'liq imtihon formati · 120 daqiqa",qs:null,ms:MS7_1,g:"7-sinf · O‘zbekiston tarixi",subj:"O‘zbekiston tarixi (7-sinf)"},
  {id:"mix7",n:"∑",title:"Aralash nazorat (7-sinf)",sub:"1–13-mavzular · 90 tadan tasodifiy 20 ta",qs:null,g:"7-sinf · O‘zbekiston tarixi",subj:"O‘zbekiston tarixi (7-sinf)"},
  {id:"eron",n:"20",title:"Eron Islom Respublikasi",sub:"20-mavzu · 20 savol",qs:ERON},
  {id:"pak",n:"21",title:"Pokiston va Afg'oniston",sub:"21-mavzu · 20 savol",qs:PAKAFG},
@@ -2840,8 +2906,9 @@ $("go").onclick=start;
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
 function start(){
   FROM_T=false;HWCUR=HWNEXT;HWNEXT=null;
+  if(set.ms){const ac=ACCT.cur;if(!ac)return;FN=ac.f;LN=ac.l;name=FN+" "+LN;return MS.start()}
   const ac=ACCT.cur;if(!ac)return;FN=ac.f;LN=ac.l;name=FN+" "+LN;
-  if(!set.qs){Q=shuffle(SETS.filter(s=>s.qs&&s.g===set.g).flatMap(s=>s.qs)).slice(0,20)}else{Q=set.qs}
+  if(!set.qs){Q=shuffle(SETS.filter(s=>s.qs&&!s.ms&&s.g===set.g).flatMap(s=>s.qs)).slice(0,20)}else{Q=set.qs}
   order=Q.map((q,i)=>({i,idx:shuffle([0,1,2,3])}));
   ans=Array(Q.length).fill(null);cur=0;t0=Date.now();
   clearInterval(tick);$("tm").textContent="⏱ 00:00";
@@ -3568,7 +3635,7 @@ const HW = (() => {
     const todo = mine.filter(x => !done[x.id]).length;
     box.innerHTML = `<div class="card" style="margin-top:14px;border-color:${todo ? "rgba(232,137,63,.5)" : "var(--line)"}"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><b style="font-size:16px">📝 Uyga vazifalar</b>${todo ? `<span class="st-lv" style="background:var(--ac)">${todo} ta bajarilmagan</span>` : `<span class="st-lv" style="background:var(--ok)">hammasi bajarilgan</span>`}</div>
       ${mine.map(x => { const d = done[x.id], over = now > x.due, s = setOf(x.set);
-        return `<div class="strow" style="cursor:default"><div class="st-ic">${d ? "✅" : over ? "⏰" : "📌"}</div><div class="st-m"><b>${esc(s.title)}</b><div class="st-s">${s.qs ? s.qs.length : 20} savol · muddat: ${dt(x.due)} · <span style="color:${over && !d ? "var(--bad)" : "inherit"}">${d ? "bajarildi" : left(x.due)}</span></div>${x.note ? `<div class="st-s">💬 ${esc(x.note)}</div>` : ""}</div>
+        return `<div class="strow" style="cursor:default"><div class="st-ic">${d ? "✅" : over ? "⏰" : "📌"}</div><div class="st-m"><b>${esc(s.title)}</b><div class="st-s">${s.ms ? 45 : s.qs ? s.qs.length : 20} savol · muddat: ${dt(x.due)} · <span style="color:${over && !d ? "var(--bad)" : "inherit"}">${d ? "bajarildi" : left(x.due)}</span></div>${x.note ? `<div class="st-s">💬 ${esc(x.note)}</div>` : ""}</div>
         <div class="st-r">${d ? `<div class="st-p">${d.pts}</div><button class="lnk" data-hw="${esc(x.id)}">qayta ishlash</button>` : `<button class="btn sm" data-hw="${esc(x.id)}">${over ? "Kech bo'lsa ham ishlash" : "Boshlash"}</button>`}</div></div>`; }).join("")}</div>`;
     box.querySelectorAll("[data-hw]").forEach(b => b.onclick = () => startHW(b.dataset.hw));
   }
@@ -3581,7 +3648,7 @@ const HW = (() => {
     T.leave(); ACC.leave(); leaveAdmin(); watch();
     show("tz");
     const t = new Date(Date.now() + 86400e3), def = `${t.getFullYear()}-${d2(t.getMonth() + 1)}-${d2(t.getDate())}T20:00`;
-    let opts = "", g = null; SETS.forEach(s => { if (s.g !== g) { if (g) opts += "</optgroup>"; g = s.g; opts += `<optgroup label="${esc(g)}">`; } opts += `<option value="${s.id}">${esc((s.n === "∑" ? "" : s.n + " · ") + s.title)} (${s.qs ? s.qs.length : 20} savol)</option>`; }); opts += "</optgroup>";
+    let opts = "", g = null; SETS.forEach(s => { if (s.g !== g) { if (g) opts += "</optgroup>"; g = s.g; opts += `<optgroup label="${esc(g)}">`; } opts += `<option value="${s.id}">${esc((s.n === "∑" ? "" : s.n + " · ") + s.title)} (${s.ms ? 45 : s.qs ? s.qs.length : 20} savol)</option>`; }); opts += "</optgroup>";
     $("tz").innerHTML = `${adminNav("hw")}
       <div class="card"><h1 style="margin-bottom:6px">👥 Guruhlar</h1><div class="sub" style="margin-bottom:10px">O'quvchilar ro'yxatdan o'tayotganda shu guruhlardan birini tanlaydi.</div>
         <div id="hwG" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px"></div>
@@ -3656,6 +3723,161 @@ const HW = (() => {
     DBA.get(p).then(o => { if (!o) return DBA.set(p, { n: rec.n, u: rec.u || "", pts: rec.pts, ok: rec.ok, tot: rec.tot, at: rec.at, late: due && rec.at > due ? 1 : 0, k: 1 }); const up = { k: (o.k || 1) + 1 }; if (rec.pts > (o.pts || 0)) { up.pts = rec.pts; up.ok = rec.ok; } return DBA.update(p, up); }).catch(() => {});
   }
   return { open, leaveAdmin, renderStudent, fillRegGroups, record, allGroups: () => { const m = new Set(Object.values(grps || {}).filter(x => x && x.n).map(x => x.n)); return [...m]; } };
+})();
+
+// ================== MILLIY SERTIFIKAT FORMATIDAGI TEST ==================
+const MS = (() => {
+  const L4 = "ABCD", L6 = "ABCDEF";
+  const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const rng = seed => () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+  const shuf = (a, r) => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  // --- chalg'ituvchilarni avtomatik tuzish (har pozitsiyada to'g'ri javob yagona ko'pchilik bo'lmasin) ---
+  function posOK(rows, cor) { for (let i = 0; i < cor.length; i++) { const c = {}; rows.forEach(r => c[r[i]] = (c[r[i]] || 0) + 1); const oth = Object.entries(c).filter(([k]) => k !== cor[i]).map(([, v]) => v); if (!oth.length || c[cor[i]] > Math.max(...oth)) return false; } return true; }
+  function genPos(cor, pools, valid, r) {
+    for (let t = 0; t < 40000; t++) {
+      const own = cor.map(() => Math.floor(r() * 3)), rows = [[], [], []];
+      for (let i = 0; i < cor.length; i++) { const p = pools[i].filter(v => v !== cor[i]); const alt = p[Math.floor(r() * p.length)]; for (let k = 0; k < 3; k++) rows[k][i] = own[i] === k ? cor[i] : (r() < .25 ? p[Math.floor(r() * p.length)] : alt); }
+      const all = [cor, ...rows]; if (new Set(all.map(x => x.join("|"))).size !== 4 || !rows.every(valid) || !posOK(all, cor)) continue;
+      return rows;
+    }
+    for (let t = 0; t < 40000; t++) { // zaxira: erkin tanlash
+      const rows = [0, 1, 2].map(() => cor.map((_, i) => pools[i][Math.floor(r() * pools[i].length)]));
+      const all = [cor, ...rows]; if (new Set(all.map(x => x.join("|"))).size !== 4 || !rows.every(valid) || (t < 30000 && !posOK(all, cor))) continue;
+      return rows;
+    }
+    return null;
+  }
+  function autoOpts(q, seed) {
+    if (!q.auto || q.o.length >= 4) return q.o;
+    const r = rng(seed), c = q.o[0];
+    if (q.auto === "map") {
+      const pr = c.split(",").map(s => s.trim().split("-")), keys = pr.map(p => p[0]), cor = pr.map(p => p[1]), dom = q.dom.split("");
+      const rows = genPos(cor, cor.map(() => dom), rw => new Set(rw).size === rw.length, r);
+      return [c, ...rows.map(rw => keys.map((k, i) => k + "-" + rw[i]).join(", "))];
+    }
+    if (q.auto === "seq") {
+      const cor = c.split(",").map(s => s.trim());
+      const rows = genPos(cor, cor.map(() => cor), rw => new Set(rw).size === rw.length, r);
+      return [c, ...rows.map(rw => rw.join(", "))];
+    }
+    if (q.auto === "set") {
+      const cor = c.split(",").map(s => +s.trim()), k = cor.length, U = Array.from({ length: q.n }, (_, i) => i + 1);
+      let best = null, bs = 1e9;
+      for (let t = 0; t < 20000; t++) {
+        const rows = [0, 1, 2].map(() => shuf(U, r).slice(0, k).sort((a, b) => a - b)), all = [cor, ...rows];
+        if (new Set(all.map(x => x.join(","))).size !== 4) continue;
+        const f = {}; all.flat().forEach(x => f[x] = (f[x] || 0) + 1); const fv = U.map(x => f[x] || 0);
+        let s = Math.max(...fv) - Math.min(...fv); if (Math.max(...cor.map(x => f[x])) > Math.max(0, ...U.filter(x => !cor.includes(x)).map(x => f[x] || 0))) s += 10;
+        if (s < bs) { bs = s; best = rows; if (!s) break; }
+      }
+      return [c, ...best.map(rw => rw.join(", "))];
+    }
+    if (q.auto === "venn") {
+      const z = c.split(";").map(s => s.split("-")[1].split(",").map(x => x.trim())), dom = q.dom.split(""), ck = z.map(x => x.join(", "));
+      const part = () => { const p = shuf(dom, r); let o = 0; return z.map(x => { const v = p.slice(o, o + x.length).sort().join(", "); o += x.length; return v; }); };
+      for (let t = 0; t < 60000; t++) {
+        const rows = [0, 1, 2].map(() => { const pt = part(); const keep = Math.floor(r() * 3); if (r() < .6) { // bitta zonani to'g'ri qoldirib, qolganini qayta taqsimlaymiz
+            const used = new Set(z[keep]), rest = shuf(dom.filter(l => !used.has(l)), r); let o = 0; return z.map((x, i) => { if (i === keep) return ck[i]; const v = rest.slice(o, o + x.length).sort().join(", "); o += x.length; return v; }); } return pt; });
+        const all = [ck, ...rows]; if (new Set(all.map(x => x.join("|"))).size !== 4 || !posOK(all, ck)) continue;
+        return [c, ...rows.map(rw => `I-${rw[0]}; II-${rw[1]}; III-${rw[2]}`)];
+      }
+    }
+    return q.o;
+  }
+  function prep(D) { if (D._ok) return; D.mcq.forEach((q, i) => { q.o = autoOpts(q, 1000 + i * 7919); }); D._ok = true; }
+  // --- yozma javoblarni tekshirish ---
+  const norm = s => String(s || "").toLowerCase().replace(/[ʻʼ'`‘’"«»]/g, "").replace(/[–—−]/g, "-").replace(/\b(asrlar|asr|yillar|yil|ta)\b/g, "").replace(/[\s.,;:!?()]/g, "").replace(/x/g, "h");
+  function lev(a, b) { const m = a.length, n = b.length, d = Array.from({ length: m + 1 }, (_, i) => [i]); for (let j = 1; j <= n; j++) d[0][j] = j; for (let i = 1; i <= m; i++) for (let j = 1; j <= n; j++) d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1)); return d[m][n]; }
+  function check(v, acc) { const x = norm(v); if (!x) return false; return acc.some(a => { const y = norm(a); if (x === y) return true; if (/^\d/.test(y) || y.length < 5) return false; return lev(x, y) <= (y.length >= 9 ? 2 : 1); }); }
+  // --- holat ---
+  let D = null, S = null, timer = null;
+  const key = () => "zm_ms_" + (ACCT.cur ? ACCT.cur.uid : "x") + "_" + set.id;
+  const save = () => { try { localStorage.setItem(key(), JSON.stringify(S)); } catch (e) {} };
+  function startMS() {
+    D = set.ms; prep(D);
+    let old = null; try { old = JSON.parse(localStorage.getItem(key()) || "null"); } catch (e) {}
+    if (old && old.v === 1 && Date.now() - old.t0 < D.dur * 60000) { S = old; FX.toast("↩️ To'xtagan joyingizdan davom etyapsiz"); }
+    else { const r = rng(Date.now() % 1e9); S = { v: 1, t0: Date.now(), perm: D.mcq.map(() => shuf([0, 1, 2, 3], r)), m: Array(32).fill(null), x: [null, null, null], w: D.open.map(() => ["", ""]), hw: HWCUR ? HWCUR.id : null }; }
+    if (S.hw && !HWCUR) HWCUR = { id: S.hw };
+    t0 = S.t0; save(); render();
+    clearInterval(timer); timer = setInterval(tickT, 1000); tickT();
+  }
+  function answered() { return S.m.filter(v => v !== null).length + S.x.filter(v => v).length + S.w.reduce((a, p) => a + (p[0].trim() ? 1 : 0) + (p[1].trim() ? 1 : 0), 0); }
+  function tickT() {
+    if (!$("msT")) { clearInterval(timer); return; }
+    const left = S.t0 + D.dur * 60000 - Date.now();
+    $("msT").textContent = "⏱ " + fmt(Math.max(0, left)); $("msT").classList.toggle("low", left < 5 * 60000);
+    if (left <= 0) { clearInterval(timer); FX.toast("⏰ Vaqt tugadi! Javoblaringiz tekshirilmoqda"); finishMS(); }
+  }
+  function upd() { const n = answered(); $("msN").textContent = `${n}/55`; $("msP").style.width = (n / 55 * 100) + "%"; save(); }
+  function vennSVG(a, b) {
+    return `<svg viewBox="0 0 360 170" class="msvenn"><ellipse cx="135" cy="90" rx="105" ry="70" fill="rgba(47,165,154,.25)" stroke="var(--ac2)" stroke-width="2"/><ellipse cx="225" cy="90" rx="105" ry="70" fill="rgba(232,137,63,.22)" stroke="var(--ac)" stroke-width="2"/>
+      <text x="85" y="97" class="vt">I</text><text x="180" y="97" class="vt" text-anchor="middle">III</text><text x="268" y="97" class="vt">II</text>
+      <text x="110" y="14" class="vn" text-anchor="middle">${esc(a)}</text><text x="250" y="14" class="vn" text-anchor="middle">${esc(b)}</text></svg>`;
+  }
+  function render() {
+    show("tz"); setNav(null);
+    const h = [];
+    h.push(`<div class="msbar"><div><b>${esc(set.title)}</b><div class="st-s">Javob berilgan: <b id="msN">0/55</b></div></div><div class="ttm" id="msT">⏱</div></div><div class="bar" style="margin:8px 0 14px"><i id="msP"></i></div>`);
+    h.push(`<div class="mssec">1–32. Yopiq test topshiriqlari</div>`);
+    D.mcq.forEach((q, i) => {
+      let body = `<div class="q" style="white-space:pre-line">${esc(q.q)}</div>`;
+      if (q.items) body += `<div class="msit">${q.items.map(esc).join("<br>")}</div>`;
+      if (q.mt) body += `<table class="mstb"><tr><th>${esc(q.mt.h[0])}</th><th>${esc(q.mt.h[1])}</th></tr>${Array.from({ length: Math.max(q.mt.l.length, q.mt.r.length) }, (_, k) => `<tr><td>${esc(q.mt.l[k] || "")}</td><td>${esc(q.mt.r[k] || "")}</td></tr>`).join("")}</table>`;
+      if (q.tbl) body += `<table class="mstb"><tr>${q.tbl.c.map(c => `<th>${esc(c)}</th>`).join("")}</tr>${q.tbl.r.map(r => `<tr>${r.map(c => `<td>${c.length === 1 ? `<b>${esc(c)}</b>` : esc(c)}</td>`).join("")}</tr>`).join("")}</table>`;
+      if (q.venn) body += vennSVG(q.venn[0], q.venn[1]);
+      if (q.after) body += `<div class="msit" style="white-space:pre-line">${esc(q.after)}</div>`;
+      body += `<div class="msopts">${S.perm[i].map((oi, k) => `<button class="opt${S.m[i] === oi ? " sel" : ""}" data-q="${i}" data-o="${oi}"><span class="l">${L4[k]}</span><span>${esc(q.o[oi])}</span></button>`).join("")}</div>`;
+      h.push(`<div class="card msq" id="msq${i}"><span class="tag">${i + 1}-savol · ${esc(q.t)}</span>${body}</div>`);
+    });
+    h.push(`<div class="mssec">33–35. Moslashtirish</div><div class="card"><div class="q">33–35-topshiriqlarga mos javoblarni (A–F) javob variantlaridan tanlang.</div>
+      <div class="msmo">${D.match.opts.map((o, k) => `<span><b>${L6[k]})</b> <i>${esc(o)}</i></span>`).join("")}</div>
+      ${D.match.qs.map((q, i) => `<div class="msmq"><div><b>${33 + i}.</b> ${esc(q.q)}</div><div class="msml">${[...L6].map(l => `<button data-x="${i}" data-l="${l}" class="${S.x[i] === l ? "on" : ""}">${l}</button>`).join("")}</div></div>`).join("")}</div>`);
+    h.push(`<div class="mssec">36–45. Yozma topshiriqlar <span class="st-s">(javob — bitta so'z yoki atama)</span></div>`);
+    D.open.forEach((q, i) => h.push(`<div class="card msq"><span class="tag">${36 + i}-topshiriq</span><div class="q" style="font-size:16px">${esc(q.intro)}</div>
+      <label>a) ${esc(q.a)}</label><input data-w="${i}" data-p="0" autocomplete="off">
+      <label>b) ${esc(q.b)}</label><input data-w="${i}" data-p="1" autocomplete="off"></div>`));
+    h.push(`<div class="accerr" id="msE" style="text-align:center"></div><button class="btn" id="msGo">✅ Yakunlash va natijani ko'rish</button>`);
+    $("tz").innerHTML = h.join("");
+    $("tz").querySelectorAll("input[data-w]").forEach(inp => { inp.value = S.w[+inp.dataset.w][+inp.dataset.p] || ""; inp.oninput = () => { S.w[+inp.dataset.w][+inp.dataset.p] = inp.value; upd(); }; });
+    $("tz").onclick = e => {
+      const b = e.target.closest("button"); if (!b) return;
+      if (b.dataset.q) { const i = +b.dataset.q; S.m[i] = +b.dataset.o; b.parentNode.querySelectorAll(".opt").forEach(x => x.classList.toggle("sel", x === b)); FX.S.tick(); upd(); }
+      if (b.dataset.x) { const i = +b.dataset.x; S.x[i] = b.dataset.l; b.parentNode.querySelectorAll("button").forEach(x => x.classList.toggle("on", x === b)); FX.S.tick(); upd(); }
+      if (b.id === "msGo") { const left = 55 - answered(); if (left && !b.dataset.ok) { b.dataset.ok = 1; $("msE").textContent = `${left} ta javob bo'sh. Baribir yakunlash uchun yana bir marta bosing.`; b.textContent = "Ha, yakunlash"; return; } finishMS(); }
+    };
+    upd();
+  }
+  function finishMS() {
+    clearInterval(timer);
+    const time = fmt(Date.now() - S.t0);
+    let a = 0, b = 0, c = 0; const rv = [];
+    D.mcq.forEach((q, i) => { const g = S.m[i] === q.a; if (g) a++; rv.push({ n: i + 1, t: q.t, q: q.q, g, y: S.m[i] === null ? "javob berilmagan" : q.o[S.m[i]], c: q.o[q.a], e: q.e }); });
+    D.match.qs.forEach((q, i) => { const g = S.x[i] === q.a; if (g) b++; const op = l => l ? l + ") " + D.match.opts[L6.indexOf(l)] : "javob berilmagan"; rv.push({ n: 33 + i, t: "Moslashtirish", q: q.q, g, y: op(S.x[i]), c: op(q.a) }); });
+    D.open.forEach((q, i) => { [["a", q.a, q.aa], ["b", q.b, q.ba]].forEach(([p, qq, acc], k) => { const v = S.w[i][k] || "", g = check(v, acc); if (g) c++; rv.push({ n: `${36 + i}${p})`, t: "Yozma", q: qq, g, y: v.trim() || "javob berilmagan", c: acc[0] }); }); });
+    const ok = a + b + c; PPQ = 100 / 55; const pts = Math.round(ok * PPQ);
+    const by = { "1–32. Yopiq testlar": [a, 32], "33–35. Moslashtirish": [b, 3], "36–45. Yozma javoblar": [c, 20] };
+    try { localStorage.removeItem(key()); } catch (e) {}
+    $("who").textContent = name + " · " + set.title; FX.countUp($("pts"), pts);
+    $("sOk").textContent = ok; $("sBad").textContent = 55 - ok; $("sT").textContent = time;
+    const lv = level(pts);
+    $("gr").textContent = lv ? lv + " sertifikati" : "Sertifikat uchun kamida 45 ball kerak"; $("gr").style.background = lv ? (pts >= 65 ? "var(--ok)" : pts >= 55 ? "var(--ac2)" : "var(--ac)") : "var(--bad)";
+    $("certBox").style.display = lv ? "" : "none"; if (lv) drawCert(lv, pts, ok, time, by);
+    const m = $("mast"); m.innerHTML = '<div style="font-size:13px;color:var(--mu);margin-bottom:10px">Bo\'limlar bo\'yicha natija</div>';
+    Object.entries(by).forEach(([k, [x, y]]) => { const p = Math.round(x / y * 100); m.insertAdjacentHTML("beforeend", `<div class="mr"><div class="mh"><b>${k}</b><span>${x}/${y} · ${p}%</span></div><div class="bar" style="margin:0"><i style="width:${p}%"></i></div></div>`); });
+    const box = $("rvl"); box.innerHTML = "";
+    rv.forEach(r => {
+      const d = document.createElement("div"); d.className = "rv " + (r.g ? "good" : "wrong"); d.dataset.k = r.g ? "good" : "wrong";
+      d.innerHTML = `<span class="tag"></span><div class="q" style="white-space:pre-line"></div>` + (r.g ? "" : `<div class="ans-line y">✗ Sizning javobingiz: <span></span></div>`) + `<div class="ans-line c">✓ To'g'ri javob: <span></span></div>` + (r.e ? `<div class="exp"></div>` : "");
+      d.querySelector(".tag").textContent = `${r.n}. ${r.t} · ${r.g ? "+" + (Math.round(PPQ * 10) / 10) + " ball" : "0 ball"}`;
+      d.querySelector(".q").textContent = r.q; if (!r.g) d.querySelector(".y span").textContent = r.y; d.querySelector(".c span").textContent = r.c; if (r.e) d.querySelector(".exp").textContent = "💡 " + r.e;
+      box.appendChild(d);
+    });
+    setFilter("all"); show("res");
+    if (lv) setTimeout(() => { FX.rain(pts >= 70 ? 220 : 120); FX.S.win(); }, 900);
+    const R = { n: name, set: set.id, ttl: set.title, mode: "test", ok, tot: 55, pts, lv: lv || "", dur: Date.now() - S.t0, sec: by }; if (S.hw) R.hw = S.hw; saveResult(R);
+  }
+  return { start: startMS, check, prep };
 })();
 
 // ================== TURNIR REJIMI ==================
@@ -4041,7 +4263,7 @@ const T = (() => {
     if (!isAdmin()) return openHost();
     clear(); st.celebrated = false; st.code = null; st.meta = null;
     let opts = "", g = null;
-    SETS.forEach(s => { if (s.g !== g) { if (g) opts += "</optgroup>"; g = s.g; opts += `<optgroup label="${esc(g)}">`; } opts += `<option value="${s.id}">${esc((s.n === "∑" ? "" : s.n + " · ") + s.title)} (${s.qs ? s.qs.length : 20} savol)</option>`; });
+    SETS.filter(s => !s.ms).forEach(s => { if (s.g !== g) { if (g) opts += "</optgroup>"; g = s.g; opts += `<optgroup label="${esc(g)}">`; } opts += `<option value="${s.id}">${esc((s.n === "∑" ? "" : s.n + " · ") + s.title)} (${s.ms ? 45 : s.qs ? s.qs.length : 20} savol)</option>`; });
     opts += "</optgroup>";
     if (typeof ACC !== "undefined") ACC.leave();
     tz().innerHTML = `${adminNav("tur")}<div class="card" id="tact"><h1 style="display:flex;align-items:center;gap:8px"><span class="live-dot"></span>Davom etayotgan turnirlar</h1><div id="tactl"><div class="sub" style="margin:0">Yuklanmoqda…</div></div></div>
