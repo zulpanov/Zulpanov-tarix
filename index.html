@@ -416,6 +416,15 @@ button,a,label,summary,.tile,.tile2,.opt,.tp{touch-action:manipulation;-webkit-t
 .kh-o.okk{outline:4px solid #fff;outline-offset:-4px;animation:pop .45s}.kh-o.okk:after{content:"✓";position:absolute;right:10px;top:8px;width:28px;height:28px;border-radius:50%;background:#fff;color:#16A34A;display:grid;place-items:center;font-size:16px;font-weight:900}
 .kh-o.bad{animation:shake .45s}.kh-o.bad:after{content:"✕";position:absolute;right:10px;top:8px;width:28px;height:28px;border-radius:50%;background:#fff;color:#DC2626;display:grid;place-items:center;font-size:15px;font-weight:900}
 .kh-hint{text-align:center;font-size:12.5px;color:#FCD34D;font-weight:700;margin-top:12px}
+
+/* ===== TURNIR: MAQTOV ===== */
+#pfx{position:fixed;inset:0;pointer-events:none;z-index:80;overflow:hidden}
+.pst{position:fixed;font-size:20px;will-change:transform,opacity}
+.pb{position:fixed;left:0;right:0;top:40%;margin:0 auto;width:max-content;max-width:88vw;text-align:center;padding:12px 24px;border-radius:22px;font-size:26px;font-weight:900;line-height:1.2;color:#fff;animation:pbin .45s cubic-bezier(.2,1.4,.4,1) both}
+.pb-ok{background:linear-gradient(135deg,#22C55E,#10B981);box-shadow:0 12px 40px rgba(34,197,94,.55)}
+.pb-bad{font-size:22px;background:linear-gradient(135deg,#F97316,#E11D48);box-shadow:0 12px 40px rgba(225,29,72,.45)}
+.pb.out{transition:opacity .35s,transform .35s;opacity:0;transform:translateY(-16px) scale(.95)}
+@keyframes pbin{0%{transform:scale(.3);opacity:0}60%{transform:scale(1.12);opacity:1}100%{transform:scale(1);opacity:1}}
 </style>
 </head>
 <body>
@@ -3425,6 +3434,36 @@ const FX = (() => {
   return { burst, rain, S, toast, correct, wrong, countUp, toggleSound, get sound() { return sound; } };
 })();
 
+
+// ================== TURNIR: MAQTOV VA YUPATISH ==================
+const PRAISE = (() => {
+  const OK = ["A+ olasan!", "To'xtama, eng zo'risan!", "Vay, malades!", "Sen uje trendda! 📈", "Yaxshi o'qibsan-a!!!", "Zo'r!", "Ajoyib!", "Dunyoni qo'lga olasan-ov!", "Eplab bo'lmay qoldi!", "Sen uje rekda! 🔥", "Barakalla!", "Ofarin!", "Qoyil!", "To'ppa-to'g'ri!", "Mana bu bilim!", "Daho!", "Chempion!", "Ustoz faxrlanadi!", "Kalla ishlayapti!", "Gap yo'q!", "Tarixchi bo'lasan!", "Super!", "Bilimdon!", "Ana endi gap boshqa!", "Aql bovar qilmaydi!", "Shunaqa davom et!", "Vau, zo'r-ku!", "Sendan qo'rqsa bo'ladi!", "Bu yo'lda to'xtatib bo'lmaydi!", "Yulduz bo'lib porlading! ⭐"];
+  const NAME = ["Malades, {n}!", "{n}, sen eng zo'risan!", "Vay, {n}, A+ olasan!", "{n}, to'xtama!", "{n}, sen uje trendda!", "Qoyil, {n}!", "{n} — haqiqiy tarixchi!", "{n}, dunyoni qo'lga olasan-ov!", "Ofarin, {n}!", "{n}, sen uje rekda!", "Barakalla, {n}!", "{n}, eplab bo'lmay qoldi!", "{n}, yaxshi o'qibsan-a!!!", "Zo'r, {n}! Davom et!", "{n}, ustoz sendan faxrlanadi!"];
+  const BAD = ["Ana bo'lmasa!", "Afsus...", "Keyingisida omading kelar!", "Hech qisi yo'q!", "Yig'lama 😄", "Dunyo seni tog'ang emas!", "Xato, xafa bo'lma!", "Keyingisi seniki!", "Hali hammasi oldinda!", "Bo'sh kelma!", "Shoshilma, o'ylab ko'r!", "Bir dam nafas ol 🙂"];
+  const BAD3 = ["O'qidingmi o'zi? 😅", "{n}, o'qidingmi o'zi? 😅"];
+  let last = "";
+  const pick = (a, n) => { let t; for (let k = 0; k < 6; k++) { t = a[Math.floor(Math.random() * a.length)]; if (t !== last) break; } last = t; return t.replace(/\{n\}/g, n || "do'stim"); };
+  const nm = () => { try { const c = ACCT.cur; if (c && c.f) return String(c.f).trim().split(/\s+/)[0]; } catch (e) {} return ""; };
+  function layer() { let L = document.getElementById("pfx"); if (!L) { L = document.createElement("div"); L.id = "pfx"; document.body.appendChild(L); } return L; }
+  function banner(txt, ok) {
+    const L = layer(); L.querySelectorAll(".pb").forEach(e => e.remove());
+    const b = document.createElement("div"); b.className = "pb " + (ok ? "pb-ok" : "pb-bad"); b.textContent = txt; L.appendChild(b);
+    setTimeout(() => b.classList.add("out"), 1500); setTimeout(() => b.remove(), 1900);
+  }
+  function stars(el) {
+    const L = layer(), r = el.getBoundingClientRect(), x = r.left + r.width / 2, y = r.top + r.height / 2, n = 16;
+    for (let i = 0; i < n; i++) {
+      const s = document.createElement("span"); s.className = "pst"; s.textContent = i % 3 ? "⭐" : "✨"; s.style.left = (x - 10) + "px"; s.style.top = (y - 10) + "px"; L.appendChild(s);
+      const a = i / n * Math.PI * 2, d = 80 + Math.random() * 70;
+      try { s.animate([{ transform: "translate(0,0) scale(.4)", opacity: 1 }, { transform: `translate(${Math.cos(a) * d}px,${Math.sin(a) * d}px) scale(1.1) rotate(${Math.random() * 360}deg)`, opacity: 0 }], { duration: 850 + Math.random() * 300, easing: "cubic-bezier(.1,.8,.3,1)", fill: "forwards" }); } catch (e) {}
+      setTimeout(() => s.remove(), 1300);
+    }
+  }
+  function ok(el, streak) { stars(el); const n = nm(); banner(streak >= 3 && n ? pick(NAME, n) : pick(OK), true); }
+  function bad(wst) { const n = nm(); banner(wst >= 3 ? pick(BAD3, n) : pick(BAD), false); }
+  return { ok, bad };
+})();
+
 // ================== NATIJALARNI SAQLASH ==================
 let FROM_T = false, TEAMWIN = "";
 function saveResult(r) {
@@ -5026,7 +5065,7 @@ const T = (() => {
   }
   async function join(auto) {
     auto = auto === true;
-    st.celebrated = false; st.streak = 0; st.myRank = 0; st.ps = {}; st.tn = {}; st.prevP = null; st.feed = []; st.lead = null; st.meKey = null;
+    st.celebrated = false; st.streak = 0; st.wst = 0; st.myRank = 0; st.ps = {}; st.tn = {}; st.prevP = null; st.feed = []; st.lead = null; st.meKey = null;
     const ac = ACCT.cur; if (!ac) { show("auth"); return; }
     const code = $("tjc").value.trim(), err = m => $("tjerr").textContent = m;
     if (!/^\d{4}$/.test(code)) return err("Kod 4 ta raqamdan iborat bo'lishi kerak.");
@@ -5097,8 +5136,9 @@ const T = (() => {
     st.ans[st.cur] = oi; ls.set("zm_ans_" + st.code + st.pid, JSON.stringify(st.ans));
     btn.classList.remove("sel"); btn.classList.add(ok ? "okk" : "bad");
     if (!ok) [...$("tops").children].forEach((b, k) => { if (st.perms[st.cur][k] === q.a) b.classList.add("okk"); });
-    if (ok) { st.streak = (st.streak || 0) + 1; FX.correct(btn, "+" + (Math.round(ppq() * 10) / 10)); if (st.streak >= 3) { FX.toast(`🔥 ${st.streak} ta ketma-ket to'g'ri!`, "fire"); setTimeout(FX.S.streak, 250); } }
-    else { st.streak = 0; FX.wrong(); }
+    if (ok) { st.streak = (st.streak || 0) + 1; st.wst = 0; FX.correct(btn, "+" + (Math.round(ppq() * 10) / 10)); PRAISE.ok(btn, st.streak); if (st.streak >= 3) setTimeout(FX.S.streak, 250); }
+    else { st.streak = 0; st.wst = (st.wst || 0) + 1; FX.wrong(); PRAISE.bad(st.wst); }
+    if ($("tsk")) $("tsk").textContent = "🔥 " + (st.streak || 0);
     const s = st.ans.filter((a, i) => a === st.Q[i].a).length;
     st.cur++;
     DBA.update(`t/${st.code}/players/${st.pid}`, { s, a: st.cur, t: DBA.now() - st.meta.startAt, d: st.cur >= st.Q.length ? 1 : 0, sk: st.streak || 0 });
