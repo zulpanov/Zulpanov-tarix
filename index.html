@@ -270,11 +270,17 @@ body{background:radial-gradient(1200px 600px at 110% -10%,rgba(232,137,63,.13),t
 .msa-c{border:1px solid var(--line);border-radius:14px;padding:10px 12px;margin-bottom:10px;background:var(--card2)}.msa-h{display:flex;align-items:center;gap:8px}.msa-h b{flex:1;font-size:14px}.msa-h small{color:var(--mu)}
 .sw{position:relative;width:46px;height:26px;flex:none;border-radius:20px;background:var(--line);border:0;cursor:pointer;transition:.2s}.sw::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.2s}.sw.on{background:var(--ok)}.sw.on::after{left:23px}
 .msa-g{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.msa-g button{border:1px solid var(--line);background:var(--card);color:var(--mu);border-radius:20px;padding:4px 10px;font-size:12px;font-family:inherit;cursor:pointer}.msa-g button.on{background:rgba(47,165,154,.2);border-color:var(--ac2);color:var(--tx)}
+.uav{position:relative;display:inline-grid;place-items:center;width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--ac2),#1f6f68);color:#fff;font-weight:800;font-size:12px;flex:none;vertical-align:middle}.uav img{width:100%;height:100%;border-radius:50%;object-fit:cover;display:block}.uav b{font-weight:800}.uav i{position:absolute;right:-4px;bottom:-4px;font-style:normal;font-size:14px;line-height:1;filter:drop-shadow(0 1px 2px rgba(0,0,0,.5))}
+.uav.sm{width:24px;height:24px;font-size:10px}.uav.sm i{font-size:11px;right:-3px;bottom:-3px}.uav.md{width:40px;height:40px;font-size:14px}.uav.lg{width:46px;height:46px;font-size:16px;margin:0 auto 6px;display:grid}.uav.lg i{font-size:18px}
+.uav.xl{width:110px;height:110px;font-size:36px;border:3px solid var(--ac)}.uav.xl i{font-size:36px;right:-6px;bottom:-6px}.uav.fill{width:100%;height:100%;font-size:inherit;background:none}.uav.fill i{font-size:16px}
+.hdrav{padding:0;overflow:visible}.wl-top .avatar{overflow:visible;padding:0}
+.trow .uav{margin-right:2px}.mrow{display:flex;align-items:center;gap:6px;margin:3px 0}.mate .uav{margin-right:6px}
+.stkg{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}.stkg button{aspect-ratio:1;border:1px solid var(--line);background:var(--card2);border-radius:12px;font-size:22px;cursor:pointer;color:var(--mu)}.stkg button.on{border-color:var(--ac);background:rgba(232,137,63,.18)}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <header class="brand"><div class="logo">ZM</div><div><b>ZULPANOV METHODS TARIX</b><small>Tarix testlari · turnirlar</small></div><button class="hdrav hide" id="hdrAv" onclick="goHome()" title="Bosh sahifa"></button><button class="sndbtn" id="snd" title="Ovoz" onclick="this.textContent=FX.toggleSound()?'🔊':'🔇'">🔊</button></header>
+  <header class="brand"><div class="logo">ZM</div><div><b>ZULPANOV METHODS TARIX</b><small>Tarix testlari · turnirlar</small></div><button class="hdrav hide" id="hdrAv" onclick="PRF.open()" title="Profil sozlamalari"></button><button class="sndbtn" id="snd" title="Ovoz" onclick="this.textContent=FX.toggleSound()?'🔊':'🔇'">🔊</button></header>
 
   <div class="backbar hide" id="bkb"><button id="bkB">← Orqaga</button><button id="bkH">🏠 Bosh menyu</button></div>
 
@@ -2978,7 +2984,7 @@ function start(){
 function fmt(ms){const s=Math.floor(ms/1000);return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0")}
 var BKfn;function BK(fn){BKfn=fn;$("bkb").classList.toggle("hide",!fn)}
 function show(id){["auth","home","start","quiz","res","tz"].forEach(s=>$(s).classList.toggle("hide",s!==id));BK(id==="res"?(()=>{if(FROM_T)goHome();else{renderTopics();show("start")}}):id==="start"?BKfn:null);setNav(id==="start"&&typeof VIEW!=="undefined"&&VIEW.k==="ms"?"ms":({home:"home",start:"tests",res:"tests"}[id]||null));window.scrollTo(0,0)}
-function setNav(active){const on=!!(active&&typeof ACCT!=="undefined"&&ACCT.cur);$("bnav").classList.toggle("hide",!on);[...$("bnav").children].forEach(b=>b.classList.toggle("on",b.dataset.g===active));const av=$("hdrAv");if(av){const c=typeof ACCT!=="undefined"&&ACCT.cur;av.classList.toggle("hide",!c);if(c)av.textContent=(c.f[0]||"")+(c.l[0]||"")}}
+function setNav(active){const on=!!(active&&typeof ACCT!=="undefined"&&ACCT.cur);$("bnav").classList.toggle("hide",!on);[...$("bnav").children].forEach(b=>b.classList.toggle("on",b.dataset.g===active));const av=$("hdrAv");if(av){const c=typeof ACCT!=="undefined"&&ACCT.cur;av.classList.toggle("hide",!c);if(c){const k=c.uid+"|"+c.f+c.l;if(av.dataset.k!==k){av.dataset.k=k;av.innerHTML=AV.html(c.uid,c.f+" "+c.l,"fill")}}}}
 function goHome(){if(typeof ACCT!=="undefined"&&ACCT.cur){show("home");ACCT.renderHome()}else show("auth")}
 function goTests(){VIEW={k:"cls"};set=null;show("start");renderTopics()}
 function goMS(){VIEW={k:"mscls"};set=null;show("start");renderTopics();setNav("ms")}
@@ -3473,10 +3479,10 @@ const BOTP = (() => {
     try {
       const days = +$("bpP").value, grp = $("bpG").value, from = Date.now() - days * 86400e3;
       const [res, us] = await Promise.all([DBA.get("r"), DBA.get(AUTH.FB ? "users" : "u")]);
-      const ulist = Object.entries(us || {}).map(([k, x]) => ({ login: (x && x.login) || k, f: x && x.f, l: x && x.l, g: (x && x.g) || "" })).filter(x => x.f && (!grp || x.g === grp));
+      const ulist = Object.entries(us || {}).filter(([k, x]) => x && !x.moved).map(([k, x]) => ({ login: (x && x.login) || k, al: (x && x.al) || [], f: x && x.f, l: x && x.l, g: (x && x.g) || "" })).filter(x => x.f && (!grp || x.g === grp));
       const by = {}; Object.values(res || {}).forEach(r => { if (r && r.u && (r.at || 0) >= from) (by[r.u] = by[r.u] || []).push(r); });
       const items = ulist.map(u => {
-        const rs = (by[u.login] || []).sort((a, b) => b.at - a.at), n = rs.length, avg = n ? Math.round(rs.reduce((a, r) => a + (r.pts || 0), 0) / n) : 0, best = n ? Math.max(...rs.map(r => r.pts || 0)) : 0;
+        const rs = [u.login].concat(u.al).flatMap(k => by[k] || []).sort((a, b) => b.at - a.at), n = rs.length, avg = n ? Math.round(rs.reduce((a, r) => a + (r.pts || 0), 0) / n) : 0, best = n ? Math.max(...rs.map(r => r.pts || 0)) : 0;
         const lines = rs.slice(0, 5).map(r => `• ${esc(r.ttl || "Test")} — <b>${r.pts || 0}</b> ball${r.lv ? " (" + r.lv + ")" : ""}`).join("\n");
         const text = `📊 <b>Haftalik hisobot</b> — ${esc(u.f + " " + u.l)}\n<i>Oxirgi ${days} kun</i>\n\n` + (n ? `✅ Ishlangan testlar: <b>${n}</b>\n📈 O'rtacha ball: <b>${avg}</b>\n🏅 Eng yuqori: <b>${best}</b>\n\n${lines}` : "⚠️ Bu davrda birorta ham test ishlanmagan.") + `\n\n<i>ZULPANOV METHODS TARIX</i>`;
         return { u: u.login, text };
@@ -3535,6 +3541,120 @@ const PWA = (() => {
   if ("serviceWorker" in navigator && /^https?:$/.test(location.protocol) && !window.IN_TG) addEventListener("load", () => { navigator.serviceWorker.register("sw.js").catch(() => {}); });
   return { render, install };
 })();
+// ================== AVATAR (profil rasmi va stiker) — boshqalarga ham ko'rinadi ==================
+// Ochiq profil: lb/p/<uid> = { n, av (kichik rasm, dataURL), st (stiker emoji), at }
+const AV = (() => {
+  const cache = {}, pend = {};
+  const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const ini = n => String(n || "").split(/\s+/).filter(Boolean).slice(0, 2).map(w => w[0]).join("").toUpperCase() || "?";
+  const inner = (p, i) => (p && p.av ? `<img src="${esc(p.av)}" alt="">` : `<b>${esc(i)}</b>`) + (p && p.st ? `<i>${esc(p.st)}</i>` : "");
+  function get(uid) {
+    if (!uid) return Promise.resolve(null);
+    if (cache[uid] !== undefined) return Promise.resolve(cache[uid]);
+    if (pend[uid]) return pend[uid];
+    return pend[uid] = DBA.get("lb/p/" + uid).then(v => { cache[uid] = v || null; delete pend[uid]; return cache[uid]; }).catch(() => { delete pend[uid]; return null; });
+  }
+  const html = (uid, name, cls = "") => `<span class="uav ${cls}" data-uav="${esc(uid || "")}" data-ini="${esc(ini(name))}">${inner(cache[uid], ini(name))}</span>`;
+  function paint(el) { const uid = el.dataset.uav, p = cache[uid]; const k = uid + "|" + (p ? (p.av ? p.av.length : 0) + (p.st || "") : "-"); if (el.dataset.k === k) return; el.dataset.k = k; el.innerHTML = inner(p, el.dataset.ini); }
+  function fill(root) { (root || document).querySelectorAll("[data-uav]").forEach(el => { const uid = el.dataset.uav; if (!uid) return; if (cache[uid] !== undefined) paint(el); else get(uid).then(() => document.querySelectorAll(`[data-uav="${CSS.escape(uid)}"]`).forEach(paint)); }); }
+  function set(uid, p) { cache[uid] = p || null; document.querySelectorAll(`[data-uav="${CSS.escape(uid)}"]`).forEach(paint); }
+  let t = null; try { new MutationObserver(() => { clearTimeout(t); t = setTimeout(() => fill(), 60); }).observe(document.documentElement, { childList: true, subtree: true }); } catch (e) {}
+  return { get, set, html, fill, ini, drop: uid => { delete cache[uid]; } };
+})();
+// ================== PROFIL SOZLAMALARI ==================
+const PRF = (() => {
+  const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const STK = ["🦁", "🐯", "🦅", "🐺", "🐎", "🦊", "🐼", "🐉", "🦄", "⭐", "🔥", "⚡", "🏆", "👑", "📚", "🎓", "🗡️", "🛡️", "🏹", "🌙", "🚀", "🎯", "💎", "🌸", "⚽", "🎵", "🧠", "😎"];
+  const cap = s => { s = String(s || "").trim().replace(/\s+/g, " "); return s.charAt(0).toUpperCase() + s.slice(1); };
+  let pub = null;
+  async function savePub(patch) {
+    const c = ACCT.cur; if (!c) return;
+    pub = { ...(pub || (await AV.get(c.uid)) || {}), n: c.f + " " + c.l, ...patch, at: DBA.now() };
+    Object.keys(pub).forEach(k => { if (pub[k] === null || pub[k] === undefined) delete pub[k]; });
+    await DBA.set("lb/p/" + c.uid, pub); AV.set(c.uid, pub);
+  }
+  function resize(file) {
+    return new Promise((res, rej) => {
+      const fr = new FileReader(); fr.onerror = rej;
+      fr.onload = () => { const im = new Image(); im.onerror = () => rej(new Error("img")); im.onload = () => {
+        const S = 128, cv = document.createElement("canvas"); cv.width = cv.height = S; const x = cv.getContext("2d");
+        const m = Math.min(im.width, im.height); x.drawImage(im, (im.width - m) / 2, (im.height - m) / 2, m, m, 0, 0, S, S);
+        let q = 0.82, d = cv.toDataURL("image/jpeg", q); while (d.length > 16000 && q > 0.4) { q -= 0.1; d = cv.toDataURL("image/jpeg", q); }
+        res(d); }; im.src = fr.result; };
+      fr.readAsDataURL(file);
+    });
+  }
+  async function open() {
+    const c = ACCT.cur; if (!c) { show("auth"); return; }
+    show("tz"); setNav(null); BK(goHome);
+    pub = await AV.get(c.uid);
+    $("tz").innerHTML = `<div class="card" style="text-align:center"><div style="display:flex;justify-content:center">${AV.html(c.uid, c.f + " " + c.l, "xl")}</div>
+        <h1 style="margin:10px 0 2px" id="pfN"></h1><div class="sub" style="margin:0">@${esc(c.login)}${c.g ? " · " + esc(c.g) : ""}</div>
+        <div class="row" style="margin-top:14px"><label class="btn ghost" style="margin:0;cursor:pointer">📷 Rasm qo'yish<input type="file" id="pfF" accept="image/*" style="display:none"></label><button class="btn ghost" id="pfD">🗑 Rasmni olib tashlash</button></div>
+        <div class="sub" style="margin:8px 0 0">Rasmingiz va stikeringiz reytinglar va turnirlarda boshqalarga ko'rinadi. Odobli rasm qo'ying.</div></div>
+      <div class="card" style="margin-top:12px"><h1>😎 Stiker</h1><div class="sub">Rasmingiz burchagida ko'rinadi.</div><div class="stkg" id="pfS"><button data-s="" class="${pub && pub.st ? "" : "on"}">✕</button>${STK.map(e => `<button data-s="${e}" class="${pub && pub.st === e ? "on" : ""}">${e}</button>`).join("")}</div></div>
+      <div class="card" style="margin-top:12px"><h1>✏️ Ism va familiya</h1>
+        <div class="row"><div style="flex:1"><label>Ism</label><input id="pfFn" maxlength="30"></div><div style="flex:1"><label>Familiya</label><input id="pfLn" maxlength="30"></div></div>
+        <div class="accerr" id="pfNe"></div><button class="btn" id="pfNs">Saqlash</button></div>
+      <div class="card" style="margin-top:12px"><h1>👤 Login</h1><div class="sub">Hozirgi login: <b>${esc(c.login)}</b>. Yangi login bilan kirasiz, natijalaringiz saqlanib qoladi.</div>
+        <label>Yangi login</label><input id="pfL" autocapitalize="none" maxlength="20" placeholder="masalan: ali_valiyev">
+        <label>Hozirgi parol</label><input id="pfLp" type="password" autocomplete="current-password">
+        <div class="accerr" id="pfLe"></div><button class="btn" id="pfLs">Loginni almashtirish</button></div>
+      <div class="card" style="margin-top:12px"><h1>🔑 Parol</h1>
+        <label>Hozirgi parol</label><input id="pfPo" type="password" autocomplete="current-password">
+        <label>Yangi parol</label><input id="pfPn" type="password" autocomplete="new-password">
+        <label>Yangi parolni takrorlang</label><input id="pfPn2" type="password" autocomplete="new-password">
+        <div class="accerr" id="pfPe"></div><button class="btn" id="pfPs">Parolni almashtirish</button></div>`;
+    $("pfN").textContent = c.f + " " + c.l; $("pfFn").value = c.f; $("pfLn").value = c.l;
+    $("pfF").onchange = async e => { const f = e.target.files && e.target.files[0]; if (!f) return; if (!/^image\//.test(f.type)) return FX.toast("Faqat rasm tanlang"); try { const d = await resize(f); await savePub({ av: d }); FX.toast("📷 Rasm qo'yildi", "up"); } catch (er) { FX.toast("Rasmni o'qib bo'lmadi"); } e.target.value = ""; };
+    $("pfD").onclick = async () => { await savePub({ av: null }); FX.toast("🗑 Rasm olib tashlandi", "up"); };
+    $("pfS").onclick = async e => { const b = e.target.closest("[data-s]"); if (!b) return; [...$("pfS").children].forEach(x => x.classList.toggle("on", x === b)); await savePub({ st: b.dataset.s || null }); };
+    $("pfNs").onclick = saveName; $("pfLs").onclick = changeLogin; $("pfPs").onclick = changePw;
+  }
+  async function saveName() {
+    const c = ACCT.cur, f = cap($("pfFn").value), l = cap($("pfLn").value), E = m => $("pfNe").textContent = m;
+    if (f.length < 2 || l.length < 2 || !/^[\p{L}'‘’ʼ\- ]+$/u.test(f + l)) return E("Ism va familiyani harflar bilan to'liq yozing.");
+    $("pfNs").disabled = true; E("");
+    try { await DBA.update((AUTH.FB ? "users/" : "u/") + c.uid, { f, l }); ACCT.patch({ f, l }); await savePub({}); $("pfN").textContent = f + " " + l; FX.toast("✅ Ism saqlandi", "up"); }
+    catch (e) { E(AUTH.msg(e)); }
+    $("pfNs").disabled = false;
+  }
+  async function changePw() {
+    const c = ACCT.cur, o = $("pfPo").value, n = $("pfPn").value, n2 = $("pfPn2").value, E = m => $("pfPe").textContent = m;
+    if (n.length < 6) return E("Yangi parol kamida 6 belgidan iborat bo'lsin.");
+    if (n !== n2) return E("Yangi parollar bir xil emas.");
+    if (n === o) return E("Yangi parol eskisidan farq qilsin.");
+    $("pfPs").disabled = true; E("");
+    try {
+      if (AUTH.FB) { await AUTH.changePw(o, n); await DBA.update("users/" + c.uid, { pwc: DBA.now() }); }
+      else { const r = await DBA.get("u/" + c.uid); if (!r || r.p !== o) throw { code: "invalid-credential" }; await DBA.update("u/" + c.uid, { p: n }); ACCT.patch({}, n); }
+      ["pfPo", "pfPn", "pfPn2"].forEach(i => $(i).value = ""); FX.toast("🔑 Parol almashtirildi", "up");
+    } catch (e) { E(/invalid-credential|wrong-password/.test((e && e.code) || "") ? "Hozirgi parol noto'g'ri." : AUTH.msg(e)); }
+    $("pfPs").disabled = false;
+  }
+  async function changeLogin() {
+    const c = ACCT.cur, nl = String($("pfL").value || "").trim().toLowerCase(), pw = $("pfLp").value, E = m => $("pfLe").textContent = m;
+    if (!/^[a-z0-9_]{3,20}$/.test(nl)) return E("Login 3–20 ta lotin harfi, raqam yoki _ dan iborat bo'lsin (bo'sh joysiz).");
+    if (nl === c.login) return E("Bu sizning hozirgi loginingiz.");
+    if (["zulpanov", "admin", "ustoz", "administrator"].includes(nl)) return E("Bu login band.");
+    if (!pw) return E("Hozirgi parolni kiriting.");
+    $("pfLs").disabled = true; E("Bajarilmoqda… sahifani yopmang.");
+    try { await (AUTH.FB ? AUTH.moveLogin(c, nl, pw) : moveMock(c, nl, pw)); E(""); $("pfL").value = $("pfLp").value = ""; FX.toast("✅ Login almashtirildi: " + nl, "up"); open(); }
+    catch (e) { E(e && e.uz ? e.uz : /invalid-credential|wrong-password/.test((e && e.code) || "") ? "Parol noto'g'ri." : AUTH.msg(e)); }
+    if ($("pfLs")) $("pfLs").disabled = false;
+  }
+  async function moveMock(c, nl, pw) {
+    const old = await DBA.get("u/" + c.login); if (!old || old.p !== pw) throw { code: "invalid-credential" };
+    if (await DBA.get("u/" + nl)) throw { uz: "Bu login band. Boshqasini tanlang." };
+    const wk = GAME.wk();
+    const [h, mx, p, lw] = await Promise.all([DBA.get("h/" + c.uid), DBA.get("mx/" + c.uid), DBA.get("lb/p/" + c.uid), wk ? DBA.get(`lb/${wk}/${c.uid}`) : null]);
+    await DBA.set("u/" + nl, { ...old, al: [...(old.al || []), c.login] });
+    if (h) await DBA.set("h/" + nl, h); if (mx) await DBA.set("mx/" + nl, mx); if (p) await DBA.set("lb/p/" + nl, p); if (lw) await DBA.set(`lb/${wk}/${nl}`, lw);
+    await DBA.set("u/" + c.login, null); ["h/", "mx/", "lb/p/"].forEach(x => DBA.set(x + c.login, null)); if (wk) DBA.set(`lb/${wk}/${c.login}`, null);
+    AV.drop(c.login); ACCT.relogin({ uid: nl, login: nl }, pw);
+  }
+  return { open, savePub };
+})();
 const ACCT = (() => {
   const L = { get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }, del(k) { try { localStorage.removeItem(k); } catch (e) {} } };
   let cur = null, ready = false;
@@ -3554,7 +3674,7 @@ const ACCT = (() => {
       const uid = AUTH.uid;
       if (!uid) { if (cur) logout("Hisobingizga qayta kiring."); ready = true; renderBox(); return; }
       let r = null; try { r = await DBA.get("users/" + uid); } catch (e) {}
-      if (!r) { cur = null; L.del("zm_user"); ready = true; renderBox(); return; } // admin yoki o'chirilgan hisob
+      if (!r || r.moved) { cur = null; L.del("zm_user"); ready = true; renderBox(); return; } // admin, o'chirilgan yoki ko'chirilgan hisob
       if (r.b) { await AUTH.signOut(); logout("Hisobingiz ustoz tomonidan bloklangan."); ready = true; return; }
       cur = { uid, login: r.login, f: r.f, l: r.l, g: r.g || "" };
       L.set("zm_user", JSON.stringify({ uid, u: r.login, f: r.f, l: r.l, g: r.g || "" }));
@@ -3674,7 +3794,8 @@ const ACCT = (() => {
   function greet() { const h = new Date().getHours(); return h < 11 ? "Xayrli tong ☀️" : h < 17 ? "Xayrli kun 👋" : "Xayrli kech 🌙"; }
   function renderHome() {
     if (!cur) return;
-    $("wlAv").textContent = (cur.f[0] || "") + (cur.l[0] || ""); $("wlN").textContent = cur.f + " " + cur.l;
+    $("wlAv").innerHTML = AV.html(cur.uid, cur.f + " " + cur.l, "fill"); $("wlAv").onclick = () => PRF.open(); $("wlAv").style.cursor = "pointer";
+    if (!$("wlPf")) $("wlX").insertAdjacentHTML("beforebegin", `<button class="btn ghost sm" id="wlPf" style="margin-right:6px" title="Profil sozlamalari">⚙️ Profil</button>`); $("wlPf").onclick = () => PRF.open(); $("wlN").textContent = cur.f + " " + cur.l;
     $("wlG").textContent = "@" + cur.login + (cur.g ? " · " + cur.g : ""); $("wlHi").textContent = greet();
     PWA.render();
     $("wlX").onclick = () => { if (TGB.on()) TGB.call("unlink").catch(() => {}); logout(); };
@@ -3722,7 +3843,15 @@ const ACCT = (() => {
     hListeners.add(fill); fill();
   }
   function drop() { cur = null; L.del("zm_user"); L.del("zm_active"); if (hUn) { hUn(); hUn = null; } hLogin = null; }
-  return { login, get recs() { return recs(); }, restore, get cur() { return cur; }, logout, renderBox, history, renderHome, drop };
+  function patch(o, np) {
+    if (!cur) return; cur = { ...cur, ...o }; let s = {}; try { s = JSON.parse(L.get("zm_user") || "{}"); } catch (e) {}
+    s = { ...s, f: cur.f, l: cur.l, g: cur.g || "" }; if (np) s.p = np; L.set("zm_user", JSON.stringify(s)); apply();
+  }
+  function relogin(o, pw) {
+    cur = { ...cur, ...o }; if (hUn) { hUn(); hUn = null; } hLogin = null;
+    L.set("zm_user", JSON.stringify(AUTH.FB ? { uid: cur.uid, u: cur.login, f: cur.f, l: cur.l, g: cur.g || "" } : { u: cur.login, p: pw, f: cur.f, l: cur.l, g: cur.g || "" })); apply();
+  }
+  return { login, patch, relogin, get recs() { return recs(); }, restore, get cur() { return cur; }, logout, renderBox, history, renderHome, drop };
 })();
 
 // ================== ADMIN: O'QUVCHILAR HISOBLARI ==================
@@ -3783,28 +3912,29 @@ const ACC = (() => {
     E(""); ["nF", "nL", "nG", "nU", "nP"].forEach(id => $(id).value = ""); delete $("nU").dataset.t;
     FX.toast(`✅ ${esc(f)} ${esc(l)} qo'shildi`, "up");
   }
-  function stats(u) { const rs = Object.values(res).filter(r => r && r.u === u); return { n: rs.length, avg: rs.length ? Math.round(rs.reduce((a, r) => a + (r.pts || 0), 0) / rs.length) : null }; }
+  function stats(u) { const us = [].concat(u); const rs = Object.values(res).filter(r => r && us.includes(r.u)); return { n: rs.length, avg: rs.length ? Math.round(rs.reduce((a, r) => a + (r.pts || 0), 0) / rs.length) : null }; }
   function render() {
     const L = $("acL"); if (!L) return;
     const nq = q.trim().toLowerCase();
-    const arr = Object.entries(users).filter(([u, x]) => x && x.f).map(([u, x]) => ({ ...x, u, login: x.login || u, ...stats(x.login || u) }))
+    const arr = Object.entries(users).filter(([u, x]) => x && x.f && !x.moved).map(([u, x]) => ({ ...x, u, login: x.login || u, ...stats([x.login || u].concat(x.al || [])) }))
       .filter(x => !nq || (x.f + " " + x.l + " " + x.login + " " + (x.g || "")).toLowerCase().includes(nq))
       .sort((a, b) => (a.g || "").localeCompare(b.g || "") || (a.l + a.f).localeCompare(b.l + b.f));
     if ($("acN")) $("acN").textContent = `Jami ${Object.keys(users).length} ta o'quvchi. Ro'yxat jonli yangilanadi.`;
     if (!arr.length) { L.innerHTML = `<div class="card" style="text-align:center"><p class="sub" style="margin:0">${Object.keys(users).length ? "Hech kim topilmadi." : "Hali hech kim ro'yxatdan o'tmagan."}</p></div>`; return; }
     L.innerHTML = `<div class="card">${arr.map(x => `<div class="acrow" data-u="${esc(x.u)}">
-        <div class="avatar sm">${esc((x.f[0] || "") + (x.l[0] || ""))}</div>
+        ${AV.html(x.u, x.f + " " + x.l, "md")}
         <div class="st-m"><b>${esc(x.f)} ${esc(x.l)}</b>${x.b ? ' <span class="st-lv" style="background:var(--bad)">bloklangan</span>' : ""}
           <div class="st-s">${x.g ? esc(x.g) + " · " : ""}ro'yxat: ${dt(x.c)} · oxirgi kirish: ${dt(x.last)}</div>
-          <div class="cred"><span>Login: <code>${esc(x.login)}</code></span><span>Parol: <code class="pw">${showAll || shown.has(x.u) ? esc(x.p) : "••••••"}</code> <button class="lnk" data-a="eye">${showAll || shown.has(x.u) ? "yashirish" : "ko'rsatish"}</button></span></div>
+          <div class="cred"><span>Login: <code>${esc(x.login)}</code></span><span>Parol: <code class="pw">${x.pwc ? "o'quvchi o'zi almashtirgan" : showAll || shown.has(x.u) ? esc(x.p) : "••••••"}</code> <button class="lnk" data-a="eye">${showAll || shown.has(x.u) ? "yashirish" : "ko'rsatish"}</button></span></div>
           <div class="st-s">${x.n ? `${x.n} ta test · o'rtacha ${x.avg} ball` : "hali test ishlamagan"}</div>
-          <div class="acact"><button class="lnk" data-a="pw">🔑 Parolni o'zgartirish</button><button class="lnk" data-a="grp">👥 Guruhni o'zgartirish</button><button class="lnk" data-a="blk">${x.b ? "✅ Blokdan chiqarish" : "🚫 Bloklash"}</button><button class="lnk" data-a="del" style="color:var(--bad)">🗑 O'chirish</button></div>
+          <div class="acact"><button class="lnk" data-a="pw">🔑 Parolni o'zgartirish</button><button class="lnk" data-a="grp">👥 Guruhni o'zgartirish</button><button class="lnk" data-a="blk">${x.b ? "✅ Blokdan chiqarish" : "🚫 Bloklash"}</button><button class="lnk" data-a="av">🖼 Rasmini olib tashlash</button><button class="lnk" data-a="del" style="color:var(--bad)">🗑 O'chirish</button></div>
           <div class="pwbox"></div></div></div>`).join("")}</div>`;
     L.querySelectorAll(".acrow").forEach(row => {
       const u = row.dataset.u;
       row.onclick = e => {
         const b = e.target.closest("button"); if (!b) return; const a = b.dataset.a;
         if (a === "eye") { shown.has(u) ? shown.delete(u) : shown.add(u); render(); }
+        if (a === "av") { AV.get(u).then(p => { if (!p || (!p.av && !p.st)) return FX.toast("Bu o'quvchida rasm yo'q"); const np = { ...p }; delete np.av; delete np.st; DBA.set("lb/p/" + u, np); AV.set(u, np); FX.toast("🖼 Rasm olib tashlandi", "up"); }); }
         const base = AUTH.FB ? "users/" : "u/", X = users[u] || {}, lg = X.login || u;
         if (a === "grp") { const box = row.querySelector(".pwbox"); box.innerHTML = `<div class="row" style="margin-top:8px"><input placeholder="Guruh nomi" style="margin:0;flex:2"><button class="btn sm" data-a="grpok" style="flex:1">Saqlash</button></div>`; const i = box.querySelector("input"); i.value = X.g || ""; i.focus(); }
         if (a === "grpok") { DBA.update(base + u, { g: row.querySelector(".pwbox input").value.trim().slice(0, 30) }); FX.toast("👥 Guruh yangilandi", "up"); }
@@ -4235,9 +4365,9 @@ const GAME = (() => {
       const nk = s => String(s || "").trim().toLowerCase();
       const arr = Object.entries(data || {}).filter(([k, v]) => v && v.n && (lbTab === "a" || nk(v.g) === nk(c.g))).map(([k, v]) => ({ k, ...v })).sort((a, b) => b.xp - a.xp || a.at - b.at);
       const top = [arr[1], arr[0], arr[2]], hh = [90, 120, 70], cl = ["#c0c7d0", "#e8b93f", "#c98a4b"];
-      $("lbP").innerHTML = arr.length ? `<div class="card"><div class="podium" style="margin-top:4px">${top.map((p, j) => p ? `<div class="pd"><div class="pd-n">${esc(p.n)}</div><div class="pd-s">${p.xp} XP</div><div class="pd-b" style="height:${hh[j]}px;background:${cl[j]}">${[2, 1, 3][j]}</div></div>` : '<div class="pd"></div>').join("")}</div></div>` : "";
+      $("lbP").innerHTML = arr.length ? `<div class="card"><div class="podium" style="margin-top:4px">${top.map((p, j) => p ? `<div class="pd">${AV.html(p.k, p.n, "lg")}<div class="pd-n">${esc(p.n)}</div><div class="pd-s">${p.xp} XP</div><div class="pd-b" style="height:${hh[j]}px;background:${cl[j]}">${[2, 1, 3][j]}</div></div>` : '<div class="pd"></div>').join("")}</div></div>` : "";
       const me = arr.findIndex(p => p.k === c.uid);
-      $("lbL").innerHTML = arr.length ? arr.slice(0, 30).map((p, i) => `<div class="trow${p.k === c.uid ? " me" : ""}"><div class="tr-r">${i < 3 ? ["🥇", "🥈", "🥉"][i] : i + 1}</div><div class="tr-n"><div class="tr-nm">${esc(p.n)}${p.k === c.uid ? " (siz)" : ""}</div><div class="st-s">${LEVELS[p.lv || 0][2]} ${LEVELS[p.lv || 0][1]}${lbTab === "a" && p.g ? " · " + esc(p.g) : ""}</div></div><div class="tr-s">${p.xp}<small style="color:var(--mu)"> XP</small></div></div>`).join("")
+      $("lbL").innerHTML = arr.length ? arr.slice(0, 30).map((p, i) => `<div class="trow${p.k === c.uid ? " me" : ""}"><div class="tr-r">${i < 3 ? ["🥇", "🥈", "🥉"][i] : i + 1}</div>${AV.html(p.k, p.n)}<div class="tr-n"><div class="tr-nm">${esc(p.n)}${p.k === c.uid ? " (siz)" : ""}</div><div class="st-s">${LEVELS[p.lv || 0][2]} ${LEVELS[p.lv || 0][1]}${lbTab === "a" && p.g ? " · " + esc(p.g) : ""}</div></div><div class="tr-s">${p.xp}<small style="color:var(--mu)"> XP</small></div></div>`).join("")
         + (me >= 30 ? `<div class="st-s" style="text-align:center;margin-top:8px">Siz: ${me + 1}-o'rin</div>` : "") + (me < 0 ? `<div class="st-s" style="text-align:center;margin-top:8px">Bu hafta hali test ishlamadingiz — birinchi testdan keyin reytingda paydo bo'lasiz.</div>` : "")
         : `<div style="text-align:center"><div style="font-size:36px">🏁</div><p class="sub" style="margin:6px 0 0">Bu hafta hali hech kim test ishlamagan. Birinchi bo'ling!</p></div>`;
     };
@@ -4245,7 +4375,7 @@ const GAME = (() => {
     draw();
   }
   function reg(qs) { qs.forEach(q => { if (q._k) KEYQ[q._k] = q; }); }
-  return { reg, track, startErrors, homeRender, statBlock, board, announce, xpOf, level, errList };
+  return { reg, track, startErrors, homeRender, statBlock, board, announce, xpOf, level, errList, wk: () => weekKey(DBA.now()) };
 })();
 
 // ================== ADMIN: SAVOLLARNI O'ZI QO'SHISH ==================
@@ -4557,6 +4687,26 @@ const AUTH = (() => {
     get uid() { return user ? user.uid : null; },
     get isAdmin() { return admin; },
     async changePw(oldPw, newPw) { const f = await fb(); const u = f.auth().currentUser; if (!u) throw new Error("no user"); const cred = f.auth.EmailAuthProvider.credential(u.email, oldPw); await u.reauthenticateWithCredential(cred); await u.updatePassword(newPw); },
+    async moveLogin(c, nl, pw) {
+      const f = await fb(), ou = f.auth().currentUser; if (!ou) throw new Error("no user");
+      await ou.reauthenticateWithCredential(f.auth.EmailAuthProvider.credential(ou.email, pw));
+      if (await DBA.get("logins/" + nl)) throw { uz: "Bu login band. Boshqasini tanlang." };
+      const old = c.uid, wk = GAME.wk();
+      const [u, h, mx, p, lw, hw] = await Promise.all([DBA.get("users/" + old), DBA.get("h/" + old), DBA.get("mx/" + old), DBA.get("lb/p/" + old), DBA.get(`lb/${wk}/${old}`), DBA.get("hw")]);
+      const hwr = {}; for (const id of Object.keys(hw || {})) { try { const v = await DBA.get(`hwr/${id}/${old}`); if (v) hwr[id] = v; } catch (e) {} }
+      const a = await secondary(), cr = await a.createUserWithEmailAndPassword(email(nl), pw), nu = cr.user.uid, d = sec.database(), W = (pth, v) => d.ref(pth).set(v);
+      try {
+        await W("logins/" + nl, nu);
+        const nuRec = { ...(u || {}), login: nl, al: [...((u && u.al) || []), c.login], last: Date.now() }; delete nuRec.moved; delete nuRec.pwc;
+        await W("users/" + nu, nuRec); await W("pw/" + nu, pw);
+        if (h) await W("h/" + nu, h); if (mx) await W("mx/" + nu, mx); if (p) await W("lb/p/" + nu, p); if (lw) await W(`lb/${wk}/${nu}`, lw);
+        for (const [id, v] of Object.entries(hwr)) await W(`hwr/${id}/${nu}`, v);
+      } catch (e) { try { await cr.user.delete(); } catch (x) {} try { await a.signOut(); } catch (x) {} throw e; }
+      await DBA.update("users/" + old, { moved: nl });
+      await ou.delete(); try { await a.signOut(); } catch (e) {}
+      const c2 = await f.auth().signInWithEmailAndPassword(email(nl), pw); user = c2.user; admin = false;
+      AV.drop(old); ACCT.relogin({ uid: nu, login: nl }, pw);
+    },
     async signIn(login, pw) { const f = await fb(); const c = await f.auth().signInWithEmailAndPassword(email(login), pw); user = c.user; admin = !!(await DBA.get("admins/" + user.uid).catch(() => null)); return user.uid; },
     async signUp(login, pw) { const f = await fb(); const c = await f.auth().createUserWithEmailAndPassword(email(login), pw); user = c.user; admin = false; return user.uid; },
     async signOut() { if (!FB) return; const f = await fb(); user = null; admin = false; await f.auth().signOut(); },
@@ -4610,7 +4760,7 @@ const T = (() => {
       const i = list.indexOf(p);
       const r = document.createElement("div"); r.className = "trow" + (p.k === st.pid ? " me" : "") + (big ? " big" : ""); r.dataset.k = p.k;
       st.ps = st.ps || {}; if (st.ps[p.k] != null && (p.s || 0) > st.ps[p.k]) r.classList.add("flash"); st.ps[p.k] = p.s || 0;
-      r.innerHTML = `<div class="tr-r">${medal(i)}</div><div class="tr-n"><div class="tr-nm"></div><div class="tr-bar"><i style="width:${Math.min(100, (p.a || 0) / n * 100)}%"></i></div></div><div class="tr-s">${pts(p.s)}<small>${p.d ? " ✓" : ""}</small></div>`;
+      r.innerHTML = `<div class="tr-r">${medal(i)}</div>${AV.html(p.k, p.n)}<div class="tr-n"><div class="tr-nm"></div><div class="tr-bar"><i style="width:${Math.min(100, (p.a || 0) / n * 100)}%"></i></div></div><div class="tr-s">${pts(p.s)}<small>${p.d ? " ✓" : ""}</small></div>`;
       r.querySelector(".tr-nm").textContent = p.n + (p.k === st.pid ? " (siz)" : "");
       el.appendChild(r);
     });
@@ -4837,7 +4987,7 @@ const T = (() => {
       d.className = "tmc" + (mine ? " mine" : "") + (mt == null && !ok ? " off" : ""); d.style.setProperty("--c", TC[t.i][1]);
       d.innerHTML = `<div class="tmc-h">${TC[t.i][0]} <span></span><small>${t.m.length} / ${st.meta.team.sz}</small></div><div class="tmc-m"></div>${mt == null ? `<button class="btn sm"${ok ? "" : " disabled"}>${ok ? "Shu jamoaga qo'shilish" : (t.m.length >= st.meta.team.sz ? "To'lgan" : "Hozircha yopiq")}</button>` : ""}`;
       d.querySelector(".tmc-h span").textContent = tName(t.i);
-      d.querySelector(".tmc-m").innerHTML = t.m.length ? t.m.map((p, j) => `${j === 0 ? "👑 " : ""}<b>${esc(p.n)}</b>${p.k === st.pid ? " (siz)" : ""}`).join("<br>") : "Hali hech kim yo'q";
+      d.querySelector(".tmc-m").innerHTML = t.m.length ? t.m.map((p, j) => `<span class="mrow">${AV.html(p.k, p.n, "sm")}${j === 0 ? "👑 " : ""}<b>${esc(p.n)}</b>${p.k === st.pid ? " (siz)" : ""}</span>`).join("") : "Hali hech kim yo'q";
       const b = d.querySelector("button"); if (b && ok) b.onclick = () => { b.disabled = true; pickTeam(t.i); };
       $("tlt").appendChild(d);
     });
@@ -4870,7 +5020,7 @@ const T = (() => {
     feedUpd(); race($("trace")); leadCheck();
     const mt = myTm(), R = tRank(), j = R.findIndex(T => T.i === mt);
     if ($("tmy") && j >= 0) $("tmy").innerHTML = `Jamoangiz: <b style="color:var(--tx)">${j + 1}-o'rin</b>${st.streak >= 2 ? `<span class="streak">🔥${st.streak}</span>` : ""}`;
-    if ($("tmates") && mt != null) $("tmates").innerHTML = teams()[mt].m.slice().sort((a, b) => (b.s || 0) - (a.s || 0)).map(p => `<div class="mate"><b>${esc(p.n)}${p.k === st.pid ? " (siz)" : ""}</b><span class="pr">${p.d ? "🏁" : (p.a || 0) + "/" + st.meta.n}</span><span>✅ ${p.s || 0}</span></div>`).join("");
+    if ($("tmates") && mt != null) $("tmates").innerHTML = teams()[mt].m.slice().sort((a, b) => (b.s || 0) - (a.s || 0)).map(p => `<div class="mate">${AV.html(p.k, p.n, "sm")}<b>${esc(p.n)}${p.k === st.pid ? " (siz)" : ""}</b><span class="pr">${p.d ? "🏁" : (p.a || 0) + "/" + st.meta.n}</span><span>✅ ${p.s || 0}</span></div>`).join("");
   }
   function sTeamEnd() {
     ls.del("zm_active"); clearInterval(st.timer);
