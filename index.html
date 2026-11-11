@@ -4565,7 +4565,7 @@ const T = (() => {
   const TC = [["🔴", "#e5484d", "Qizil"], ["🔵", "#3e8ef7", "Ko'k"], ["🟢", "#30a46c", "Yashil"], ["🟡", "#e8b93f", "Sariq"], ["🟣", "#8e4ec6", "Binafsha"], ["🟠", "#f76b15", "To'q sariq"]];
   const isTeam = () => !!(st.meta && st.meta.team);
   const hs = s => { let h = 7; for (const c of String(s)) h = Math.imul(h ^ c.charCodeAt(0), 2654435761); return h | 0; };
-  const tName = i => { const x = st.tn && st.tn[i]; return (x && x.n) || ((st.meta && st.meta.team && st.meta.team.nm) || [])[i] || TC[i][2]; };
+  const tName = i => { let cap = null; Object.values(st.players || {}).forEach(p => { if (p && p.n && p.tm === i && (!cap || (p.jt || 0) < (cap.jt || 0))) cap = p; }); return (cap && cap.tnm) || ((st.meta && st.meta.team && st.meta.team.nm) || [])[i] || TC[i][2]; };
   const tLbl = i => TC[i][0] + " " + tName(i);
   const f1 = x => String(Math.round(x * 10) / 10).replace(".", ",");
   const first = n => String(n || "").split(" ")[0];
@@ -4602,7 +4602,7 @@ const T = (() => {
     let P = st.players; try { P = (await DBA.get(`t/${st.code}/players`)) || P; } catch (e) {}
     if (st.meta.phase !== "lobby") return;
     if (!canJoin(i, P)) { FX.toast("Bu jamoa hozir yopiq — jamoalar teng bo'lishi kerak. Boshqasini tanlang."); return; }
-    await DBA.update(`t/${st.code}/players/${st.pid}`, { tm: i, jt: DBA.now() }); FX.S.tick && FX.S.tick();
+    await DBA.update(`t/${st.code}/players/${st.pid}`, { tm: i, jt: DBA.now(), tnm: null }); FX.S.tick && FX.S.tick();
   }
   function sTeamLobby() {
     tz().innerHTML = `<div class="card" style="text-align:center"><div style="font-size:40px">👥</div><h1>Jamoaviy turnir</h1>
@@ -4622,8 +4622,8 @@ const T = (() => {
         : `<div class="tnote" style="border-left:5px solid ${TC[mt][1]}">Siz <b>${TC[mt][0]} ${esc(tName(mt))}</b> jamoasidasiz. Ustoz boshlashini kuting.</div>
           ${cap ? `<label>👑 Siz sardorsiz — jamoa nomini yozing</label><div class="tmnm"><span>${TC[mt][0]}</span><input id="tcn" maxlength="24" placeholder="Masalan: Temuriylar"><button class="btn sm" id="tcs">Saqlash</button></div>` : ""}
           <button class="btn ghost sm" id="tlv">Jamoadan chiqish</button>`;
-      if (cap) { $("tcn").value = tName(mt); $("tcs").onclick = () => { const v = $("tcn").value.trim().slice(0, 24); if (!v) return; DBA.set(`t/${st.code}/tn/${mt}`, { n: v, by: st.pid }); FX.toast("✅ Jamoa nomi saqlandi", "up"); }; }
-      if ($("tlv")) $("tlv").onclick = () => DBA.update(`t/${st.code}/players/${st.pid}`, { tm: null, jt: null });
+      if (cap) { $("tcn").value = tName(mt); $("tcs").onclick = () => { const v = $("tcn").value.trim().slice(0, 24); if (!v) return; DBA.update(`t/${st.code}/players/${st.pid}`, { tnm: v }); FX.toast("✅ Jamoa nomi saqlandi", "up"); }; }
+      if ($("tlv")) $("tlv").onclick = () => DBA.update(`t/${st.code}/players/${st.pid}`, { tm: null, jt: null, tnm: null });
     }
     $("tlt").innerHTML = "";
     T.forEach(t => {
@@ -4879,7 +4879,7 @@ const T = (() => {
     if (free.length) { const d = document.createElement("div"); d.className = "tmc"; d.style.setProperty("--c", "var(--line)"); d.innerHTML = `<div class="tmc-h">⏳ Jamoa tanlamaganlar<small>${free.length}</small></div>${free.map(([pk, p]) => row(pk, p, null)).join("")}`; el.appendChild(d); }
     el.querySelectorAll("[data-p]").forEach(r => {
       const pk = r.dataset.p, p = st.players[pk]; r.querySelector(".nm").textContent = p.n;
-      r.querySelector("select").onchange = e => { const v = e.target.value; if (v === "") return; DBA.update(`t/${st.code}/players/${pk}`, { tm: +v, jt: DBA.now() }); };
+      r.querySelector("select").onchange = e => { const v = e.target.value; if (v === "") return; DBA.update(`t/${st.code}/players/${pk}`, { tm: +v, jt: DBA.now(), tnm: null }); };
       r.querySelector(".x").onclick = () => { DBA.set(`t/${st.code}/ban/${pk}`, 1); DBA.set(`t/${st.code}/players/${pk}`, null); };
     });
   }
