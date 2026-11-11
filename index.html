@@ -3966,8 +3966,9 @@ const GAME = (() => {
     try { localStorage.setItem(K, lv.i); localStorage.setItem(B, JSON.stringify(got)); } catch (e) {}
     // haftalik reyting
     const wk = weekKey(DBA.now()), ws = weekStart(DBA.now()), wxp = rs.filter(r => r.at >= ws).reduce((a, r) => a + xpOf(r), 0);
-    if (wxp > 0) DBA.set(`lb/${wk}/${c.uid}`, { n: c.f + " " + c.l, g: c.g || "", xp: wxp, lv: lv.i, at: DBA.now() });
+    const lk = wk + c.uid + wxp + lv.i; if (wxp > 0 && lastLB !== lk) { lastLB = lk; DBA.set(`lb/${wk}/${c.uid}`, { n: c.f + " " + c.l, g: c.g || "", xp: wxp, lv: lv.i, at: DBA.now() }); }
   }
+  let lastLB = null;
   // ---- bosh sahifa ----
   function homeRender() {
     const c = ACCT.cur, box = $("wlLv"); if (!c || !box) return;
@@ -4259,7 +4260,7 @@ const T = (() => {
   function sRoute(changed) {
     const m = st.meta;
     if (m.phase === "lobby") return sLobby();
-    if (m.phase === "end") return sEnd();
+    if (m.phase === "end") { if (changed || !$("tmine")) sEnd(); return; }
     if (m.phase === "run") { if (changed || !$("tqa") && !$("twait")) { if (st.cur >= st.Q.length || myDone()) sWait(); else sPlay(); } }
   }
   const myDone = () => { const p = st.players[st.pid]; return p && p.d; };
