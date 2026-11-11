@@ -464,6 +464,14 @@ body.dlm #bkb{display:none!important}
 .bz-badge{display:inline-block;font-size:12px;font-weight:900;letter-spacing:.12em;color:#3B1D00;background:linear-gradient(135deg,#FDE047,#F59E0B);padding:6px 14px;border-radius:20px;margin-bottom:8px;animation:pbin .5s cubic-bezier(.2,1.4,.4,1)}
 .bz-big{font-size:84px;font-weight:900;line-height:1;background:linear-gradient(180deg,#FDE047,#F97316);-webkit-background-clip:text;background-clip:text;color:transparent}
 .bz-msg{display:block;font-size:17px;margin-top:10px}.bz-st{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:14px}.bz-st div{padding:8px 2px;border-radius:12px;background:rgba(255,255,255,.05)}.bz-st b{display:block;font-size:19px}.bz-st span{font-size:10.5px;color:var(--mu)}
+
+.bz-opt{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:2px 0 10px;text-align:left}.bz-opt small{font-size:12.5px;color:var(--mu)}
+.bz-cnt{display:flex;gap:6px}.bz-cnt button{width:44px;height:36px;border-radius:12px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);color:var(--tx);font-family:inherit;font-weight:700;cursor:pointer}.bz-cnt button.on{background:linear-gradient(135deg,#FACC15,#F97316);color:#3B1D00;border-color:transparent}
+.bz-tp{text-align:left;margin-bottom:12px;border-radius:14px;background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.1)}.bz-tp summary{list-style:none;display:flex;align-items:center;gap:8px;padding:11px 12px;cursor:pointer;font-size:13.5px}.bz-tp summary::-webkit-details-marker{display:none}.bz-tp summary b{flex:1;text-align:right;color:#FCD34D;font-size:12.5px}.bz-tp summary i{font-style:normal;color:var(--mu);transition:.2s}.bz-tp[open] summary i{transform:rotate(180deg)}
+.bz-tl{max-height:280px;overflow:auto;padding:0 10px 8px}.bz-tl label{display:flex;align-items:center;gap:10px;padding:8px 2px;font-size:13px;margin:0;color:var(--tx);cursor:pointer}.bz-tl label+label{border-top:1px solid rgba(255,255,255,.06)}.bz-tl input{width:18px;height:18px;margin:0;flex:none;accent-color:#F59E0B}.bz-tl span{flex:1;min-width:0}.bz-tl small{color:var(--mu)}.bz-all{color:#FCD34D!important}
+.bz-pb{height:5px;border-radius:5px;background:rgba(255,255,255,.08);margin:-6px 0 12px;overflow:hidden}.bz-pb i{display:block;height:100%;width:0;background:linear-gradient(90deg,#FACC15,#F97316);transition:width .3s}
+.bz-tt{font-size:11px;color:var(--mu);margin-right:6px}
+.bz-top .bz-sc b{font-size:19px}
 </style>
 </head>
 <body>
@@ -3680,17 +3688,22 @@ const BLITZ = (() => {
   const me = () => ACCT.cur, full = c => (c.f + " " + (c.l || "")).trim();
   const ck = c => String(parseInt(c) || c).replace(/[^0-9a-z]/gi, "");
   const groups = () => { const g = {}; SETS.filter(x => x.qs && !x.ms).forEach(x => { const c = clsOf(x.g); (g[c] = g[c] || []).push(x); }); return g; };
-  let cls = null, G = null;
+  let cls = null, G = null, cnt = 20, sel = {};
+  try { const o = JSON.parse(localStorage.getItem("zm_bz") || "{}"); cnt = o.cnt || 20; sel = o.sel || {}; } catch (e) {}
+  const save = () => { try { localStorage.setItem("zm_bz", JSON.stringify({ cnt, sel })); } catch (e) {} };
+  const CNTS = [10, 20, 30, 40];
+  const kOf = () => ck(cls) + "_" + cnt;
+  const chosen = () => { const g = groups()[cls] || [], ids = sel[cls]; return ids && ids.length ? g.filter(x => ids.includes(x.id)) : g; };
   function head(t, sub) { document.body.classList.add("dlm"); return `<div class="dl-h"><button class="adh-b" onclick="goHome()" title="Bosh sahifa">‹</button><div class="adh-t"><small>${esc(sub || "60 soniyalik poyga")}</small><b>${t}</b></div><button class="adh-b" onclick="goHome()" title="Bosh sahifa">🏠</button></div>`; }
   async function board(c) {
-    let w = {}, a = null; const k = ck(c), u = me();
+    let w = {}, a = null; const k = kOf(), u = me();
     try { [w, a] = await Promise.all([DBA.get("lb/bz" + GAME.wk()), u ? DBA.get("lb/bzall/" + u.uid + "/" + k) : null]); } catch (e) {}
-    const list = Object.entries(w || {}).map(([uid, v]) => v && v[k] ? { uid, ...v[k] } : null).filter(Boolean).sort((x, y) => y.s - x.s || x.at - y.at);
+    const list = Object.entries(w || {}).map(([uid, v]) => v && v[k] ? { uid, ...v[k] } : null).filter(Boolean).sort((x, y) => y.s - x.s || (x.t || 6e4) - (y.t || 6e4) || x.at - y.at);
     return { list, best: a && a.s || 0 };
   }
   function lbHtml(list, myUid, lim = 10) {
     if (!list.length) return `<p class="sub" style="text-align:center;margin:12px 0">Bu hafta hali hech kim o'ynamadi. Birinchi bo'ling! ⚡</p>`;
-    return list.slice(0, lim).map((x, i) => `<div class="bz-r${x.uid === myUid ? " me" : ""}"><span class="bz-i">${["🥇", "🥈", "🥉"][i] || i + 1}</span>${AV.html(x.uid, x.n, "sm")}<b>${esc(x.n)}${x.uid === myUid ? " (siz)" : ""}</b><em>${x.s}</em></div>`).join("");
+    return list.slice(0, lim).map((x, i) => `<div class="bz-r${x.uid === myUid ? " me" : ""}"><span class="bz-i">${["🥇", "🥈", "🥉"][i] || i + 1}</span>${AV.html(x.uid, x.n, "sm")}<b>${esc(x.n)}${x.uid === myUid ? " (siz)" : ""}</b>${x.t && x.t < 59500 ? `<small class="bz-tt">${Math.round(x.t / 1000)} s</small>` : ""}<em>${x.s}</em></div>`).join("");
   }
   async function open() {
     const u = me(); if (!u) return goHome();
@@ -3700,11 +3713,19 @@ const BLITZ = (() => {
     if (!cls || !g[cls]) cls = cl.find(c => String(u.g || "").startsWith(String(parseInt(c)))) || cl[0];
     $("tz").innerHTML = head("⚡ Blits") + `<div class="dl-cls">${cl.map(c => `<button class="${c === cls ? "on" : ""}" data-c="${esc(c)}">${esc(c)}</button>`).join("")}</div>
       <div class="card bz-hero"><div class="bz-clock"><span>60</span><small>soniya</small></div><b>Qancha ko'p topsang — shuncha zo'r!</b>
-      <div class="bz-rules"><span>✅ To'g'ri = +1</span><span>❌ Xato = −3 soniya</span><span>📚 ${esc(cls)} · barcha mavzular</span></div>
+      <div class="bz-rules"><span>✅ To'g'ri = +1</span><span>❌ Xato = −3 soniya</span></div>
+      <div class="bz-opt"><small>Savollar soni</small><div class="bz-cnt" id="bzC">${CNTS.map(n => `<button class="${n === cnt ? "on" : ""}" data-n="${n}">${n}</button>`).join("")}</div></div>
+      <details class="bz-tp" id="bzTp"><summary><span>📚 Mavzular</span><b id="bzTs"></b><i>▾</i></summary><div class="bz-tl"><label class="bz-all"><input type="checkbox" id="bzAll"> <b>Hammasini tanlash</b></label>${(g[cls] || []).map(x => `<label><input type="checkbox" value="${x.id}"> <span><b>${esc(x.n || "")}</b> ${esc(/mavzular?$/i.test(x.title || "") ? String(x.sub || "").split(" · ")[0] : x.title)}</span><small>${x.qs.length}</small></label>`).join("")}</div></details>
       <div class="bz-best" id="bzBest">Shaxsiy rekord: …</div><button class="btn" id="bzGo">▶ Boshlash</button></div>
-      <div class="ah">🏆 Haftaning chempionlari · ${esc(cls)}</div><div class="card" style="padding:6px 12px" id="bzL"><div class="sub" style="text-align:center;margin:12px 0">Yuklanmoqda…</div></div>`;
+      <div class="ah">🏆 Haftaning chempionlari · ${esc(cls)} · ${cnt} savol</div><div class="card" style="padding:6px 12px" id="bzL"><div class="sub" style="text-align:center;margin:12px 0">Yuklanmoqda…</div></div>`;
     $("tz").querySelector(".dl-cls").onclick = e => { const b = e.target.closest("[data-c]"); if (b) { cls = b.dataset.c; open(); } };
     $("bzGo").onclick = () => countdown();
+    const boxes = () => [...$("bzTp").querySelectorAll(".bz-tl label:not(.bz-all) input")];
+    const ids0 = sel[cls] && sel[cls].length ? sel[cls] : (g[cls] || []).map(x => x.id); boxes().forEach(b => b.checked = ids0.includes(b.value));
+    const sum = () => { const on = boxes().filter(b => b.checked), all = on.length === boxes().length; $("bzAll").checked = all; const nq = chosen().reduce((a, x) => a + x.qs.length, 0); $("bzTs").textContent = (all ? "Hammasi" : on.length + " ta mavzu") + " · " + nq + " savol"; $("bzGo").disabled = !on.length; $("bzGo").textContent = on.length ? `▶ Boshlash · ${Math.min(cnt, nq)} savol` : "Kamida 1 ta mavzu tanlang"; };
+    $("bzTp").onchange = e => { if (e.target.id === "bzAll") boxes().forEach(b => b.checked = e.target.checked); const on = boxes().filter(b => b.checked).map(b => b.value); sel[cls] = on.length === boxes().length ? [] : (on.length ? on : ["-"]); save(); sum(); };
+    $("bzC").onclick = e => { const b = e.target.closest("[data-n]"); if (!b) return; cnt = +b.dataset.n; save(); open(); };
+    sum();
     const { list, best } = await board(cls); if (!$("bzL")) return;
     $("bzBest").innerHTML = best ? `🏅 Shaxsiy rekordingiz: <b>${best}</b>` : "Hali rekord yo'q — birinchisini o'rnating!";
     $("bzL").innerHTML = lbHtml(list, u.uid);
@@ -3716,10 +3737,11 @@ const BLITZ = (() => {
     const iv = setInterval(() => { n--; if (!$("bzN")) return clearInterval(iv); if (n <= 0) { clearInterval(iv); return start(); } const e = $("bzN"); e.textContent = n; e.style.animation = "none"; void e.offsetWidth; e.style.animation = ""; try { FX.S.tick(); } catch (x) {} }, 800);
   }
   function start() {
-    const pool = (groups()[cls] || []).flatMap(x => x.qs);
+    let pool = chosen().flatMap(x => x.qs);
     for (let i = pool.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [pool[i], pool[j]] = [pool[j], pool[i]]; }
-    G = { pool, i: 0, s: 0, w: 0, streak: 0, end: Date.now() + DUR, lock: false };
-    $("tz").innerHTML = `<div class="bz-top"><div class="bz-ring" id="bzRing"><span id="bzT">60</span></div><div class="bz-sc"><small>Ball</small><b id="bzS">0</b></div><div class="bz-sc"><small>Seriya</small><b id="bzK">🔥 0</b></div></div><div id="bzQ"></div>`;
+    pool = pool.slice(0, cnt);
+    G = { pool, i: 0, s: 0, w: 0, streak: 0, t0: Date.now(), end: Date.now() + DUR, lock: false };
+    $("tz").innerHTML = `<div class="bz-top"><div class="bz-ring" id="bzRing"><span id="bzT">60</span></div><div class="bz-sc"><small>Ball</small><b id="bzS">0</b></div><div class="bz-sc"><small>Savol</small><b id="bzP">1/${pool.length}</b></div><div class="bz-sc"><small>Seriya</small><b id="bzK">🔥 0</b></div></div><div class="bz-pb"><i id="bzPb"></i></div><div id="bzQ"></div>`;
     try { FX.toast("⚡ Boshladik!", "up"); } catch (e) {}
     G.tk = setInterval(tick, 100); tick(); q();
   }
@@ -3730,7 +3752,8 @@ const BLITZ = (() => {
     if (left <= 0) finish();
   }
   function q() {
-    if (!G) return; if (G.i >= G.pool.length) { G.i = 0; }
+    if (!G) return; if (G.i >= G.pool.length) return finish();
+    $("bzP").textContent = `${G.i + 1}/${G.pool.length}`; $("bzPb").style.width = (G.i / G.pool.length * 100) + "%";
     const qq = G.pool[G.i], perm = [0, 1, 2, 3]; for (let i = 3; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [perm[i], perm[j]] = [perm[j], perm[i]]; }
     G.perm = perm; G.lock = false;
     $("bzQ").innerHTML = `<div class="kh-q bz-q"><div class="q"></div></div><div class="kh-g bz-g" id="bzO"></div>`;
@@ -3754,24 +3777,26 @@ const BLITZ = (() => {
     }
     $("bzK").textContent = "🔥 " + G.streak; G.i++;
     setTimeout(() => { if (G && G.end > Date.now()) q(); }, ok ? 380 : 750);
+    if (G.i >= G.pool.length) { G.tEnd = Date.now(); }
   }
   function stop() { if (G) clearInterval(G.tk); G = null; }
   async function finish() {
     if (!G) return; const g = G; stop();
-    const u = me(), k = ck(cls), wk = GAME.wk();
+    const used = Math.min(DUR, (g.tEnd || Date.now()) - g.t0 + g.w * PEN), u = me(), k = kOf(), wk = GAME.wk();
     $("tz").innerHTML = head("⚡ Blits natijasi", cls) + `<div class="sub" style="text-align:center;margin:30px 0">Hisoblanmoqda…</div>`;
     let wOld = null, aOld = null; try { [wOld, aOld] = await Promise.all([DBA.get(`lb/bz${wk}/${u.uid}/${k}`), DBA.get(`lb/bzall/${u.uid}/${k}`)]); } catch (e) {}
-    const rec = { n: full(u), s: g.s, at: DBA.now() }, isRec = !aOld || g.s > (aOld.s || 0);
-    try { if (!wOld || g.s > (wOld.s || 0)) await DBA.set(`lb/bz${wk}/${u.uid}/${k}`, rec); if (isRec) await DBA.set(`lb/bzall/${u.uid}/${k}`, rec); } catch (e) {}
+    const better = o => !o || g.s > (o.s || 0) || (g.s === o.s && used < (o.t || DUR));
+    const rec = { n: full(u), s: g.s, t: used, at: DBA.now() }, isRec = better(aOld) && g.s > 0;
+    try { if (better(wOld)) await DBA.set(`lb/bz${wk}/${u.uid}/${k}`, rec); if (better(aOld)) await DBA.set(`lb/bzall/${u.uid}/${k}`, rec); } catch (e) {}
     const { list } = await board(cls), pos = list.findIndex(x => x.uid === u.uid);
     const acc = g.s + g.w ? Math.round(g.s / (g.s + g.w) * 100) : 0;
     const msg = g.s >= 15 ? "Chaqmoqdek tez! ⚡" : g.s >= 10 ? "Zo'r natija! 🔥" : g.s >= 5 ? "Yaxshi! Yana urinib ko'r 💪" : "Boshlanishi yomon emas! 🙂";
-    $("tz").innerHTML = head("⚡ Blits natijasi", cls) + `<div class="card bz-res${isRec && g.s ? " rec" : ""}">${isRec && g.s ? `<div class="bz-badge">🏅 YANGI REKORD!</div>` : ""}<div class="bz-big">${g.s}</div><div class="sub" style="margin:0">ta to'g'ri javob · 60 soniyada</div><b class="bz-msg">${msg}</b>
+    $("tz").innerHTML = head("⚡ Blits natijasi", cls) + `<div class="card bz-res${isRec && g.s ? " rec" : ""}">${isRec && g.s ? `<div class="bz-badge">🏅 YANGI REKORD!</div>` : ""}<div class="bz-big">${g.s}</div><div class="sub" style="margin:0">ta to'g'ri javob · ${g.pool.length} savoldan${g.tEnd ? ` · ⏱ ${Math.round(used / 1000)} soniyada` : ""}</div><b class="bz-msg">${msg}</b>
       <div class="bz-st"><div><b style="color:#22C55E">${g.s}</b><span>To'g'ri</span></div><div><b style="color:#F43F5E">${g.w}</b><span>Xato</span></div><div><b style="color:#67E8F9">${acc}%</b><span>Aniqlik</span></div><div><b style="color:#FCD34D">${pos >= 0 ? pos + 1 : "—"}</b><span>O'rin</span></div></div>
       ${!isRec && aOld ? `<p class="sub" style="margin:10px 0 0">Shaxsiy rekordingiz: <b>${aOld.s}</b> — ${aOld.s - g.s > 0 ? (aOld.s - g.s) + " ta qoldi!" : ""}</p>` : ""}</div>
       <div class="row" style="gap:10px;margin-top:12px"><button class="btn" id="bzAg" style="margin:0">🔁 Yana o'ynash</button><button class="btn ghost" id="bzHm" style="margin:0">🏠 Bosh sahifa</button></div>
-      <div class="ah">🏆 Haftaning chempionlari · ${esc(cls)}</div><div class="card" style="padding:6px 12px">${lbHtml(list, u.uid)}</div>`;
-    $("bzAg").onclick = countdown; $("bzHm").onclick = goHome;
+      <div class="ah">🏆 Haftaning chempionlari · ${esc(cls)} · ${cnt} savol</div><div class="card" style="padding:6px 12px">${lbHtml(list, u.uid)}</div>`;
+    $("bzAg").onclick = countdown; if (g.tEnd && g.s === g.pool.length) setTimeout(() => { try { PRAISE.ok($("bzAg"), 3); } catch (e) {} }, 400); $("bzHm").onclick = goHome;
     if (isRec && g.s) setTimeout(() => { try { FX.rain(160); FX.S.win && FX.S.win(); } catch (e) {} }, 300);
   }
   return { open, leave: stop };
