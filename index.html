@@ -3,7 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Jahon tarixi 11-sinf — 20–22-mavzular testi</title>
+<title>ZULPANOV METHODS TARIX</title>
+<script>
+// ===== Telegram Mini App: faqat Telegram ichida ochilganda yuklanadi =====
+window.TG_BOT = "";   // bot username (@ belgisisiz), masalan: zulpanov_tarix_bot
+window.TG_APP = "";   // BotFather /newapp da berilgan qisqa nom, masalan: app
+(function(){var h=location.hash||"",q=location.search||"";if(!/tgWebApp/.test(h+q))return;window.IN_TG=true;
+  var m=(h+"&"+q).match(/tgWebAppStartParam=([^&]+)/);window.TG_START=m?decodeURIComponent(m[1]):"";
+  document.write('<script src="https://telegram.org/js/telegram-web-app.js"><\/script>');})();
+</script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=PT+Serif:wght@400;700&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#0f1720;--card:#17212c;--card2:#1e2a37;--line:#2b3a4a;--tx:#e9eef3;--mu:#97a6b5;--ac:#e8893f;--ac2:#2fa59a;--ok:#2fb36b;--bad:#e05252}
@@ -3135,6 +3143,7 @@ function setFilter(f){
   document.querySelectorAll(".rv").forEach(r=>r.style.display=(f==="all"||r.dataset.k===f)?"":"none");
 }
 // ================== EFFEKTLAR: konfetti, ovoz, toast ==================
+function tgH(t) { try { const w = window.Telegram && Telegram.WebApp; if (w && w.HapticFeedback) w.HapticFeedback.notificationOccurred(t); } catch (e) {} }
 const FX = (() => {
   let cv, cx, parts = [], run = false, actx = null;
   let sound = (() => { try { return localStorage.getItem("zm_snd") !== "0"; } catch (e) { return true; } })();
@@ -3199,10 +3208,10 @@ const FX = (() => {
     document.body.appendChild(f); setTimeout(() => f.remove(), 1200);
   }
   function correct(el, txt) {
-    const r = el.getBoundingClientRect(); burst(r.left + r.width / 2, r.top + r.height / 2, 34, 6); if (txt) floatText(el, txt); S.ok();
+    const r = el.getBoundingClientRect(); burst(r.left + r.width / 2, r.top + r.height / 2, 34, 6); if (txt) floatText(el, txt); S.ok(); tgH("success");
     if (navigator.vibrate) try { navigator.vibrate(30); } catch (e) {}
   }
-  function wrong() { S.bad(); if (navigator.vibrate) try { navigator.vibrate([60, 40, 60]); } catch (e) {} }
+  function wrong() { S.bad(); tgH("error"); if (navigator.vibrate) try { navigator.vibrate([60, 40, 60]); } catch (e) {} }
   function countUp(el, to, ms = 1200) {
     const t0 = performance.now(); const step = now => { const k = Math.min(1, (now - t0) / ms), e = 1 - Math.pow(1 - k, 3); el.textContent = Math.round(to * e); if (k < 1) requestAnimationFrame(step); }; requestAnimationFrame(step);
   }
@@ -4793,7 +4802,7 @@ const T = (() => {
     st.unsub.push(DBA.on(`t/${code}/meta`, v => { if (!v) return; const ph = st.meta && st.meta.phase; st.meta = v; if (ph !== v.phase || !$("thb")) hRoute(); }));
     st.timer = setInterval(hTick, 250);
   }
-  const link = () => location.href.split("#")[0] + "#turnir-" + st.code;
+  const link = () => (window.TG_BOT && window.TG_APP) ? `https://t.me/${window.TG_BOT}/${window.TG_APP}?startapp=turnir-${st.code}` : location.href.split("#")[0].split("?")[0] + "#turnir-" + st.code;
   function hRoute() {
     const m = st.meta, s = { title: mTitle(m) };
     DBA.set(`a/${st.code}`, m.phase === "end" ? null : { code: st.code, set: m.set, ttl: (m.team ? "👥 " : "") + s.title, ph: m.phase, c: m.c || DBA.now() });
@@ -4802,7 +4811,7 @@ const T = (() => {
       <div class="sub" style="margin-bottom:4px">${esc(s.title)} · ${m.n} savol · ${Math.round(m.dur / 60000)} daqiqa</div>
       ${m.phase === "lobby" ? `<div class="sub" style="margin:0">Turnir kodi</div><div class="tcode">${st.code}</div>
         <div class="sub">O'quvchilar saytni ochib «Turnir rejimi»ni bosadi va shu kodni kiritadi.<br><span class="tlink"></span></div>
-        <div class="row"><button class="btn ghost" id="thcp">Havolani nusxalash</button><button class="btn" id="thst">▶ Boshlash</button></div>`
+        <div class="row"><button class="btn ghost" id="thcp">Havolani nusxalash</button><button class="btn ghost" id="thtg">✈️ Telegram'da ulashish</button></div><button class="btn" id="thst" style="margin-top:10px">▶ Boshlash</button>`
       : `<div class="row" style="align-items:center"><div style="flex:1;text-align:left"><div class="sub" style="margin:0">Kod: <b>${st.code}</b> · Ishtirokchilar: <b id="tcnt">0</b> · Tugatganlar: <b id="tdn">0</b></div></div><div class="ttm" id="ttm" style="font-size:26px">--:--</div></div>
         <button class="btn" id="thend" style="margin-top:12px;background:var(--bad)">■ Turnirni yakunlash</button>`}
       ${m.team ? `<div id="thw" class="tnote" style="margin-top:12px"></div><button class="btn ghost" id="thpj">🖥 Proyektor rejimi</button>` : ""}
@@ -4812,6 +4821,7 @@ const T = (() => {
     if (st.proj) hProj();
     if ($("thst")) {
       tz().querySelector(".tlink").textContent = link();
+      $("thtg").onclick = () => { const u = `https://t.me/share/url?url=${encodeURIComponent(link())}&text=${encodeURIComponent(`${m.team ? "👥 Jamoaviy turnir" : "🏆 Turnir"}! Kod: ${st.code}\n${mTitle(m)}`)}`; try { if (window.IN_TG && Telegram.WebApp.openTelegramLink) return Telegram.WebApp.openTelegramLink(u); } catch (e) {} window.open(u, "_blank"); };
       $("thcp").onclick = () => { navigator.clipboard && navigator.clipboard.writeText(link()).then(() => $("thcp").textContent = "Nusxalandi ✓", () => {}); };
       $("thst").onclick = () => { $("thst").disabled = true; DBA.update(`t/${st.code}/meta`, { phase: "run", startAt: DBA.now() + 5000 }); };
     }
@@ -4912,7 +4922,9 @@ const T = (() => {
     CQ.watch();
     if (AUTH.FB) { show("auth"); await AUTH.ready().catch(() => {}); }
     ACCT.restore();
-    const h = location.hash;
+    if (window.IN_TG) { try { const w = Telegram.WebApp; w.ready(); w.expand(); w.disableVerticalSwipes && w.disableVerticalSwipes(); w.setHeaderColor && w.setHeaderColor("#0f1720"); w.setBackgroundColor && w.setBackgroundColor("#0f1720"); } catch (e) {} }
+    const h = window.IN_TG ? (/^turnir-\d{4}$/.test(window.TG_START || "") ? "#" + window.TG_START : "") : location.hash;
+    if (window.IN_TG && h && ACCT.cur) { openJoin(h.split("-")[1]); join(true); return; }
     if (h.startsWith("#turnir")) openJoin((h.split("-")[1] || "").slice(0, 4));
     else if (h === "#ustoz") openHost();
     else if (h === "#statistika") { if (isAdmin()) STAT.open(); else openHost(); }
