@@ -143,6 +143,13 @@ details summary::-webkit-details-marker{color:var(--ac)}
 .bd{text-align:center;padding:10px 6px;border-radius:12px;background:var(--card2);border:1px solid var(--line);filter:grayscale(1);opacity:.45}
 .bd.on{filter:none;opacity:1;border-color:rgba(243,199,79,.5);background:linear-gradient(180deg,rgba(243,199,79,.12),var(--card2))}
 .bdi{font-size:26px}.bd b{display:block;font-size:12px;margin-top:2px}.bd span{display:block;font-size:10px;color:var(--mu);line-height:1.25;margin-top:2px}
+textarea{width:100%;padding:12px 14px;border-radius:10px;border:1px solid var(--line);background:var(--card2);color:var(--tx);font-size:15px;font-family:inherit;margin:8px 0 10px;resize:vertical;line-height:1.45}
+textarea:focus{outline:2px solid var(--ac);border-color:transparent}
+.cqex{background:var(--bg);border-radius:10px;padding:10px 12px;font-size:13px;color:#cfe3d9;white-space:pre-wrap;margin:0}
+.cqo{display:flex;gap:8px;align-items:center;margin-bottom:6px}.cqo input{margin:0}
+.cqr{flex:none;width:38px;height:38px;border-radius:10px;border:1px solid var(--line);background:var(--card2);color:var(--mu);font-weight:800;font-family:inherit;cursor:pointer}
+.cqo.ok .cqr{background:var(--ok);border-color:var(--ok);color:#fff}.cqo.ok input{border-color:var(--ok)}
+.tp-n{flex:none;min-width:44px;height:44px;padding:0 6px;border-radius:12px;background:var(--bg);display:grid;place-items:center;font-weight:800;font-size:13px;color:var(--ac)}
 .streak{display:inline-block;margin-left:8px;color:#ff9a4d;font-weight:800}
 .btn.sm{width:auto;padding:8px 12px;font-size:13px}
 .sndbtn{margin-left:auto;background:var(--card2);border:1px solid var(--line);color:var(--tx);border-radius:10px;width:38px;height:38px;font-size:18px;cursor:pointer}
@@ -2909,14 +2916,20 @@ const $=id=>document.getElementById(id);
 let PPQ=5,FN="",LN="",Q=[],order=[],ans=[],cur=0,t0=0,tick=null,name="",set=null;
 const L=["A","B","C","D"];
 
-SETS.forEach(s=>{
-  if(s.g!==SETS._lg){SETS._lg=s.g;$("tps").insertAdjacentHTML("beforeend",`<div style="font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ac2);margin-top:6px">${s.g}</div>`)}
-  const b=document.createElement("button");b.className="tp";
-  b.innerHTML=`<div class="n">${s.n}</div><div><b>${s.title}</b><span>${s.sub}</span></div>`;
-  b.onclick=()=>{set=s;document.querySelectorAll(".tp").forEach(x=>x.classList.toggle("sel",x===b));chk()};
-  $("tps").appendChild(b);
-});
-function chk(){const a=typeof ACCT!=="undefined"&&ACCT.cur;$("go").disabled=!(set&&a);$("go").textContent=a?"Testni boshlash":"Avval tizimga kiring ↑"}
+function renderTopics(){
+  const box=$("tps");if(!box)return;box.innerHTML="";let lg=null;const E=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  const gs=[];SETS.forEach(s=>{if(!gs.includes(s.g))gs.push(s.g)});
+  gs.forEach(g=>SETS.filter(s=>s.g===g).forEach(s=>{
+    if(s.g!==lg){lg=s.g;box.insertAdjacentHTML("beforeend",`<div style="font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ac2);margin-top:6px">${E(s.g)}</div>`)}
+    const b=document.createElement("button");b.className="tp"+(set&&set.id===s.id?" sel":"");
+    b.innerHTML=`<div class="n">${E(s.n)}</div><div><b>${E(s.title)}</b><span>${E(s.sub)}</span></div>`;
+    b.onclick=()=>{set=s;document.querySelectorAll(".tp").forEach(x=>x.classList.toggle("sel",x===b));chk()};
+    box.appendChild(b);
+  }));
+  try{chk()}catch(e){}
+}
+renderTopics();
+function chk(){if(!$("go"))return;const a=typeof ACCT!=="undefined"&&ACCT.cur;$("go").disabled=!(set&&a);$("go").textContent=a?"Testni boshlash":"Avval tizimga kiring ↑"}
 $("go").onclick=start;
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
 function start(){
@@ -3626,7 +3639,7 @@ const ACC = (() => {
 function adminNav(active) {
   if (active !== "hw" && typeof HW !== "undefined") HW.leaveAdmin();
   const b = (k, l, fn) => `<button class="${k === active ? "on" : ""}" onclick="${fn}">${l}</button>`;
-  return `<div class="adminbar"><div class="adm-t">⚙️ ADMIN PANEL · @${ADMIN.login}</div><div class="sttabs" style="margin:6px 0 0">${b("tur", "🏆 Turnirlar", "T.openHost()")}${b("acc", "👥 O'quvchilar", "ACC.open()")}${b("hw", "📝 Vazifalar", "HW.open()")}${b("stat", "📊 Statistika", "STAT.open()")}${b("out", "🚪 Chiqish", "adminLogout()")}</div></div>`;
+  return `<div class="adminbar"><div class="adm-t">⚙️ ADMIN PANEL · @${ADMIN.login}</div><div class="sttabs" style="margin:6px 0 0">${b("tur", "🏆 Turnirlar", "T.openHost()")}${b("acc", "👥 O'quvchilar", "ACC.open()")}${b("hw", "📝 Vazifalar", "HW.open()")}${b("cq", "✏️ Savollar", "CQ.open()")}${b("stat", "📊 Statistika", "STAT.open()")}${b("out", "🚪 Chiqish", "adminLogout()")}</div></div>`;
 }
 function adminLogout() { try { localStorage.removeItem("zm_admin"); localStorage.removeItem("zm_host"); } catch (e) {} if (AUTH.FB) AUTH.signOut(); if (typeof T !== "undefined") T.leave(); ACC.leave(); goHome(); }
 
@@ -4009,7 +4022,168 @@ const GAME = (() => {
     if (lbUn) lbUn(); lbUn = DBA.on("lb/" + weekKey(DBA.now()), v => { data = v || {}; draw(); });
     draw();
   }
-  return { track, startErrors, homeRender, statBlock, board, announce, xpOf, level, errList };
+  function reg(qs) { qs.forEach(q => { if (q._k) KEYQ[q._k] = q; }); }
+  return { reg, track, startErrors, homeRender, statBlock, board, announce, xpOf, level, errList };
+})();
+
+// ================== ADMIN: SAVOLLARNI O'ZI QO'SHISH ==================
+const CQ = (() => {
+  const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  let all = {}, un = null, ed = null, edId = null;
+  const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
+  const groups = () => { const s = []; SETS.forEach(x => { if (x.g && !s.includes(x.g)) s.push(x.g); }); return s; };
+  // ---- saytga qo'shish (barcha foydalanuvchilar uchun) ----
+  function merge(v) {
+    all = v || {};
+    for (let i = SETS.length - 1; i >= 0; i--) if (SETS[i].cq) SETS.splice(i, 1);
+    Object.entries(all).filter(([k, x]) => x && x.qs && x.qs.length && !x.hid).sort((a, b) => (a[1].c || 0) - (b[1].c || 0)).forEach(([k, x]) => {
+      const g = x.g || "Qo'shimcha testlar", qs = x.qs.filter(q => q && q.q && q.o && q.o.length === 4).map(q => ({ t: q.t || x.title, q: q.q, o: q.o.slice(), a: +q.a || 0, e: q.e || "", m: x.title, _k: "c_" + k + "_" + (q.k || "") }));
+      if (!qs.length) return;
+      const s = { id: "c_" + k, cq: 1, n: x.n || "✏️", title: x.title, sub: (x.sub ? x.sub + " · " : "") + qs.length + " savol", qs, g, subj: x.subj || g.replace(/^.*·\s*/, "") };
+      let at = -1; SETS.forEach((y, i) => { if (y.g === g && y.qs) at = i; }); // guruhdagi oxirgi testdan keyin, aralash nazoratdan oldin
+      if (at < 0) SETS.push(s); else SETS.splice(at + 1, 0, s);
+      if (typeof GAME !== "undefined") GAME.reg(qs);
+    });
+    if (typeof set !== "undefined" && set && set.cq) set = SETS.find(s => s.id === set.id) || null;
+    renderTopics();
+    if ($("cqL")) list();
+  }
+  function watch() { if (!un) un = DBA.on("cq", merge); }
+  // ---- admin ro'yxat ----
+  function open() {
+    if (!isAdmin()) return T.openHost();
+    T.leave(); ACC.leave(); watch(); ed = null; edId = null;
+    show("tz");
+    $("tz").innerHTML = `${adminNav("cq")}<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><h1 style="margin:0">✏️ Mening testlarim</h1><button class="btn sm" id="cqNew">➕ Yangi test</button></div>
+      <div class="sub" style="margin:8px 0 0">Bu yerda o'zingiz test tuzasiz yoki Word fayldan savollarni yuklaysiz. Saqlangan test darhol o'quvchilarning «Testlar» bo'limida, turnirda va vazifalarda paydo bo'ladi.</div></div>
+      <div id="cqL" style="margin-top:12px"></div>`;
+    $("cqNew").onclick = () => edit(null);
+    list();
+  }
+  function list() {
+    const L = $("cqL"); if (!L) return;
+    const arr = Object.entries(all).filter(([k, x]) => x && x.title).sort((a, b) => (b[1].upd || 0) - (a[1].upd || 0));
+    L.innerHTML = arr.length ? arr.map(([k, x]) => `<div class="card" style="margin-bottom:10px"><div style="display:flex;gap:10px;align-items:center"><div class="tp-n">${esc(x.n || "✏️")}</div><div style="flex:1;min-width:0"><b>${esc(x.title)}</b>${x.hid ? ' <span class="st-lv" style="background:#5b6b7b">yashirin</span>' : ""}<div class="st-s">${esc(x.g || "")} · ${(x.qs || []).length} savol</div></div></div>
+      <div class="acact" style="margin-top:8px"><button class="lnk" data-e="${esc(k)}">✏️ Tahrirlash</button><button class="lnk" data-h="${esc(k)}">${x.hid ? "👁 Ko'rsatish" : "🙈 Yashirish"}</button><button class="lnk" data-d="${esc(k)}" style="color:var(--bad)">🗑 O'chirish</button></div></div>`).join("")
+      : `<div class="card" style="text-align:center"><div style="font-size:38px">📝</div><p class="sub" style="margin:6px 0 0">Hali o'zingiz tuzgan test yo'q. «➕ Yangi test» tugmasini bosing.</p></div>`;
+    L.querySelectorAll("[data-e]").forEach(b => b.onclick = () => edit(b.dataset.e));
+    L.querySelectorAll("[data-h]").forEach(b => b.onclick = () => DBA.update("cq/" + b.dataset.h, { hid: all[b.dataset.h].hid ? 0 : 1 }));
+    L.querySelectorAll("[data-d]").forEach(b => b.onclick = () => { if (!b.dataset.ok) { b.dataset.ok = 1; b.textContent = "Rostdan o'chirilsinmi? Yana bosing"; return; } DBA.set("cq/" + b.dataset.d, null); });
+  }
+  // ---- muharrir ----
+  const blankQ = () => ({ k: uid(), t: "", q: "", o: ["", "", "", ""], a: 0, e: "" });
+  function edit(id) {
+    edId = id; const x = id ? JSON.parse(JSON.stringify(all[id])) : { title: "", n: "", g: groups()[0] || "", qs: [] };
+    x.qs = (x.qs || []).map(q => ({ ...blankQ(), ...q, o: (q.o || []).concat(["", "", "", ""]).slice(0, 4) }));
+    ed = x; renderEd();
+  }
+  function renderEd() {
+    const x = ed, gs = groups();
+    $("tz").innerHTML = `${adminNav("cq")}<div class="card"><div style="display:flex;justify-content:space-between;align-items:center"><h1 style="margin:0">${edId ? "✏️ Testni tahrirlash" : "➕ Yangi test"}</h1><button class="btn ghost sm" id="cqBack">← Ro'yxat</button></div>
+      <label style="margin-top:14px">Test nomi</label><input id="cqT" placeholder="masalan: O‘zbekiston tarixi: 14–18-mavzular" maxlength="90">
+      <div class="row"><div style="flex:1"><label>Belgi (qisqa)</label><input id="cqN" placeholder="14–18" maxlength="8"></div><div style="flex:2"><label>Bo'lim (sinf · fan)</label><input id="cqG" list="cqGl" placeholder="7-sinf · O‘zbekiston tarixi"><datalist id="cqGl">${gs.map(g => `<option value="${esc(g)}">`).join("")}</datalist></div></div>
+      </div>
+      <details class="card" style="margin-top:12px" ${x.qs.length ? "" : "open"}><summary style="cursor:pointer;font-weight:700">📥 Savollarni Word fayldan yoki matndan yuklash</summary>
+        <div class="sub" style="margin:10px 0">Format: savol raqam bilan, variantlar A) B) C) D) bilan. To'g'ri javobni variant oxiriga <b>*</b> qo'yib yoki savoldan keyin <b>Javob: B</b> deb yozing. Oxirida «1-B, 2-C, 3-A…» ko'rinishidagi javoblar kaliti ham bo'lishi mumkin. Izoh uchun: <b>Izoh: …</b></div>
+        <pre class="cqex">1. Turk xoqonligiga kim asos solgan?
+A) Istami
+B) Bumin *
+C) To‘n yabg‘u
+D) Tardu
+Izoh: VI asr o‘rtalari, Oltoy</pre>
+        <input type="file" id="cqF" accept=".docx,.txt" style="margin:10px 0">
+        <textarea id="cqP" rows="7" placeholder="Yoki savollarni shu yerga nusxalab qo'ying…"></textarea>
+        <div class="row" style="margin-top:8px"><button class="btn sm" id="cqImp">Matndan savollarni olish</button></div><div class="sub" id="cqImpR" style="margin:8px 0 0"></div></details>
+      <div id="cqQs" style="margin-top:12px"></div>
+      <button class="btn ghost" id="cqAdd" style="margin-top:4px">➕ Savol qo'shish</button>
+      <div class="accerr" id="cqE" style="margin-top:12px;text-align:center"></div>
+      <button class="btn" id="cqSave">💾 Saqlash va saytga chiqarish</button>`;
+    $("cqT").value = x.title || ""; $("cqN").value = x.n || ""; $("cqG").value = x.g || "";
+    $("cqT").oninput = e => x.title = e.target.value; $("cqN").oninput = e => x.n = e.target.value; $("cqG").oninput = e => x.g = e.target.value;
+    $("cqBack").onclick = open;
+    $("cqAdd").onclick = () => { x.qs.push(blankQ()); renderQs(); setTimeout(() => { const c = $("cqQs").lastElementChild; c && c.scrollIntoView({ behavior: "smooth" }); }, 50); };
+    $("cqImp").onclick = () => doImport($("cqP").value);
+    $("cqF").onchange = readFile;
+    $("cqSave").onclick = saveEd;
+    renderQs();
+  }
+  function renderQs() {
+    const x = ed, B = $("cqQs");
+    B.innerHTML = x.qs.map((q, i) => `<div class="card cqq" data-i="${i}" style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;align-items:center"><b>${i + 1}-savol</b><div class="acact" style="margin:0"><button class="lnk" data-m="up">⬆</button><button class="lnk" data-m="dn">⬇</button><button class="lnk" data-m="del" style="color:var(--bad)">🗑</button></div></div>
+      <textarea data-f="q" rows="2" placeholder="Savol matni">${esc(q.q)}</textarea>
+      ${[0, 1, 2, 3].map(k => `<div class="cqo${q.a === k ? " ok" : ""}"><button class="cqr" data-m="ok" data-k="${k}" title="To'g'ri javob">${"ABCD"[k]}</button><input data-f="o${k}" value="${esc(q.o[k])}" placeholder="${"ABCD"[k]} variant"></div>`).join("")}
+      <div class="row"><input data-f="t" value="${esc(q.t)}" placeholder="Mavzu / bo'lim (ixtiyoriy)" style="flex:1;margin:0"><input data-f="e" value="${esc(q.e)}" placeholder="Izoh (ixtiyoriy)" style="flex:2;margin:0"></div></div>`).join("") || '<div class="card" style="text-align:center"><p class="sub" style="margin:0">Savollar yo\'q. Yuqoridan yuklang yoki «➕ Savol qo\'shish» tugmasini bosing.</p></div>';
+    B.querySelectorAll(".cqq").forEach(card => {
+      const i = +card.dataset.i, q = x.qs[i];
+      card.querySelectorAll("[data-f]").forEach(inp => inp.oninput = () => { const f = inp.dataset.f; if (f[0] === "o" && f.length === 2) q.o[+f[1]] = inp.value; else q[f] = inp.value; });
+      card.onclick = e => {
+        const b = e.target.closest("button"); if (!b) return; const m = b.dataset.m;
+        if (m === "ok") { q.a = +b.dataset.k; card.querySelectorAll(".cqo").forEach((o, k) => o.classList.toggle("ok", k === q.a)); }
+        if (m === "del") { x.qs.splice(i, 1); renderQs(); }
+        if (m === "up" && i > 0) { [x.qs[i - 1], x.qs[i]] = [x.qs[i], x.qs[i - 1]]; renderQs(); }
+        if (m === "dn" && i < x.qs.length - 1) { [x.qs[i + 1], x.qs[i]] = [x.qs[i], x.qs[i + 1]]; renderQs(); }
+      };
+    });
+  }
+  async function readFile(e) {
+    const f = e.target.files[0], R = $("cqImpR"); if (!f) return;
+    R.textContent = "O'qilmoqda…";
+    try {
+      let text;
+      if (/\.docx$/i.test(f.name)) {
+        if (!window.mammoth) await new Promise((ok, no) => { const s = document.createElement("script"); s.src = "https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"; s.onload = ok; s.onerror = no; document.head.appendChild(s); });
+        text = (await mammoth.extractRawText({ arrayBuffer: await f.arrayBuffer() })).value;
+      } else text = await f.text();
+      $("cqP").value = text; doImport(text);
+    } catch (err) { R.textContent = "Faylni o'qib bo'lmadi. Word (.docx) yoki matn (.txt) fayl tanlang."; }
+  }
+  // ---- matnni savollarga aylantirish ----
+  function parse(text) {
+    const lines = String(text || "").replace(/\r/g, "").replace(/ /g, " ").split("\n").map(s => s.trim()).filter(Boolean);
+    const qs = [], key = {}; let cur = null, last = null;
+    const optRe = /^([A-DА-Г])\s*[).:\]]\s*(.*)$/i, qRe = /^(\d{1,3})\s*[.)]\s*(.+)$/, ansRe = /^(?:to[‘'ʻ`’]?g[‘'ʻ`’]?ri\s+)?(?:javob|answer|kalit)\s*[:\-–]\s*([A-DА-Г])\b/i, expRe = /^izoh\s*[:\-–]\s*(.+)$/i;
+    const letter = c => ({ "А": "A", "Б": "B", "В": "C", "Г": "D" }[c.toUpperCase()] || c.toUpperCase());
+    const pushOpt = (L, txt) => { if (!cur) return; let t = txt.trim(), ok = false; if (/^\*|\*$|\(\s*to[‘'ʻ`’]?g[‘'ʻ`’]?ri\s*\)$|\+$/i.test(t)) { ok = true; t = t.replace(/^\*\s*|\s*\*$|\s*\(\s*to[‘'ʻ`’]?g[‘'ʻ`’]?ri\s*\)$|\s*\+$/gi, ""); } const k = "ABCD".indexOf(letter(L)); cur.o[k] = t; if (ok) cur.a = k; last = { k }; };
+    for (let ln of lines) {
+      const lk = ln.replace(/^(javoblar(\s+kaliti)?|kalit|to[‘'ʻ`’]?g[‘'ʻ`’]?ri\s+javoblar|answers?)\s*[:\-–]?\s*/i, "");
+      const keys = [...lk.matchAll(/(\d{1,3})\s*[-–.)]\s*([A-DА-Г])(?![a-zа-я])/gi)];
+      if ((keys.length >= 2 || (keys.length === 1 && lk !== ln)) && keys.map(m => m[0]).join("").replace(/\s/g, "").length >= lk.replace(/[\s,;.]/g, "").length * 0.6) { keys.forEach(m => key[+m[1]] = "ABCD".indexOf(letter(m[2]))); continue; }
+      let m;
+      if ((m = ln.match(ansRe)) && cur) { cur.a = "ABCD".indexOf(letter(m[1])); continue; }
+      if ((m = ln.match(expRe)) && cur) { cur.e = m[1]; continue; }
+      if ((m = ln.match(qRe)) && !optRe.test(ln)) { cur = { ...blankQ(), n: +m[1], q: m[2], a: -1 }; qs.push(cur); last = null; continue; }
+      if (cur && /^[A-DА-Г]\s*[).]/i.test(ln) && /\s[B-DБ-Г]\s*[).]\s/i.test(ln)) { ln.split(/\s+(?=[B-DБ-Г]\s*[).]\s)/i).forEach(part => { const mm = part.match(optRe); if (mm) pushOpt(mm[1], mm[2]); }); continue; }
+      if ((m = ln.match(optRe)) && cur) { pushOpt(m[1], m[2]); continue; }
+      if (cur) { if (last) cur.o[last.k] += " " + ln; else cur.q += "\n" + ln; }
+    }
+    qs.forEach(q => { if (q.a < 0 && key[q.n] !== undefined) q.a = key[q.n]; });
+    return qs;
+  }
+  function doImport(text) {
+    const R = $("cqImpR"), qs = parse(text);
+    if (!qs.length) { R.innerHTML = "<span style='color:var(--bad)'>Savol topilmadi. Savollar «1.», «2.» kabi raqam bilan boshlanishi kerak.</span>"; return; }
+    const bad = qs.filter(q => q.a < 0 || q.o.some(o => !o.trim())).length;
+    qs.forEach(q => { if (q.a < 0) q.a = 0; delete q.n; });
+    ed.qs.push(...qs); renderQs();
+    R.innerHTML = `✅ ${qs.length} ta savol qo'shildi.` + (bad ? ` <span style="color:var(--ac)">⚠️ ${bad} ta savolda to'g'ri javob yoki variant topilmadi — quyida tekshirib, to'g'rilang (to'g'ri javob harfini bosing).</span>` : "");
+    FX.toast(`📥 ${qs.length} ta savol yuklandi`, "up");
+  }
+  async function saveEd() {
+    const x = ed, E = m => $("cqE").textContent = m;
+    x.title = (x.title || "").trim(); x.g = (x.g || "").trim(); x.n = (x.n || "").trim();
+    if (x.title.length < 3) return E("Test nomini yozing.");
+    if (!x.g) return E("Bo'limni (sinf · fan) yozing.");
+    const qs = x.qs.map(q => ({ k: q.k, t: (q.t || "").trim(), q: (q.q || "").trim(), o: q.o.map(o => (o || "").trim()), a: q.a, e: (q.e || "").trim() }));
+    const badI = qs.findIndex(q => !q.q || q.o.some(o => !o));
+    if (!qs.length) return E("Kamida bitta savol qo'shing.");
+    if (badI >= 0) { E(`${badI + 1}-savolda matn yoki variant bo'sh.`); const c = $("cqQs").children[badI]; c && c.scrollIntoView({ behavior: "smooth" }); return; }
+    const id = edId || "t" + uid(), rec = { title: x.title, n: x.n, g: x.g, qs, c: (all[id] && all[id].c) || DBA.now(), upd: DBA.now() };
+    if (all[id] && all[id].hid) rec.hid = 1;
+    $("cqSave").disabled = true;
+    try { await DBA.set("cq/" + id, rec); } catch (e) { $("cqSave").disabled = false; return E("Saqlab bo'lmadi: " + (e.message || e)); }
+    FX.toast(`💾 «${esc(x.title)}» saqlandi — ${qs.length} savol`, "up"); open();
+  }
+  return { watch, open, parse };
 })();
 
 // ================== TURNIR REJIMI ==================
@@ -4501,6 +4675,7 @@ const T = (() => {
   }
 
   async function boot() {
+    CQ.watch();
     if (AUTH.FB) { show("auth"); await AUTH.ready().catch(() => {}); }
     ACCT.restore();
     const h = location.hash;
