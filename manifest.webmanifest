@@ -1,0 +1,17 @@
+{
+  "name": "ZULPANOV METHODS TARIX",
+  "short_name": "ZM Tarix",
+  "description": "Tarix testlari, Milliy sertifikat variantlari va jonli turnirlar",
+  "lang": "uz",
+  "start_url": "./?pwa=1",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0f1720",
+  "theme_color": "#0f1720",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

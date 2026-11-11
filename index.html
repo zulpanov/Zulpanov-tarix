@@ -4,6 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ZULPANOV METHODS TARIX</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0f1720">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ZM Tarix">
+<link rel="apple-touch-icon" href="icons/apple-180.png">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
 <script>
 // ===== Telegram Mini App: faqat Telegram ichida ochilganda yuklanadi =====
 window.TG_BOT = "alimqul_tarix_testbot";   // bot username (@ belgisisiz), masalan: zulpanov_tarix_bot
@@ -256,6 +264,8 @@ body{background:radial-gradient(1200px 600px at 110% -10%,rgba(232,137,63,.13),t
 .proj{position:fixed;inset:0;z-index:90;background:var(--bg);overflow:auto;padding:28px 5vw}.proj h1{font-size:34px}
 .mvp{font-size:13px;color:var(--mu)}
 @keyframes pulse{50%{transform:scale(1.25)}}
+.pwab{display:flex;align-items:center;gap:12px;padding:12px 14px;margin-top:12px;border:1px solid rgba(232,137,63,.45);background:linear-gradient(135deg,rgba(232,137,63,.16),rgba(47,165,154,.10))}.pwab img{width:46px;height:46px;border-radius:12px;flex:none}.pwab b{display:block;font-size:15px}.pwab span{font-size:12.5px;color:var(--mu)}.pwab .btn{width:auto;padding:9px 14px;font-size:14px;flex:none}.pwab .x{background:none;border:0;color:var(--mu);font-size:18px;cursor:pointer;padding:4px;flex:none}
+.pwam{position:fixed;inset:0;z-index:95;background:rgba(0,0,0,.6);display:flex;align-items:flex-end;justify-content:center;padding:14px}.pwam .card{width:min(520px,100%);animation:zoomin .3s both}.pwam ol{padding-left:20px;line-height:1.9;font-size:15px;margin:10px 0 14px}.pwam kbd{background:var(--card2);border:1px solid var(--line);border-radius:6px;padding:1px 6px;font-family:inherit}
 </style>
 </head>
 <body>
@@ -281,6 +291,7 @@ body{background:radial-gradient(1200px 600px at 110% -10%,rgba(232,137,63,.13),t
       <div id="wlLv" style="position:relative;z-index:1;margin-top:14px"></div>
       <div class="wl-stats"><div><b id="wlT">0</b><span>Ishlangan test</span></div><div><b id="wlA">—</b><span>O'rtacha ball</span></div><div><b id="wlB">—</b><span>Eng yuqori</span></div></div>
     </div>
+    <div id="pwaBox"></div>
     <div id="homeHW"></div>
     <div class="tiles">
       <button class="tile t1" onclick="goTests()"><div class="ti">📚</div><div><b>Mavzulashtirilgan testlar</b><span>Sinfma-sinf: 6–11-sinf mavzulari bo'yicha testlar</span></div><div class="ar">›</div></button>
@@ -3404,6 +3415,44 @@ const BOTP = (() => {
   }
   return { open };
 })();
+// ================== ILOVA SIFATIDA O'RNATISH (PWA) ==================
+const PWA = (() => {
+  let ev = null;
+  const UA = navigator.userAgent || "";
+  const standalone = () => { try { return matchMedia("(display-mode: standalone)").matches || navigator.standalone === true || /[?&]pwa=1/.test(location.search); } catch (e) { return false; } };
+  const ios = /iphone|ipad|ipod/i.test(UA) || (/Macintosh/.test(UA) && navigator.maxTouchPoints > 1);
+  const inApp = /Instagram|FBAN|FBAV|Line\/|TikTok/i.test(UA);
+  const tgCan = () => { try { const w = window.Telegram && Telegram.WebApp; return !!(window.IN_TG && w && w.addToHomeScreen && (!w.isVersionAtLeast || w.isVersionAtLeast("8.0"))); } catch (e) { return false; } };
+  const hidden = () => { try { return +(localStorage.getItem("zm_pwa_x") || 0) > Date.now(); } catch (e) { return false; } };
+  addEventListener("beforeinstallprompt", e => { e.preventDefault(); ev = e; render(); });
+  addEventListener("appinstalled", () => { ev = null; try { localStorage.setItem("zm_pwa_x", Date.now() + 3650 * 864e5); } catch (e) {} if (typeof FX !== "undefined") FX.toast("✅ Ilova telefoningizga o'rnatildi!", "up"); render(); });
+  function mode() { if (standalone()) return null; if (tgCan()) return "tg"; if (window.IN_TG) return null; if (ev) return "prompt"; if (ios) return "ios"; if (/android/i.test(UA)) return "android"; return null; }
+  function render() {
+    const b = $("pwaBox"); if (!b) return;
+    const m = mode(); if (!m || hidden()) { b.innerHTML = ""; return; }
+    b.innerHTML = `<div class="card pwab"><img src="icons/icon-192.png" alt=""><div style="flex:1;min-width:0"><b>📲 Ilovani o'rnating</b><span>${m === "tg" ? "Telegram'siz, bosh ekrandan bir bosishda oching" : "Bosh ekrandan bir bosishda oching — tezroq va qulayroq"}</span></div><button class="btn" id="pwaGo">O'rnatish</button><button class="x" id="pwaX" title="Yopish">✕</button></div>`;
+    $("pwaGo").onclick = install;
+    $("pwaX").onclick = () => { try { localStorage.setItem("zm_pwa_x", Date.now() + 7 * 864e5); } catch (e) {} b.innerHTML = ""; };
+  }
+  async function install() {
+    const m = mode();
+    if (m === "tg") { try { Telegram.WebApp.addToHomeScreen(); } catch (e) {} return; }
+    if (m === "prompt" && ev) { ev.prompt(); try { const r = await ev.userChoice; if (r && r.outcome === "accepted") { ev = null; render(); } } catch (e) {} return; }
+    guide(m);
+  }
+  function guide(m) {
+    const d = document.createElement("div"); d.className = "pwam";
+    const share = '<svg width="16" height="16" viewBox="0 0 24 24" style="vertical-align:-3px" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12M7 8l5-5 5 5"/><rect x="4" y="11" width="16" height="10" rx="2"/></svg>';
+    const steps = inApp ? `<ol><li>Yuqoridagi <kbd>⋯</kbd> menyuni bosing</li><li><b>${ios ? "Safari'da ochish" : "Brauzerda ochish"}</b> ni tanlang</li><li>So'ng shu yerdagi «O'rnatish» tugmasini qayta bosing</li></ol>`
+      : m === "ios" ? `<ol><li>Pastdagi <b>«Ulashish»</b> ${share} tugmasini bosing</li><li><b>«Добавить на экран „Домой“»</b> / <b>«Add to Home Screen»</b> ni tanlang</li><li>O'ng yuqoridagi <b>«Qo'shish»</b> (Add) ni bosing</li></ol><div class="sub" style="margin:0 0 12px">Faqat <b>Safari</b> brauzerida ishlaydi.</div>`
+      : `<ol><li>Brauzerning yuqori o'ng burchagidagi <kbd>⋮</kbd> menyuni bosing</li><li><b>«Установить приложение»</b> / <b>«Install app»</b> yoki <b>«Добавить на главный экран»</b> ni tanlang</li><li><b>«Установить»</b> (Install) ni bosing</li></ol>`;
+    d.innerHTML = `<div class="card"><h1 style="display:flex;align-items:center;gap:10px"><img src="icons/icon-192.png" style="width:40px;height:40px;border-radius:10px" alt="">Ilovani o'rnatish</h1>${steps}<button class="btn" id="pwaOk">Tushunarli</button></div>`;
+    document.body.appendChild(d);
+    d.onclick = e => { if (e.target === d || e.target.id === "pwaOk") d.remove(); };
+  }
+  if ("serviceWorker" in navigator && /^https?:$/.test(location.protocol) && !window.IN_TG) addEventListener("load", () => { navigator.serviceWorker.register("sw.js").catch(() => {}); });
+  return { render, install };
+})();
 const ACCT = (() => {
   const L = { get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }, del(k) { try { localStorage.removeItem(k); } catch (e) {} } };
   let cur = null, ready = false;
@@ -3545,6 +3594,7 @@ const ACCT = (() => {
     if (!cur) return;
     $("wlAv").textContent = (cur.f[0] || "") + (cur.l[0] || ""); $("wlN").textContent = cur.f + " " + cur.l;
     $("wlG").textContent = "@" + cur.login + (cur.g ? " · " + cur.g : ""); $("wlHi").textContent = greet();
+    PWA.render();
     $("wlX").onclick = () => { if (TGB.on()) TGB.call("unlink").catch(() => {}); logout(); };
     watchH();
     const fill = () => {
