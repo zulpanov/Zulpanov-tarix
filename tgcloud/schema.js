@@ -4,7 +4,6 @@ import { table, integer, text, boolean, index, sql } from 'sdk/db';
 export const users = table('users', {
   tgId:    integer('tg_id').primaryKey(),
   login:   text('login').notNull(),
-  pw:      text('pw'),
   name:    text('name'),
   grp:     text('grp'),
   isAdmin: boolean('is_admin').default(false),
