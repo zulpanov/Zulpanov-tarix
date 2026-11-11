@@ -442,6 +442,28 @@ body.dlm #bkb{display:none!important}
 .dl-res{text-align:center}.dl-big{font-size:22px;font-weight:900;margin-top:4px}.dl-res.win{border-color:rgba(34,197,94,.5)!important;background:linear-gradient(160deg,rgba(34,197,94,.18),rgba(255,255,255,.04))!important}.dl-res.lose{border-color:rgba(244,63,94,.4)!important}.dl-res.tie{border-color:rgba(167,139,250,.5)!important}
 .dl-home{display:flex;align-items:center;gap:12px;width:100%;margin-top:10px;padding:12px 14px;text-align:left;cursor:pointer;color:var(--tx);font-family:inherit;background:linear-gradient(135deg,rgba(244,114,182,.22),rgba(124,58,237,.18))!important;border-color:rgba(244,114,182,.4)!important}
 .dl-hx{width:44px;height:44px;flex:none;border-radius:14px;display:grid;place-items:center;font-size:22px;background:linear-gradient(135deg,#EC4899,#8B5CF6);box-shadow:0 0 16px rgba(236,72,153,.5)}.dl-hm{flex:1;min-width:0}.dl-hm b{display:block;font-size:15px}.dl-hm small{display:block;font-size:12px;color:var(--mu)}
+
+/* ===== BLITS ===== */
+.gm-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.gm-row .dl-home{margin:0;flex-direction:column;align-items:flex-start;gap:10px;padding:14px}
+.bz-home{background:linear-gradient(135deg,rgba(250,204,21,.2),rgba(249,115,22,.14))!important;border-color:rgba(250,204,21,.4)!important}.bz-home .dl-hx{background:linear-gradient(135deg,#FACC15,#F97316);box-shadow:0 0 16px rgba(250,204,21,.5)}
+.bz-hero{text-align:center;padding:20px}.bz-hero>b{font-size:17px}
+.bz-clock{width:110px;height:110px;margin:0 auto 12px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(circle at 35% 30%,#FDE68A,#F59E0B 55%,#B45309);box-shadow:0 0 40px rgba(245,158,11,.55);color:#3B1D00}.bz-clock span{font-size:42px;font-weight:900;line-height:1}.bz-clock small{font-size:11px;font-weight:700}
+.bz-rules{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin:12px 0}.bz-rules span{font-size:12px;padding:5px 10px;border-radius:14px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1)}
+.bz-best{font-size:13px;color:var(--mu);margin-bottom:12px}.bz-best b{color:#FCD34D;font-size:16px}
+.bz-r{display:flex;align-items:center;gap:10px;padding:8px 2px}.bz-r+.bz-r{border-top:1px solid rgba(255,255,255,.07)}.bz-r.me{background:rgba(139,92,246,.15);border-radius:12px;padding:8px}.bz-i{width:26px;text-align:center;font-weight:800;color:var(--mu)}.bz-r b{flex:1;font-size:14px;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.bz-r em{font-style:normal;font-weight:900;font-size:17px;color:#FCD34D}
+.bz-cd{height:60vh;display:flex;flex-direction:column;align-items:center;justify-content:center}.bz-cd b{font-size:120px;font-weight:900;line-height:1;background:linear-gradient(180deg,#FDE047,#F97316);-webkit-background-clip:text;background-clip:text;color:transparent;animation:pbin .6s cubic-bezier(.2,1.4,.4,1)}.bz-cd span{color:var(--mu);margin-top:8px}
+.bz-top{display:flex;align-items:center;gap:10px;margin:2px 0 14px}
+.bz-ring{--p:100;width:72px;height:72px;flex:none;border-radius:50%;padding:5px;background:conic-gradient(#FACC15 calc(var(--p)*1%),rgba(255,255,255,.1) 0)}.bz-ring span{display:grid;place-items:center;width:100%;height:100%;border-radius:50%;background:#0A0720;font-size:24px;font-weight:900}
+.bz-ring.low{background:conic-gradient(#EF4444 calc(var(--p)*1%),rgba(255,255,255,.1) 0)}.bz-ring.low span{color:#FCA5A5;animation:bump .5s infinite}.bz-ring.hit{animation:shake .4s}
+.bz-sc{flex:1;text-align:center;padding:8px;border-radius:16px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1)}.bz-sc small{display:block;font-size:11px;color:var(--mu)}.bz-sc b{font-size:22px;font-weight:900;display:inline-block}.bz-sc b.bump{animation:bump .4s}
+.bz-q{padding:18px 16px;font-size:17px}.bz-g .kh-o{min-height:96px;font-size:14.5px}
+.bz-fl{position:fixed;z-index:90;pointer-events:none;transform:translate(-50%,-50%);font-weight:900;font-size:30px;animation:floatUp .9s ease-out forwards}.bz-fl.ok{color:#FDE047;text-shadow:0 3px 12px rgba(0,0,0,.5)}.bz-fl.bad{color:#F87171;font-size:24px;text-shadow:0 3px 12px rgba(0,0,0,.6)}
+@keyframes floatUp{0%{opacity:0;margin-top:0}20%{opacity:1}100%{opacity:0;margin-top:-90px}}
+@keyframes bump{0%{transform:scale(1)}40%{transform:scale(1.35)}100%{transform:scale(1)}}
+.bz-res{text-align:center;padding:22px 18px}.bz-res.rec{border-color:rgba(250,204,21,.6)!important;background:linear-gradient(160deg,rgba(250,204,21,.16),rgba(255,255,255,.04))!important}
+.bz-badge{display:inline-block;font-size:12px;font-weight:900;letter-spacing:.12em;color:#3B1D00;background:linear-gradient(135deg,#FDE047,#F59E0B);padding:6px 14px;border-radius:20px;margin-bottom:8px;animation:pbin .5s cubic-bezier(.2,1.4,.4,1)}
+.bz-big{font-size:84px;font-weight:900;line-height:1;background:linear-gradient(180deg,#FDE047,#F97316);-webkit-background-clip:text;background-clip:text;color:transparent}
+.bz-msg{display:block;font-size:17px;margin-top:10px}.bz-st{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:14px}.bz-st div{padding:8px 2px;border-radius:12px;background:rgba(255,255,255,.05)}.bz-st b{display:block;font-size:19px}.bz-st span{font-size:10.5px;color:var(--mu)}
 </style>
 </head>
 <body>
@@ -475,7 +497,8 @@ body.dlm #bkb{display:none!important}
       <button class="tile t2" onclick="T.openJoin()"><div class="ti">🏆</div><div><b>Turnir</b><span>Kod bilan jonli bellashuv</span></div><span class="badge hide" id="tBadge">JONLI</span></button>
       <button class="tile t3" onclick="ACCT.history()"><div class="ti">📊</div><div><b>Statistika</b><span>Natijalar va o'sish</span></div></button>
     </div>
-    <button class="card dl-home" onclick="DUEL.open()"><span class="dl-hx">⚔️</span><span class="dl-hm"><b>Duel</b><small>Sinfdoshingni 1 ga 1 bellashuvga chaqir</small></span><span class="dl-go">›</span></button>
+    <div class="hsec-t">O'yinlar</div>
+    <div class="gm-row"><button class="card dl-home" onclick="DUEL.open()"><span class="dl-hx">⚔️</span><span class="dl-hm"><b>Duel</b><small>1 ga 1 bellashuv</small></span></button><button class="card dl-home bz-home" onclick="BLITZ.open()"><span class="dl-hx">⚡</span><span class="dl-hm"><b>Blits</b><small>60 soniyalik poyga</small></span></button></div>
     <div class="tiles2"><button class="tile2" id="errT" onclick="GAME.startErrors()"><div class="ti2">🔁</div><b>Xatolarim</b><span id="errN">—</span></button><button class="tile2" onclick="GAME.board()"><div class="ti2">🏅</div><b>Haftalik reyting</b><span>Top o'quvchilar</span></button></div>
     <div id="pwaBox"></div>
   </section>
@@ -3168,7 +3191,7 @@ function start(){
 }
 function fmt(ms){const s=Math.floor(ms/1000);return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0")}
 var BKfn;function BK(fn){BKfn=fn;const hm=["home","auth"].some(i=>$(i)&&!$(i).classList.contains("hide"));$("bkb").classList.toggle("hide",!fn||hm)}
-function show(id){document.body.classList.remove("adm","dlm");try{$("amore").classList.add("hide")}catch(e){}["auth","home","start","quiz","res","tz"].forEach(s=>$(s).classList.toggle("hide",s!==id));BK(id==="res"?(()=>{if(FROM_T)goHome();else{renderTopics();show("start")}}):id==="start"?BKfn:null);setNav(id==="start"&&typeof VIEW!=="undefined"&&VIEW.k==="ms"?"ms":({home:"home",start:"tests",res:"tests"}[id]||null));window.scrollTo(0,0)}
+function show(id){document.body.classList.remove("adm","dlm");if(id!=="tz"){try{BLITZ.leave()}catch(e){}}try{$("amore").classList.add("hide")}catch(e){}["auth","home","start","quiz","res","tz"].forEach(s=>$(s).classList.toggle("hide",s!==id));BK(id==="res"?(()=>{if(FROM_T)goHome();else{renderTopics();show("start")}}):id==="start"?BKfn:null);setNav(id==="start"&&typeof VIEW!=="undefined"&&VIEW.k==="ms"?"ms":({home:"home",start:"tests",res:"tests"}[id]||null));window.scrollTo(0,0)}
 function setNav(active){const on=!!(active&&typeof ACCT!=="undefined"&&ACCT.cur);$("bnav").classList.toggle("hide",!on);[...$("bnav").children].forEach(b=>b.classList.toggle("on",b.dataset.g===active));const av=$("hdrAv");if(av){const c=typeof ACCT!=="undefined"&&ACCT.cur;av.classList.toggle("hide",!c);if(c){const k=c.uid+"|"+c.f+c.l;if(av.dataset.k!==k){av.dataset.k=k;av.innerHTML=AV.html(c.uid,c.f+" "+c.l,"fill")}}}}
 function goHome(){if(typeof ACCT!=="undefined"&&ACCT.cur){show("home");ACCT.renderHome()}else show("auth")}
 function goTests(){VIEW={k:"cls"};set=null;show("start");renderTopics()}
@@ -3647,6 +3670,111 @@ const DUEL = (() => {
   function pending() { let c = null; try { c = ls.get("zm_duel"); } catch (e) {} if (c && me()) { try { ls.del("zm_duel"); } catch (e) {} setTimeout(() => openLink(c), 700); return false; } return false; }
   window.addEventListener("hashchange", () => { const h = location.hash; if (!h.startsWith("#duel-")) return; const dc = h.slice(6); try { history.replaceState(null, "", location.pathname + location.search); } catch (e) {} if (me()) openLink(dc); else { ls.set("zm_duel", dc); FX.toast("⚔️ Duelga kirish uchun avval tizimga kiring"); } });
   return { open, openLink, pending, leave() { if (G) clearInterval(G.tk); G = null; } };
+})();
+
+
+// ================== BLITS — 60 SONIYA ==================
+const BLITZ = (() => {
+  const DUR = 60000, PEN = 3000;
+  const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const me = () => ACCT.cur, full = c => (c.f + " " + (c.l || "")).trim();
+  const ck = c => String(parseInt(c) || c).replace(/[^0-9a-z]/gi, "");
+  const groups = () => { const g = {}; SETS.filter(x => x.qs && !x.ms).forEach(x => { const c = clsOf(x.g); (g[c] = g[c] || []).push(x); }); return g; };
+  let cls = null, G = null;
+  function head(t, sub) { document.body.classList.add("dlm"); return `<div class="dl-h"><button class="adh-b" onclick="goHome()" title="Bosh sahifa">‹</button><div class="adh-t"><small>${esc(sub || "60 soniyalik poyga")}</small><b>${t}</b></div><button class="adh-b" onclick="goHome()" title="Bosh sahifa">🏠</button></div>`; }
+  async function board(c) {
+    let w = {}, a = null; const k = ck(c), u = me();
+    try { [w, a] = await Promise.all([DBA.get("lb/bz" + GAME.wk()), u ? DBA.get("lb/bzall/" + u.uid + "/" + k) : null]); } catch (e) {}
+    const list = Object.entries(w || {}).map(([uid, v]) => v && v[k] ? { uid, ...v[k] } : null).filter(Boolean).sort((x, y) => y.s - x.s || x.at - y.at);
+    return { list, best: a && a.s || 0 };
+  }
+  function lbHtml(list, myUid, lim = 10) {
+    if (!list.length) return `<p class="sub" style="text-align:center;margin:12px 0">Bu hafta hali hech kim o'ynamadi. Birinchi bo'ling! ⚡</p>`;
+    return list.slice(0, lim).map((x, i) => `<div class="bz-r${x.uid === myUid ? " me" : ""}"><span class="bz-i">${["🥇", "🥈", "🥉"][i] || i + 1}</span>${AV.html(x.uid, x.n, "sm")}<b>${esc(x.n)}${x.uid === myUid ? " (siz)" : ""}</b><em>${x.s}</em></div>`).join("");
+  }
+  async function open() {
+    const u = me(); if (!u) return goHome();
+    try { T.leave(); } catch (e) {} try { DUEL.leave(); } catch (e) {}
+    stop(); show("tz"); setNav(null); BK(null);
+    const g = groups(), cl = Object.keys(g).sort((a, b) => parseInt(a) - parseInt(b));
+    if (!cls || !g[cls]) cls = cl.find(c => String(u.g || "").startsWith(String(parseInt(c)))) || cl[0];
+    $("tz").innerHTML = head("⚡ Blits") + `<div class="dl-cls">${cl.map(c => `<button class="${c === cls ? "on" : ""}" data-c="${esc(c)}">${esc(c)}</button>`).join("")}</div>
+      <div class="card bz-hero"><div class="bz-clock"><span>60</span><small>soniya</small></div><b>Qancha ko'p topsang — shuncha zo'r!</b>
+      <div class="bz-rules"><span>✅ To'g'ri = +1</span><span>❌ Xato = −3 soniya</span><span>📚 ${esc(cls)} · barcha mavzular</span></div>
+      <div class="bz-best" id="bzBest">Shaxsiy rekord: …</div><button class="btn" id="bzGo">▶ Boshlash</button></div>
+      <div class="ah">🏆 Haftaning chempionlari · ${esc(cls)}</div><div class="card" style="padding:6px 12px" id="bzL"><div class="sub" style="text-align:center;margin:12px 0">Yuklanmoqda…</div></div>`;
+    $("tz").querySelector(".dl-cls").onclick = e => { const b = e.target.closest("[data-c]"); if (b) { cls = b.dataset.c; open(); } };
+    $("bzGo").onclick = () => countdown();
+    const { list, best } = await board(cls); if (!$("bzL")) return;
+    $("bzBest").innerHTML = best ? `🏅 Shaxsiy rekordingiz: <b>${best}</b>` : "Hali rekord yo'q — birinchisini o'rnating!";
+    $("bzL").innerHTML = lbHtml(list, u.uid);
+  }
+  function countdown() {
+    show("tz"); setNav(null); BK(null); document.body.classList.add("dlm");
+    let n = 3; $("tz").innerHTML = `<div class="bz-cd"><b id="bzN">3</b><span>Tayyorlaning…</span></div>`;
+    try { FX.S.tick(); } catch (e) {}
+    const iv = setInterval(() => { n--; if (!$("bzN")) return clearInterval(iv); if (n <= 0) { clearInterval(iv); return start(); } const e = $("bzN"); e.textContent = n; e.style.animation = "none"; void e.offsetWidth; e.style.animation = ""; try { FX.S.tick(); } catch (x) {} }, 800);
+  }
+  function start() {
+    const pool = (groups()[cls] || []).flatMap(x => x.qs);
+    for (let i = pool.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [pool[i], pool[j]] = [pool[j], pool[i]]; }
+    G = { pool, i: 0, s: 0, w: 0, streak: 0, end: Date.now() + DUR, lock: false };
+    $("tz").innerHTML = `<div class="bz-top"><div class="bz-ring" id="bzRing"><span id="bzT">60</span></div><div class="bz-sc"><small>Ball</small><b id="bzS">0</b></div><div class="bz-sc"><small>Seriya</small><b id="bzK">🔥 0</b></div></div><div id="bzQ"></div>`;
+    try { FX.toast("⚡ Boshladik!", "up"); } catch (e) {}
+    G.tk = setInterval(tick, 100); tick(); q();
+  }
+  function tick() {
+    if (!G) return; if (!$("bzT")) return stop();
+    const left = Math.max(0, G.end - Date.now());
+    $("bzT").textContent = Math.ceil(left / 1000); $("bzRing").style.setProperty("--p", left / DUR * 100); $("bzRing").classList.toggle("low", left < 10000);
+    if (left <= 0) finish();
+  }
+  function q() {
+    if (!G) return; if (G.i >= G.pool.length) { G.i = 0; }
+    const qq = G.pool[G.i], perm = [0, 1, 2, 3]; for (let i = 3; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [perm[i], perm[j]] = [perm[j], perm[i]]; }
+    G.perm = perm; G.lock = false;
+    $("bzQ").innerHTML = `<div class="kh-q bz-q"><div class="q"></div></div><div class="kh-g bz-g" id="bzO"></div>`;
+    $("bzQ").querySelector(".q").textContent = qq.q;
+    perm.forEach((oi, k) => { const b = document.createElement("button"); b.className = "opt kh-o k" + k; b.innerHTML = `<span class="sh">${"▲◆●■"[k]}</span><span></span>`; b.lastChild.textContent = qq.o[oi]; b.onclick = () => ans(oi, b); $("bzO").appendChild(b); });
+  }
+  function floatAt(el, txt, cls2) { const r = el.getBoundingClientRect(), d = document.createElement("div"); d.className = "bz-fl " + cls2; d.textContent = txt; d.style.left = (r.left + r.width / 2) + "px"; d.style.top = (r.top + r.height / 2) + "px"; document.body.appendChild(d); setTimeout(() => d.remove(), 900); }
+  function ans(oi, b) {
+    if (!G || G.lock) return; G.lock = true; $("bzO").classList.add("done");
+    const qq = G.pool[G.i], ok = oi === qq.a; try { GAME.track(qq, ok); } catch (e) {}
+    b.classList.add(ok ? "okk" : "bad");
+    if (ok) {
+      G.s++; G.streak++; floatAt(b, "+1", "ok"); try { FX.S.ok(); FX.S.tick && 0; } catch (e) {}
+      try { const H = Telegram.WebApp.HapticFeedback; H.impactOccurred("light"); } catch (e) {}
+      if (G.streak % 3 === 0) PRAISE.ok(b, G.streak); 
+      $("bzS").textContent = G.s; $("bzS").classList.remove("bump"); void $("bzS").offsetWidth; $("bzS").classList.add("bump");
+    } else {
+      G.w++; G.streak = 0; G.end -= PEN; floatAt($("bzRing"), "−3 s", "bad"); try { FX.wrong(); } catch (e) {}
+      [...$("bzO").children].forEach((x, k) => { if (G.perm[k] === qq.a) x.classList.add("okk"); });
+      $("bzRing").classList.remove("hit"); void $("bzRing").offsetWidth; $("bzRing").classList.add("hit");
+    }
+    $("bzK").textContent = "🔥 " + G.streak; G.i++;
+    setTimeout(() => { if (G && G.end > Date.now()) q(); }, ok ? 380 : 750);
+  }
+  function stop() { if (G) clearInterval(G.tk); G = null; }
+  async function finish() {
+    if (!G) return; const g = G; stop();
+    const u = me(), k = ck(cls), wk = GAME.wk();
+    $("tz").innerHTML = head("⚡ Blits natijasi", cls) + `<div class="sub" style="text-align:center;margin:30px 0">Hisoblanmoqda…</div>`;
+    let wOld = null, aOld = null; try { [wOld, aOld] = await Promise.all([DBA.get(`lb/bz${wk}/${u.uid}/${k}`), DBA.get(`lb/bzall/${u.uid}/${k}`)]); } catch (e) {}
+    const rec = { n: full(u), s: g.s, at: DBA.now() }, isRec = !aOld || g.s > (aOld.s || 0);
+    try { if (!wOld || g.s > (wOld.s || 0)) await DBA.set(`lb/bz${wk}/${u.uid}/${k}`, rec); if (isRec) await DBA.set(`lb/bzall/${u.uid}/${k}`, rec); } catch (e) {}
+    const { list } = await board(cls), pos = list.findIndex(x => x.uid === u.uid);
+    const acc = g.s + g.w ? Math.round(g.s / (g.s + g.w) * 100) : 0;
+    const msg = g.s >= 15 ? "Chaqmoqdek tez! ⚡" : g.s >= 10 ? "Zo'r natija! 🔥" : g.s >= 5 ? "Yaxshi! Yana urinib ko'r 💪" : "Boshlanishi yomon emas! 🙂";
+    $("tz").innerHTML = head("⚡ Blits natijasi", cls) + `<div class="card bz-res${isRec && g.s ? " rec" : ""}">${isRec && g.s ? `<div class="bz-badge">🏅 YANGI REKORD!</div>` : ""}<div class="bz-big">${g.s}</div><div class="sub" style="margin:0">ta to'g'ri javob · 60 soniyada</div><b class="bz-msg">${msg}</b>
+      <div class="bz-st"><div><b style="color:#22C55E">${g.s}</b><span>To'g'ri</span></div><div><b style="color:#F43F5E">${g.w}</b><span>Xato</span></div><div><b style="color:#67E8F9">${acc}%</b><span>Aniqlik</span></div><div><b style="color:#FCD34D">${pos >= 0 ? pos + 1 : "—"}</b><span>O'rin</span></div></div>
+      ${!isRec && aOld ? `<p class="sub" style="margin:10px 0 0">Shaxsiy rekordingiz: <b>${aOld.s}</b> — ${aOld.s - g.s > 0 ? (aOld.s - g.s) + " ta qoldi!" : ""}</p>` : ""}</div>
+      <div class="row" style="gap:10px;margin-top:12px"><button class="btn" id="bzAg" style="margin:0">🔁 Yana o'ynash</button><button class="btn ghost" id="bzHm" style="margin:0">🏠 Bosh sahifa</button></div>
+      <div class="ah">🏆 Haftaning chempionlari · ${esc(cls)}</div><div class="card" style="padding:6px 12px">${lbHtml(list, u.uid)}</div>`;
+    $("bzAg").onclick = countdown; $("bzHm").onclick = goHome;
+    if (isRec && g.s) setTimeout(() => { try { FX.rain(160); FX.S.win && FX.S.win(); } catch (e) {} }, 300);
+  }
+  return { open, leave: stop };
 })();
 
 // ================== NATIJALARNI SAQLASH ==================
