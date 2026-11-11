@@ -122,6 +122,7 @@ select{width:100%;padding:13px 14px;border-radius:10px;border:1px solid var(--li
 .acact{display:flex;gap:14px;flex-wrap:wrap;margin-top:4px}
 .adminbar{background:linear-gradient(135deg,#2a2420,#17212c);border:1px solid var(--ac);border-radius:16px;padding:12px 14px;margin-bottom:12px}.adm-t{font-size:11px;font-weight:800;letter-spacing:.12em;color:var(--ac)}
 details summary::-webkit-details-marker{color:var(--ac)}
+.chipg{font-size:13px;padding:6px 11px;border-radius:999px;background:var(--card2);border:1px solid var(--line)}
 .streak{display:inline-block;margin-left:8px;color:#ff9a4d;font-weight:800}
 .btn.sm{width:auto;padding:8px 12px;font-size:13px}
 .sndbtn{margin-left:auto;background:var(--card2);border:1px solid var(--line);color:var(--tx);border-radius:10px;width:38px;height:38px;font-size:18px;cursor:pointer}
@@ -215,6 +216,7 @@ body{background:radial-gradient(1200px 600px at 110% -10%,rgba(232,137,63,.13),t
       <div class="wl-top"><div class="avatar" id="wlAv"></div><div style="flex:1;min-width:0"><div class="wl-hi" id="wlHi">Xush kelibsiz</div><div class="wl-n" id="wlN"></div><div class="st-s" id="wlG"></div></div><button class="btn ghost sm" id="wlX">Chiqish</button></div>
       <div class="wl-stats"><div><b id="wlT">0</b><span>Ishlangan test</span></div><div><b id="wlA">—</b><span>O'rtacha ball</span></div><div><b id="wlB">—</b><span>Eng yuqori</span></div></div>
     </div>
+    <div id="homeHW"></div>
     <div class="tiles">
       <button class="tile t1" onclick="goTests()"><div class="ti">📚</div><div><b>Mavzulashtirilgan testlar</b><span>Mavzuni tanlang, test ishlang va sertifikat oling</span></div><div class="ar">›</div></button>
       <button class="tile t2" onclick="T.openJoin()"><div class="ti">🏆</div><div><b>Turnirda qatnashish</b><span>Ustoz bergan kod bilan sinfdoshlaringiz bilan jonli bellashing</span></div><div class="ar">›</div><span class="badge hide" id="tBadge">JONLI</span></button>
@@ -2837,7 +2839,7 @@ function chk(){const a=typeof ACCT!=="undefined"&&ACCT.cur;$("go").disabled=!(se
 $("go").onclick=start;
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
 function start(){
-  FROM_T=false;
+  FROM_T=false;HWCUR=HWNEXT;HWNEXT=null;
   const ac=ACCT.cur;if(!ac)return;FN=ac.f;LN=ac.l;name=FN+" "+LN;
   if(!set.qs){Q=shuffle(SETS.filter(s=>s.qs&&s.g===set.g).flatMap(s=>s.qs)).slice(0,20)}else{Q=set.qs}
   order=Q.map((q,i)=>({i,idx:shuffle([0,1,2,3])}));
@@ -2915,7 +2917,7 @@ function finish(){
   });
   setFilter("all");show("res");
   if(lv){setTimeout(()=>{FX.rain(pts>=70?220:120);FX.S.win()},900)}
-  if(!FROM_T)saveResult({n:name,set:set.id,ttl:set.title,mode:"test",ok,tot:Q.length,pts,lv:lv||"",dur:Date.now()-t0,sec:by});
+  if(!FROM_T){const R={n:name,set:set.id,ttl:set.title,mode:"test",ok,tot:Q.length,pts,lv:lv||"",dur:Date.now()-t0,sec:by};if(HWCUR)R.hw=HWCUR.id;saveResult(R)}
 }
 function level(p){return p>=70?"A+":p>=65?"A":p>=60?"B+":p>=55?"B":p>=50?"C+":p>=45?"C":null}
 function isGirl(fn,ln){
@@ -3126,7 +3128,8 @@ function saveResult(r) {
     const ac = typeof ACCT !== "undefined" && ACCT.cur; if (ac) r.u = ac.login;
     const rec = { ...r, at: DBA.now() };
     DBA.set("r/" + id, rec).catch(() => {});
-    if (ac) DBA.set("h/" + ac.uid + "/" + id, { ttl: rec.ttl, mode: rec.mode, ok: rec.ok, tot: rec.tot, pts: rec.pts, lv: rec.lv, at: rec.at }).catch(() => {});
+    if (ac) DBA.set("h/" + ac.uid + "/" + id, { ttl: rec.ttl, mode: rec.mode, ok: rec.ok, tot: rec.tot, pts: rec.pts, lv: rec.lv, at: rec.at, ...(rec.hw ? { hw: rec.hw } : {}) }).catch(() => {});
+    if (ac && rec.hw) HW.record(rec, ac);
   } catch (e) {}
 }
 
@@ -3305,7 +3308,7 @@ const ACCT = (() => {
         <div class="row"><div style="flex:1"><label>Parol</label><input id="rP" type="password" placeholder="kamida 6 belgi"></div><div style="flex:1"><label>Parolni takrorlang</label><input id="rP2" type="password"></div></div>
         <div class="tnote" style="font-size:12px">⚠️ Boshqa joylarda (Telegram, Instagram, pochta) ishlatadigan parolingizni yozmang. Bu parolni ustozingiz ko'ra oladi.</div>
         <div class="accerr" id="aE"></div><button class="btn" id="rGo">Ro'yxatdan o'tish</button>`;
-      $("rGo").onclick = register;
+      $("rGo").onclick = register; HW.fillRegGroups();
     }
     if (msg) $("aE").textContent = msg;
   }
@@ -3395,7 +3398,7 @@ const ACCT = (() => {
       if (rs.length) { const r = rs[0]; L.style.display = ""; L.innerHTML = `<div class="sub" style="margin:0 0 8px">Oxirgi natijangiz</div><div class="lastres"><div class="st-ic" style="font-size:26px">${r.mode === "turnir" ? "🏆" : "📝"}</div><div class="st-m"><b>${esc(r.ttl)}</b><div class="st-s">${dt(r.at)}${r.mode === "turnir" ? ` · ${r.rank}-o'rin` : ""}</div></div><div class="st-r"><div class="st-p">${r.pts}</div>${r.lv ? `<span class="st-lv" style="background:${lvCol(r.lv)}">${esc(r.lv)}</span>` : ""}</div></div>`; }
       else { L.style.display = ""; L.innerHTML = `<div class="lastres"><div style="font-size:30px">🚀</div><div><b>Birinchi testingizni boshlang!</b><div class="st-s">«Mavzulashtirilgan testlar» bo'limidan mavzu tanlang.</div></div></div>`; }
     };
-    hListeners.add(fill); fill();
+    hListeners.add(fill); hListeners.add(HW.renderStudent); fill(); HW.renderStudent();
     if (!aUn) aUn = DBA.on("a", v => { const now = DBA.now(); const live = Object.values(v || {}).some(x => x && x.ph !== "end" && now - (x.c || 0) < 6 * 3600e3); if ($("tBadge")) $("tBadge").classList.toggle("hide", !live); });
   }
   let aUn = null;
@@ -3423,7 +3426,7 @@ const ACCT = (() => {
     hListeners.add(fill); fill();
   }
   function drop() { cur = null; L.del("zm_user"); L.del("zm_active"); if (hUn) { hUn(); hUn = null; } hLogin = null; }
-  return { restore, get cur() { return cur; }, logout, renderBox, history, renderHome, drop };
+  return { get recs() { return recs(); }, restore, get cur() { return cur; }, logout, renderBox, history, renderHome, drop };
 })();
 
 // ================== ADMIN: O'QUVCHILAR HISOBLARI ==================
@@ -3499,7 +3502,7 @@ const ACC = (() => {
           <div class="st-s">${x.g ? esc(x.g) + " · " : ""}ro'yxat: ${dt(x.c)} · oxirgi kirish: ${dt(x.last)}</div>
           <div class="cred"><span>Login: <code>${esc(x.login)}</code></span><span>Parol: <code class="pw">${showAll || shown.has(x.u) ? esc(x.p) : "••••••"}</code> <button class="lnk" data-a="eye">${showAll || shown.has(x.u) ? "yashirish" : "ko'rsatish"}</button></span></div>
           <div class="st-s">${x.n ? `${x.n} ta test · o'rtacha ${x.avg} ball` : "hali test ishlamagan"}</div>
-          <div class="acact"><button class="lnk" data-a="pw">🔑 Parolni o'zgartirish</button><button class="lnk" data-a="blk">${x.b ? "✅ Blokdan chiqarish" : "🚫 Bloklash"}</button><button class="lnk" data-a="del" style="color:var(--bad)">🗑 O'chirish</button></div>
+          <div class="acact"><button class="lnk" data-a="pw">🔑 Parolni o'zgartirish</button><button class="lnk" data-a="grp">👥 Guruhni o'zgartirish</button><button class="lnk" data-a="blk">${x.b ? "✅ Blokdan chiqarish" : "🚫 Bloklash"}</button><button class="lnk" data-a="del" style="color:var(--bad)">🗑 O'chirish</button></div>
           <div class="pwbox"></div></div></div>`).join("")}</div>`;
     L.querySelectorAll(".acrow").forEach(row => {
       const u = row.dataset.u;
@@ -3507,6 +3510,8 @@ const ACC = (() => {
         const b = e.target.closest("button"); if (!b) return; const a = b.dataset.a;
         if (a === "eye") { shown.has(u) ? shown.delete(u) : shown.add(u); render(); }
         const base = AUTH.FB ? "users/" : "u/", X = users[u] || {}, lg = X.login || u;
+        if (a === "grp") { const box = row.querySelector(".pwbox"); box.innerHTML = `<div class="row" style="margin-top:8px"><input placeholder="Guruh nomi" style="margin:0;flex:2"><button class="btn sm" data-a="grpok" style="flex:1">Saqlash</button></div>`; const i = box.querySelector("input"); i.value = X.g || ""; i.focus(); }
+        if (a === "grpok") { DBA.update(base + u, { g: row.querySelector(".pwbox input").value.trim().slice(0, 30) }); FX.toast("👥 Guruh yangilandi", "up"); }
         if (a === "blk") DBA.update(base + u, { b: X.b ? 0 : 1 });
         if (a === "del") { if (b.dataset.ok) { if (AUTH.FB) { b.disabled = true; AUTH.adminDelete(lg, X.p).then(() => Promise.all([DBA.set("users/" + u, null), DBA.set("pw/" + u, null), DBA.set("logins/" + lg, null), DBA.set("h/" + u, null)])).then(() => FX.toast("🗑 O'chirildi")).catch(e => FX.toast(AUTH.msg(e))); } else DBA.set("u/" + u, null); } else { b.dataset.ok = 1; b.textContent = "Rostdan o'chirilsinmi? Yana bosing"; setTimeout(() => { if (b.isConnected) { delete b.dataset.ok; b.textContent = "🗑 O'chirish"; } }, 4000); } }
         if (a === "pw") {
@@ -3534,10 +3539,124 @@ const ACC = (() => {
 })();
 
 function adminNav(active) {
+  if (active !== "hw" && typeof HW !== "undefined") HW.leaveAdmin();
   const b = (k, l, fn) => `<button class="${k === active ? "on" : ""}" onclick="${fn}">${l}</button>`;
-  return `<div class="adminbar"><div class="adm-t">⚙️ ADMIN PANEL · @${ADMIN.login}</div><div class="sttabs" style="margin:6px 0 0">${b("tur", "🏆 Turnirlar", "T.openHost()")}${b("acc", "👥 O'quvchilar", "ACC.open()")}${b("stat", "📊 Statistika", "STAT.open()")}${b("out", "🚪 Chiqish", "adminLogout()")}</div></div>`;
+  return `<div class="adminbar"><div class="adm-t">⚙️ ADMIN PANEL · @${ADMIN.login}</div><div class="sttabs" style="margin:6px 0 0">${b("tur", "🏆 Turnirlar", "T.openHost()")}${b("acc", "👥 O'quvchilar", "ACC.open()")}${b("hw", "📝 Vazifalar", "HW.open()")}${b("stat", "📊 Statistika", "STAT.open()")}${b("out", "🚪 Chiqish", "adminLogout()")}</div></div>`;
 }
 function adminLogout() { try { localStorage.removeItem("zm_admin"); localStorage.removeItem("zm_host"); } catch (e) {} if (AUTH.FB) AUTH.signOut(); if (typeof T !== "undefined") T.leave(); ACC.leave(); goHome(); }
+
+// ================== GURUHLAR VA UYGA VAZIFALAR ==================
+let HWNEXT = null, HWCUR = null;
+const HW = (() => {
+  let hw = {}, un = null, aUn = [], users = {}, hwr = {}, grps = {}, openId = null;
+  const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const nk = s => String(s || "").trim().toLowerCase();
+  const d2 = n => String(n).padStart(2, "0"), dt = ms => { if (!ms) return "—"; const d = new Date(ms); return `${d2(d.getDate())}.${d2(d.getMonth() + 1)} ${d2(d.getHours())}:${d2(d.getMinutes())}`; };
+  const list = () => Object.entries(hw || {}).filter(([k, x]) => x && x.set).map(([k, x]) => ({ id: k, ...x })).sort((a, b) => (b.c || 0) - (a.c || 0));
+  const setOf = id => SETS.find(s => s.id === id);
+  function left(ms) { const d = ms - DBA.now(); if (d <= 0) return "muddat o'tgan"; const h = Math.floor(d / 3600e3); if (h >= 48) return Math.floor(h / 24) + " kun qoldi"; if (h >= 1) return h + " soat qoldi"; return Math.max(1, Math.floor(d / 60000)) + " daqiqa qoldi"; }
+  function watch() { if (un) return; un = DBA.on("hw", v => { hw = v || {}; renderStudent(); if ($("hwL")) renderAdmin(); }); }
+
+  // ---------- o'quvchi ----------
+  function renderStudent() {
+    const box = $("homeHW"); if (!box) return; const cur = ACCT.cur; if (!cur) { box.innerHTML = ""; return; }
+    watch();
+    const done = {}; ACCT.recs.forEach(r => { if (r.hw && (!done[r.hw] || r.pts > done[r.hw].pts)) done[r.hw] = r; });
+    const now = DBA.now();
+    const mine = list().filter(x => (x.g === "*" || nk(x.g) === nk(cur.g)) && setOf(x.set) && now - x.due < (done[x.id] ? 3 : 14) * 86400e3).sort((a, b) => a.due - b.due);
+    if (!mine.length) { box.innerHTML = ""; return; }
+    const todo = mine.filter(x => !done[x.id]).length;
+    box.innerHTML = `<div class="card" style="margin-top:14px;border-color:${todo ? "rgba(232,137,63,.5)" : "var(--line)"}"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><b style="font-size:16px">📝 Uyga vazifalar</b>${todo ? `<span class="st-lv" style="background:var(--ac)">${todo} ta bajarilmagan</span>` : `<span class="st-lv" style="background:var(--ok)">hammasi bajarilgan</span>`}</div>
+      ${mine.map(x => { const d = done[x.id], over = now > x.due, s = setOf(x.set);
+        return `<div class="strow" style="cursor:default"><div class="st-ic">${d ? "✅" : over ? "⏰" : "📌"}</div><div class="st-m"><b>${esc(s.title)}</b><div class="st-s">${s.qs ? s.qs.length : 20} savol · muddat: ${dt(x.due)} · <span style="color:${over && !d ? "var(--bad)" : "inherit"}">${d ? "bajarildi" : left(x.due)}</span></div>${x.note ? `<div class="st-s">💬 ${esc(x.note)}</div>` : ""}</div>
+        <div class="st-r">${d ? `<div class="st-p">${d.pts}</div><button class="lnk" data-hw="${esc(x.id)}">qayta ishlash</button>` : `<button class="btn sm" data-hw="${esc(x.id)}">${over ? "Kech bo'lsa ham ishlash" : "Boshlash"}</button>`}</div></div>`; }).join("")}</div>`;
+    box.querySelectorAll("[data-hw]").forEach(b => b.onclick = () => startHW(b.dataset.hw));
+  }
+  function startHW(id) { const x = hw[id]; if (!x) return; const s = setOf(x.set); if (!s) return; set = s; HWNEXT = { id, due: x.due }; start(); }
+
+  // ---------- admin ----------
+  function leaveAdmin() { aUn.forEach(f => f()); aUn = []; }
+  function open() {
+    if (!isAdmin()) return T.openHost();
+    T.leave(); ACC.leave(); leaveAdmin(); watch();
+    show("tz");
+    const t = new Date(Date.now() + 86400e3), def = `${t.getFullYear()}-${d2(t.getMonth() + 1)}-${d2(t.getDate())}T20:00`;
+    let opts = "", g = null; SETS.forEach(s => { if (s.g !== g) { if (g) opts += "</optgroup>"; g = s.g; opts += `<optgroup label="${esc(g)}">`; } opts += `<option value="${s.id}">${esc((s.n === "∑" ? "" : s.n + " · ") + s.title)} (${s.qs ? s.qs.length : 20} savol)</option>`; }); opts += "</optgroup>";
+    $("tz").innerHTML = `${adminNav("hw")}
+      <div class="card"><h1 style="margin-bottom:6px">👥 Guruhlar</h1><div class="sub" style="margin-bottom:10px">O'quvchilar ro'yxatdan o'tayotganda shu guruhlardan birini tanlaydi.</div>
+        <div id="hwG" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px"></div>
+        <div class="row"><input id="hwGn" placeholder="Yangi guruh nomi, masalan: 7-A" style="margin:0;flex:2"><button class="btn sm" id="hwGa" style="flex:1">➕ Qo'shish</button></div></div>
+      <div class="card" style="margin-top:12px"><h1 style="margin-bottom:10px">📝 Yangi vazifa</h1>
+        <label>Test</label><select id="hwS">${opts}</select>
+        <label>Kimga</label><select id="hwTo"></select>
+        <label>Muddat (shu vaqtgacha topshirish kerak)</label><input id="hwD" type="datetime-local" value="${def}">
+        <label>Izoh (ixtiyoriy)</label><input id="hwN" maxlength="120" placeholder="masalan: 8–13-mavzularni takrorlang">
+        <div class="accerr" id="hwE"></div><button class="btn" id="hwGo">Vazifani berish</button></div>
+      <div id="hwL" style="margin-top:12px"></div>`;
+    $("hwGa").onclick = () => { const n = $("hwGn").value.trim().slice(0, 30); if (n.length < 1) return; if (allGroups().some(x => nk(x) === nk(n))) { FX.toast("Bu guruh allaqachon bor"); return; } DBA.set("grp/g" + Date.now().toString(36), { n }); $("hwGn").value = ""; };
+    $("hwGo").onclick = create;
+    aUn.push(DBA.on("grp", v => { grps = v || {}; renderGroups(); }));
+    aUn.push(DBA.on(AUTH.FB ? "users" : "u", v => { users = v || {}; renderGroups(); renderAdmin(); }));
+    aUn.push(DBA.on("hwr", v => { hwr = v || {}; renderAdmin(); }));
+    renderGroups(); renderAdmin();
+  }
+  const ulist = () => Object.entries(users || {}).filter(([k, x]) => x && x.f).map(([k, x]) => ({ k, ...x }));
+  function allGroups() { const m = new Map(); Object.values(grps || {}).forEach(x => { if (x && x.n) m.set(nk(x.n), x.n); }); ulist().forEach(x => { if (x.g && !m.has(nk(x.g))) m.set(nk(x.g), x.g); }); return [...m.values()].sort((a, b) => a.localeCompare(b)); }
+  function renderGroups() {
+    if (!$("hwG")) return;
+    const us = ulist(), saved = Object.entries(grps || {}).filter(([k, x]) => x && x.n);
+    const all = allGroups();
+    $("hwG").innerHTML = all.length ? all.map(n => { const cnt = us.filter(u => nk(u.g) === nk(n)).length, e = saved.find(([k, x]) => nk(x.n) === nk(n));
+      return `<span class="chipg"><b>${esc(n)}</b> · ${cnt} o'quvchi${e ? ` <button class="lnk" data-g="${esc(e[0])}" title="O'chirish" style="color:var(--bad)">✕</button>` : ""}</span>`; }).join("") : '<span class="sub" style="margin:0">Hali guruh yo\'q. Birinchi guruhni qo\'shing.</span>';
+    $("hwG").querySelectorAll("[data-g]").forEach(b => b.onclick = () => DBA.set("grp/" + b.dataset.g, null));
+    const sel = $("hwTo"), v = sel.value;
+    sel.innerHTML = `<option value="*">Barcha o'quvchilar</option>` + all.map(n => `<option value="${esc(n)}">${esc(n)}</option>`).join("");
+    if ([...sel.options].some(o => o.value === v)) sel.value = v;
+  }
+  async function create() {
+    const E = m => $("hwE").textContent = m, due = new Date($("hwD").value).getTime();
+    if (!due || isNaN(due)) return E("Muddatni tanlang.");
+    if (due < Date.now()) return E("Muddat o'tib ketgan vaqtga qo'yilgan.");
+    const s = setOf($("hwS").value), rec = { set: s.id, ttl: s.title, g: $("hwTo").value, due, c: DBA.now() }, note = $("hwN").value.trim();
+    if (note) rec.note = note;
+    E(""); await DBA.set("hw/w" + Date.now().toString(36), rec); $("hwN").value = ""; FX.toast("✅ Vazifa berildi", "up");
+  }
+  function renderAdmin() {
+    const L = $("hwL"); if (!L) return;
+    const hs = list(), us = ulist(), now = DBA.now();
+    if (!hs.length) { L.innerHTML = `<div class="card" style="text-align:center"><p class="sub" style="margin:0">Hali vazifa berilmagan.</p></div>`; return; }
+    L.innerHTML = hs.map(x => {
+      const st = us.filter(u => x.g === "*" || nk(u.g) === nk(x.g)), res = hwr[x.id] || {}, over = now > x.due;
+      const dn = st.filter(u => res[u.k]), late = dn.filter(u => res[u.k].late).length, pct = st.length ? Math.round(dn.length / st.length * 100) : 0;
+      const avg = dn.length ? Math.round(dn.reduce((a, u) => a + (res[u.k].pts || 0), 0) / dn.length) : null;
+      let body = "";
+      if (openId === x.id) {
+        const rows = st.slice().sort((a, b) => (res[b.k] ? 1 : 0) - (res[a.k] ? 1 : 0) || ((res[b.k] || {}).pts || 0) - ((res[a.k] || {}).pts || 0) || (a.l + a.f).localeCompare(b.l + b.f));
+        body = `<div style="margin-top:10px">${rows.length ? rows.map(u => { const r = res[u.k];
+          return `<div class="trow"><div class="tr-r">${r ? (r.late ? "⏰" : "✅") : over ? "❌" : "⏳"}</div><div class="tr-n"><div class="tr-nm">${esc(u.f)} ${esc(u.l)}</div><div class="st-s">${r ? `${dt(r.at)}${r.late ? " · kechikib topshirdi" : ""}${r.k > 1 ? ` · ${r.k} marta urindi` : ""}` : over ? "ishlamadi" : "hali ishlamagan"}</div></div><div class="tr-s">${r ? r.pts : "—"}</div></div>`; }).join("") : '<div class="sub" style="margin:0">Bu guruhda hali o\'quvchi yo\'q.</div>'}
+          <div style="text-align:right;margin-top:8px"><button class="lnk" data-del="${esc(x.id)}" style="color:var(--bad)">🗑 Vazifani o'chirish</button></div></div>`;
+      }
+      return `<div class="card" style="margin-bottom:12px"><div class="hwhead" data-id="${esc(x.id)}" style="cursor:pointer"><div style="display:flex;justify-content:space-between;gap:10px"><b>${esc(x.ttl)}</b><span class="st-lv" style="background:${over ? "#5b6b7b" : "var(--ok)"};align-self:flex-start">${over ? "tugagan" : "faol"}</span></div>
+        <div class="st-s" style="margin:4px 0 8px">👥 ${x.g === "*" ? "Barcha o'quvchilar" : esc(x.g)} · ⏰ ${dt(x.due)} (${left(x.due)})${x.note ? " · 💬 " + esc(x.note) : ""}</div>
+        <div class="mh"><b>${dn.length} / ${st.length} bajardi</b><span>${avg != null ? "o'rtacha " + avg + " ball" : ""}${late ? ` · ${late} ta kechikkan` : ""} ${openId === x.id ? "▲" : "▼"}</span></div><div class="bar" style="margin:0"><i style="width:${pct}%"></i></div></div>${body}</div>`;
+    }).join("");
+    L.querySelectorAll(".hwhead").forEach(h => h.onclick = () => { openId = openId === h.dataset.id ? null : h.dataset.id; renderAdmin(); });
+    L.querySelectorAll("[data-del]").forEach(b => b.onclick = () => {
+      if (!b.dataset.ok) { b.dataset.ok = 1; b.textContent = "Rostdan o'chirilsinmi? Yana bosing"; return; }
+      const id = b.dataset.del; Object.keys(hwr[id] || {}).forEach(k => DBA.set(`hwr/${id}/${k}`, null)); DBA.set("hwr/" + id, null); DBA.set("hw/" + id, null);
+    });
+  }
+  // ro'yxatdan o'tish formasida guruhlar ro'yxati
+  async function fillRegGroups() {
+    try { const v = await DBA.get("grp"); const ns = Object.values(v || {}).filter(x => x && x.n).map(x => x.n).sort((a, b) => a.localeCompare(b)); const inp = $("rG");
+      if (inp && ns.length && inp.tagName === "INPUT") { const s = document.createElement("select"); s.id = "rG"; s.innerHTML = `<option value="">— guruhingizni tanlang —</option>` + ns.map(n => `<option value="${esc(n)}">${esc(n)}</option>`).join(""); inp.replaceWith(s); } } catch (e) {}
+  }
+  function record(rec, ac) {
+    if (!rec.hw || !ac) return; const p = `hwr/${rec.hw}/${ac.uid}`, due = (hw[rec.hw] || {}).due || (HWCUR && HWCUR.due) || 0;
+    DBA.get(p).then(o => { if (!o) return DBA.set(p, { n: rec.n, u: rec.u || "", pts: rec.pts, ok: rec.ok, tot: rec.tot, at: rec.at, late: due && rec.at > due ? 1 : 0, k: 1 }); const up = { k: (o.k || 1) + 1 }; if (rec.pts > (o.pts || 0)) { up.pts = rec.pts; up.ok = rec.ok; } return DBA.update(p, up); }).catch(() => {});
+  }
+  return { open, leaveAdmin, renderStudent, fillRegGroups, record, allGroups: () => { const m = new Set(Object.values(grps || {}).filter(x => x && x.n).map(x => x.n)); return [...m]; } };
+})();
 
 // ================== TURNIR REJIMI ==================
 // >>> Firebase sozlamasini shu yerga qo'ying (firebaseConfig obyektini to'liq):
