@@ -233,6 +233,21 @@ body{background:radial-gradient(1200px 600px at 110% -10%,rgba(232,137,63,.13),t
 .chart .cb small{font-size:10px;color:var(--mu);margin-bottom:3px}
 .hsec h3{font-size:15px;margin-bottom:10px}
 
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:var(--card2);padding:5px;border-radius:14px;margin-bottom:14px}.seg button{border:0;border-radius:10px;padding:10px 6px;background:transparent;color:var(--mu);font-family:inherit;font-weight:700;font-size:14px;cursor:pointer}.seg button.on{background:var(--ac);color:#fff}
+.tmnm{display:flex;gap:8px;align-items:center;margin-bottom:8px}.tmnm span{font-size:20px}.tmnm input{margin:0}
+.tmg{display:grid;gap:10px}.tmc{border:1px solid var(--line);border-left:5px solid var(--c);border-radius:14px;padding:10px 12px;background:var(--card2)}.tmc.mine{box-shadow:0 0 0 2px var(--c)}.tmc.off{opacity:.5}
+.tmc-h{display:flex;align-items:center;gap:8px;font-weight:800}.tmc-h small{margin-left:auto;color:var(--mu);font-weight:600}
+.tmc-m{font-size:13px;color:var(--mu);margin-top:6px;line-height:1.6}.tmc-m b{color:var(--tx);font-weight:600}
+.tmc .btn{margin-top:8px}.tmrow{display:flex;align-items:center;gap:6px;font-size:13px;padding:4px 0}.tmrow select{margin:0;padding:4px 6px;width:auto;font-size:12px}.tmrow .x{margin-left:auto;background:none;border:0;color:var(--bad);font-size:18px;cursor:pointer}
+.race{display:grid;gap:8px}.rc{display:flex;align-items:center;gap:10px}.rc-r{width:24px;text-align:center;font-weight:800}.rc-b{flex:1}.rc-n{display:flex;justify-content:space-between;gap:8px;font-size:13px;font-weight:700}.rc-n small{color:var(--mu);font-weight:600}
+.rc-t{height:12px;background:var(--bg);border-radius:8px;overflow:hidden;margin-top:4px;position:relative}.rc-t i{display:block;height:100%;border-radius:8px;background:var(--c);transition:width .6s cubic-bezier(.2,.8,.2,1)}.rc-t em{position:absolute;top:0;bottom:0;background:rgba(255,255,255,.12);left:0;transition:width .6s}
+.rc.mine .rc-n{color:var(--c)}.rc.lead .rc-r{animation:pulse 1.2s infinite}
+.race.big .rc-n{font-size:20px}.race.big .rc-t{height:26px}.race.big .rc-r{font-size:26px;width:40px}.race.big{gap:18px}
+.feed{display:grid;gap:4px;margin-top:10px;font-size:13px}.feed div{background:var(--card2);border-radius:8px;padding:6px 9px;animation:zoomin .35s both}
+.mate{display:flex;align-items:center;gap:8px;font-size:13px;padding:6px 0;border-bottom:1px solid var(--line)}.mate:last-child{border:0}.mate b{flex:1;font-weight:600}.mate .pr{color:var(--mu)}
+.proj{position:fixed;inset:0;z-index:90;background:var(--bg);overflow:auto;padding:28px 5vw}.proj h1{font-size:34px}
+.mvp{font-size:13px;color:var(--mu)}
+@keyframes pulse{50%{transform:scale(1.25)}}
 </style>
 </head>
 <body>
@@ -2907,7 +2922,7 @@ function chk(){if(!$("go"))return;const a=typeof ACCT!=="undefined"&&ACCT.cur;$(
 $("go").onclick=start;
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
 function start(){
-  FROM_T=false;HWCUR=HWNEXT;HWNEXT=null;
+  FROM_T=false;TEAMWIN="";HWCUR=HWNEXT;HWNEXT=null;
   if(set.ms){const ac=ACCT.cur;if(!ac)return;FN=ac.f;LN=ac.l;name=FN+" "+LN;return MS.start()}
   const ac=ACCT.cur;if(!ac)return;FN=ac.f;LN=ac.l;name=FN+" "+LN;
   if(!set.qs){Q=shuffle(SETS.filter(s=>s.qs&&!s.ms&&s.g===set.g).flatMap(s=>s.qs)).slice(0,20)}else{Q=set.qs}
@@ -2967,8 +2982,9 @@ function finish(){
   $("sOk").textContent=ok;$("sBad").textContent=Q.length-ok;$("sT").textContent=time;
   const lv=level(pts);
   $("gr").textContent=lv?lv+" sertifikati":"Sertifikat uchun kamida 45 ball kerak";$("gr").style.background=lv?(pts>=65?"var(--ok)":pts>=55?"var(--ac2)":"var(--ac)"):"var(--bad)";
-  const showC=lv&&set.id!=="err";$("certBox").style.display=showC?"":"none";
-  if(showC)drawCert(lv,pts,ok,time,by);
+  const showC=(lv||(FROM_T&&TEAMWIN))&&set.id!=="err";$("certBox").style.display=showC?"":"none";
+  if(!lv&&showC)$("gr").textContent="🏆 G‘olib jamoa sertifikati";
+  if(showC)drawCert(lv||"G‘olib jamoa a’zosi",pts,ok,time,by);
   const m=$("mast");m.innerHTML="";
   if(Object.keys(by).length>1){
     m.innerHTML='<div style="font-size:13px;color:var(--mu);margin-bottom:10px">Mavzular bo\'yicha o\'zlashtirish</div>';
@@ -3083,6 +3099,7 @@ async function drawCert(lv,pts,ok,time,by){
   const val=(t,y,X)=>{x.textAlign="left";x.fillStyle="#111";x.font=SF(700,25);x.fillText(t,X,y)};
   const hl=y=>{x.fillStyle="rgba(120,100,60,.35)";x.fillRect(110,y,W-220,2)};
   const no="ZM"+String(new Date().getFullYear()).slice(-2)+" "+String(Date.now()).slice(-6);
+  if(FROM_T&&TEAMWIN){x.textAlign="center";x.fillStyle="#8a5a12";x.font=SF(700,21);x.fillText("🏆 JAMOAVIY TURNIR G‘OLIBI — «"+TEAMWIN.toLocaleUpperCase("uz")+"» JAMOASI",W/2,584)}
   lab("Sertifikat raqami:",610);val(no,610,640);hl(640);
   const up=s=>s.toLocaleUpperCase("uz").replace(/'/g,"‘");
   lab("Familiyasi:",700);val(up(LN),700,400);
@@ -3194,7 +3211,7 @@ const FX = (() => {
 })();
 
 // ================== NATIJALARNI SAQLASH ==================
-let FROM_T = false;
+let FROM_T = false, TEAMWIN = "";
 function saveResult(r) {
   try {
     const id = Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
@@ -4356,21 +4373,21 @@ const T = (() => {
   const setById = id => SETS.find(s => s.id === id);
   const mTitle = m => (m && m.ttl) || ((setById(m && m.set) || {}).title) || "Turnir";
   const mSet = m => { if (m.sets) { const ss = m.sets.map(setById).filter(Boolean); return { id: "turnir", n: "🏆", title: mTitle(m), qs: null, g: (ss[0] || {}).g || "", subj: (ss[0] || {}).subj || "Tarix" }; } return setById(m.set); };
-  function buildQ(meta) {
+  function buildQ(meta, pid) {
     const r = rng(meta.seed);
-    if (meta.sets) { const pool = meta.sets.map(setById).filter(s => s && s.qs).flatMap(s => s.qs.map(q => ({ ...q, m: s.title }))); const Q = shuf(pool, r).slice(0, meta.n); return { Q, perms: Q.map(() => shuf([0, 1, 2, 3], r)) }; }
+    if (meta.sets) { const pool = meta.sets.map(setById).filter(s => s && s.qs).flatMap(s => s.qs.map(q => ({ ...q, m: s.title }))); const Q = shuf(pool, r).slice(0, meta.n), pr = meta.team && pid ? rng(meta.seed ^ hs(pid)) : r; return { Q, perms: Q.map(() => shuf([0, 1, 2, 3], pr)) }; }
     const s = setById(meta.set);
     let Q = s.qs ? s.qs.slice() : shuf(SETS.filter(x => x.qs && x.g === s.g).flatMap(x => x.qs), r).slice(0, 20);
     const perms = Q.map(() => shuf([0, 1, 2, 3], r));
     return { Q, perms };
   }
   const fmt = ms => { ms = Math.max(0, ms); const s = Math.ceil(ms / 1000); return String(Math.floor(s / 60)).padStart(2, "0") + ":" + String(s % 60).padStart(2, "0"); };
-  const ranked = () => Object.entries(st.players || {}).filter(([k, p]) => p && p.n).map(([k, p]) => ({ k, ...p }))
+  const ranked = () => Object.entries(st.players || {}).filter(([k, p]) => p && p.n).map(([k, p]) => ({ ...p, k }))
     .sort((a, b) => (b.s || 0) - (a.s || 0) || (a.t || 0) - (b.t || 0) || String(a.n).localeCompare(String(b.n)));
   const ppq = () => 100 / (st.meta ? st.meta.n : 20);
   const pts = s => Math.round((s || 0) * ppq() * 10) / 10;
   const medal = i => i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : (i + 1);
-  function clear() { st.unsub.forEach(f => f()); st.unsub = []; clearInterval(st.timer); st.timer = null; }
+  function clear() { st.unsub.forEach(f => f()); st.unsub = []; clearInterval(st.timer); st.timer = null; if (st.proj) { st.proj = false; document.body.style.overflow = ""; const d = $("tproj"); if (d) d.remove(); } }
 
   // ---------- reyting jadvali (FLIP animatsiya bilan) ----------
   function board(el, list, { big = false, limit = 0, n = 20 } = {}) {
@@ -4421,7 +4438,7 @@ const T = (() => {
   }
   async function join(auto) {
     auto = auto === true;
-    st.celebrated = false; st.streak = 0; st.myRank = 0; st.ps = {};
+    st.celebrated = false; st.streak = 0; st.myRank = 0; st.ps = {}; st.tn = {}; st.prevP = null; st.feed = []; st.lead = null; st.meKey = null;
     const ac = ACCT.cur; if (!ac) { show("auth"); return; }
     const code = $("tjc").value.trim(), err = m => $("tjerr").textContent = m;
     if (!/^\d{4}$/.test(code)) return err("Kod 4 ta raqamdan iborat bo'lishi kerak.");
@@ -4433,6 +4450,8 @@ const T = (() => {
     st.code = code; st.pid = ac.uid;
     const was = await DBA.get(`t/${code}/players/${st.pid}`);
     if (meta.phase === "end" && !was) return giveUp("Bu turnir allaqachon tugagan.");
+    if (await DBA.get(`t/${code}/ban/${st.pid}`)) return giveUp("Siz bu turnirdan chiqarilgansiz.");
+    if (meta.team && meta.phase !== "lobby" && !(was && was.tm != null)) return giveUp("Jamoaviy turnir allaqachon boshlangan — endi qo'shilib bo'lmaydi.");
     ls.set("zm_active", JSON.stringify({ code, u: ac.login }));
     const me = await DBA.get(`t/${code}/players/${st.pid}`);
     if (!me) await DBA.set(`t/${code}/players/${st.pid}`, { n: name, u: ac.login, s: 0, a: 0, t: 0, d: 0 });
@@ -4441,13 +4460,16 @@ const T = (() => {
     if (me && (me.a || 0) > st.ans.length) { while (st.ans.length < me.a) st.ans.push(null); }
     st.cur = st.ans.length; st.ended = false;
     st.unsub.push(DBA.on(`t/${code}/players`, v => { st.players = v || {}; sBoard(); }));
-    st.unsub.push(DBA.on(`t/${code}/meta`, v => { if (!v) return; const ph = st.meta && st.meta.phase; st.meta = v; if (!st.Q.length || ph === undefined) { const b = buildQ(v); st.Q = b.Q; st.perms = b.perms; } sRoute(ph !== v.phase); }));
+    st.unsub.push(DBA.on(`t/${code}/tn`, v => { st.tn = v || {}; if (st.meta) { st.meKey = null; sBoard(); } }));
+    st.unsub.push(DBA.on(`t/${code}/meta`, v => { if (!v) return; const ph = st.meta && st.meta.phase; st.meta = v; if (!st.Q.length || ph === undefined) { const b = buildQ(v, st.pid); st.Q = b.Q; st.perms = b.perms; } sRoute(ph !== v.phase); }));
     st.timer = setInterval(sTick, 250);
   }
   function sRoute(changed) {
     const m = st.meta;
-    if (m.phase === "lobby") return sLobby();
-    if (m.phase === "end") { if (changed || !$("tmine")) sEnd(); return; }
+    if (m.phase === "lobby") return isTeam() ? sTeamLobby() : sLobby();
+    if (m.phase === "end") { if (changed || !$("tmine")) { if (isTeam()) { if (myTm() != null) sTeamEnd(); else { ls.del("zm_active"); goHome(); } } else sEnd(); } return; }
+    if (isTeam() && !st.players[st.pid]) return;
+    if (isTeam() && myTm() == null) { if (changed || !$("tspec")) { ls.del("zm_active"); tz().innerHTML = `<div class="card" id="tspec" style="text-align:center"><div style="font-size:40px">⏱</div><h1>O'yin boshlandi</h1><p class="sub">Siz jamoa tanlamagan edingiz, shuning uchun bu turnirda qatnasha olmaysiz.</p><button class="btn" onclick="goHome()">Bosh sahifa</button></div>`; } return; }
     if (m.phase === "run") { if (changed || !$("tqa") && !$("twait")) { if (st.cur >= st.Q.length || myDone()) sWait(); else sPlay(); } }
   }
   const myDone = () => { const p = st.players[st.pid]; return p && p.d; };
@@ -4459,6 +4481,7 @@ const T = (() => {
   }
   function sPlay() {
     setNav(null); BK(null);
+    if (isTeam()) { tz().innerHTML = `<div class="top"><span id="tqn"></span><span id="ttm" class="ttm">⏱ --:--</span></div><div class="bar"><i id="tpb"></i></div>${teamCards()}<div class="card" id="tqa"></div>${mateCard()}`; st.prevP = null; sQ(); sBoard(); return; }
     tz().innerHTML = `<div class="top"><span id="tqn"></span><span id="ttm" class="ttm">⏱ --:--</span></div><div class="bar"><i id="tpb"></i></div>
       <div class="card" id="tqa"></div>
       <div class="card" style="margin-top:12px"><div style="display:flex;justify-content:space-between;font-size:13px;color:var(--mu);margin-bottom:8px"><b style="color:var(--tx)">🏆 Jonli reyting</b><span id="tmy"></span></div><div id="tbd"></div></div>`;
@@ -4490,7 +4513,7 @@ const T = (() => {
     else { st.streak = 0; FX.wrong(); }
     const s = st.ans.filter((a, i) => a === st.Q[i].a).length;
     st.cur++;
-    DBA.update(`t/${st.code}/players/${st.pid}`, { s, a: st.cur, t: DBA.now() - st.meta.startAt, d: st.cur >= st.Q.length ? 1 : 0 });
+    DBA.update(`t/${st.code}/players/${st.pid}`, { s, a: st.cur, t: DBA.now() - st.meta.startAt, d: st.cur >= st.Q.length ? 1 : 0, sk: st.streak || 0 });
     setTimeout(() => { if (st.meta.phase !== "run") return; if (st.cur >= st.Q.length) finishMine(); else sQ(); }, 900);
   }
   function finishMine() {
@@ -4498,11 +4521,13 @@ const T = (() => {
     sWait();
   }
   function sWait() {
+    if (isTeam()) { tz().innerHTML = `<div class="card" id="twait" style="text-align:center;margin-bottom:12px"><div style="font-size:40px">✅</div><h1>Javoblaringiz qabul qilindi</h1><p class="sub">Jamoadoshlaringizni kuting. G'olib jamoa ustoz turnirni yakunlaganda e'lon qilinadi.</p><div class="ttm" id="ttm" style="font-size:20px"></div></div>${teamCards()}${mateCard()}`; sBoard(); return; }
     tz().innerHTML = `<div class="card" id="twait" style="text-align:center"><div style="font-size:40px">✅</div><h1>Javoblaringiz qabul qilindi</h1><p class="sub">Boshqalar tugatishini kuting. Natijalar ustoz turnirni yakunlaganda e'lon qilinadi.</p><div class="ttm" id="ttm" style="font-size:20px"></div></div>
       <div class="card" style="margin-top:12px"><div style="display:flex;justify-content:space-between;font-size:13px;color:var(--mu);margin-bottom:8px"><b style="color:var(--tx)">🏆 Jonli reyting</b><span id="tmy"></span></div><div id="tbd"></div></div>`;
     sBoard();
   }
   function sBoard() {
+    if (isTeam()) return sTeamBoard();
     const list = ranked(); if ($("tcnt")) $("tcnt").textContent = list.length;
     board($("tbd"), list, { limit: st.meta && st.meta.phase === "lobby" ? 0 : 8, n: st.meta ? st.meta.n : 20 });
     const i = list.findIndex(p => p.k === st.pid); if ($("tmy") && i >= 0) $("tmy").innerHTML = `Siz: <b style="color:var(--tx)">${i + 1}-o'rin</b> / ${list.length}${st.streak >= 2 ? `<span class="streak">🔥${st.streak}</span>` : ""}`;
@@ -4534,6 +4559,131 @@ const T = (() => {
       const me = st.players[st.pid] || {}; t0 = Date.now() - (me.t || 0);
       finish();
     };
+  }
+
+  // ================== JAMOAVIY TURNIR (umumiy) ==================
+  const TC = [["🔴", "#e5484d", "Qizil"], ["🔵", "#3e8ef7", "Ko'k"], ["🟢", "#30a46c", "Yashil"], ["🟡", "#e8b93f", "Sariq"], ["🟣", "#8e4ec6", "Binafsha"], ["🟠", "#f76b15", "To'q sariq"]];
+  const isTeam = () => !!(st.meta && st.meta.team);
+  const hs = s => { let h = 7; for (const c of String(s)) h = Math.imul(h ^ c.charCodeAt(0), 2654435761); return h | 0; };
+  const tName = i => { const x = st.tn && st.tn[i]; return (x && x.n) || ((st.meta && st.meta.team && st.meta.team.nm) || [])[i] || TC[i][2]; };
+  const tLbl = i => TC[i][0] + " " + tName(i);
+  const f1 = x => String(Math.round(x * 10) / 10).replace(".", ",");
+  const first = n => String(n || "").split(" ")[0];
+  function teams() {
+    const k = st.meta.team.k, arr = [...Array(k)].map((_, i) => ({ i, m: [] }));
+    Object.entries(st.players || {}).forEach(([pk, p]) => { if (p && p.n && p.tm != null && arr[p.tm]) arr[p.tm].m.push({ ...p, k: pk }); });
+    arr.forEach(T => { T.m.sort((a, b) => (a.jt || 0) - (b.jt || 0)); const n = T.m.length; T.sum = T.m.reduce((x, p) => x + (p.s || 0), 0); T.avg = n ? T.sum / n : 0; T.prog = n ? T.m.reduce((x, p) => x + (p.a || 0), 0) / n : 0; T.at = n ? T.m.reduce((x, p) => x + (p.t || 0), 0) / n : 0; });
+    return arr;
+  }
+  const tRank = () => teams().sort((a, b) => (b.m.length ? 1 : 0) - (a.m.length ? 1 : 0) || b.avg - a.avg || a.at - b.at || a.i - b.i);
+  const myTm = () => { const p = st.players[st.pid]; return p && p.tm != null ? p.tm : null; };
+  const balanced = () => { const c = teams().map(T => T.m.length); return Math.min(...c) >= 1 && Math.max(...c) - Math.min(...c) <= 1; };
+  function race(el, { big = false } = {}) {
+    if (!el || !st.meta) return;
+    const list = tRank(), n = st.meta.n, me = myTm(), prev = new Map();
+    el.querySelectorAll("[data-t]").forEach(r => prev.set(r.dataset.t, r.getBoundingClientRect().top));
+    el.className = "race" + (big ? " big" : "");
+    el.innerHTML = list.map((T, j) => `<div class="rc${T.i === me ? " mine" : ""}${j === 0 && T.avg > 0 ? " lead" : ""}" data-t="${T.i}" style="--c:${TC[T.i][1]}"><div class="rc-r">${j === 0 && T.avg > 0 ? "👑" : j + 1}</div><div class="rc-b"><div class="rc-n"><span>${TC[T.i][0]} ${esc(tName(T.i))}${T.i === me ? " (siz)" : ""}</span><span>${f1(T.avg)}<small> / ${n} · ${Math.round(T.avg / n * 100)}%</small></span></div><div class="rc-t"><em style="width:${Math.min(100, T.prog / n * 100)}%"></em><i style="width:${Math.min(100, T.avg / n * 100)}%"></i></div><div class="mvp">${T.m.length} kishi${big ? "" : ` · o'rtacha ${Math.round(T.prog)}-savolda`}</div></div></div>`).join("");
+    el.querySelectorAll("[data-t]").forEach(r => { const p = prev.get(r.dataset.t); if (p == null) return; const dy = p - r.getBoundingClientRect().top; if (!dy) return; r.style.transition = "none"; r.style.transform = `translateY(${dy}px)`; requestAnimationFrame(() => requestAnimationFrame(() => { r.style.transition = "transform .55s cubic-bezier(.2,.8,.2,1)"; r.style.transform = ""; })); });
+  }
+  function leadCheck() {
+    if (!st.meta || st.meta.phase !== "run") return;
+    const L = tRank()[0]; if (!L || L.avg <= 0) return;
+    if (st.lead != null && st.lead !== L.i) { FX.toast(`${tLbl(L.i)} jamoasi oldinga chiqdi!`, "up"); FX.S.up(); }
+    st.lead = L.i;
+  }
+  // ---------- o'quvchi: jamoa tanlash (kutish xonasi) ----------
+  function canJoin(i, P) {
+    const c = [...Array(st.meta.team.k)].map(() => 0);
+    Object.entries(P || {}).forEach(([pk, p]) => { if (p && p.n && p.tm != null && pk !== st.pid && c[p.tm] != null) c[p.tm]++; });
+    return c[i] < st.meta.team.sz && c[i] === Math.min(...c);
+  }
+  async function pickTeam(i) {
+    let P = st.players; try { P = (await DBA.get(`t/${st.code}/players`)) || P; } catch (e) {}
+    if (st.meta.phase !== "lobby") return;
+    if (!canJoin(i, P)) { FX.toast("Bu jamoa hozir yopiq — jamoalar teng bo'lishi kerak. Boshqasini tanlang."); return; }
+    await DBA.update(`t/${st.code}/players/${st.pid}`, { tm: i, jt: DBA.now() }); FX.S.tick && FX.S.tick();
+  }
+  function sTeamLobby() {
+    tz().innerHTML = `<div class="card" style="text-align:center"><div style="font-size:40px">👥</div><h1>Jamoaviy turnir</h1>
+      <p class="sub">Kod <b>${st.code}</b> · ${esc(mTitle(st.meta))} · ${st.meta.n} savol · ${Math.round(st.meta.dur / 60000)} daqiqa<br>Har jamoada ko'pi bilan <b>${st.meta.team.sz}</b> kishi. Jamoalar soni teng bo'ladi (farq 1 kishidan oshmaydi).</p>
+      <div id="tme"></div></div><div class="card" style="margin-top:12px"><b>Jamoalar</b><div id="tlt" class="tmg" style="margin-top:10px"></div></div>`;
+    st.meKey = null; sTeamLobbyUpd();
+  }
+  function sTeamLobbyUpd() {
+    if (!$("tlt")) return sTeamLobby();
+    const me = st.players[st.pid];
+    if (!me) { ls.del("zm_active"); tz().innerHTML = `<div class="card" style="text-align:center"><div style="font-size:40px">🚫</div><h1>Siz turnirdan chiqarildingiz</h1><p class="sub">Savollar bo'lsa, ustozga murojaat qiling.</p><button class="btn" onclick="goHome()">Bosh sahifa</button></div>`; clear(); return; }
+    const T = teams(), mt = myTm(), cap = mt != null && T[mt].m[0] && T[mt].m[0].k === st.pid;
+    const key = mt + "|" + cap + "|" + tName(mt == null ? 0 : mt);
+    if (key !== st.meKey) {
+      st.meKey = key;
+      $("tme").innerHTML = mt == null ? `<div class="tnote warn">Quyidan jamoangizni tanlang 👇</div>`
+        : `<div class="tnote" style="border-left:5px solid ${TC[mt][1]}">Siz <b>${TC[mt][0]} ${esc(tName(mt))}</b> jamoasidasiz. Ustoz boshlashini kuting.</div>
+          ${cap ? `<label>👑 Siz sardorsiz — jamoa nomini yozing</label><div class="tmnm"><span>${TC[mt][0]}</span><input id="tcn" maxlength="24" placeholder="Masalan: Temuriylar"><button class="btn sm" id="tcs">Saqlash</button></div>` : ""}
+          <button class="btn ghost sm" id="tlv">Jamoadan chiqish</button>`;
+      if (cap) { $("tcn").value = tName(mt); $("tcs").onclick = () => { const v = $("tcn").value.trim().slice(0, 24); if (!v) return; DBA.set(`t/${st.code}/tn/${mt}`, { n: v, by: st.pid }); FX.toast("✅ Jamoa nomi saqlandi", "up"); }; }
+      if ($("tlv")) $("tlv").onclick = () => DBA.update(`t/${st.code}/players/${st.pid}`, { tm: null, jt: null });
+    }
+    $("tlt").innerHTML = "";
+    T.forEach(t => {
+      const d = document.createElement("div"), mine = t.i === mt, ok = mt == null && canJoin(t.i, st.players);
+      d.className = "tmc" + (mine ? " mine" : "") + (mt == null && !ok ? " off" : ""); d.style.setProperty("--c", TC[t.i][1]);
+      d.innerHTML = `<div class="tmc-h">${TC[t.i][0]} <span></span><small>${t.m.length} / ${st.meta.team.sz}</small></div><div class="tmc-m"></div>${mt == null ? `<button class="btn sm"${ok ? "" : " disabled"}>${ok ? "Shu jamoaga qo'shilish" : (t.m.length >= st.meta.team.sz ? "To'lgan" : "Hozircha yopiq")}</button>` : ""}`;
+      d.querySelector(".tmc-h span").textContent = tName(t.i);
+      d.querySelector(".tmc-m").innerHTML = t.m.length ? t.m.map((p, j) => `${j === 0 ? "👑 " : ""}<b>${esc(p.n)}</b>${p.k === st.pid ? " (siz)" : ""}`).join("<br>") : "Hali hech kim yo'q";
+      const b = d.querySelector("button"); if (b && ok) b.onclick = () => { b.disabled = true; pickTeam(t.i); };
+      $("tlt").appendChild(d);
+    });
+  }
+  // ---------- o'quvchi: o'yin davomida ----------
+  function teamCards() {
+    return `<div class="card" style="margin-bottom:12px;padding:12px 14px"><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px"><b>🏁 Jamoalar poygasi</b><span id="tmy" style="color:var(--mu)"></span></div><div id="trace"></div></div>`;
+  }
+  function mateCard() {
+    const mt = myTm();
+    return `<div class="card" style="margin-top:12px"><b style="color:${mt != null ? TC[mt][1] : "var(--tx)"}">${mt != null ? TC[mt][0] + " " + esc(tName(mt)) : ""} — jamoadoshlaringiz</b><div id="tmates" style="margin-top:8px"></div><div class="feed" id="tfeed"></div></div>`;
+  }
+  function feedUpd() {
+    const mt = myTm(); st.prevP = st.prevP || {}; st.feed = st.feed || [];
+    Object.entries(st.players || {}).forEach(([pk, p]) => {
+      if (!p || !p.n) return; const pr = st.prevP[pk];
+      if (pr && pk !== st.pid && p.tm === mt && st.meta.phase === "run") {
+        if ((p.a || 0) > (pr.a || 0)) { const ok = (p.s || 0) > (pr.s || 0); st.feed.unshift(`${ok ? "⚡" : "✖"} <b>${esc(first(p.n))}</b> ${p.a}-savolni ${ok ? "to'g'ri topdi" : "xato qildi"}`); if (ok && (p.sk || 0) >= 3 && p.sk !== pr.k) st.feed.unshift(`🔥 <b>${esc(first(p.n))}</b> ketma-ket ${p.sk} ta to'g'ri!`); }
+        if (p.d && !pr.d) st.feed.unshift(`🏁 <b>${esc(first(p.n))}</b> tugatdi — ${p.s || 0} ta to'g'ri`);
+      }
+      st.prevP[pk] = { a: p.a || 0, s: p.s || 0, k: p.sk || 0, d: p.d || 0 };
+    });
+    st.feed = st.feed.slice(0, 6);
+    if ($("tfeed")) $("tfeed").innerHTML = st.feed.map(x => `<div>${x}</div>`).join("");
+  }
+  function sTeamBoard() {
+    if (!st.meta) return;
+    if (st.meta.phase === "lobby") return sTeamLobbyUpd();
+    if (st.meta.phase === "run" && !$("tqa") && !$("twait") && !$("tspec")) return sRoute(true);
+    feedUpd(); race($("trace")); leadCheck();
+    const mt = myTm(), R = tRank(), j = R.findIndex(T => T.i === mt);
+    if ($("tmy") && j >= 0) $("tmy").innerHTML = `Jamoangiz: <b style="color:var(--tx)">${j + 1}-o'rin</b>${st.streak >= 2 ? `<span class="streak">🔥${st.streak}</span>` : ""}`;
+    if ($("tmates") && mt != null) $("tmates").innerHTML = teams()[mt].m.slice().sort((a, b) => (b.s || 0) - (a.s || 0)).map(p => `<div class="mate"><b>${esc(p.n)}${p.k === st.pid ? " (siz)" : ""}</b><span class="pr">${p.d ? "🏁" : (p.a || 0) + "/" + st.meta.n}</span><span>✅ ${p.s || 0}</span></div>`).join("");
+  }
+  function sTeamEnd() {
+    ls.del("zm_active"); clearInterval(st.timer);
+    const R = tRank().filter(T => T.m.length), mt = myTm(), j = R.findIndex(T => T.i === mt), W = R[0], n = st.meta.n;
+    const mvp = T => T.m.slice().sort((a, b) => (b.s || 0) - (a.s || 0) || (a.t || 0) - (b.t || 0))[0];
+    tz().innerHTML = `<div class="card" style="text-align:center"><h1>🏁 Jamoaviy turnir yakunlandi</h1>${tPodium(R)}
+      ${W ? `<div class="celebrate" style="color:${TC[W.i][1]}">🏆 ${esc(tLbl(W.i))} jamoasi G'OLIB!</div>` : ""}
+      ${j >= 0 ? `<div class="tnote" style="margin-top:14px">Jamoangiz: <b>${j + 1}-o'rin</b> · o'rtacha ${f1(R[j].avg)} / ${n}${j === 0 ? "<br>🎉 Tabriklaymiz, jamoangiz yutdi!" : ""}</div>` : ""}
+      <button class="btn" id="tmine" style="margin-top:12px">Xatolarim va sertifikatim</button></div>
+      <div class="card" style="margin-top:12px"><b>Jamoalar natijasi</b><div style="margin-top:10px">${R.map((T, k) => { const m = mvp(T); return `<div class="tmc" style="--c:${TC[T.i][1]};margin-bottom:8px"><div class="tmc-h">${k + 1}. ${TC[T.i][0]} ${esc(tName(T.i))}<small>${f1(T.avg)} / ${n} · ${Math.round(T.avg / n * 100)}%</small></div><div class="tmc-m">${T.m.map(p => `<b>${esc(p.n)}</b> — ${p.s || 0}`).join(" · ")}<br>Jami ${T.sum} ÷ ${T.m.length} kishi = ${f1(T.avg)}${m ? ` · ⭐ MVP: <b>${esc(m.n)}</b>` : ""}</div></div>`; }).join("")}</div></div>`;
+    if (!st.celebrated) { st.celebrated = true; setTimeout(() => { FX.rain(j === 0 ? 300 : 120); FX.S.win(); }, 1200); }
+    $("tmine").onclick = () => { FROM_T = true; TEAMWIN = j === 0 && W ? tName(W.i) : "";
+      set = mSet(st.meta); Q = st.Q; order = st.Q.map((q, i) => ({ i, idx: st.perms[i] }));
+      ans = st.Q.map((q, i) => st.ans[i] === undefined ? null : st.ans[i]);
+      const me = st.players[st.pid] || {}; t0 = Date.now() - (me.t || 0); finish(); };
+  }
+  function tPodium(R) {
+    const top = [R[1], R[0], R[2]], h = [110, 150, 85];
+    return `<div class="podium">${top.map((T, j) => T ? `<div class="pd"><div class="pd-n">${TC[T.i][0]} ${esc(tName(T.i))}</div><div class="pd-s">${f1(T.avg)}</div><div class="pd-b" style="height:${h[j]}px;background:${TC[T.i][1]}">${[2, 1, 3][j]}</div></div>` : '<div class="pd"></div>').join("")}</div>`;
   }
 
   // ================== USTOZ ==================
@@ -4588,6 +4738,9 @@ const T = (() => {
     tz().innerHTML = `${adminNav("tur")}<div class="card" id="tact"><h1 style="display:flex;align-items:center;gap:8px"><span class="live-dot"></span>Davom etayotgan turnirlar</h1><div id="tactl"><div class="sub" style="margin:0">Yuklanmoqda…</div></div></div>
       <div class="card" style="margin-top:12px"><h1>🏆 Yangi turnir</h1>
       ${DBA.kind === "mock" ? '<div class="tnote warn">Sinov rejimi: Firebase hali ulanmagan. Turnir faqat shu qurilmadagi oynalar orasida ishlaydi.</div>' : ""}
+      <div class="seg" id="thm"><button data-m="solo" class="on">🏆 Yakka turnir</button><button data-m="team">👥 Jamoaviy turnir</button></div>
+      <div id="thteam" class="hide"><div class="row"><div style="flex:1"><label>Jamoalar soni</label><select id="thk">${[2, 3, 4, 5, 6].map(x => `<option${x === 2 ? " selected" : ""}>${x}</option>`).join("")}</select></div><div style="flex:1"><label>Bir jamoada nechta o'quvchi</label><input id="thz" type="number" min="1" max="30" value="5"></div></div>
+        <label>Jamoa nomlari (birinchi qo'shilgan o'quvchi — sardor — nomni o'zgartira oladi)</label><div id="thnm"></div></div>
       <label>Turnir qaysi mavzulardan bo'ladi? (bir yoki bir nechtasini belgilang)</label><div id="ths" class="tpks">${opts}</div>
       <div class="tnote" id="thsum">Mavzu tanlanmagan</div>
       <div class="row"><div style="flex:1"><label>Savollar soni</label><input id="thn" type="number" min="5" max="60" value="30"></div><div style="flex:1"><label>Vaqt (daqiqa)</label><input id="thd" type="number" min="1" max="180" value="30"></div></div>
@@ -4598,6 +4751,9 @@ const T = (() => {
     $("ths").onchange = sum; $("thn").oninput = sum;
     $("ths").onclick = e => { const b = e.target.closest("[data-all]"); if (!b) return; const box = b.closest(".tpk"), ins = [...box.querySelectorAll("input")], on = !ins.every(i => i.checked); ins.forEach(i => i.checked = on); sum(); };
     $("thc").onclick = hCreate;
+    const nms = () => { const k = +$("thk").value, old = [...$("thnm").querySelectorAll("input")].map(i => i.value); $("thnm").innerHTML = [...Array(k)].map((_, i) => `<div class="tmnm"><span>${TC[i][0]}</span><input maxlength="24" value="${esc(old[i] || TC[i][2])}"></div>`).join(""); };
+    nms(); $("thk").onchange = nms;
+    $("thm").onclick = e => { const b = e.target.closest("[data-m]"); if (!b) return; [...$("thm").children].forEach(x => x.classList.toggle("on", x === b)); $("thteam").classList.toggle("hide", b.dataset.m !== "team"); $("thc").textContent = b.dataset.m === "team" ? "👥 Jamoaviy turnirni ochish" : "Turnirni ochish"; };
     st.unsub.push(DBA.on("a", v => hActive(v || {})));
   }
   function hActive(v) {
@@ -4623,6 +4779,7 @@ const T = (() => {
     const ttl = ss.length === 1 ? ss[0].title : (ss[0].g.split(" · ").pop() + ": " + ss.map(s => s.n).join(", ") + "-mavzular");
     let code; for (let k = 0; k < 20; k++) { code = String(1000 + Math.floor(Math.random() * 9000)); if (!(await DBA.get(`t/${code}/meta`))) break; }
     const meta = { phase: "lobby", set: ids[0], sets: ids, ttl, seed: Math.floor(Math.random() * 1e9), dur, n: nq, c: DBA.now() };
+    if ($("thm").querySelector(".on").dataset.m === "team") meta.team = { k: +$("thk").value, sz: Math.max(1, Math.min(30, +$("thz").value || 5)), nm: [...$("thnm").querySelectorAll("input")].map((i, j) => i.value.trim().slice(0, 24) || TC[j][2]) };
     await DBA.set(`t/${code}`, { meta });
     hAttach(code);
   }
@@ -4630,14 +4787,16 @@ const T = (() => {
     if (!isAdmin()) return openHost();
     st.celebrated = false; st.ps = {};
     clear(); st.role = "host"; st.code = code; st.pid = null; st.meta = null; ls.set("zm_hostcode", code);
+    st.tn = {}; st.lead = null;
     st.unsub.push(DBA.on(`t/${code}/players`, v => { st.players = v || {}; hBoard(); hAuto(); }));
+    st.unsub.push(DBA.on(`t/${code}/tn`, v => { st.tn = v || {}; hBoard(); }));
     st.unsub.push(DBA.on(`t/${code}/meta`, v => { if (!v) return; const ph = st.meta && st.meta.phase; st.meta = v; if (ph !== v.phase || !$("thb")) hRoute(); }));
     st.timer = setInterval(hTick, 250);
   }
   const link = () => location.href.split("#")[0] + "#turnir-" + st.code;
   function hRoute() {
     const m = st.meta, s = { title: mTitle(m) };
-    DBA.set(`a/${st.code}`, m.phase === "end" ? null : { code: st.code, set: m.set, ttl: s.title, ph: m.phase, c: m.c || DBA.now() });
+    DBA.set(`a/${st.code}`, m.phase === "end" ? null : { code: st.code, set: m.set, ttl: (m.team ? "👥 " : "") + s.title, ph: m.phase, c: m.c || DBA.now() });
     if (m.phase === "end") return hEnd();
     tz().innerHTML = `<div class="card" style="text-align:center">
       <div class="sub" style="margin-bottom:4px">${esc(s.title)} · ${m.n} savol · ${Math.round(m.dur / 60000)} daqiqa</div>
@@ -4646,7 +4805,11 @@ const T = (() => {
         <div class="row"><button class="btn ghost" id="thcp">Havolani nusxalash</button><button class="btn" id="thst">▶ Boshlash</button></div>`
       : `<div class="row" style="align-items:center"><div style="flex:1;text-align:left"><div class="sub" style="margin:0">Kod: <b>${st.code}</b> · Ishtirokchilar: <b id="tcnt">0</b> · Tugatganlar: <b id="tdn">0</b></div></div><div class="ttm" id="ttm" style="font-size:26px">--:--</div></div>
         <button class="btn" id="thend" style="margin-top:12px;background:var(--bad)">■ Turnirni yakunlash</button>`}
-      </div><div class="card" style="margin-top:12px"><b>${m.phase === "lobby" ? "Qo'shilganlar: <span id='tcnt'>0</span>" : "🏆 Jonli reyting"}</b><div id="thb" style="margin-top:10px"></div></div>`;
+      ${m.team ? `<div id="thw" class="tnote" style="margin-top:12px"></div><button class="btn ghost" id="thpj">🖥 Proyektor rejimi</button>` : ""}
+      </div>${m.team && m.phase === "run" ? `<div class="card" style="margin-top:12px"><b>🏁 Jamoalar poygasi</b><div id="trace" style="margin-top:12px"></div></div>` : ""}<div class="card" style="margin-top:12px"><b>${m.phase === "lobby" ? (m.team ? "👥 Jamoalar · qo'shilganlar: <span id='tcnt'>0</span>" : "Qo'shilganlar: <span id='tcnt'>0</span>") : (m.team ? "Jamoalar a'zolari" : "🏆 Jonli reyting")}</b><div id="thb" style="margin-top:10px"></div></div>`;
+    if ($("thpj")) $("thpj").onclick = hProj;
+    if (m.team && m.phase === "run" && $("thw")) $("thw").remove();
+    if (st.proj) hProj();
     if ($("thst")) {
       tz().querySelector(".tlink").textContent = link();
       $("thcp").onclick = () => { navigator.clipboard && navigator.clipboard.writeText(link()).then(() => $("thcp").textContent = "Nusxalandi ✓", () => {}); };
@@ -4658,12 +4821,13 @@ const T = (() => {
     hBoard();
   }
   function hBoard() {
+    if (isTeam()) { if (st.proj) race($("tprace"), { big: true }); if (st.meta.phase === "lobby") hTeamLobby(); else if (st.meta.phase === "run") hTeamRun(); return; }
     const list = ranked(); if ($("tcnt")) $("tcnt").textContent = list.length; if ($("tdn")) $("tdn").textContent = list.filter(p => p.d).length;
     board($("thb"), list, { big: true, n: st.meta ? st.meta.n : 20 });
   }
   function hAuto() {
     const m = st.meta; if (!m || m.phase !== "run") return;
-    const list = ranked();
+    const list = isTeam() ? ranked().filter(p => p.tm != null) : ranked();
     if ((list.length && list.every(p => p.d)) || DBA.now() > m.startAt + m.dur + 3000) DBA.update(`t/${st.code}/meta`, { phase: "end" });
   }
   let lastHB = 0;
@@ -4673,26 +4837,75 @@ const T = (() => {
     if (m.phase !== "run") return;
     const now = DBA.now(), left = now < m.startAt ? m.startAt - now : m.startAt + m.dur - now;
     if ($("ttm")) { $("ttm").textContent = now < m.startAt ? "Start: " + Math.ceil(left / 1000) : fmt(left); $("ttm").classList.toggle("low", now >= m.startAt && left < 60000); }
+    if ($("tpt")) $("tpt").textContent = now < m.startAt ? "Start: " + Math.ceil(left / 1000) : fmt(left);
     hAuto();
   }
   function hEnd() {
     clearInterval(st.timer);
-    const list = ranked();
-    tz().innerHTML = `<div class="card" style="text-align:center"><h1>🏁 Turnir natijalari</h1><div class="sub">${esc(mTitle(st.meta))} · ${list.length} ishtirokchi</div>${podium(list)}
+    if (st.proj) { st.proj = false; document.body.style.overflow = ""; const d = $("tproj"); if (d) d.remove(); }
+    const list = isTeam() ? ranked().filter(p => p.tm != null) : ranked();
+    if (isTeam()) hTeamEnd(); else tz().innerHTML = `<div class="card" style="text-align:center"><h1>🏁 Turnir natijalari</h1><div class="sub">${esc(mTitle(st.meta))} · ${list.length} ishtirokchi</div>${podium(list)}
       <div class="row" style="margin-top:16px"><button class="btn ghost" id="thcr">Natijalarni nusxalash</button><button class="btn" id="thnew">Yangi turnir</button></div></div>
       <div class="card" style="margin-top:12px"><b>To'liq reyting</b><div id="thb" style="margin-top:10px"></div></div>`;
-    board($("thb"), list, { big: true, n: st.meta.n });
+    if (!isTeam()) board($("thb"), list, { big: true, n: st.meta.n });
     if (!st.celebrated) { st.celebrated = true; setTimeout(() => { FX.rain(260); FX.S.win(); }, 1500); }
     if (!st.meta.saved && list.length) {
       const s = mSet(st.meta);
-      list.forEach((p, i) => { const rid = `${st.code}${st.meta.seed % 1000}_${p.k}`, rk = { n: p.n, u: p.u || "", set: s.id, ttl: s.title, mode: "turnir", code: st.code, ok: p.s || 0, tot: st.meta.n, pts: Math.round((p.s || 0) * ppq()), lv: level(Math.round((p.s || 0) * ppq())) || "", dur: p.t || 0, rank: i + 1, cnt: list.length, at: DBA.now() }; if (p.u) DBA.set(`h/${p.k}/${rid}`, { ttl: rk.ttl, mode: "turnir", ok: rk.ok, tot: rk.tot, pts: rk.pts, lv: rk.lv, rank: rk.rank, cnt: rk.cnt, at: rk.at }); DBA.set(`r/${rid}`, { n: p.n, set: s.id, ttl: s.title, mode: "turnir", code: st.code, ok: p.s || 0, tot: st.meta.n, pts: Math.round((p.s || 0) * ppq()), lv: level(Math.round((p.s || 0) * ppq())) || "", dur: p.t || 0, rank: i + 1, cnt: list.length, at: DBA.now(), u: p.u || "" }); });
+      list.forEach((p, i) => { const rid = `${st.code}${st.meta.seed % 1000}_${p.k}`, rk = { n: p.n, u: p.u || "", set: s.id, ttl: s.title, mode: "turnir", code: st.code, ok: p.s || 0, tot: st.meta.n, pts: Math.round((p.s || 0) * ppq()), lv: level(Math.round((p.s || 0) * ppq())) || "", dur: p.t || 0, rank: i + 1, cnt: list.length, at: DBA.now() }; if (isTeam()) { rk.ttl = "👥 " + rk.ttl; rk.tmN = tName(p.tm); } if (p.u) DBA.set(`h/${p.k}/${rid}`, { ttl: rk.ttl, mode: "turnir", ok: rk.ok, tot: rk.tot, pts: rk.pts, lv: rk.lv, rank: rk.rank, cnt: rk.cnt, at: rk.at }); DBA.set(`r/${rid}`, { n: p.n, set: s.id, ttl: s.title, mode: "turnir", code: st.code, ok: p.s || 0, tot: st.meta.n, pts: Math.round((p.s || 0) * ppq()), lv: level(Math.round((p.s || 0) * ppq())) || "", dur: p.t || 0, rank: i + 1, cnt: list.length, at: DBA.now(), u: p.u || "" }); });
       DBA.update(`t/${st.code}/meta`, { saved: 1 });
     }
     $("thnew").onclick = hSetup;
-    $("thcr").onclick = () => {
+    if (!isTeam()) $("thcr").onclick = () => {
       const txt = `🏆 Turnir natijalari — ${mTitle(st.meta)}\n` + list.map((p, i) => `${i + 1}. ${p.n} — ${pts(p.s)} ball (${p.s || 0}/${st.meta.n})`).join("\n");
       navigator.clipboard && navigator.clipboard.writeText(txt).then(() => $("thcr").textContent = "Nusxalandi ✓", () => {});
     };
+  }
+
+  // ---------- ustoz: jamoaviy turnir ----------
+  function hTeamLobby() {
+    const el = $("thb"); if (!el) return;
+    const T = teams(), k = st.meta.team.k, ok = balanced();
+    if ($("thst")) { $("thst").disabled = !ok; }
+    if ($("thw")) { const c = T.map(t => t.m.length); $("thw").textContent = ok ? "✅ Jamoalar teng — boshlash mumkin" : (Math.min(...c) < 1 ? "Har bir jamoada kamida 1 kishi bo'lishi kerak" : "Jamoalar soni teng emas (farq 1 kishidan oshmasin). O'quvchini boshqa jamoaga o'tkazing."); $("thw").className = "tnote" + (ok ? "" : " warn"); }
+    const free = Object.entries(st.players || {}).filter(([pk, p]) => p && p.n && p.tm == null);
+    if ($("tcnt")) $("tcnt").textContent = T.reduce((a, t) => a + t.m.length, 0);
+    el.className = "tmg"; el.innerHTML = "";
+    const row = (pk, p, cur) => `<div class="tmrow" data-p="${pk}">${cur != null && teams()[cur].m[0] && teams()[cur].m[0].k === pk ? "👑" : "•"} <span class="nm"></span><select>${cur == null ? '<option value="">jamoa…</option>' : ""}${[...Array(k)].map((_, j) => `<option value="${j}"${j === cur ? " selected" : ""}>${TC[j][0]} ${esc(tName(j))}</option>`).join("")}</select><button class="x" title="Chiqarish">×</button></div>`;
+    T.forEach(t => {
+      const d = document.createElement("div"); d.className = "tmc"; d.style.setProperty("--c", TC[t.i][1]);
+      d.innerHTML = `<div class="tmc-h">${TC[t.i][0]} <span></span><small>${t.m.length} / ${st.meta.team.sz}</small></div>${t.m.map(p => row(p.k, p, t.i)).join("") || '<div class="tmc-m">Hali hech kim yo\'q</div>'}`;
+      d.querySelector(".tmc-h span").textContent = tName(t.i); el.appendChild(d);
+    });
+    if (free.length) { const d = document.createElement("div"); d.className = "tmc"; d.style.setProperty("--c", "var(--line)"); d.innerHTML = `<div class="tmc-h">⏳ Jamoa tanlamaganlar<small>${free.length}</small></div>${free.map(([pk, p]) => row(pk, p, null)).join("")}`; el.appendChild(d); }
+    el.querySelectorAll("[data-p]").forEach(r => {
+      const pk = r.dataset.p, p = st.players[pk]; r.querySelector(".nm").textContent = p.n;
+      r.querySelector("select").onchange = e => { const v = e.target.value; if (v === "") return; DBA.update(`t/${st.code}/players/${pk}`, { tm: +v, jt: DBA.now() }); };
+      r.querySelector(".x").onclick = () => { DBA.set(`t/${st.code}/ban/${pk}`, 1); DBA.set(`t/${st.code}/players/${pk}`, null); };
+    });
+  }
+  function hTeamRun() {
+    race($("trace"), { big: true }); leadCheck();
+    const el = $("thb"); if (!el) return;
+    el.className = "tmg"; el.innerHTML = tRank().map(t => `<div class="tmc" style="--c:${TC[t.i][1]}"><div class="tmc-h">${TC[t.i][0]} ${esc(tName(t.i))}<small>${f1(t.avg)} / ${st.meta.n}</small></div>${t.m.slice().sort((a, b) => (b.s || 0) - (a.s || 0)).map(p => `<div class="mate"><b>${esc(p.n)}</b><span class="pr">${p.d ? "🏁" : (p.a || 0) + "/" + st.meta.n}</span><span>✅ ${p.s || 0}</span></div>`).join("")}</div>`).join("");
+    if ($("tcnt")) $("tcnt").textContent = teams().reduce((a, t) => a + t.m.length, 0);
+    if ($("tdn")) $("tdn").textContent = teams().reduce((a, t) => a + t.m.filter(p => p.d).length, 0);
+  }
+  function hProj() {
+    st.proj = true; document.body.style.overflow = "hidden";
+    let d = $("tproj"); if (!d) { d = document.createElement("div"); d.id = "tproj"; d.className = "proj"; document.body.appendChild(d); }
+    d.innerHTML = `<div style="display:flex;flex-wrap:wrap;align-items:center;gap:16px;margin-bottom:24px"><h1 style="margin:0;flex:1;min-width:240px">👥 ${esc(mTitle(st.meta))}</h1>${st.meta.phase === "lobby" ? `<div style="font-size:22px">Kod: <b style="font-size:44px;letter-spacing:.15em;color:var(--ac)">${st.code}</b></div>` : `<div class="ttm" id="tpt" style="font-size:44px">--:--</div>`}<button class="btn ghost sm" id="tpx">✕ Yopish</button></div><div id="tprace"></div>`;
+    $("tpx").onclick = hProjOff; race($("tprace"), { big: true });
+  }
+  function hProjOff() { st.proj = false; document.body.style.overflow = ""; const d = $("tproj"); if (d) d.remove(); hRoute(); }
+  function hTeamEnd() {
+    const R = tRank().filter(T => T.m.length), n = st.meta.n, W = R[0];
+    const mvp = T => T.m.slice().sort((a, b) => (b.s || 0) - (a.s || 0) || (a.t || 0) - (b.t || 0))[0];
+    tz().innerHTML = `<div class="card" style="text-align:center"><h1>🏁 Jamoaviy turnir natijalari</h1><div class="sub">${esc(mTitle(st.meta))}</div>${tPodium(R)}
+      ${W ? `<div class="celebrate" style="color:${TC[W.i][1]}">🏆 ${esc(tLbl(W.i))} jamoasi G'OLIB!</div>` : ""}
+      <div class="row" style="margin-top:16px"><button class="btn ghost" id="thcr">Natijalarni nusxalash</button><button class="btn" id="thnew">Yangi turnir</button></div></div>
+      <div class="card" style="margin-top:12px"><b>Jamoalar natijasi</b><div style="margin-top:10px">${R.map((T, k) => { const m = mvp(T); return `<div class="tmc" style="--c:${TC[T.i][1]};margin-bottom:8px"><div class="tmc-h">${k + 1}. ${TC[T.i][0]} ${esc(tName(T.i))}<small>${f1(T.avg)} / ${n} · ${Math.round(T.avg / n * 100)}%</small></div><div class="tmc-m">${T.m.map(p => `<b>${esc(p.n)}</b> — ${p.s || 0}`).join(" · ")}<br>Jami ${T.sum} ÷ ${T.m.length} kishi = ${f1(T.avg)}${m ? ` · ⭐ MVP: <b>${esc(m.n)}</b>` : ""}</div></div>`; }).join("")}</div></div>`;
+    $("thcr").onclick = () => { const txt = `👥 Jamoaviy turnir — ${mTitle(st.meta)}\n` + R.map((T, k) => `${k + 1}. ${tLbl(T.i)} — o'rtacha ${f1(T.avg)}/${n} (${T.m.map(p => first(p.n) + " " + (p.s || 0)).join(", ")})`).join("\n"); navigator.clipboard && navigator.clipboard.writeText(txt).then(() => $("thcr").textContent = "Nusxalandi ✓", () => {}); };
+    return R;
   }
 
   async function boot() {
