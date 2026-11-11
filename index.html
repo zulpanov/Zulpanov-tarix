@@ -472,6 +472,15 @@ body.dlm #bkb{display:none!important}
 .bz-pb{height:5px;border-radius:5px;background:rgba(255,255,255,.08);margin:-6px 0 12px;overflow:hidden}.bz-pb i{display:block;height:100%;width:0;background:linear-gradient(90deg,#FACC15,#F97316);transition:width .3s}
 .bz-tt{font-size:11px;color:var(--mu);margin-right:6px}
 .bz-top .bz-sc b{font-size:19px}
+
+/* ===== JAVOB VARIANTLARI: SHISHA ===== */
+.kh-o.k0,.kh-o.k1,.kh-o.k2,.kh-o.k3{background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.13);color:#EDEBFF;box-shadow:none;border-radius:20px}
+.kh-o .sh{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;font-size:13px;font-weight:800;background:rgba(139,92,246,.25);color:#C4B5FD;opacity:1}
+.kh-o:active{transform:scale(.97);box-shadow:none}
+.kh-g.done .kh-o{opacity:.35}
+.kh-o.okk{background:rgba(34,197,94,.2)!important;border-color:#22C55E!important;box-shadow:0 0 0 4px rgba(34,197,94,.15)!important;outline:0}.kh-o.okk .sh{background:#22C55E;color:#fff}
+.kh-o.bad{background:rgba(244,63,94,.18)!important;border-color:#F43F5E!important}.kh-o.bad .sh{background:#F43F5E;color:#fff}
+.kh-o.okk:after,.kh-o.bad:after{display:none}
 </style>
 </head>
 <body>
@@ -3122,6 +3131,7 @@ const MSACC=(()=>{let acc={},un=null;
   return{watch,can,saved,get acc(){return acc}}})();
 const clsOf=g=>String(g||"").split(" · ")[0].trim(),fanOf=g=>{const p=String(g||"").split(" · ");return p.length>1?p.slice(1).join(" · "):"Testlar"};
 function renderTopics(){
+  const BK=f=>{if(!$("start").classList.contains("hide"))window.BK(f)};
   const box=$("tps"),grid=$("clsGrid");if(!box)return;const E=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   {const g0=$("go");if(g0&&box.contains(g0)){g0.classList.remove("in");$("stBox").insertBefore(g0,box.nextSibling)}}
   box.innerHTML="";grid.innerHTML="";
@@ -3604,7 +3614,7 @@ const DUEL = (() => {
     el.innerHTML = `<div class="kh-q"><span class="tag"></span><div class="q"></div></div><div class="kh-g" id="dops"></div>`;
     el.querySelector(".tag").textContent = qq.t || ""; el.querySelector(".q").textContent = qq.q;
     perm.forEach((oi, k) => {
-      const b = document.createElement("button"); b.className = "opt kh-o k" + k; b.innerHTML = `<span class="sh">${"▲◆●■"[k]}</span><span></span>`; b.lastChild.textContent = qq.o[oi];
+      const b = document.createElement("button"); b.className = "opt kh-o k" + k; b.innerHTML = `<span class="sh">${"ABCD"[k]}</span><span></span>`; b.lastChild.textContent = qq.o[oi];
       b.onclick = () => answer(oi, b); $("dops").appendChild(b);
     });
     G.lock = false;
@@ -3758,7 +3768,7 @@ const BLITZ = (() => {
     G.perm = perm; G.lock = false;
     $("bzQ").innerHTML = `<div class="kh-q bz-q"><div class="q"></div></div><div class="kh-g bz-g" id="bzO"></div>`;
     $("bzQ").querySelector(".q").textContent = qq.q;
-    perm.forEach((oi, k) => { const b = document.createElement("button"); b.className = "opt kh-o k" + k; b.innerHTML = `<span class="sh">${"▲◆●■"[k]}</span><span></span>`; b.lastChild.textContent = qq.o[oi]; b.onclick = () => ans(oi, b); $("bzO").appendChild(b); });
+    perm.forEach((oi, k) => { const b = document.createElement("button"); b.className = "opt kh-o k" + k; b.innerHTML = `<span class="sh">${"ABCD"[k]}</span><span></span>`; b.lastChild.textContent = qq.o[oi]; b.onclick = () => ans(oi, b); $("bzO").appendChild(b); });
   }
   function floatAt(el, txt, cls2) { const r = el.getBoundingClientRect(), d = document.createElement("div"); d.className = "bz-fl " + cls2; d.textContent = txt; d.style.left = (r.left + r.width / 2) + "px"; d.style.top = (r.top + r.height / 2) + "px"; document.body.appendChild(d); setTimeout(() => d.remove(), 900); }
   function ans(oi, b) {
@@ -5464,7 +5474,7 @@ const T = (() => {
     el.innerHTML = `<div class="kh-q"><span class="tag"></span><div class="q"></div></div><div class="kh-g" id="tops"></div>`;
     el.querySelector(".tag").textContent = q.t; el.querySelector(".q").textContent = q.q;
     perm.forEach((oi, k) => {
-      const b = document.createElement("button"); b.className = "opt kh-o k" + k; b.innerHTML = `<span class="sh">${"▲◆●■"[k]}</span><span></span>`; b.lastChild.textContent = q.o[oi];
+      const b = document.createElement("button"); b.className = "opt kh-o k" + k; b.innerHTML = `<span class="sh">${"ABCD"[k]}</span><span></span>`; b.lastChild.textContent = q.o[oi];
       b.onclick = () => { if (st.lock) return; FX.S.tick && FX.S.tick(); $("tops").classList.add("done"); answer(oi, b); }; $("tops").appendChild(b);
     });
     st.pick = null; st.lock = false; try { BK(null); } catch (e) {}
