@@ -425,6 +425,23 @@ button,a,label,summary,.tile,.tile2,.opt,.tp{touch-action:manipulation;-webkit-t
 .pb-bad{font-size:22px;background:linear-gradient(135deg,#F97316,#E11D48);box-shadow:0 12px 40px rgba(225,29,72,.45)}
 .pb.out{transition:opacity .35s,transform .35s;opacity:0;transform:translateY(-16px) scale(.95)}
 @keyframes pbin{0%{transform:scale(.3);opacity:0}60%{transform:scale(1.12);opacity:1}100%{transform:scale(1);opacity:1}}
+
+/* ===== DUEL ===== */
+body.dlm #bkb{display:none!important}
+.dl-h{display:flex;align-items:center;gap:10px;margin:2px 0 12px}
+.dl-hero{text-align:center;padding:20px}.dl-hero b{font-size:18px}.dl-x{font-size:46px;line-height:1;margin-bottom:8px;filter:drop-shadow(0 6px 16px rgba(124,58,237,.6))}
+.dl-rec{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}.dl-rec div{text-align:center;padding:10px;border-radius:16px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1)}.dl-rec b{display:block;font-size:22px}.dl-rec span{font-size:11.5px;color:var(--mu)}
+.dl-row{display:flex;align-items:center;gap:12px;padding:11px 2px;cursor:pointer}.dl-row+.dl-row{border-top:1px solid rgba(255,255,255,.07)}
+.dl-ic{width:42px;height:42px;flex:none;border-radius:13px;display:grid;place-items:center;font-size:20px;background:rgba(139,92,246,.18)}.dl-n{font-size:11.5px;font-weight:800;color:#C4B5FD}
+.dl-m{flex:1;min-width:0}.dl-m b{display:block;font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.dl-m small{display:block;font-size:12px;color:var(--mu);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.dl-go{color:var(--mu);font-size:22px}
+.dl-chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:5px}.dl-chip{flex:none;font-size:11px;font-weight:700;padding:3px 8px;border-radius:9px}.dl-chip.w{background:rgba(34,197,94,.18);color:#86EFAC}.dl-chip.l{background:rgba(244,63,94,.18);color:#FDA4AF}.dl-chip.t{background:rgba(167,139,250,.2);color:#C4B5FD}
+.dl-cls{display:flex;gap:7px;overflow-x:auto;margin-bottom:12px;padding-bottom:2px}.dl-cls button{flex:none;padding:8px 14px;border-radius:20px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);color:var(--mu);font-family:inherit;font-weight:600;font-size:13px;cursor:pointer}.dl-cls button.on{background:var(--gr);color:#fff;border-color:transparent}
+.dl-bar{height:10px;border-radius:10px;background:rgba(255,255,255,.1);overflow:hidden;margin-top:12px}.dl-bar i{display:block;height:100%;background:linear-gradient(90deg,#7C3AED,#22D3EE)}
+.dl-vs{display:flex;align-items:center;justify-content:center;gap:10px;padding:18px 8px}.dl-p{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center}.dl-p b{font-size:14px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.dl-p small{font-size:11.5px;color:var(--mu)}.dl-p em{font-style:normal;font-size:40px;font-weight:900;line-height:1;background:linear-gradient(180deg,#fff,#C4B5FD);-webkit-background-clip:text;background-clip:text;color:transparent}
+.dl-vsx{font-size:26px;font-weight:900;color:#F472B6;text-shadow:0 0 20px rgba(244,114,182,.7)}
+.dl-res{text-align:center}.dl-big{font-size:22px;font-weight:900;margin-top:4px}.dl-res.win{border-color:rgba(34,197,94,.5)!important;background:linear-gradient(160deg,rgba(34,197,94,.18),rgba(255,255,255,.04))!important}.dl-res.lose{border-color:rgba(244,63,94,.4)!important}.dl-res.tie{border-color:rgba(167,139,250,.5)!important}
+.dl-home{display:flex;align-items:center;gap:12px;width:100%;margin-top:10px;padding:12px 14px;text-align:left;cursor:pointer;color:var(--tx);font-family:inherit;background:linear-gradient(135deg,rgba(244,114,182,.22),rgba(124,58,237,.18))!important;border-color:rgba(244,114,182,.4)!important}
+.dl-hx{width:44px;height:44px;flex:none;border-radius:14px;display:grid;place-items:center;font-size:22px;background:linear-gradient(135deg,#EC4899,#8B5CF6);box-shadow:0 0 16px rgba(236,72,153,.5)}.dl-hm{flex:1;min-width:0}.dl-hm b{display:block;font-size:15px}.dl-hm small{display:block;font-size:12px;color:var(--mu)}
 </style>
 </head>
 <body>
@@ -458,6 +475,7 @@ button,a,label,summary,.tile,.tile2,.opt,.tp{touch-action:manipulation;-webkit-t
       <button class="tile t2" onclick="T.openJoin()"><div class="ti">🏆</div><div><b>Turnir</b><span>Kod bilan jonli bellashuv</span></div><span class="badge hide" id="tBadge">JONLI</span></button>
       <button class="tile t3" onclick="ACCT.history()"><div class="ti">📊</div><div><b>Statistika</b><span>Natijalar va o'sish</span></div></button>
     </div>
+    <button class="card dl-home" onclick="DUEL.open()"><span class="dl-hx">⚔️</span><span class="dl-hm"><b>Duel</b><small>Sinfdoshingni 1 ga 1 bellashuvga chaqir</small></span><span class="dl-go">›</span></button>
     <div class="tiles2"><button class="tile2" id="errT" onclick="GAME.startErrors()"><div class="ti2">🔁</div><b>Xatolarim</b><span id="errN">—</span></button><button class="tile2" onclick="GAME.board()"><div class="ti2">🏅</div><b>Haftalik reyting</b><span>Top o'quvchilar</span></button></div>
     <div id="pwaBox"></div>
   </section>
@@ -3150,7 +3168,7 @@ function start(){
 }
 function fmt(ms){const s=Math.floor(ms/1000);return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0")}
 var BKfn;function BK(fn){BKfn=fn;const hm=["home","auth"].some(i=>$(i)&&!$(i).classList.contains("hide"));$("bkb").classList.toggle("hide",!fn||hm)}
-function show(id){document.body.classList.remove("adm");try{$("amore").classList.add("hide")}catch(e){}["auth","home","start","quiz","res","tz"].forEach(s=>$(s).classList.toggle("hide",s!==id));BK(id==="res"?(()=>{if(FROM_T)goHome();else{renderTopics();show("start")}}):id==="start"?BKfn:null);setNav(id==="start"&&typeof VIEW!=="undefined"&&VIEW.k==="ms"?"ms":({home:"home",start:"tests",res:"tests"}[id]||null));window.scrollTo(0,0)}
+function show(id){document.body.classList.remove("adm","dlm");try{$("amore").classList.add("hide")}catch(e){}["auth","home","start","quiz","res","tz"].forEach(s=>$(s).classList.toggle("hide",s!==id));BK(id==="res"?(()=>{if(FROM_T)goHome();else{renderTopics();show("start")}}):id==="start"?BKfn:null);setNav(id==="start"&&typeof VIEW!=="undefined"&&VIEW.k==="ms"?"ms":({home:"home",start:"tests",res:"tests"}[id]||null));window.scrollTo(0,0)}
 function setNav(active){const on=!!(active&&typeof ACCT!=="undefined"&&ACCT.cur);$("bnav").classList.toggle("hide",!on);[...$("bnav").children].forEach(b=>b.classList.toggle("on",b.dataset.g===active));const av=$("hdrAv");if(av){const c=typeof ACCT!=="undefined"&&ACCT.cur;av.classList.toggle("hide",!c);if(c){const k=c.uid+"|"+c.f+c.l;if(av.dataset.k!==k){av.dataset.k=k;av.innerHTML=AV.html(c.uid,c.f+" "+c.l,"fill")}}}}
 function goHome(){if(typeof ACCT!=="undefined"&&ACCT.cur){show("home");ACCT.renderHome()}else show("auth")}
 function goTests(){VIEW={k:"cls"};set=null;show("start");renderTopics()}
@@ -3462,6 +3480,173 @@ const PRAISE = (() => {
   function ok(el, streak) { stars(el); const n = nm(); banner(streak >= 3 && n ? pick(NAME, n) : pick(OK), true); }
   function bad(wst) { const n = nm(); banner(wst >= 3 ? pick(BAD3, n) : pick(BAD), false); }
   return { ok, bad };
+})();
+
+
+// ================== DUEL (1 ga 1) ==================
+const DUEL = (() => {
+  const N = 10, P = "lb/d/";
+  const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const rngF = a => () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+  const me = () => ACCT.cur;
+  const full = c => (c.f + " " + (c.l || "")).trim();
+  const setsAll = () => SETS.filter(x => x.qs && !x.ms && x.qs.length >= 8);
+  const setById = id => SETS.find(x => x.id === id);
+  const mkCode = (uid, id) => uid + "_" + id;
+  const parse = code => { const k = String(code || "").lastIndexOf("_"); return k > 0 ? { uid: code.slice(0, k), id: code.slice(k + 1) } : null; };
+  const webLink = code => location.href.split("#")[0].split("?")[0] + "#duel-" + code;
+  const tgLink = code => window.TG_BOT ? (window.TG_APP ? `https://t.me/${window.TG_BOT}/${window.TG_APP}?startapp=duel-${code}` : `https://t.me/${window.TG_BOT}?startapp=duel-${code}`) : webLink(code);
+  const fmtT = ms => { const s = Math.round(ms / 1000); return s >= 60 ? Math.floor(s / 60) + " daq " + (s % 60) + " s" : s + " s"; };
+  const ls = { get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }, del(k) { try { localStorage.removeItem(k); } catch (e) {} } };
+  let G = null, cls = null, all = {};
+  function head(t, sub) { document.body.classList.add("dlm"); return `<div class="dl-h"><button class="adh-b" onclick="DUEL.open()" title="Duel">‹</button><div class="adh-t"><small>${esc(sub || "Duel · 1 ga 1")}</small><b>${t}</b></div><button class="adh-b" onclick="goHome()" title="Bosh sahifa">🏠</button></div>`; }
+  function winner(a, b) { if (!a || !b) return 0; if (a.s !== b.s) return a.s > b.s ? 1 : -1; if (a.t !== b.t) return a.t < b.t ? 1 : -1; return 0; }
+  async function load() { try { all = (await DBA.get("lb/d")) || {}; } catch (e) { all = {}; } return all; }
+  function mine() {
+    const c = me(); if (!c) return [];
+    const my = all[c.uid] || {}, out = [];
+    Object.entries(my).forEach(([id, d]) => {
+      if (!d) return;
+      if (d.own) { const opp = []; Object.entries(all).forEach(([u, m]) => { const x = m && m[id]; if (x && x.from === c.uid && u !== c.uid) opp.push({ uid: u, ...x }); }); out.push({ id, d, opp, own: 1, at: d.c || 0 }); }
+      else if (d.from) { const h = (all[d.from] || {})[id]; out.push({ id, d, host: h, hostUid: d.from, own: 0, at: d.c || 0 }); }
+    });
+    return out.sort((a, b) => b.at - a.at);
+  }
+  function stats(list) { let w = 0, l = 0, t = 0; list.forEach(x => { if (x.own) x.opp.forEach(o => { if (!x.d.res || !o.res) return; const r = winner(x.d.res, o.res); r > 0 ? w++ : r < 0 ? l++ : t++; }); else if (x.host && x.host.res && x.d.res) { const r = winner(x.d.res, x.host.res); r > 0 ? w++ : r < 0 ? l++ : t++; } }); return { w, l, t }; }
+  async function open() {
+    const c = me(); if (!c) return goHome();
+    try { T.leave(); } catch (e) {}
+    show("tz"); setNav(null); BK(null); G = null;
+    $("tz").innerHTML = head("⚔️ Duel") + `<div class="card dl-hero"><div class="dl-x">⚔️</div><b>Sinfdoshingni bellashuvga chaqir!</b><p class="sub" style="margin:4px 0 14px">10 ta savol. Kim ko'p topsa — g'olib, teng bo'lsa — kim tezroq.</p><button class="btn" id="dlNew">＋ Yangi duel</button></div><div id="dlL"><div class="sub" style="text-align:center;margin:16px 0">Yuklanmoqda…</div></div>`;
+    $("dlNew").onclick = pickCls;
+    await load(); if (!$("dlL")) return;
+    const list = mine(), st = stats(list);
+    const row = x => {
+      if (x.own) {
+        const s = setById(x.d.set), my = x.d.res, n = x.opp.filter(o => o.res).length;
+        const opps = x.opp.filter(o => o.res).map(o => { const r = winner(my, o.res); return `<span class="dl-chip ${r > 0 ? "w" : r < 0 ? "l" : "t"}">${r > 0 ? "✓" : r < 0 ? "✕" : "="} ${esc(String(o.n || "").split(" ")[0])} ${o.res.s}</span>`; }).join("");
+        return `<div class="dl-row" data-code="${esc(mkCode(me().uid, x.id))}"><div class="dl-ic">${n ? "🏁" : "⏳"}</div><div class="dl-m"><b>${esc(s ? (s.n ? clsOf(s.g) + " · " + s.n : s.title) : "Duel")}</b><small>${my ? `Siz: ${my.s}/${N}` : "Hali o'ynalmagan"} · ${n ? n + " ta raqib" : "raqib kutilmoqda"}</small>${opps ? `<div class="dl-chips">${opps}</div>` : ""}</div><span class="dl-go">›</span></div>`;
+      }
+      const s = setById(x.d.set), r = x.host && x.host.res && x.d.res ? winner(x.d.res, x.host.res) : null;
+      return `<div class="dl-row" data-code="${esc(mkCode(x.hostUid, x.id))}"><div class="dl-ic">${r == null ? "⏳" : r > 0 ? "🏆" : r < 0 ? "💔" : "🤝"}</div><div class="dl-m"><b>${esc((x.host && x.host.n) || "Raqib")} bilan</b><small>${esc(s ? (s.n ? clsOf(s.g) + " · " + s.n : s.title) : "")}${x.d.res && x.host && x.host.res ? ` · ${x.d.res.s} : ${x.host.res.s}` : ""}</small></div><span class="dl-go">›</span></div>`;
+    };
+    $("dlL").innerHTML = `<div class="dl-rec"><div><b style="color:#22C55E">${st.w}</b><span>G'alaba</span></div><div><b style="color:#F43F5E">${st.l}</b><span>Mag'lubiyat</span></div><div><b style="color:#A78BFA">${st.t}</b><span>Durang</span></div></div>` + (list.length ? `<div class="ah">Mening duellarim</div><div class="card" style="padding:4px 12px">${list.slice(0, 30).map(row).join("")}</div>` : `<p class="sub" style="text-align:center;margin:16px 0">Hali duel yo'q. Birinchisini boshlang! ⚔️</p>`);
+    $("dlL").onclick = e => { const r = e.target.closest(".dl-row"); if (r) openLink(r.dataset.code); };
+  }
+  function pickCls() {
+    const groups = {}; setsAll().forEach(x => { const c = clsOf(x.g); (groups[c] = groups[c] || []).push(x); });
+    const cl = Object.keys(groups).sort((a, b) => parseInt(a) - parseInt(b));
+    if (!cls || !groups[cls]) cls = cl.find(c => String((me() || {}).g || "").startsWith(String(parseInt(c)))) || cl[0];
+    const draw = () => {
+      $("tz").innerHTML = head("Mavzuni tanlang", "Yangi duel") + `<div class="dl-cls">${cl.map(c => `<button class="${c === cls ? "on" : ""}" data-c="${esc(c)}">${esc(c)}</button>`).join("")}</div>
+      <div class="card" style="padding:4px 12px"><div class="dl-row" data-s="*"><div class="dl-ic">🎲</div><div class="dl-m"><b>Aralash</b><small>${esc(cls)} — barcha mavzulardan</small></div><span class="dl-go">›</span></div>${groups[cls].map(x => `<div class="dl-row" data-s="${x.id}"><div class="dl-ic dl-n">${esc(x.n || "•")}</div><div class="dl-m"><b>${esc(/mavzular?$/i.test(x.title || "") ? x.n + "-mavzular" : x.title)}</b><small>${esc(String(x.sub || "").split(" · ")[0])}</small></div><span class="dl-go">›</span></div>`).join("")}</div>`;
+      $("tz").querySelector(".dl-cls").onclick = e => { const b = e.target.closest("[data-c]"); if (b) { cls = b.dataset.c; draw(); } };
+      $("tz").querySelector(".card").onclick = e => { const r = e.target.closest("[data-s]"); if (r) create(r.dataset.s === "*" ? groups[cls] : [setById(r.dataset.s)]); };
+      window.scrollTo(0, 0);
+    };
+    draw();
+  }
+  async function create(src) {
+    const c = me(); if (!c) return;
+    const pool = []; src.forEach(x => x.qs.forEach((q, i) => pool.push([x.id, i])));
+    for (let i = pool.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [pool[i], pool[j]] = [pool[j], pool[i]]; }
+    const id = Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
+    const d = { own: 1, n: full(c), set: src.length === 1 ? src[0].id : src[0].id, mix: src.length > 1 ? 1 : 0, q: pool.slice(0, N).map(p => p[0] + ":" + p[1]), seed: Math.floor(Math.random() * 1e9), c: DBA.now() };
+    try { await DBA.set(P + c.uid + "/" + id, d); } catch (e) { FX.toast("Ulanib bo'lmadi. Internetni tekshiring."); return; }
+    play(c.uid, id, d, d, null);
+  }
+  function qsOf(d) { return (d.q || []).map(k => { const [sid, i] = String(k).split(":"); const x = setById(sid); return x && x.qs[+i]; }).filter(Boolean); }
+  function play(hostUid, id, host, rec, mineRec) {
+    const Q = qsOf(host); if (!Q.length) { FX.toast("Savollar topilmadi."); return open(); }
+    const R = rngF(host.seed || 1), perms = Q.map(() => { const a = [0, 1, 2, 3]; for (let i = 3; i > 0; i--) { const j = Math.floor(R() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; });
+    G = { hostUid, id, host, Q, perms, cur: 0, ok: 0, streak: 0, wst: 0, t0: Date.now(), lock: false, own: hostUid === me().uid };
+    show("tz"); setNav(null); BK(null); document.body.classList.add("dlm");
+    $("tz").innerHTML = `<div class="kh-top"><span class="kh-c" id="dsk">🔥 0</span><span class="kh-c">⚔️ ${esc(G.own ? "Siz boshladingiz" : String(host.n || "").split(" ")[0] + " bilan")}</span><span class="kh-sp"></span><span class="kh-c" id="dqn"></span></div><div class="kh-tb"><i id="dpb" style="width:0%"></i></div><div class="kh-tl"><span>Bir bosishda javob beriladi ⚡</span><span class="ttm" id="dtm">⏱ 00:00</span></div><div id="dqa"></div>`;
+    clearInterval(G.tk); G.tk = setInterval(() => { if (!$("dtm") || !G) return clearInterval(G && G.tk); $("dtm").textContent = "⏱ " + fmt(Date.now() - G.t0); }, 500);
+    q();
+  }
+  function q() {
+    const el = $("dqa"); if (!el || !G) return;
+    if (G.cur >= G.Q.length) return finish();
+    const qq = G.Q[G.cur], perm = G.perms[G.cur];
+    $("dqn").textContent = `${G.cur + 1}/${G.Q.length}`; $("dpb").style.width = (G.cur / G.Q.length * 100) + "%";
+    el.innerHTML = `<div class="kh-q"><span class="tag"></span><div class="q"></div></div><div class="kh-g" id="dops"></div>`;
+    el.querySelector(".tag").textContent = qq.t || ""; el.querySelector(".q").textContent = qq.q;
+    perm.forEach((oi, k) => {
+      const b = document.createElement("button"); b.className = "opt kh-o k" + k; b.innerHTML = `<span class="sh">${"▲◆●■"[k]}</span><span></span>`; b.lastChild.textContent = qq.o[oi];
+      b.onclick = () => answer(oi, b); $("dops").appendChild(b);
+    });
+    G.lock = false;
+  }
+  function answer(oi, b) {
+    if (!G || G.lock) return; G.lock = true; $("dops").classList.add("done");
+    const qq = G.Q[G.cur], ok = oi === qq.a; try { GAME.track(qq, ok); } catch (e) {}
+    b.classList.add(ok ? "okk" : "bad");
+    if (!ok) [...$("dops").children].forEach((x, k) => { if (G.perms[G.cur][k] === qq.a) x.classList.add("okk"); });
+    if (ok) { G.ok++; G.streak++; G.wst = 0; FX.correct(b, "+1"); PRAISE.ok(b, G.streak); if (G.streak >= 3) setTimeout(FX.S.streak, 250); }
+    else { G.streak = 0; G.wst++; FX.wrong(); PRAISE.bad(G.wst); }
+    $("dsk").textContent = "🔥 " + G.streak; G.cur++;
+    setTimeout(q, 1100);
+  }
+  async function finish() {
+    clearInterval(G.tk); const c = me(), res = { s: G.ok, t: Date.now() - G.t0, at: DBA.now() }, g = G; G = null;
+    const path = P + c.uid + "/" + g.id;
+    try { if (g.own) await DBA.update(path, { res }); else await DBA.set(path, { from: g.hostUid, n: full(c), set: g.host.set, res, c: DBA.now() }); } catch (e) { FX.toast("Natijani saqlab bo'lmadi. Internetni tekshiring."); }
+    if (g.own) share(mkCode(c.uid, g.id), res, g.host); else openLink(mkCode(g.hostUid, g.id), true);
+  }
+  function shareBtns(code, txt) {
+    return `<button class="btn" id="dlTg" style="margin-top:14px">✈️ Telegram'da yuborish</button><button class="btn ghost" id="dlCp" style="margin-top:10px">🔗 Havolani nusxalash</button>`;
+  }
+  function bindShare(code, txt) {
+    const tl = tgLink(code), url = `https://t.me/share/url?url=${encodeURIComponent(tl)}&text=${encodeURIComponent(txt)}`;
+    if ($("dlTg")) $("dlTg").onclick = () => { try { if (window.IN_TG && Telegram.WebApp.openTelegramLink) return Telegram.WebApp.openTelegramLink(url); } catch (e) {} window.open(url, "_blank"); };
+    if ($("dlCp")) $("dlCp").onclick = async () => { const w = webLink(code); try { await navigator.clipboard.writeText(w); FX.toast("✅ Havola nusxalandi"); } catch (e) { prompt("Havolani nusxalang:", w); } };
+  }
+  function share(code, res, host) {
+    const s = setById(host.set), c = me();
+    show("tz"); setNav(null); BK(null);
+    $("tz").innerHTML = head("Duel tayyor!") + `<div class="card dl-hero"><div class="dl-x">🎯</div><b>Natijangiz: ${res.s} / ${N}</b><p class="sub" style="margin:4px 0 0">⏱ ${fmtT(res.t)} · ${esc(s ? (s.n ? clsOf(s.g) + " · " + s.n : s.title) : "")}</p>
+      <div class="dl-bar"><i style="width:${res.s * 10}%"></i></div><p style="margin:14px 0 0;font-weight:700">Endi do'stingni chaqir — u ham shu 10 ta savolni ishlaydi! ⚔️</p>${shareBtns()}</div>
+      <button class="btn ghost" style="margin-top:12px" onclick="DUEL.open()">⚔️ Duellarim</button>`;
+    bindShare(code, `⚔️ ${String(c.f)} seni tarix duelga chaqiryapti! Men ${res.s}/${N} topdim — sen-chi? 😏`);
+  }
+  async function openLink(code, after) {
+    const p = parse(code); if (!p) return open();
+    const c = me(); if (!c) { try { ls.set("zm_duel", code); } catch (e) {} FX.toast("⚔️ Duelga kirish uchun avval tizimga kiring"); return goHome(); }
+    show("tz"); setNav(null); BK(null);
+    $("tz").innerHTML = head("⚔️ Duel") + `<div class="sub" style="text-align:center;margin:30px 0">Yuklanmoqda…</div>`;
+    let host = null, mineR = null; try { [host, mineR] = await Promise.all([DBA.get(P + p.uid + "/" + p.id), DBA.get(P + c.uid + "/" + p.id)]); } catch (e) {}
+    if (!host || !host.own) { $("tz").innerHTML = head("⚔️ Duel") + `<div class="card" style="text-align:center"><div style="font-size:40px">🤷</div><h1>Duel topilmadi</h1><p class="sub">Havola noto'g'ri yoki duel o'chirilgan.</p><button class="btn" onclick="DUEL.open()">⚔️ Duellarim</button></div>`; return; }
+    const s = setById(host.set), sub = s ? (host.mix ? clsOf(s.g) + " · aralash" : (s.n ? clsOf(s.g) + " · " + s.n + "-mavzular" : s.title)) : "";
+    const isHost = p.uid === c.uid;
+    if (isHost) {
+      if (!host.res) return play(p.uid, p.id, host, host, null);
+      await load(); const opp = []; Object.entries(all).forEach(([u, m]) => { const x = m && m[p.id]; if (x && x.from === c.uid && u !== c.uid && x.res) opp.push({ uid: u, ...x }); });
+      opp.sort((a, b) => -winner(a.res, b.res));
+      $("tz").innerHTML = head("⚔️ Duel natijalari", sub) + `<div class="card dl-hero"><b>Sizning natijangiz: ${host.res.s} / ${N}</b><p class="sub" style="margin:4px 0 0">⏱ ${fmtT(host.res.t)}</p></div>
+        <div class="ah">Raqiblar (${opp.length})</div><div class="card" style="padding:4px 12px">${opp.length ? opp.map(o => { const r = winner(host.res, o.res); return `<div class="dl-row"><div class="dl-av">${AV.html(o.uid, o.n, "sm")}</div><div class="dl-m"><b>${esc(o.n)}</b><small>${o.res.s}/${N} · ⏱ ${fmtT(o.res.t)}</small></div><span class="dl-chip ${r > 0 ? "w" : r < 0 ? "l" : "t"}">${r > 0 ? "Siz yutdingiz" : r < 0 ? "U yutdi" : "Durang"}</span></div>`; }).join("") : `<p class="sub" style="text-align:center;margin:12px 0">Hali hech kim o'ynamadi. Havolani yuboring!</p>`}</div>
+        <div class="card" style="margin-top:12px"><b>Yana chaqirish</b>${shareBtns()}</div>`;
+      bindShare(code, `⚔️ ${String(c.f)} seni tarix duelga chaqiryapti! Men ${host.res.s}/${N} topdim — sen-chi? 😏`);
+      return;
+    }
+    if (!mineR || !mineR.res) {
+      if (after) return;
+      $("tz").innerHTML = head("⚔️ Sizni duelga chaqirishdi!", sub) + `<div class="card dl-vs"><div class="dl-p">${AV.html(p.uid, host.n, "lg")}<b>${esc(host.n)}</b><small>${host.res ? "Natija yashirin 🤫" : "hali o'ynamagan"}</small></div><div class="dl-vsx">VS</div><div class="dl-p">${AV.html(c.uid, full(c), "lg")}<b>${esc(full(c))}</b><small>siz</small></div></div>
+        <div class="card" style="margin-top:12px;text-align:center"><p class="sub" style="margin:0 0 4px">📚 ${esc(sub)}</p><p class="sub" style="margin:0 0 14px">10 ta savol · bir bosishda javob · vaqt hisoblanadi</p><button class="btn" id="dlGo">⚔️ Qabul qilaman!</button></div>`;
+      $("dlGo").onclick = () => play(p.uid, p.id, host, host, null);
+      return;
+    }
+    const a = mineR.res, b = host.res, r = b ? winner(a, b) : null;
+    if (r != null && r > 0) setTimeout(() => { try { FX.rain && FX.rain(); } catch (e) {} }, 300);
+    $("tz").innerHTML = head("⚔️ Duel natijasi", sub) + `<div class="card dl-res ${r == null ? "" : r > 0 ? "win" : r < 0 ? "lose" : "tie"}"><div class="dl-big">${r == null ? "⏳ Raqib hali o'ynamagan" : r > 0 ? "🏆 Siz yutdingiz!" : r < 0 ? "💔 Bu safar yutqazdingiz" : "🤝 Durang!"}</div>
+      <div class="dl-vs"><div class="dl-p">${AV.html(c.uid, full(c), "lg")}<b>${esc(String(c.f))}</b><em>${a.s}</em><small>⏱ ${fmtT(a.t)}</small></div><div class="dl-vsx">:</div><div class="dl-p">${AV.html(p.uid, host.n, "lg")}<b>${esc(String(host.n).split(" ")[0])}</b><em>${b ? b.s : "?"}</em><small>${b ? "⏱ " + fmtT(b.t) : "kutilmoqda"}</small></div></div>
+      ${r != null && r < 0 ? `<p class="sub" style="text-align:center;margin:10px 0 0">Hech qisi yo'q — revansh ol! 💪</p>` : ""}</div>
+      <button class="btn" id="dlRv" style="margin-top:12px">🔁 Revansh — o'zim chaqiraman</button><button class="btn ghost" style="margin-top:10px" onclick="DUEL.open()">⚔️ Duellarim</button>`;
+    $("dlRv").onclick = () => { const x = setById(host.set); if (!x) return pickCls(); create(host.mix ? setsAll().filter(y => clsOf(y.g) === clsOf(x.g)) : [x]); };
+  }
+  function pending() { let c = null; try { c = ls.get("zm_duel"); } catch (e) {} if (c && me()) { try { ls.del("zm_duel"); } catch (e) {} setTimeout(() => openLink(c), 700); return false; } return false; }
+  window.addEventListener("hashchange", () => { const h = location.hash; if (!h.startsWith("#duel-")) return; const dc = h.slice(6); try { history.replaceState(null, "", location.pathname + location.search); } catch (e) {} if (me()) openLink(dc); else { ls.set("zm_duel", dc); FX.toast("⚔️ Duelga kirish uchun avval tizimga kiring"); } });
+  return { open, openLink, pending, leave() { if (G) clearInterval(G.tk); G = null; } };
 })();
 
 // ================== NATIJALARNI SAQLASH ==================
@@ -3999,6 +4184,7 @@ const ACCT = (() => {
   function renderHome() {
     if (!cur) return;
     try { BK(null); } catch (e) {}
+    try { if (DUEL.pending()) return; } catch (e) {}
     $("wlAv").innerHTML = AV.html(cur.uid, cur.f + " " + cur.l, "fill"); $("wlAv").onclick = () => PRF.open(); $("wlAv").style.cursor = "pointer";
     if (!$("wlPf")) $("wlX").insertAdjacentHTML("beforebegin", `<button class="btn ghost sm" id="wlPf" style="margin-right:6px" title="Profil sozlamalari">⚙️</button>`); $("wlPf").onclick = () => PRF.open(); $("wlN").textContent = cur.f + " " + cur.l;
     $("wlG").textContent = "@" + cur.login + (cur.g ? " · " + cur.g : ""); $("wlHi").textContent = greet();
@@ -5546,7 +5732,8 @@ const T = (() => {
     if (AUTH.FB) { show("auth"); await AUTH.ready().catch(() => {}); }
     ACCT.restore();
     if (window.IN_TG) { try { const w = Telegram.WebApp; w.ready(); w.expand(); w.disableVerticalSwipes && w.disableVerticalSwipes(); w.setHeaderColor && w.setHeaderColor("#0A0720"); w.setBackgroundColor && w.setBackgroundColor("#0A0720"); } catch (e) {} }
-    const h = window.IN_TG ? (/^turnir-\d{4}$/.test(window.TG_START || "") ? "#" + window.TG_START : "") : location.hash;
+    const h = window.IN_TG ? (/^(turnir-\d{4}|duel-[A-Za-z0-9_]+)$/.test(window.TG_START || "") ? "#" + window.TG_START : "") : location.hash;
+    if (h.startsWith("#duel-")) { const dc = h.slice(6); try { history.replaceState(null, "", location.pathname + location.search); } catch (e) {} if (ACCT.cur) return DUEL.openLink(dc); try { ls.set("zm_duel", dc); } catch (e) {} }
     if (window.IN_TG && h && ACCT.cur) { openJoin(h.split("-")[1]); join(true); return; }
     if (h.startsWith("#turnir")) openJoin((h.split("-")[1] || "").slice(0, 4));
     else if (h === "#ustoz") openHost();
