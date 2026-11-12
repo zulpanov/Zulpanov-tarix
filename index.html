@@ -3316,6 +3316,9 @@ function renderTopics(){
     {const b=document.createElement("button");b.className="clsc";b.style.animationDelay="320ms";b.style.gridColumn="1 / -1";
       b.innerHTML=`<div class="clsn">🌍</div><b>🗺️ Xarita o‘yini</b><span>6 qit’a · davlatni xaritadan top, poytaxti yordam beradi</span>`;
       b.onclick=()=>{location.href="xarita.html"};grid.appendChild(b)}
+    {const b=document.createElement("button");b.className="clsc hy-cls";b.style.animationDelay="360ms";b.style.gridColumn="1 / -1";
+      b.innerHTML=`<div class="clsn">✅</div><b>Ha yoki Yo‘q</b><span>60 soniya · to‘g‘ri +3 s · xato −3 s · mavzuni o‘zing tanla</span>`;
+      b.onclick=()=>HAYOQ.open();grid.appendChild(b)}
     return;
   }
   $("stBox").classList.remove("hide");BK(()=>{if(VIEW.k==="set"){VIEW={k:"cls"};set=null;renderTopics();window.scrollTo(0,0)}else if(VIEW.k==="ms"){VIEW={k:"mscls"};set=null;renderTopics();window.scrollTo(0,0)}else goHome()});
