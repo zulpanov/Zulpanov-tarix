@@ -481,6 +481,25 @@ body.dlm #bkb{display:none!important}
 .kh-o.okk{background:rgba(34,197,94,.2)!important;border-color:#22C55E!important;box-shadow:0 0 0 4px rgba(34,197,94,.15)!important;outline:0}.kh-o.okk .sh{background:#22C55E;color:#fff}
 .kh-o.bad{background:rgba(244,63,94,.18)!important;border-color:#F43F5E!important}.kh-o.bad .sh{background:#F43F5E;color:#fff}
 .kh-o.okk:after,.kh-o.bad:after{display:none}
+
+/* ===== BOSS JANGI ===== */
+.bs-qa{margin-top:10px;border-color:rgba(245,158,11,.45)!important;background:linear-gradient(135deg,rgba(245,158,11,.18),rgba(239,68,68,.12))!important}
+.bs-intro{text-align:center;padding:18px}.bs-intro>b{font-size:16px}.bs-ic0{font-size:52px;line-height:1;margin-bottom:6px;filter:drop-shadow(0 8px 18px rgba(245,158,11,.45))}
+.bs-tl{max-height:260px;margin-bottom:12px;border-radius:14px;background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.1);padding:4px 10px}
+.bs-vr{display:flex;align-items:center;gap:10px;padding:10px;border-radius:14px;border:1.5px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);margin-bottom:8px}.bs-vr.pick{cursor:pointer}.bs-vr.my{border-color:#8B5CF6;background:rgba(139,92,246,.18)}.bs-vr.lead{border-color:rgba(245,158,11,.6)}
+.bs-vt{flex:1.4;min-width:0}.bs-vt b{display:block;font-size:14px}.bs-vt small{display:block;font-size:11.5px;color:var(--mu);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bs-vb{flex:1;height:8px;border-radius:8px;background:rgba(255,255,255,.1);overflow:hidden}.bs-vb i{display:block;height:100%;background:linear-gradient(90deg,#F59E0B,#EF4444);transition:width .4s}.bs-vr em{font-style:normal;font-weight:900;width:24px;text-align:right}
+.bs-top{display:flex;align-items:center;gap:8px;margin:2px 0 8px}
+.bs-cs{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:18px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);margin-bottom:10px}
+.bs-ic{font-size:40px;line-height:1;filter:drop-shadow(0 6px 14px rgba(245,158,11,.4))}.bs-cs.big{flex-direction:column;padding:18px;background:transparent;border:0}.bs-cs.big .bs-ic{font-size:110px}
+.bs-hp{position:relative;flex:1;width:100%;height:22px;border-radius:12px;background:rgba(0,0,0,.4);overflow:hidden;border:1px solid rgba(255,255,255,.15)}.bs-hp i{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,#22C55E,#84CC16);transition:width .5s}.bs-hp span{position:relative;display:block;text-align:center;font-size:12px;font-weight:800;line-height:20px;text-shadow:0 1px 3px rgba(0,0,0,.7)}
+.bs-cs.big .bs-hp{height:30px}.bs-cs.big .bs-hp span{line-height:28px;font-size:15px}
+.bs-cs.hurt .bs-hp i{background:linear-gradient(90deg,#F59E0B,#FACC15)}.bs-cs.crit .bs-hp i{background:linear-gradient(90deg,#EF4444,#F97316)}.bs-cs.crit .bs-ic{animation:bump .8s infinite}
+.bs-cs.hit .bs-ic{animation:shake .4s}.bs-cs.hit .bs-hp{box-shadow:0 0 18px rgba(239,68,68,.7)}
+.bs-cdn{text-align:center;padding:40px 0}.bs-cdn b{display:block;font-size:96px;font-weight:900;line-height:1;background:linear-gradient(180deg,#FDE047,#EF4444);-webkit-background-clip:text;background-clip:text;color:transparent}.bs-cdn span{color:var(--mu)}
+.bs-cd{text-align:center;font-weight:800;color:#FCD34D;min-height:20px}
+.bs-ptop{display:flex;align-items:center;gap:8px}
+.bs-end{text-align:center;padding:20px}.bs-big{font-size:24px;font-weight:900}.bs-end.win{border-color:rgba(34,197,94,.5)!important;background:linear-gradient(160deg,rgba(34,197,94,.16),rgba(255,255,255,.04))!important}.bs-end.lose{border-color:rgba(245,158,11,.4)!important}
 </style>
 </head>
 <body>
@@ -560,7 +579,7 @@ body.dlm #bkb{display:none!important}
 
 <nav class="bnav anav" id="anav"><button data-a="dash">🏠<span>Panel</span></button><button data-a="tur">🏆<span>Turnir</span></button><button data-a="acc">👥<span>O'quvchi</span></button><button data-a="hw">📝<span>Vazifa</span></button><button data-a="more">☰<span>Yana</span></button></nav>
 <div class="amore hide" id="amore"><div class="amore-s"><div class="grab"></div><div class="amore-g">
-<button data-a="stat"><i class="aic c4">📊</i>Statistika</button><button data-a="cq"><i class="aic c6">✏️</i>Savollar</button><button data-a="ms"><i class="aic c5">🎓</i>Sertifikat</button><button data-a="bot"><i class="aic c7">🤖</i>Telegram bot</button><button data-a="pw"><i class="aic c8">🔑</i>Parol</button><button data-a="out"><i class="aic c1">🚪</i>Chiqish</button></div></div></div>
+<button data-a="stat"><i class="aic c4">📊</i>Statistika</button><button data-a="cq"><i class="aic c6">✏️</i>Savollar</button><button data-a="ms"><i class="aic c5">🎓</i>Sertifikat</button><button data-a="bot"><i class="aic c7">🤖</i>Telegram bot</button><button data-a="boss"><i class="aic c1">🏰</i>Boss jangi</button><button data-a="pw"><i class="aic c8">🔑</i>Parol</button><button data-a="out"><i class="aic c1">🚪</i>Chiqish</button></div></div></div>
 <nav class="bnav hide" id="bnav"><button data-g="home">🏠<span>Bosh sahifa</span></button><button data-g="tests">📚<span>Testlar</span></button><button data-g="ms">🎓<span>Sertifikat</span></button><button data-g="turnir">🏆<span>Turnir</span></button><button data-g="stat">📊<span>Statistika</span></button></nav>
 <div class="modal" id="mdl"><div class="card">
   <p style="font-weight:700;font-size:17px;margin-bottom:6px">Testni yakunlaysizmi?</p>
@@ -3209,7 +3228,7 @@ function start(){
 }
 function fmt(ms){const s=Math.floor(ms/1000);return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0")}
 var BKfn;function BK(fn){BKfn=fn;const hm=["home","auth"].some(i=>$(i)&&!$(i).classList.contains("hide"));$("bkb").classList.toggle("hide",!fn||hm)}
-function show(id){document.body.classList.remove("adm","dlm");if(id!=="tz"){try{BLITZ.leave()}catch(e){}}try{$("amore").classList.add("hide")}catch(e){}["auth","home","start","quiz","res","tz"].forEach(s=>$(s).classList.toggle("hide",s!==id));BK(id==="res"?(()=>{if(FROM_T)goHome();else{renderTopics();show("start")}}):id==="start"?BKfn:null);setNav(id==="start"&&typeof VIEW!=="undefined"&&VIEW.k==="ms"?"ms":({home:"home",start:"tests",res:"tests"}[id]||null));window.scrollTo(0,0)}
+function show(id){document.body.classList.remove("adm","dlm");if(id!=="tz"){try{BLITZ.leave()}catch(e){}try{BOSS.leave()}catch(e){}}try{$("amore").classList.add("hide")}catch(e){}["auth","home","start","quiz","res","tz"].forEach(s=>$(s).classList.toggle("hide",s!==id));BK(id==="res"?(()=>{if(FROM_T)goHome();else{renderTopics();show("start")}}):id==="start"?BKfn:null);setNav(id==="start"&&typeof VIEW!=="undefined"&&VIEW.k==="ms"?"ms":({home:"home",start:"tests",res:"tests"}[id]||null));window.scrollTo(0,0)}
 function setNav(active){const on=!!(active&&typeof ACCT!=="undefined"&&ACCT.cur);$("bnav").classList.toggle("hide",!on);[...$("bnav").children].forEach(b=>b.classList.toggle("on",b.dataset.g===active));const av=$("hdrAv");if(av){const c=typeof ACCT!=="undefined"&&ACCT.cur;av.classList.toggle("hide",!c);if(c){const k=c.uid+"|"+c.f+c.l;if(av.dataset.k!==k){av.dataset.k=k;av.innerHTML=AV.html(c.uid,c.f+" "+c.l,"fill")}}}}
 function goHome(){if(typeof ACCT!=="undefined"&&ACCT.cur){show("home");ACCT.renderHome()}else show("auth")}
 function goTests(){VIEW={k:"cls"};set=null;show("start");renderTopics()}
@@ -3810,6 +3829,190 @@ const BLITZ = (() => {
     if (isRec && g.s) setTimeout(() => { try { FX.rain(160); FX.S.win && FX.S.win(); } catch (e) {} }, 300);
   }
   return { open, leave: stop };
+})();
+
+
+// ================== BOSS JANGI ==================
+const BOSS = (() => {
+  const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const rngF = a => () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+  const hs = str => { let h = 2166136261; for (const ch of String(str)) { h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; };
+  const byId = id => SETS.find(x => x.id === id);
+  const tName = x => x ? (/mavzular?$/i.test(x.title || "") ? x.n + "-mavzular" : x.title) : "";
+  const tSub = x => x ? String(x.sub || "").split(" · ")[0] : "";
+  const fmtS = ms => { const s = Math.max(0, Math.ceil(ms / 1000)); return String(Math.floor(s / 60)).padStart(2, "0") + ":" + String(s % 60).padStart(2, "0"); };
+  const B = { un: [], tk: null, code: null, meta: null, pl: {}, role: null, Q: [], perms: [], cur: 0, lock: false, streak: 0, wst: 0, hpShown: null };
+  function leave() { B.un.forEach(f => { try { f(); } catch (e) {} }); B.un = []; clearInterval(B.tk); B.tk = null; B.code = null; B.role = null; }
+  const dmg = () => Object.values(B.pl || {}).reduce((a, p) => a + (p && p.s || 0), 0);
+  const votes = () => { const v = {}; Object.values(B.pl || {}).forEach(p => { if (p && p.v) v[p.v] = (v[p.v] || 0) + 1; }); return v; };
+  const nPl = () => Object.values(B.pl || {}).filter(Boolean).length;
+  const autoHp = (np, n) => Math.max(5, Math.round(np * n * 0.6));
+  function castle(hpLeft, hp, big) {
+    const p = hp ? Math.max(0, hpLeft) / hp * 100 : 100, st = p > 66 ? "" : p > 33 ? " hurt" : p > 0 ? " crit" : " dead";
+    return `<div class="bs-cs${big ? " big" : ""}${st}" id="bsCs"><div class="bs-ic">${p > 0 ? "🏰" : "💥"}</div><div class="bs-hp"><i style="width:${p}%"></i><span>${Math.max(0, hpLeft)} / ${hp}</span></div></div>`;
+  }
+  function hit() { const c = $("bsCs"); if (!c) return; c.classList.remove("hit"); void c.offsetWidth; c.classList.add("hit"); }
+  // ---------- USTOZ ----------
+  let hc = null, hsel = [], hn = 15, hdur = 5, hhp = 0;
+  function setup() {
+    if (!isAdmin()) return T.openHost();
+    leave(); try { T.leave(); } catch (e) {} show("tz");
+    const g = {}; SETS.filter(x => x.qs && !x.ms && x.qs.length >= 8).forEach(x => { const c = clsOf(x.g); (g[c] = g[c] || []).push(x); });
+    const cl = Object.keys(g).sort((a, b) => parseInt(a) - parseInt(b)); if (!hc || !g[hc]) hc = cl[0];
+    hsel = hsel.filter(id => g[hc].some(x => x.id === id));
+    $("tz").innerHTML = `${adminNav("boss")}<div class="card bs-intro"><div class="bs-ic0">🏰</div><b>Butun sinf birgalikda qal'ani yiqitadi</b><p class="sub" style="margin:4px 0 0">O'quvchilar kod bilan qo'shiladi va mavzuga ovoz beradi. Ko'p ovoz olgan mavzudan savollar tushadi. Har to'g'ri javob qal'aga zarba beradi.</p></div>
+      <div class="card" style="margin-top:12px"><label>Sinf</label><div class="dl-cls" id="bhC">${cl.map(c => `<button class="${c === hc ? "on" : ""}" data-c="${esc(c)}">${esc(c)}</button>`).join("")}</div>
+      <label>Ovozga qo'yiladigan mavzular (2–4 ta belgilang)</label><div class="bz-tl bs-tl" id="bhT">${g[hc].map(x => `<label><input type="checkbox" value="${x.id}"${hsel.includes(x.id) ? " checked" : ""}> <span><b>${esc(x.n || "")}</b> ${esc(tSub(x) || x.title)}</span></label>`).join("")}</div>
+      <div class="row"><div style="flex:1"><label>Har o'quvchiga savol</label><select id="bhN">${[10, 15, 20].map(n => `<option${n === hn ? " selected" : ""}>${n}</option>`).join("")}</select></div><div style="flex:1"><label>Vaqt (daqiqa)</label><select id="bhD">${[3, 5, 7, 10].map(n => `<option${n === hdur ? " selected" : ""}>${n}</option>`).join("")}</select></div></div>
+      <div class="tnote" id="bhS"></div><div class="accerr" id="bhE"></div><button class="btn" id="bhGo">🏰 Jangni ochish</button></div>`;
+    $("bhC").onclick = e => { const b = e.target.closest("[data-c]"); if (b) { hc = b.dataset.c; hsel = []; setup(); } };
+    const sum = () => { hsel = [...$("bhT").querySelectorAll("input:checked")].map(i => i.value); hn = +$("bhN").value; hdur = +$("bhD").value; $("bhS").innerHTML = hsel.length ? `Ovozga <b>${hsel.length}</b> ta mavzu qo'yiladi. Har o'quvchiga <b>${hn}</b> ta savol, <b>${hdur}</b> daqiqa. Qal'a joni o'quvchilar soniga qarab hisoblanadi.` : "Kamida 2 ta mavzu belgilang."; };
+    $("bhT").onchange = sum; $("bhN").onchange = sum; $("bhD").onchange = sum; sum();
+    $("bhGo").onclick = create;
+  }
+  async function create() {
+    if (hsel.length < 2 || hsel.length > 4) return $("bhE").textContent = "2 tadan 4 tagacha mavzu belgilang.";
+    $("bhGo").disabled = true;
+    let code; for (let k = 0; k < 20; k++) { code = String(1000 + Math.floor(Math.random() * 9000)); if (!(await DBA.get(`t/${code}/meta`))) break; }
+    const meta = { boss: 1, phase: "vote", cls: hc, cand: hsel, n: hn, dur: hdur * 60000, seed: Math.floor(Math.random() * 1e9), c: DBA.now(), set: hsel[0], title: "🏰 Boss jangi" };
+    try { await DBA.set(`t/${code}`, { meta }); } catch (e) { $("bhGo").disabled = false; return $("bhE").textContent = "Ochib bo'lmadi. Internetni tekshiring."; }
+    host(code);
+  }
+  function host(code) {
+    leave(); B.role = "host"; B.code = code; show("tz");
+    B.un.push(DBA.on(`t/${code}/meta`, v => { if (!v) return; const ph = B.meta && B.meta.phase; B.meta = v; if (ph !== v.phase) hRender(); else hUpd(); }));
+    B.un.push(DBA.on(`t/${code}/players`, v => { const old = dmg(); B.pl = v || {}; if (dmg() > old) hit(); hUpd(); }));
+    B.tk = setInterval(hTick, 300);
+  }
+  function link() { return window.TG_BOT ? (window.TG_APP ? `https://t.me/${window.TG_BOT}/${window.TG_APP}?startapp=turnir-${B.code}` : `https://t.me/${window.TG_BOT}?startapp=turnir-${B.code}`) : location.href.split("#")[0].split("?")[0] + "#turnir-" + B.code; }
+  function hRender() {
+    const m = B.meta; if (!m || !$("tz")) return;
+    if (m.phase === "vote") {
+      $("tz").innerHTML = `${adminNav("boss")}<div class="card" style="text-align:center"><div class="sub" style="margin:0">🏰 Boss jangi · ${esc(m.cls)} · o'quvchilar ovoz bermoqda</div><div class="tcode">${B.code}</div><div class="sub" style="margin:0">Turnir bo'limida shu kodni kiritib qo'shiling</div><div class="sub" style="margin:6px 0 0;word-break:break-all;font-size:12px">${esc(link())}</div></div>
+        <div class="card" style="margin-top:12px"><div style="display:flex;justify-content:space-between;align-items:center"><b>🗳 Ovozlar</b><span class="sub" style="margin:0">👥 <b id="bhP">0</b> ta o'quvchi</span></div><div id="bhV" style="margin-top:10px"></div>
+        <div class="row" style="margin-top:12px"><div style="flex:1"><label>Qal'a joni</label><input id="bhH" type="number" min="5" max="2000" placeholder="avto"></div></div><div class="tnote" id="bhHn"></div>
+        <button class="btn" id="bhStart" disabled>⚔️ Jangni boshlash</button><button class="btn ghost" style="margin-top:10px" id="bhX">✕ Bekor qilish</button></div>`;
+      $("bhStart").onclick = start; $("bhX").onclick = async () => { await DBA.update(`t/${B.code}/meta`, { phase: "end", win: 0, cancel: 1 }); leave(); setup(); };
+      $("bhH").oninput = hUpd; hUpd(); return;
+    }
+    if (m.phase === "run") {
+      $("tz").innerHTML = `${adminNav("boss")}<div class="bs-proj"><div class="bs-ptop"><span class="kh-c">🏰 ${esc(tName(byId(m.set)))}</span><span class="kh-sp"></span><span class="kh-c" id="bhT2">⏱ --:--</span></div><div id="bhCs"></div><div class="bs-cd" id="bhCd"></div>
+        <div class="card" style="margin-top:12px"><div style="display:flex;justify-content:space-between"><b>⚔️ Eng kuchli jangchilar</b><span class="sub" style="margin:0">👥 <b id="bhP">0</b></span></div><div id="bhL" style="margin-top:8px"></div></div>
+        <button class="btn ghost" style="margin-top:12px" id="bhEnd">⏹ Jangni to'xtatish</button></div>`;
+      $("bhEnd").onclick = () => finishHost(); hUpd(); return;
+    }
+    if (m.phase === "end") {
+      const left = m.hp - dmg(), win = !!m.win;
+      if (win) setTimeout(() => { try { FX.rain(240); FX.S.win(); } catch (e) {} }, 200);
+      $("tz").innerHTML = `${adminNav("boss")}<div class="card bs-end ${win ? "win" : "lose"}"><div class="bs-big">${m.cancel ? "Jang bekor qilindi" : win ? "🏆 Qal'a yiqitildi!" : "🛡 Qal'a omon qoldi"}</div>${m.cancel ? "" : castle(left, m.hp, true)}<p class="sub" style="margin:8px 0 0">${m.cancel ? "" : win ? `Sinf ${dmg()} ta zarba berdi${m.endAt && m.startAt ? ` · ${fmtS(m.endAt - m.startAt)} da` : ""}` : `Yana ${Math.max(0, left)} ta zarba yetmadi`}</p></div>
+        <div class="card" style="margin-top:12px"><b>⚔️ Jangchilar</b><div id="bhL" style="margin-top:8px"></div></div><button class="btn" style="margin-top:12px" onclick="BOSS.setup()">🏰 Yangi jang</button>`;
+      hUpd();
+    }
+  }
+  function lbHtml(lim) { const a = Object.entries(B.pl || {}).filter(([k, p]) => p).map(([k, p]) => ({ k, ...p })).sort((x, y) => (y.s || 0) - (x.s || 0) || (x.t || 0) - (y.t || 0)); return a.length ? a.slice(0, lim).map((p, i) => `<div class="bz-r"><span class="bz-i">${["🥇", "🥈", "🥉"][i] || i + 1}</span>${AV.html(p.k, p.n, "sm")}<b>${esc(p.n)}</b><em>⚔️ ${p.s || 0}</em></div>`).join("") : `<p class="sub" style="text-align:center;margin:8px 0">Hali hech kim yo'q</p>`; }
+  function hUpd() {
+    const m = B.meta; if (!m) return;
+    if ($("bhP")) $("bhP").textContent = nPl();
+    if (m.phase === "vote" && $("bhV")) {
+      const v = votes(), tot = Object.values(v).reduce((a, b) => a + b, 0) || 0, mx = Math.max(0, ...Object.values(v));
+      $("bhV").innerHTML = m.cand.map(id => { const x = byId(id), c = v[id] || 0; return `<div class="bs-vr${c && c === mx ? " lead" : ""}"><div class="bs-vt"><b>${esc(tName(x))}</b><small>${esc(tSub(x))}</small></div><div class="bs-vb"><i style="width:${tot ? c / tot * 100 : 0}%"></i></div><em>${c}</em></div>`; }).join("");
+      const np = nPl(); $("bhStart").disabled = !np; const hv = +$("bhH").value; $("bhHn").innerHTML = np ? `Qal'a joni: <b>${hv > 0 ? hv : autoHp(np, m.n)}</b>${hv > 0 ? "" : ` (avto: ${np} o'quvchi × ${m.n} savol × 60%)`}` : "O'quvchilar qo'shilishini kuting…";
+    }
+    if (m.phase !== "vote" && $("bhCs") !== null) { if ($("bhCs")) $("bhCs").innerHTML = castle(m.hp - dmg(), m.hp, true); }
+    if ($("bhL")) $("bhL").innerHTML = lbHtml(m.phase === "end" ? 30 : 8);
+  }
+  async function start() {
+    const m = B.meta, v = votes(); let best = m.cand[0], bc = -1; m.cand.forEach(id => { const c = v[id] || 0; if (c > bc) { bc = c; best = id; } });
+    const hv = +$("bhH").value, hp = hv > 0 ? hv : autoHp(nPl(), m.n);
+    await DBA.update(`t/${B.code}/meta`, { phase: "run", set: best, hp, startAt: DBA.now() + 6000 });
+  }
+  async function finishHost(win) { const m = B.meta; if (!m || m.phase !== "run") return; await DBA.update(`t/${B.code}/meta`, { phase: "end", win: win ? 1 : 0, endAt: DBA.now() }); }
+  function hTick() {
+    const m = B.meta; if (!m || m.phase !== "run") return; const now = DBA.now();
+    if ($("bhCd")) $("bhCd").textContent = now < m.startAt ? "Jang boshlanishiga: " + Math.ceil((m.startAt - now) / 1000) : "";
+    const left = m.startAt + m.dur - now; if ($("bhT2")) { $("bhT2").textContent = "⏱ " + fmtS(Math.min(m.dur, left)); }
+    if (dmg() >= m.hp) return finishHost(true);
+    const ps = Object.values(B.pl || {}).filter(Boolean);
+    if (left <= 0 || (now > m.startAt && ps.length && ps.every(p => p.d))) finishHost(false);
+  }
+  // ---------- O'QUVCHI ----------
+  function play(code) {
+    leave(); B.role = "pl"; B.code = code; B.cur = 0; B.Q = []; B.voted = false;
+    const ac = ACCT.cur; B.pid = ac.uid; show("tz"); setNav(null); BK(null); document.body.classList.add("dlm");
+    $("tz").innerHTML = `<div class="sub" style="text-align:center;margin:30px 0">Ulanmoqda…</div>`;
+    (async () => {
+      let me = null; try { me = await DBA.get(`t/${code}/players/${B.pid}`); } catch (e) {}
+      if (!me) await DBA.set(`t/${code}/players/${B.pid}`, { n: ac.f + " " + ac.l, u: ac.login, s: 0, a: 0, t: 0, d: 0 }); else { B.cur = me.a || 0; }
+      B.un.push(DBA.on(`t/${code}/meta`, v => { if (!v) return; const ph = B.meta && B.meta.phase; B.meta = v; if (ph !== v.phase) pRender(); }));
+      B.un.push(DBA.on(`t/${code}/players`, v => { const old = dmg(); B.pl = v || {}; if (dmg() > old) hit(); pUpd(); }));
+      B.tk = setInterval(pTick, 250);
+    })();
+  }
+  function build() {
+    const m = B.meta, x = byId(m.set); if (!x) return;
+    const R = rngF((m.seed ^ hs(B.pid)) >>> 0), idx = x.qs.map((_, i) => i);
+    for (let i = idx.length - 1; i > 0; i--) { const j = Math.floor(R() * (i + 1)); [idx[i], idx[j]] = [idx[j], idx[i]]; }
+    B.Q = idx.slice(0, m.n).map(i => x.qs[i]);
+    B.perms = B.Q.map(() => { const a = [0, 1, 2, 3]; for (let i = 3; i > 0; i--) { const j = Math.floor(R() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; });
+  }
+  function pRender() {
+    const m = B.meta; if (!m || !$("tz")) return; document.body.classList.add("dlm");
+    if (m.phase === "vote") {
+      $("tz").innerHTML = `<div class="dl-h"><button class="adh-b" onclick="goHome()">‹</button><div class="adh-t"><small>Boss jangi · ${esc(m.cls)} · kod ${B.code}</small><b>🗳 Mavzuga ovoz bering</b></div></div>
+        <div class="card bs-intro"><div class="bs-ic0">🏰</div><b>Sinf birgalikda qal'ani yiqitadi!</b><p class="sub" style="margin:4px 0 0">Har to'g'ri javobingiz — qal'aga zarba ⚔️. Qaysi mavzudan jang qilamiz? Ko'p ovoz olgani tanlanadi.</p></div>
+        <div class="card" style="margin-top:12px"><div id="bpV"></div><p class="sub" style="text-align:center;margin:10px 0 0" id="bpW">Ovoz bering. Ustoz jangni boshlashini kuting… 👥 <b id="bpP">0</b></p></div>`;
+      $("bpV").onclick = e => { const r = e.target.closest("[data-v]"); if (!r) return; DBA.update(`t/${B.code}/players/${B.pid}`, { v: r.dataset.v }); try { FX.S.tick(); } catch (x) {} };
+      pUpd(); return;
+    }
+    if (m.phase === "run") {
+      build();
+      $("tz").innerHTML = `<div class="bs-top"><span class="kh-c" id="bpK">🔥 0</span><span class="kh-c" id="bpM">⚔️ 0</span><span class="kh-sp"></span><span class="kh-c" id="bpT">⏱ --:--</span></div><div id="bpCs"></div><div class="kh-tl"><span>📚 ${esc(tName(byId(m.set)))}</span><span id="bpN"></span></div><div id="bpQ"></div>`;
+      pUpd(); pTick(); return;
+    }
+    if (m.phase === "end") {
+      const win = !!m.win, mine = (B.pl[B.pid] || {}).s || 0;
+      if (win && !m.cancel) setTimeout(() => { try { FX.rain(240); FX.S.win(); } catch (e) {} }, 200);
+      $("tz").innerHTML = `<div class="card bs-end ${win ? "win" : "lose"}"><div class="bs-big">${m.cancel ? "Jang bekor qilindi" : win ? "🏆 Qal'a yiqitildi!" : "🛡 Qal'a omon qoldi"}</div>${m.cancel ? "" : castle(m.hp - dmg(), m.hp, true)}<p style="margin:10px 0 0;font-weight:700">${m.cancel ? "" : win ? `Siz ${mine} ta zarba berdingiz! Sinf bilan birga g'alaba! 🎉` : `Siz ${mine} ta zarba berdingiz. Keyingi safar albatta yiqitamiz! 💪`}</p></div>
+        <div class="card" style="margin-top:12px"><b>⚔️ Jangchilar</b><div style="margin-top:8px">${lbHtml(30)}</div></div><button class="btn" style="margin-top:12px" onclick="goHome()">🏠 Bosh sahifa</button>`;
+      leave();
+    }
+  }
+  function pUpd() {
+    const m = B.meta; if (!m) return;
+    if (m.phase === "vote" && $("bpV")) {
+      const v = votes(), my = (B.pl[B.pid] || {}).v, tot = Object.values(v).reduce((a, b) => a + b, 0);
+      $("bpV").innerHTML = m.cand.map(id => { const x = byId(id), c = v[id] || 0; return `<div class="bs-vr pick${my === id ? " my" : ""}" data-v="${id}"><div class="bs-vt"><b>${my === id ? "✓ " : ""}${esc(tName(x))}</b><small>${esc(tSub(x))}</small></div><div class="bs-vb"><i style="width:${tot ? c / tot * 100 : 0}%"></i></div><em>${c}</em></div>`; }).join("");
+      if ($("bpP")) $("bpP").textContent = nPl();
+    }
+    if (m.phase === "run") { if ($("bpCs")) $("bpCs").innerHTML = castle(m.hp - dmg(), m.hp); if ($("bpM")) $("bpM").textContent = "⚔️ " + ((B.pl[B.pid] || {}).s || 0); }
+  }
+  function pTick() {
+    const m = B.meta; if (!m || m.phase !== "run" || !$("bpQ")) return; const now = DBA.now();
+    if (now < m.startAt) { const n = Math.ceil((m.startAt - now) / 1000); if (!$("bpCd")) $("bpQ").innerHTML = `<div class="bs-cdn"><b id="bpCd">${n}</b><span>Jangga tayyorlaning! ⚔️</span></div>`; else if ($("bpCd").textContent != n) { $("bpCd").textContent = n; try { FX.S.tick(); } catch (e) {} } return; }
+    const left = m.startAt + m.dur - now; if ($("bpT")) $("bpT").textContent = "⏱ " + fmtS(left);
+    if ($("bpCd") || (!$("bpO") && !$("bpDone"))) q();
+  }
+  function q() {
+    if (B.cur >= B.Q.length) { $("bpQ").innerHTML = `<div class="card" id="bpDone" style="text-align:center"><div style="font-size:40px">✅</div><b>Savollaringiz tugadi!</b><p class="sub" style="margin:4px 0 0">Sinfdoshlaringiz jangni davom ettirmoqda. Qal'aning holatini kuzating 🏰</p></div>`; DBA.update(`t/${B.code}/players/${B.pid}`, { d: 1 }); return; }
+    const qq = B.Q[B.cur], perm = B.perms[B.cur]; $("bpN").textContent = `${B.cur + 1}/${B.Q.length}`;
+    $("bpQ").innerHTML = `<div class="kh-q"><span class="tag"></span><div class="q"></div></div><div class="kh-g" id="bpO"></div>`;
+    $("bpQ").querySelector(".tag").textContent = qq.t || ""; $("bpQ").querySelector(".q").textContent = qq.q;
+    perm.forEach((oi, k) => { const b = document.createElement("button"); b.className = "opt kh-o k" + k; b.innerHTML = `<span class="sh">${"ABCD"[k]}</span><span></span>`; b.lastChild.textContent = qq.o[oi]; b.onclick = () => ans(oi, b); $("bpO").appendChild(b); });
+    B.lock = false;
+  }
+  function ans(oi, b) {
+    if (B.lock) return; B.lock = true; $("bpO").classList.add("done");
+    const qq = B.Q[B.cur], ok = oi === qq.a; try { GAME.track(qq, ok); } catch (e) {}
+    b.classList.add(ok ? "okk" : "bad");
+    if (!ok) [...$("bpO").children].forEach((x, k) => { if (B.perms[B.cur][k] === qq.a) x.classList.add("okk"); });
+    const my = (B.pl[B.pid] || {}).s || 0; B.cur++;
+    if (ok) { B.streak++; B.wst = 0; FX.correct(b, "⚔️ −1"); PRAISE.ok(b, B.streak); hit(); }
+    else { B.streak = 0; B.wst++; FX.wrong(); PRAISE.bad(B.wst); }
+    if ($("bpK")) $("bpK").textContent = "🔥 " + B.streak;
+    DBA.update(`t/${B.code}/players/${B.pid}`, { s: my + (ok ? 1 : 0), a: B.cur, t: DBA.now() - B.meta.startAt });
+    setTimeout(() => { if (B.meta && B.meta.phase === "run" && $("bpQ")) q(); }, 1000);
+  }
+  return { setup, host, play, leave };
 })();
 
 // ================== NATIJALARNI SAQLASH ==================
@@ -4525,15 +4728,16 @@ const ACC = (() => {
   return { open, leave() { unsubs.forEach(f => f()); unsubs = []; } };
 })();
 
-const ADM_SEC = { dash: ["🏠", "Boshqaruv paneli"], tur: ["🏆", "Turnirlar"], acc: ["👥", "O'quvchilar"], hw: ["📝", "Vazifalar"], cq: ["✏️", "Savollar"], ms: ["🎓", "Sertifikat"], stat: ["📊", "Statistika"], bot: ["🤖", "Telegram bot"], pw: ["🔑", "Parol"] };
+const ADM_SEC = { dash: ["🏠", "Boshqaruv paneli"], tur: ["🏆", "Turnirlar"], acc: ["👥", "O'quvchilar"], hw: ["📝", "Vazifalar"], cq: ["✏️", "Savollar"], ms: ["🎓", "Sertifikat"], stat: ["📊", "Statistika"], bot: ["🤖", "Telegram bot"], pw: ["🔑", "Parol"], boss: ["🏰", "Boss jangi"] };
 function adminGo(k) {
   $("amore").classList.add("hide");
-  const f = { dash: () => ADASH.open(), tur: () => T.openHost(), acc: () => ACC.open(), hw: () => HW.open(), cq: () => CQ.open(), ms: () => MSADM.open(), stat: () => STAT.open(), bot: () => BOTP.open(), pw: () => ADMPW.open(), out: () => adminLogout(), more: () => $("amore").classList.toggle("hide") }[k];
+  const f = { dash: () => ADASH.open(), tur: () => T.openHost(), acc: () => ACC.open(), hw: () => HW.open(), cq: () => CQ.open(), ms: () => MSADM.open(), stat: () => STAT.open(), bot: () => BOTP.open(), pw: () => ADMPW.open(), boss: () => BOSS.setup(), out: () => adminLogout(), more: () => $("amore").classList.toggle("hide") }[k];
   if (f) f();
 }
 function adminNav(active) {
   if (active !== "hw" && typeof HW !== "undefined") HW.leaveAdmin();
   if (active !== "dash" && typeof ADASH !== "undefined") ADASH.leave();
+  if (active !== "boss" && typeof BOSS !== "undefined") BOSS.leave();
   document.body.classList.add("adm"); try { setNav(null); } catch (e) {}
   const main = ["dash", "tur", "acc", "hw"].includes(active) ? active : "more";
   [...$("anav").children].forEach(b => b.classList.toggle("on", b.dataset.a === main));
@@ -4559,7 +4763,7 @@ const ADASH = (() => {
       <div class="ah">Bo'limlar</div>
       <div class="agrid">${S.map(([k, i, n, c]) => `<button onclick="adminGo('${k}')"><i class="aic ${c}">${i}</i>${n}<span class="abd hide" id="adb_${k}"></span></button>`).join("")}</div>
       <div class="ah">Tezkor amallar</div>
-      <div class="row" style="gap:10px"><button class="btn" style="margin:0" onclick="adminGo('tur')">＋ Turnir</button><button class="btn ghost" style="margin:0" onclick="adminGo('hw')">＋ Vazifa</button></div>
+      <div class="row" style="gap:10px"><button class="btn" style="margin:0" onclick="adminGo('tur')">＋ Turnir</button><button class="btn ghost" style="margin:0" onclick="adminGo('hw')">＋ Vazifa</button></div><button class="btn ghost bs-qa" onclick="adminGo('boss')">🏰 Boss jangi — sinf birgalikda</button>
       <div class="ah">So'nggi faollik <a onclick="adminGo('stat')">Hammasi</a></div>
       <div class="card" style="padding:4px 14px" id="adF"><div class="sub" style="margin:10px 0">Yuklanmoqda…</div></div>`;
     load(++alive);
@@ -5422,6 +5626,7 @@ const T = (() => {
     let meta; try { meta = await DBA.get(`t/${code}/meta`); } catch (e) { $("tjgo").disabled = false; return err("Ulanib bo'lmadi. Internetni tekshiring."); }
     const giveUp = m => { $("tjgo").disabled = false; if (auto) { ls.del("zm_active"); goHome(); return; } return err(m); };
     if (!meta) return giveUp("Bunday kodli turnir topilmadi.");
+    if (meta.boss) { if (meta.phase === "end") return giveUp("Bu boss jangi allaqachon tugagan."); if (meta.phase === "run" && !(await DBA.get(`t/${code}/players/${ac.uid}`))) return giveUp("Jang allaqachon boshlangan — endi qo'shilib bo'lmaydi."); $("tjgo").disabled = false; return BOSS.play(code); }
     FN = ac.f; LN = ac.l; name = FN + " " + LN;
     st.code = code; st.pid = ac.uid;
     const was = await DBA.get(`t/${code}/players/${st.pid}`);
