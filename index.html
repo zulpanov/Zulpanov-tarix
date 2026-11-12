@@ -3284,6 +3284,9 @@ function renderTopics(){
       b.innerHTML=`<div class="clsn">${E(num||"✦")}</div><b>${E(c)}</b><span>${x?`${x.n} ta test · ${E([...x.f].join(", "))}`:"tez orada"}</span>`;
       if(x)b.onclick=()=>{VIEW={k:"set",cls:c};set=null;renderTopics();window.scrollTo(0,0)};
       grid.appendChild(b)});
+    {const b=document.createElement("button");b.className="clsc";b.style.animationDelay="320ms";b.style.gridColumn="1 / -1";
+      b.innerHTML=`<div class="clsn">🌍</div><b>🗺️ Xarita o‘yini</b><span>6 qit’a · davlatni xaritadan top, poytaxti yordam beradi</span>`;
+      b.onclick=()=>{location.href="xarita.html"};grid.appendChild(b)}
     return;
   }
   $("stBox").classList.remove("hide");BK(()=>{if(VIEW.k==="set"){VIEW={k:"cls"};set=null;renderTopics();window.scrollTo(0,0)}else if(VIEW.k==="ms"){VIEW={k:"mscls"};set=null;renderTopics();window.scrollTo(0,0)}else goHome()});
