@@ -501,6 +501,21 @@ body.dlm #bkb{display:none!important}
 .bs-cd{text-align:center;font-weight:800;color:#FCD34D;min-height:20px}
 .bs-ptop{display:flex;align-items:center;gap:8px}
 .bs-end{text-align:center;padding:20px}.bs-big{font-size:24px;font-weight:900}.bs-end.win{border-color:rgba(34,197,94,.5)!important;background:linear-gradient(160deg,rgba(34,197,94,.16),rgba(255,255,255,.04))!important}.bs-end.lose{border-color:rgba(245,158,11,.4)!important}
+
+/* ===== BILIMLAR ZINAPOYASI ===== */
+.zn-home{margin-top:10px;background:linear-gradient(135deg,rgba(34,211,238,.18),rgba(124,58,237,.16))!important;border-color:rgba(34,211,238,.4)!important}.zn-home .dl-hx{background:linear-gradient(135deg,#22D3EE,#7C3AED);box-shadow:0 0 16px rgba(34,211,238,.5)}
+.zn-hero{text-align:center;padding:20px}.zn-hero>b{font-size:17px}.zn-top{font-size:46px;line-height:1}.zn-top b{display:block;font-size:22px;margin:6px 0 10px;color:#FCD34D}
+.zn-rules{display:flex;flex-direction:column;gap:6px;margin:12px 0;text-align:left}.zn-rules span{font-size:12.5px;padding:7px 10px;border-radius:12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1)}
+.zn-bar{display:flex;align-items:center;gap:10px;margin:2px 0 8px}.zn-lv{flex:1;text-align:center}.zn-lv small{display:block;font-size:12px;color:var(--mu)}.zn-lv b{font-size:22px;color:#FCD34D}
+.zn-steps{display:flex;gap:3px;margin-bottom:10px}.zn-steps i{flex:1;height:6px;border-radius:3px;background:rgba(255,255,255,.1)}.zn-steps i.safe{background:rgba(250,204,21,.35)}.zn-steps i.ok{background:#22C55E}.zn-steps i.cur{background:linear-gradient(90deg,#7C3AED,#22D3EE);box-shadow:0 0 8px rgba(34,211,238,.7)}
+.zn-time{position:relative;height:22px;border-radius:12px;background:rgba(255,255,255,.08);overflow:hidden;margin-bottom:12px}.zn-time i{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,#22D3EE,#7C3AED);transition:width .2s linear}.zn-time span{position:relative;display:block;text-align:center;font-weight:800;font-size:13px;line-height:22px}.zn-time.low i{background:linear-gradient(90deg,#EF4444,#F97316)}
+.kh-o.gone{visibility:hidden}
+.kh-o.pick{border-color:#FACC15!important;background:rgba(250,204,21,.18)!important;animation:bump .9s infinite}.kh-g.done .kh-o.pick{opacity:1}
+.zn-life{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}.zn-life button{padding:9px 4px;border-radius:14px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);color:var(--tx);font-family:inherit;cursor:pointer}.zn-life b{display:block;font-size:17px}.zn-life small{display:block;font-size:10.5px;color:var(--mu);line-height:1.2;margin-top:2px}.zn-life button:disabled{opacity:.3;text-decoration:line-through}
+.zn-msg{margin-top:10px;padding:12px 14px;border-radius:16px;background:rgba(139,92,246,.15);border:1px solid rgba(139,92,246,.4);font-size:14px;line-height:1.45;animation:pbin .4s}
+.zn-poll{display:flex;justify-content:space-around;align-items:flex-end;height:130px;margin-top:8px}.zn-poll div{display:flex;flex-direction:column;align-items:center;gap:3px;width:22%}.zn-poll span{width:70%;border-radius:6px 6px 0 0;background:linear-gradient(180deg,#22D3EE,#7C3AED);min-height:2px}.zn-poll em{font-style:normal;font-size:12px;font-weight:700}.zn-poll b{font-size:13px}
+.zn-ld{display:flex;flex-direction:column;gap:3px}.zn-st{display:flex;align-items:center;gap:10px;padding:5px 10px;border-radius:10px;font-size:13px;color:var(--mu)}.zn-st span{width:22px;text-align:right;font-weight:700}.zn-st b{flex:1;font-weight:600}.zn-st.safe{color:#FCD34D}.zn-st.ok{color:#86EFAC}.zn-st.cur{background:linear-gradient(90deg,rgba(124,58,237,.5),rgba(6,182,212,.3));color:#fff}
+.zn-res{text-align:center;padding:20px}.zn-res.win{border-color:rgba(250,204,21,.6)!important;background:linear-gradient(160deg,rgba(250,204,21,.18),rgba(255,255,255,.04))!important}.zn-rt{font-size:20px;font-weight:900}.zn-coin{font-size:44px;font-weight:900;margin:8px 0 2px;background:linear-gradient(180deg,#FDE047,#F59E0B);-webkit-background-clip:text;background-clip:text;color:transparent}
 </style>
 </head>
 <body>
@@ -536,6 +551,7 @@ body.dlm #bkb{display:none!important}
     </div>
     <div class="hsec-t">O'yinlar</div>
     <div class="gm-row"><button class="card dl-home" onclick="DUEL.open()"><span class="dl-hx">⚔️</span><span class="dl-hm"><b>Duel</b><small>1 ga 1 bellashuv</small></span></button><button class="card dl-home bz-home" onclick="BLITZ.open()"><span class="dl-hx">⚡</span><span class="dl-hm"><b>Blits</b><small>60 soniyalik poyga</small></span></button></div>
+    <button class="card dl-home zn-home" onclick="LADDER.open()"><span class="dl-hx">🪜</span><span class="dl-hm"><b>Bilimlar zinapoyasi</b><small>15 pog'ona · 3 yordam · cho'qqiga chiq!</small></span><span class="dl-go">›</span></button>
     <button class="card dl-home bs-home" onclick="T.openJoin()"><span class="dl-hx">🏰</span><span class="dl-hm"><b>Boss jangi</b><small>Sinf birgalikda qal'ani yiqitadi · ustoz bergan kod bilan kiring</small></span><span class="dl-go">›</span></button>
     <div class="tiles2"><button class="tile2" id="errT" onclick="GAME.startErrors()"><div class="ti2">🔁</div><b>Xatolarim</b><span id="errN">—</span></button><button class="tile2" onclick="GAME.board()"><div class="ti2">🏅</div><b>Haftalik reyting</b><span>Top o'quvchilar</span></button></div>
     <div id="pwaBox"></div>
@@ -3230,7 +3246,7 @@ function start(){
 }
 function fmt(ms){const s=Math.floor(ms/1000);return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0")}
 var BKfn;function BK(fn){BKfn=fn;const hm=["home","auth"].some(i=>$(i)&&!$(i).classList.contains("hide"));$("bkb").classList.toggle("hide",!fn||hm)}
-function show(id){document.body.classList.remove("adm","dlm");if(id!=="tz"){try{BLITZ.leave()}catch(e){}try{BOSS.leave()}catch(e){}}try{$("amore").classList.add("hide")}catch(e){}["auth","home","start","quiz","res","tz"].forEach(s=>$(s).classList.toggle("hide",s!==id));BK(id==="res"?(()=>{if(FROM_T)goHome();else{renderTopics();show("start")}}):id==="start"?BKfn:null);setNav(id==="start"&&typeof VIEW!=="undefined"&&VIEW.k==="ms"?"ms":({home:"home",start:"tests",res:"tests"}[id]||null));window.scrollTo(0,0)}
+function show(id){document.body.classList.remove("adm","dlm");if(id!=="tz"){try{BLITZ.leave()}catch(e){}try{LADDER.leave()}catch(e){}try{BOSS.leave()}catch(e){}}try{$("amore").classList.add("hide")}catch(e){}["auth","home","start","quiz","res","tz"].forEach(s=>$(s).classList.toggle("hide",s!==id));BK(id==="res"?(()=>{if(FROM_T)goHome();else{renderTopics();show("start")}}):id==="start"?BKfn:null);setNav(id==="start"&&typeof VIEW!=="undefined"&&VIEW.k==="ms"?"ms":({home:"home",start:"tests",res:"tests"}[id]||null));window.scrollTo(0,0)}
 function setNav(active){const on=!!(active&&typeof ACCT!=="undefined"&&ACCT.cur);$("bnav").classList.toggle("hide",!on);[...$("bnav").children].forEach(b=>b.classList.toggle("on",b.dataset.g===active));const av=$("hdrAv");if(av){const c=typeof ACCT!=="undefined"&&ACCT.cur;av.classList.toggle("hide",!c);if(c){const k=c.uid+"|"+c.f+c.l;if(av.dataset.k!==k){av.dataset.k=k;av.innerHTML=AV.html(c.uid,c.f+" "+c.l,"fill")}}}}
 function goHome(){if(typeof ACCT!=="undefined"&&ACCT.cur){show("home");ACCT.renderHome()}else show("auth")}
 function goTests(){VIEW={k:"cls"};set=null;show("start");renderTopics()}
@@ -4015,6 +4031,127 @@ const BOSS = (() => {
     setTimeout(() => { if (B.meta && B.meta.phase === "run" && $("bpQ")) q(); }, 1000);
   }
   return { setup, host, play, leave };
+})();
+
+
+// ================== BILIMLAR ZINAPOYASI ==================
+const LADDER = (() => {
+  const STEPS = [100, 200, 300, 500, 1000, 2000, 4000, 8000, 16000, 32000, 64000, 125000, 250000, 500000, 1000000];
+  const SAFE = [4, 9], QT = 30000;
+  const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const me = () => ACCT.cur, full = c => (c.f + " " + (c.l || "")).trim();
+  const ck = c => String(parseInt(c) || c).replace(/[^0-9a-z]/gi, "");
+  const fmtN = n => n.toLocaleString("ru-RU").replace(/,/g, " ");
+  const groups = () => { const g = {}; SETS.filter(x => x.qs && !x.ms).forEach(x => { const c = clsOf(x.g); (g[c] = g[c] || []).push(x); }); return g; };
+  const diff = q => { const t = q.q + " " + q.o.join(" "); let d = t.length / 40 + (q.o.reduce((a, o) => a + o.length, 0) / 4) / 25; if (/\d/.test(t)) d += 1.5; if (/noto.?g.?ri|emas|qaysi biri .*mos kelmaydi|xato/i.test(q.q)) d += 2; if (/to.?g.?ri (juftlik|ketma|tartib)|xronologik|ketma-ketlik/i.test(q.q)) d += 2.5; return d; };
+  let cls = null, sel = {}, G = null;
+  try { const o = JSON.parse(localStorage.getItem("zm_zn") || "{}"); sel = o.sel || {}; } catch (e) {}
+  const save = () => { try { localStorage.setItem("zm_zn", JSON.stringify({ sel })); } catch (e) {} };
+  const chosen = () => { const g = groups()[cls] || [], ids = sel[cls]; return ids && ids.length ? g.filter(x => ids.includes(x.id)) : g; };
+  function head(t, sub) { document.body.classList.add("dlm"); return `<div class="dl-h"><button class="adh-b" onclick="goHome()">‹</button><div class="adh-t"><small>${esc(sub || "15 pog'ona · 3 yordam")}</small><b>${t}</b></div><button class="adh-b" onclick="goHome()">🏠</button></div>`; }
+  function stop() { if (G) clearInterval(G.tk); G = null; }
+  async function board() {
+    let w = {}, a = null; const k = ck(cls), u = me();
+    try { [w, a] = await Promise.all([DBA.get("lb/zn" + GAME.wk()), u ? DBA.get("lb/znall/" + u.uid + "/" + k) : null]); } catch (e) {}
+    const list = Object.entries(w || {}).map(([uid, v]) => v && v[k] ? { uid, ...v[k] } : null).filter(Boolean).sort((x, y) => y.l - x.l || (x.t || 0) - (y.t || 0));
+    return { list, best: a && a.l || 0 };
+  }
+  const lbHtml = (list, my) => list.length ? list.slice(0, 10).map((x, i) => `<div class="bz-r${x.uid === my ? " me" : ""}"><span class="bz-i">${["🥇", "🥈", "🥉"][i] || i + 1}</span>${AV.html(x.uid, x.n, "sm")}<b>${esc(x.n)}</b><small class="bz-tt">${x.l}-pog'ona</small><em>🪙 ${fmtN(x.l ? STEPS[x.l - 1] : 0)}</em></div>`).join("") : `<p class="sub" style="text-align:center;margin:12px 0">Bu hafta hali hech kim chiqmadi. Birinchi bo'ling! 🪜</p>`;
+  function ladderHtml(cur, done) { return `<div class="zn-ld">${STEPS.map((v, i) => `<div class="zn-st${SAFE.includes(i) ? " safe" : ""}${i === cur ? " cur" : ""}${i < cur || (done && i === cur) ? " ok" : ""}"><span>${i + 1}</span><b>🪙 ${fmtN(v)}</b>${SAFE.includes(i) ? "<i>🛡</i>" : ""}</div>`).reverse().join("")}</div>`; }
+  async function open() {
+    const u = me(); if (!u) return goHome();
+    try { T.leave(); } catch (e) {} stop(); show("tz"); setNav(null); BK(null);
+    const g = groups(), cl = Object.keys(g).sort((a, b) => parseInt(a) - parseInt(b));
+    if (!cls || !g[cls]) cls = cl.find(c => String(u.g || "").startsWith(String(parseInt(c)))) || cl[0];
+    $("tz").innerHTML = head("🪜 Bilimlar zinapoyasi") + `<div class="dl-cls">${cl.map(c => `<button class="${c === cls ? "on" : ""}" data-c="${esc(c)}">${esc(c)}</button>`).join("")}</div>
+      <div class="card zn-hero"><div class="zn-top">🏆<b>🪙 1 000 000</b></div><b>15 pog'onadan cho'qqiga chiq!</b>
+      <div class="zn-rules"><span>⏱ Har savolga 30 soniya</span><span>🛡 5- va 10-pog'ona — xavfsiz</span><span>✋ Xohlagan payt to'xtab, yutuqni saqlash mumkin</span><span>🆘 Yordamlar: 50/50 · Ustoz maslahati · Sinf ovozi</span></div>
+      <details class="bz-tp" id="znTp"><summary><span>📚 Mavzular</span><b id="znTs"></b><i>▾</i></summary><div class="bz-tl"><label class="bz-all"><input type="checkbox" id="znAll"> <b>Hammasini tanlash</b></label>${(g[cls] || []).map(x => `<label><input type="checkbox" value="${x.id}"> <span><b>${esc(x.n || "")}</b> ${esc(/mavzular?$/i.test(x.title || "") ? String(x.sub || "").split(" · ")[0] : x.title)}</span><small>${x.qs.length}</small></label>`).join("")}</div></details>
+      <div class="bz-best" id="znBest">…</div><button class="btn" id="znGo">▶ O'yinni boshlash</button></div>
+      <div class="ah">🏆 Haftaning eng yuqori cho'qqilari · ${esc(cls)}</div><div class="card" style="padding:6px 12px" id="znL"><div class="sub" style="text-align:center;margin:12px 0">Yuklanmoqda…</div></div>`;
+    $("tz").querySelector(".dl-cls").onclick = e => { const b = e.target.closest("[data-c]"); if (b) { cls = b.dataset.c; open(); } };
+    const boxes = () => [...$("znTp").querySelectorAll(".bz-tl label:not(.bz-all) input")];
+    const ids0 = sel[cls] && sel[cls].length ? sel[cls] : (g[cls] || []).map(x => x.id); boxes().forEach(b => b.checked = ids0.includes(b.value));
+    const sum = () => { const on = boxes().filter(b => b.checked), all = on.length === boxes().length, nq = chosen().reduce((a, x) => a + x.qs.length, 0); $("znAll").checked = all; $("znTs").textContent = (all ? "Hammasi" : on.length + " ta mavzu") + " · " + nq + " savol"; $("znGo").disabled = nq < 15; $("znGo").textContent = !on.length ? "Kamida 1 ta mavzu tanlang" : nq < 15 ? "Kamida 15 ta savol kerak" : "▶ O'yinni boshlash"; };
+    $("znTp").onchange = e => { if (e.target.id === "znAll") boxes().forEach(b => b.checked = e.target.checked); const on = boxes().filter(b => b.checked).map(b => b.value); sel[cls] = on.length === boxes().length ? [] : (on.length ? on : ["-"]); save(); sum(); };
+    $("znGo").onclick = start; sum();
+    const { list, best } = await board(); if (!$("znL")) return;
+    $("znBest").innerHTML = best ? `🏅 Shaxsiy rekordingiz: <b>${best}-pog'ona</b> · 🪙 ${fmtN(STEPS[best - 1])}` : "Hali rekord yo'q — birinchi cho'qqingizni zabt eting!";
+    $("znL").innerHTML = lbHtml(list, u.uid);
+  }
+  function start() {
+    const pool = chosen().flatMap(x => x.qs).map(q => ({ q, d: diff(q) + Math.random() * 1.2 })).sort((a, b) => a.d - b.d);
+    const n = pool.length, Q = [];
+    for (let i = 0; i < 15; i++) { const lo = Math.floor(i / 15 * n), hi = Math.max(lo + 1, Math.floor((i + 1) / 15 * n)); let k, tries = 0; do { k = lo + Math.floor(Math.random() * (hi - lo)); } while (Q.includes(pool[k].q) && ++tries < 20); Q.push(pool[k].q); }
+    G = { Q, i: 0, life: { h: 1, u: 1, s: 1 }, t0: Date.now(), lock: false };
+    show("tz"); setNav(null); BK(null); q();
+    G.tk = setInterval(tick, 200);
+  }
+  function q() {
+    if (!G) return; const qq = G.Q[G.i], perm = [0, 1, 2, 3]; for (let i = 3; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [perm[i], perm[j]] = [perm[j], perm[i]]; }
+    G.perm = perm; G.lock = false; G.qEnd = Date.now() + QT; G.hid = [];
+    document.body.classList.add("dlm");
+    $("tz").innerHTML = `<div class="zn-bar"><button class="adh-b" id="znStop" title="To'xtash">✋</button><div class="zn-lv"><small>${G.i + 1}-pog'ona${SAFE.includes(G.i) ? " · 🛡 xavfsiz" : ""}</small><b>🪙 ${fmtN(STEPS[G.i])}</b></div><button class="adh-b" id="znLd" title="Zinapoya">🪜</button></div>
+      <div class="zn-steps">${STEPS.map((_, k) => `<i class="${k < G.i ? "ok" : k === G.i ? "cur" : ""}${SAFE.includes(k) ? " safe" : ""}"></i>`).join("")}</div>
+      <div class="zn-time"><i id="znTb"></i><span id="znT">30</span></div>
+      <div class="kh-q"><span class="tag"></span><div class="q"></div></div><div class="kh-g" id="znO"></div>
+      <div class="zn-life"><button id="znH" ${G.life.h ? "" : "disabled"}><b>50:50</b><small>Ikki xatoni olib tashlash</small></button><button id="znU" ${G.life.u ? "" : "disabled"}><b>👨‍🏫</b><small>Ustoz maslahati</small></button><button id="znS" ${G.life.s ? "" : "disabled"}><b>📊</b><small>Sinf ovozi</small></button></div><div id="znHelp"></div>`;
+    $("tz").querySelector(".tag").textContent = qq.t || ""; $("tz").querySelector(".q").textContent = qq.q;
+    perm.forEach((oi, k) => { const b = document.createElement("button"); b.className = "opt kh-o k" + k; b.innerHTML = `<span class="sh">${"ABCD"[k]}</span><span></span>`; b.lastChild.textContent = qq.o[oi]; b.onclick = () => ans(oi, b); $("znO").appendChild(b); });
+    $("znStop").onclick = () => { if (G.lock) return; if (confirmStop()) finish("stop"); };
+    $("znLd").onclick = () => { const h = $("znHelp"); h.innerHTML = h.innerHTML ? "" : `<div class="card" style="margin-top:10px;padding:10px">${ladderHtml(G.i)}</div>`; };
+    $("znH").onclick = () => help("h"); $("znU").onclick = () => help("u"); $("znS").onclick = () => help("s");
+    window.scrollTo(0, 0);
+  }
+  let stopAt = 0; function confirmStop() { if (Date.now() - stopAt < 3000) return true; stopAt = Date.now(); FX.toast(G.i ? `✋ To'xtasangiz 🪙 ${fmtN(STEPS[G.i - 1])} saqlanadi. Tasdiqlash uchun ✋ ni yana bosing.` : "Hali birorta pog'ona yo'q. To'xtash uchun ✋ ni yana bosing."); return false; }
+  const ci = () => G.perm.indexOf(G.Q[G.i].a);
+  function help(k) {
+    if (!G || G.lock || !G.life[k]) return; G.life[k] = 0; $("zn" + k.toUpperCase()).disabled = true; try { FX.S.tick(); } catch (e) {}
+    const c = ci(), btns = [...$("znO").children];
+    if (k === "h") { const wr = [0, 1, 2, 3].filter(i => i !== c).sort(() => Math.random() - .5).slice(0, 2); G.hid = wr; wr.forEach(i => { btns[i].classList.add("gone"); btns[i].disabled = true; }); return; }
+    const alive = [0, 1, 2, 3].filter(i => !G.hid.includes(i));
+    if (k === "u") { const sure = Math.random() < (G.i < 10 ? .9 : .75), g = sure ? c : alive.filter(i => i !== c)[Math.floor(Math.random() * (alive.length - 1))]; $("znHelp").innerHTML = `<div class="zn-msg">👨‍🏫 <b>Ustoz:</b> ${sure && G.i < 10 ? "Ishonchim komil" : "Menimcha"}, javob — <b>${"ABCD"[g]}</b>. ${sure && G.i < 10 ? "Darslikda aniq yozilgan!" : "Lekin o'zing ham o'ylab ko'r 😉"}</div>`; return; }
+    const w = {}; let rest = 100; const pc = Math.round((G.i < 5 ? 65 : G.i < 10 ? 52 : 40) + Math.random() * 15); w[c] = pc; rest -= pc; const oth = alive.filter(i => i !== c);
+    oth.forEach((i, n) => { const v = n === oth.length - 1 ? rest : Math.floor(Math.random() * rest); w[i] = v; rest -= v; });
+    $("znHelp").innerHTML = `<div class="zn-msg"><b>📊 Sinf ovozi</b><div class="zn-poll">${[0, 1, 2, 3].map(i => `<div><span style="height:${(w[i] || 0) * 1.1}px"></span><em>${w[i] || 0}%</em><b>${"ABCD"[i]}</b></div>`).join("")}</div></div>`;
+  }
+  function tick() {
+    if (!G || G.lock) return; if (!$("znT")) return stop();
+    const left = Math.max(0, G.qEnd - Date.now()); $("znT").textContent = Math.ceil(left / 1000); $("znTb").style.width = left / QT * 100 + "%"; $("znT").parentNode.classList.toggle("low", left < 8000);
+    if (left <= 0) { G.lock = true; FX.wrong(); PRAISE.bad(1); [...$("znO").children][ci()].classList.add("okk"); $("znO").classList.add("done"); setTimeout(() => finish("time"), 1600); }
+  }
+  function ans(oi, b) {
+    if (!G || G.lock) return; G.lock = true; $("znO").classList.add("done");
+    const qq = G.Q[G.i], ok = oi === qq.a; try { GAME.track(qq, ok); } catch (e) {}
+    b.classList.add("pick");
+    setTimeout(() => {
+      if (!G) return; b.classList.remove("pick"); b.classList.add(ok ? "okk" : "bad");
+      if (!ok) { [...$("znO").children][ci()].classList.add("okk"); FX.wrong(); PRAISE.bad(1); return setTimeout(() => finish("wrong"), 1800); }
+      FX.correct(b, "🪙"); PRAISE.ok(b, G.i + 1);
+      if (SAFE.includes(G.i)) setTimeout(() => FX.toast(`🛡 Xavfsiz pog'ona! 🪙 ${fmtN(STEPS[G.i])} endi kafolatlangan`, "up"), 600);
+      G.i++; if (G.i >= 15) return setTimeout(() => finish("win"), 1400);
+      setTimeout(q, 1500);
+    }, 900);
+  }
+  async function finish(why) {
+    if (!G) return; const g = G; stop();
+    const lvl = why === "win" ? 15 : why === "stop" ? g.i : SAFE.filter(s => s < g.i).map(s => s + 1).pop() || 0, used = Date.now() - g.t0;
+    const u = me(), k = ck(cls), wk = GAME.wk();
+    $("tz").innerHTML = head("🪜 Natija", cls) + `<div class="sub" style="text-align:center;margin:30px 0">Saqlanmoqda…</div>`;
+    let wOld = null, aOld = null; try { [wOld, aOld] = await Promise.all([DBA.get(`lb/zn${wk}/${u.uid}/${k}`), DBA.get(`lb/znall/${u.uid}/${k}`)]); } catch (e) {}
+    const better = o => lvl > 0 && (!o || lvl > (o.l || 0) || (lvl === o.l && used < (o.t || 9e9)));
+    const rec = { n: full(u), l: lvl, t: used, at: DBA.now() }, isRec = better(aOld);
+    try { if (better(wOld)) await DBA.set(`lb/zn${wk}/${u.uid}/${k}`, rec); if (isRec) await DBA.set(`lb/znall/${u.uid}/${k}`, rec); } catch (e) {}
+    const { list } = await board();
+    const title = why === "win" ? "👑 BILIMLAR CHO'QQISI!" : why === "stop" ? "✋ Siz to'xtadingiz" : why === "time" ? "⏱ Vaqt tugadi" : "❌ Xato javob";
+    const msg = why === "win" ? `${esc(u.f)}, siz barcha 15 pog'onadan o'tdingiz! Bu — haqiqiy tarixchi! 🏆` : lvl ? `${g.i}-pog'onagacha yetdingiz. ${why === "stop" ? "Aqlli qaror!" : "Xavfsiz pog'ona sizni qutqardi 🛡"}` : "Hech qisi yo'q, keyingi safar xavfsiz pog'onagacha yeting! 💪";
+    $("tz").innerHTML = head("🪜 Natija", cls) + `<div class="card zn-res${why === "win" ? " win" : ""}">${isRec ? `<div class="bz-badge">🏅 YANGI REKORD!</div>` : ""}<div class="zn-rt">${title}</div><div class="zn-coin">🪙 ${fmtN(lvl ? STEPS[lvl - 1] : 0)}</div><div class="sub" style="margin:0">${lvl}-pog'ona saqlandi</div><b class="bz-msg">${msg}</b></div>
+      <div class="card" style="margin-top:12px;padding:10px">${ladderHtml(Math.max(0, lvl - 1), lvl > 0)}</div>
+      <div class="row" style="gap:10px;margin-top:12px"><button class="btn" style="margin:0" onclick="LADDER.start()">🔁 Qayta o'ynash</button><button class="btn ghost" style="margin:0" onclick="LADDER.open()">⚙️ Mavzular</button></div>
+      <div class="ah">🏆 Haftaning eng yuqori cho'qqilari · ${esc(cls)}</div><div class="card" style="padding:6px 12px">${lbHtml(list, u.uid)}</div>`;
+    if (why === "win" || isRec) setTimeout(() => { try { FX.rain(why === "win" ? 300 : 140); FX.S.win(); } catch (e) {} }, 300);
+  }
+  return { open, start, leave: stop };
 })();
 
 // ================== NATIJALARNI SAQLASH ==================
