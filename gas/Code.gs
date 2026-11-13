@@ -15,6 +15,7 @@ var WORKER_URL = 'https://zulpanov-tarix-bot.zulponovalimqul.workers.dev';      
 var ADMIN_TG = ['zulpanov_methods'];           // ustozning Telegram username'i (kichik harflarda)
 var CONTACT = '@ZULPANOV_METHODS';
 var CONTACT_URL = 'https://t.me/ZULPANOV_METHODS';
+var MAP_URL = 'https://maps.app.goo.gl/dxLox5nZ6H4HQn6y5';   // BRO ACADEMY xaritada
 var KURS_TEXT = '🎓 <b>Tarixni yodlamang — tushunib o‘rganing!</b>\n\n' +
   'Sanalar chalkashib ketyaptimi? Testda bilgan savolingizdan ham adashyapsizmi? Bizning darslarda bunday bo‘lmaydi.\n\n' +
   '✅ Mavzulashgan audio darslar: istalgan joyda, istalgan vaqtda tinglaysiz\n' +
@@ -213,7 +214,7 @@ function sendStart_(chat, first) {
 function sendKurs_(chat, from) {
   tg_('sendMessage', { chat_id: chat, parse_mode: 'HTML',
     text: KURS_TEXT,
-    reply_markup: { inline_keyboard: [[{ text: '✍️ Darslarga yozilish', callback_data: 'yozil' }], [{ text: '📞 Ustozga savol berish', url: CONTACT_URL }]] } });
+    reply_markup: { inline_keyboard: [[{ text: '✍️ Darslarga yozilish', callback_data: 'yozil' }], [{ text: '📍 Xaritada ko‘rish', url: MAP_URL }, { text: '📞 Savol berish', url: CONTACT_URL }]] } });
 }
 function sendYozil_(chat, from) {
   P.setProperty('st:' + from.id, 'kurs');
