@@ -185,12 +185,17 @@ function doPost(e) {
 function doGet() { return out_({ ok: true, bot: 'ZULPANOV METHODS TARIX' }); }
 
 // ---------------- Bot: xabarlarni qabul qilish (har daqiqada) ----------------
+function shareUrl_() {
+  var link = 'https://t.me/' + botName_();
+  var text = '📚 Tarixdan testlar, jonli turnirlar va o‘yinlar — ZULPANOV METHODS TARIX botiga qo‘shiling! Milliy sertifikatga birga tayyorlanamiz 👇';
+  return 'https://t.me/share/url?url=' + encodeURIComponent(link) + '&text=' + encodeURIComponent(text);
+}
 function mainKb_() {
   return { inline_keyboard: [
     [{ text: '📚 Testlarni boshlash', url: appLink_() }],
     [{ text: '🏆 Turnirga qo‘shilish', url: appLink_('turnir') }],
     [{ text: '🎓 Kursga yozilish', callback_data: 'kurs' }, { text: '👨‍👩‍👧 Ota-onalar uchun', callback_data: 'ota' }],
-    [{ text: '📞 Ustozga yozish', url: CONTACT_URL }]
+    [{ text: '📤 Do‘stlarga ulashish', url: shareUrl_() }, { text: '📞 Ustozga yozish', url: CONTACT_URL }]
   ] };
 }
 function sendStart_(chat, first) {
