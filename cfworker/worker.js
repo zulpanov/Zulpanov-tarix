@@ -294,6 +294,113 @@ async function onCallback(env, q) {
   if (q.data === "ota") return sendOta(env, chat);
 }
 
+
+// ---------------- Natijalarni serverda tekshirish ----------------
+// Sayt javoblarni yuboradi, server kalit bilan solishtirib ballni o'zi hisoblaydi va
+// h/<uid> (o'quvchi tarixi), r/<id> (ustoz statistikasi), lb/<hafta>/<uid> (haftalik reyting) ga yozadi.
+const KEY_URL = "https://raw.githubusercontent.com/zulpanov/Zulpanov-tarix/main/data/key/"; // GitHub Actions har o'zgarishda yangilaydi
+const LEVELS = [0, 300, 800, 1600, 3000, 5000];
+const keyCache = new Map(); // setId -> { t, v }
+async function shard(env, id) {
+  const c = keyCache.get(id); if (c && Date.now() - c.t < 300e3) return c.v;
+  let v = null;
+  const m = id.match(/^c_([A-Za-z0-9]+)$/);
+  if (m) { // ustoz admin panelda qo'shgan test
+    const x = await db(env, "GET", "cq/" + m[1]).catch(() => null);
+    if (x && x.qs) { v = { c: {} }; vals(x.qs).forEach(q => { if (q && q.o && q.o.length === 4) v.c[String(q.k || "")] = q.o[+q.a || 0]; }); }
+  } else if (/^[A-Za-z0-9_-]{1,40}$/.test(id)) {
+    const r = await fetch(KEY_URL + id + ".json", { cf: { cacheTtlByStatus: { "200-299": 300, "404": 30, "500-599": 0 } } });
+    if (r.ok) v = await r.json(); else if (r.status !== 404) throw new Error("Javob kaliti yuklanmadi");
+  }
+  keyCache.set(id, { t: Date.now(), v }); if (keyCache.size > 300) keyCache.delete(keyCache.keys().next().value);
+  return v;
+}
+const norm = s => String(s || "").toLowerCase().replace(/[ʻʼ'`‘’"«»]/g, "").replace(/[–—−]/g, "-").replace(/\b(asrlar|asr|yillar|yil|ta)\b/g, "").replace(/[\s.,;:!?()]/g, "").replace(/x/g, "h");
+function lev(a, b) { const m = a.length, n = b.length, d = Array.from({ length: m + 1 }, (_, i) => [i]); for (let j = 1; j <= n; j++) d[0][j] = j; for (let i = 1; i <= m; i++) for (let j = 1; j <= n; j++) d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1)); return d[m][n]; }
+// yozma javob: raqamlar aniq mos kelishi, matn esa kamida 60% o'xshash bo'lishi kerak
+const nums = s => (String(s || "").match(/\d+(?:[.,]\d+)?/g) || []).map(x => parseFloat(x.replace(",", ".")));
+const letters = s => norm(String(s || "").replace(/\d+(?:[.,]\d+)?/g, " ")).replace(/-/g, "");
+const sim = (x, y) => { const m = Math.max(x.length, y.length); return m ? 1 - lev(x, y) / m : 1; };
+const GEN = /^(sessiya|yil|asr|ta|marta|nafar|foiz|kishi|kun|oy|mln|million|milliard|mlrd)/;
+function check1(v, a) {
+  const nv = nums(v), na = nums(a);
+  if (na.length) {
+    const lv = letters(v), la = letters(a);
+    if (!nv.length && la.length >= 4 && !GEN.test(la)) return sim(norm(v), norm(a)) >= 0.6; // masalan: COVID-19, Minsk-2
+    if (nv.length !== na.length || nv.some((x, i) => x !== na[i])) return false;
+    if (!lv) return !la || GEN.test(la);
+    if (!la) return true;
+    return sim(lv, la) >= 0.6 || (lv.length >= 3 && (la.includes(lv) || lv.includes(la)));
+  }
+  if (nv.length) return false;
+  const x = norm(v), y = norm(a);
+  if (!x || !y) return false;
+  if (x === y) return true;
+  const sx = norm(String(v).split(/\s+va\s+|,/).map(t => t.trim()).sort().join(" ")), sy = norm(String(a).split(/\s+va\s+|,/).map(t => t.trim()).sort().join(" "));
+  return sim(x, y) >= 0.6 || sim(sx, sy) >= 0.6;
+}
+function check(v, acc) { if (!String(v || "").trim()) return false; return acc.some(a => check1(v, a)); }
+
+const lvOf = p => p >= 70 ? "A+" : p >= 65 ? "A" : p >= 60 ? "B+" : p >= 55 ? "B" : p >= 50 ? "C+" : p >= 45 ? "C" : "";
+const xpOf = r => (r.ok || 0) * 10 + (r.lv ? 20 : 0) + (r.mode === "turnir" ? (r.rank === 1 ? 50 : r.rank === 2 ? 30 : r.rank === 3 ? 20 : 0) : 0);
+const UZ = 5 * 3600e3; // Toshkent vaqti
+function weekStart(ms) { const d = new Date(ms + UZ), w = (d.getUTCDay() + 6) % 7; return Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate() - w) - UZ; }
+const weekKey = ms => { const d = new Date(weekStart(ms) + UZ); return "w" + d.getUTCFullYear() + String(d.getUTCMonth() + 1).padStart(2, "0") + String(d.getUTCDate()).padStart(2, "0"); };
+const str = (v, n) => String(v == null ? "" : v).slice(0, n);
+
+async function syncLb(env, uid, user) {
+  user = user || await db(env, "GET", "users/" + uid) || {};
+  const rs = vals(await db(env, "GET", "h/" + uid));
+  const now = Date.now(), ws = weekStart(now);
+  const xp = rs.reduce((a, r) => a + xpOf(r), 0) + (Number(user.bx) || 0), wxp = rs.filter(r => r.at >= ws).reduce((a, r) => a + xpOf(r), 0);
+  let lv = 0; LEVELS.forEach((t, i) => { if (xp >= t) lv = i; });
+  if (wxp > 0) await db(env, "PUT", `lb/${weekKey(now)}/${uid}`, { n: str((user.f || "") + " " + (user.l || ""), 80).trim(), g: str(user.g, 30), xp: wxp, lv, at: now });
+  return { xp, wxp, lv };
+}
+
+async function grade(env, i) {
+  if (i.ms) { // Milliy sertifikat: 32 yopiq + 3 moslashtirish + 20 yozma = 55
+    const K = await shard(env, str(i.set, 40)); if (!K || !K.ms) throw new Error("Variant kaliti topilmadi");
+    const M = K.ms, m = Array.isArray(i.m) ? i.m : [], x = Array.isArray(i.x) ? i.x : [], w = Array.isArray(i.w) ? i.w : [];
+    const a = M.m.filter((c, j) => m[j] != null && String(m[j]) === c).length, b = M.x.filter((c, j) => x[j] === c).length;
+    let c = 0; M.w.forEach((pr, j) => pr.forEach((acc, k) => { if (check(str((w[j] || [])[k], 200), acc)) c++; }));
+    return { ok: a + b + c, tot: 55, sec: { "1–32. Yopiq testlar": [a, 32], "33–35. Moslashtirish": [b, 3], "36–45. Yozma javoblar": [c, 20] } };
+  }
+  const items = Array.isArray(i.items) ? i.items.slice(0, 80) : [];
+  if (!items.length) throw new Error("Javoblar yo‘q");
+  const seen = new Set(), need = new Set();
+  items.forEach(it => { const k = str(it && it[0], 80); if (seen.has(k)) throw new Error("Takroriy savol"); seen.add(k); const m = k.match(/^(c_[A-Za-z0-9]+)_|^(.+)_\d+$/); if (m) need.add(m[1] || m[2]); });
+  if (need.size > 30) throw new Error("Juda ko‘p to‘plam");
+  const keys = {}; for (const id of need) { keys[id] = await shard(env, id); if (!keys[id]) throw new Error("Javob kaliti hali tayyor emas: " + id); }
+  let ok = 0;
+  items.forEach(([k, c]) => {
+    k = str(k, 80); if (c == null) return;
+    const mc = k.match(/^(c_[A-Za-z0-9]+)_(.*)$/);
+    const right = mc ? (keys[mc[1]].c || {})[mc[2]] : (() => { const m = k.match(/^(.+)_(\d+)$/); return m ? (keys[m[1]].q || [])[+m[2]] : null; })();
+    if (right != null && String(c) === right) ok++;
+  });
+  return { ok, tot: items.length };
+}
+
+const VFN = {
+  async res(env, uid, i) {
+    const g = await grade(env, i);
+    const dur = Math.max(0, Number(i.dur) || 0);
+    if (dur && dur < g.tot * 700) throw new Error("Juda tez yakunlandi — natija qabul qilinmadi");
+    const user = await db(env, "GET", "users/" + uid) || {};
+    const pts = Math.round(g.ok * 100 / g.tot), lv = lvOf(pts), at = Date.now();
+    const id = at.toString(36) + Math.random().toString(36).slice(2, 6);
+    const hw = i.hw ? str(i.hw, 40) : "";
+    const h = { ttl: str(i.ttl, 100), mode: "test", ok: g.ok, tot: g.tot, pts, lv, at, v: 1 }; if (hw) h.hw = hw;
+    await db(env, "PUT", `h/${uid}/${id}`, h);
+    const sec = g.sec || (i.sec && typeof i.sec === "object" ? i.sec : undefined);
+    await db(env, "PUT", "r/" + id, { ...h, n: str(((user.f || "") + " " + (user.l || "")).trim() || i.n, 80), u: str(user.login, 40), set: str(i.set, 40), dur, ...(sec ? { sec } : {}) }).catch(() => {});
+    const x = await syncLb(env, uid, user).catch(() => null);
+    return { id, ok: g.ok, tot: g.tot, pts, lv, ...(x || {}) };
+  },
+  async lb(env, uid) { return syncLb(env, uid); },
+};
+
 // ---------------- Kirish nuqtasi ----------------
 const CORS = { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Methods": "POST, OPTIONS", "Access-Control-Allow-Headers": "content-type" };
 const json = (o, st = 200) => new Response(JSON.stringify(o), { status: st, headers: { "content-type": "application/json; charset=utf-8", ...CORS } });
@@ -310,6 +417,17 @@ export default {
         if (!FN[b.fn]) return json({ ok: false, err: "Noma’lum amal" });
         const u = await verifyInit(env, b.initData);
         return json({ ok: true, r: await FN[b.fn](env, b.input || {}, u) });
+      } catch (e) { return json({ ok: false, err: String((e && e.message) || e) }); }
+    }
+
+    if (url.pathname === "/v") { // sayt (Telegram ichida ham, brauzerda ham) — Firebase sessiyasi bilan
+      if (req.method !== "POST") return json({ ok: true });
+      try {
+        const b = await req.json();
+        if (!VFN[b.fn]) return json({ ok: false, err: "Noma’lum amal" });
+        const a = await lookup(b.idToken);
+        if (a.email === BOT_EMAIL) throw new Error("Ruxsat yo‘q");
+        return json({ ok: true, r: await VFN[b.fn](env, a.uid, b.input || {}) });
       } catch (e) { return json({ ok: false, err: String((e && e.message) || e) }); }
     }
 

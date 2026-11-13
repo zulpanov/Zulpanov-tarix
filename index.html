@@ -3361,7 +3361,7 @@ function finish(){
   if(lv){setTimeout(()=>{FX.rain(pts>=70?220:120);FX.S.win()},900)}
   KUN.result(set,ok,Q.length);
   if(set.kun&&!ACCT.cur)return;
-  if(!FROM_T){const R={n:name,set:set.id,ttl:set.title,mode:"test",ok,tot:Q.length,pts,lv:lv||"",dur:Date.now()-t0,sec:by};if(HWCUR)R.hw=HWCUR.id;saveResult(R)}
+  if(!FROM_T){const R={n:name,set:set.id,ttl:set.title,mode:"test",ok,tot:Q.length,pts,lv:lv||"",dur:Date.now()-t0,sec:by,items:order.map(({i},k)=>[Q[i]._k||"",ans[k]===null?null:String(Q[i].o[ans[k]])])};if(HWCUR)R.hw=HWCUR.id;saveResult(R)}
 }
 function level(p){return p>=70?"A+":p>=65?"A":p>=60?"B+":p>=55?"B":p>=50?"C+":p>=45?"C":null}
 function isGirl(fn,ln){
@@ -4363,15 +4363,37 @@ const LADDER = (() => {
 
 // ================== NATIJALARNI SAQLASH ==================
 let FROM_T = false, TEAMWIN = "";
+// Natija serverga yuboriladi: server javoblarni kalit bilan tekshirib, ballni o'zi hisoblaydi va saqlaydi.
+// Internet bo'lmasa — navbatga qo'yiladi va keyinroq qayta yuboriladi.
+const VER = (() => {
+  const URL_V = "https://zulpanov-tarix-bot.zulponovalimqul.workers.dev/v";
+  const qk = () => "zm_pend_" + ((ACCT.cur || {}).uid || "x");
+  const load = () => { try { return JSON.parse(localStorage.getItem(qk()) || "[]"); } catch (e) { return []; } };
+  const store = a => { try { if (a.length) localStorage.setItem(qk(), JSON.stringify(a.slice(-20))); else localStorage.removeItem(qk()); } catch (e) {} };
+  async function call(fn, input) {
+    const idToken = await AUTH.idToken(false);
+    const r = await fetch(URL_V, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ fn, idToken, input }) }).then(x => x.json());
+    if (!r.ok) { const e = new Error(r.err || "Server xatosi"); e.srv = 1; throw e; } return r.r;
+  }
+  const hard = e => e && e.srv && !/kaliti hali tayyor|yuklanmadi|DB |Firebase|Sessiya/i.test(e.message);
+  async function send(r, fromQueue) {
+    try { const x = await call("res", r); if (!fromQueue && x.pts !== r.pts) FX.toast(`🛡 Server tekshirdi: ${x.pts} ball`); return x; }
+    catch (e) { if (hard(e)) { FX.toast("⚠️ " + e.message); return null; } if (!fromQueue) { const a = load(); a.push(r); store(a); FX.toast("📶 Natija saqlanmadi — internet tiklanganda o'zi yuboriladi"); } throw e; }
+  }
+  let busy = false;
+  async function flush() {
+    if (busy || !ACCT.cur || !AUTH.FB) return; busy = true;
+    try { let a = load(); while (a.length) { try { await send(a[0], true); } catch (e) { if (!hard(e)) break; } a = a.slice(1); store(a); } } finally { busy = false; }
+  }
+  let lbT = null; const lb = () => { clearTimeout(lbT); lbT = setTimeout(() => call("lb", {}).catch(() => {}), 1500); };
+  addEventListener("online", () => flush());
+  return { send, flush, lb };
+})();
 function saveResult(r) {
-  try {
-    const id = Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
-    const ac = typeof ACCT !== "undefined" && ACCT.cur; if (ac) r.u = ac.login;
-    const rec = { ...r, at: DBA.now() };
-    DBA.set("r/" + id, rec).catch(() => {});
-    if (ac) DBA.set("h/" + ac.uid + "/" + id, { ttl: rec.ttl, mode: rec.mode, ok: rec.ok, tot: rec.tot, pts: rec.pts, lv: rec.lv, at: rec.at, ...(rec.hw ? { hw: rec.hw } : {}) }).catch(() => {});
-    if (ac && rec.hw) HW.record(rec, ac);
-  } catch (e) {}
+  const ac = typeof ACCT !== "undefined" && ACCT.cur;
+  if (ac && r.hw) try { HW.record({ ...r, u: ac.login, at: DBA.now() }, ac); } catch (e) {}
+  if (!ac || !AUTH.FB) return;
+  VER.send(r).catch(() => {});
 }
 
 // ================== STATISTIKA (ustoz uchun) ==================
@@ -4728,11 +4750,11 @@ const PRF = (() => {
       <div class="card" style="margin-top:12px"><h1>✏️ Ism va familiya</h1>
         <div class="row"><div style="flex:1"><label>Ism</label><input id="pfFn" maxlength="30"></div><div style="flex:1"><label>Familiya</label><input id="pfLn" maxlength="30"></div></div>
         <div class="accerr" id="pfNe"></div><button class="btn" id="pfNs">Saqlash</button></div>
-      <div class="card" style="margin-top:12px"><h1>👤 Login</h1><div class="sub">Hozirgi login: <b>${esc(c.login)}</b>. Yangi login bilan kirasiz, natijalaringiz saqlanib qoladi.</div>
+      <div class="card hide" style="margin-top:12px"><h1>👤 Login</h1><div class="sub">Hozirgi login: <b>${esc(c.login)}</b>. Yangi login bilan kirasiz, natijalaringiz saqlanib qoladi.</div>
         <label>Yangi login</label><input id="pfL" autocapitalize="none" maxlength="20" placeholder="masalan: ali_valiyev">
         <label>Hozirgi parol</label><input id="pfLp" type="password" autocomplete="current-password">
         <div class="accerr" id="pfLe"></div><button class="btn" id="pfLs">Loginni almashtirish</button></div>
-      <div class="card" style="margin-top:12px"><h1>🔑 Parol</h1>
+      <div class="card hide" style="margin-top:12px"><h1>🔑 Parol</h1>
         <label>Hozirgi parol</label><input id="pfPo" type="password" autocomplete="current-password">
         <label>Yangi parol</label><input id="pfPn" type="password" autocomplete="new-password">
         <label>Yangi parolni takrorlang</label><input id="pfPn2" type="password" autocomplete="new-password">
@@ -4796,7 +4818,7 @@ const ACCT = (() => {
   function apply(nav) {
     admLink();
     if (cur) { FN = cur.f; LN = cur.l; name = cur.f + " " + cur.l; }
-    renderBox(); if (typeof chk === "function") chk(); if (nav && cur) setTimeout(() => HW.pendingJoin(), 0); setNav(document.querySelector("#bnav button.on") ? document.querySelector("#bnav button.on").dataset.g : null);
+    renderBox(); if (typeof chk === "function") chk(); if (nav && cur) setTimeout(() => HW.pendingJoin(), 0); if (cur) setTimeout(() => VER.flush(), 3000); setNav(document.querySelector("#bnav button.on") ? document.querySelector("#bnav button.on").dataset.g : null);
     if (nav) goHome(); else if (cur && !$("home").classList.contains("hide")) renderHome();
   }
   async function restore() {
@@ -5585,7 +5607,7 @@ const MS = (() => {
     });
     setFilter("all"); show("res");
     if (lv) setTimeout(() => { FX.rain(pts >= 70 ? 220 : 120); FX.S.win(); }, 900);
-    const R = { n: name, set: set.id, ttl: set.title, mode: "test", ok, tot: 55, pts, lv: lv || "", dur: Date.now() - S.t0, sec: by }; if (S.hw) R.hw = S.hw; saveResult(R);
+    const R = { n: name, set: set.id, ttl: set.title, mode: "test", ok, tot: 55, pts, lv: lv || "", dur: Date.now() - S.t0, sec: by, ms: 1, m: D.mcq.map((q, j) => S.m[j] == null ? null : String(q.o[S.m[j]])), x: S.x.slice(), w: S.w.map(p => [String(p[0] || ""), String(p[1] || "")]) }; if (S.hw) R.hw = S.hw; saveResult(R);
   }
   return { start: startMS, check, prep };
 })();
@@ -5659,7 +5681,7 @@ const GAME = (() => {
     try { localStorage.setItem(K, lv.i); localStorage.setItem(B, JSON.stringify(got)); } catch (e) {}
     // haftalik reyting
     const wk = weekKey(DBA.now()), ws = weekStart(DBA.now()), wxp = rs.filter(r => r.at >= ws).reduce((a, r) => a + xpOf(r), 0);
-    const lk = wk + c.uid + wxp + lv.i; if (wxp > 0 && lastLB !== lk) { lastLB = lk; DBA.set(`lb/${wk}/${c.uid}`, { n: c.f + " " + c.l, g: c.g || "", xp: wxp, lv: lv.i, at: DBA.now() }); }
+    const lk = wk + c.uid + wxp + lv.i; if (wxp > 0 && lastLB !== lk) { lastLB = lk; VER.lb(); }
   }
   let lastLB = null;
   // ---- bosh sahifa ----
@@ -6041,7 +6063,7 @@ const AUTH = (() => {
   }
   return {
     FB, msg, ready, email,
-    async idToken() { const f = await fb(); const u = f.auth().currentUser; if (!u) throw new Error("no user"); return u.getIdToken(true); },
+    async idToken(force = true) { const f = await fb(); const u = f.auth().currentUser; if (!u) throw new Error("no user"); return u.getIdToken(force); },
     async setPwNow(p) { const f = await fb(); const u = f.auth().currentUser; if (!u) throw new Error("no user"); await u.updatePassword(p); },
     async refreshAdmin() { try { admin = !!(user && await DBA.get("admins/" + user.uid)); } catch (e) {} return admin; },
     get uid() { return user ? user.uid : null; },
