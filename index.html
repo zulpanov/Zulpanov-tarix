@@ -5066,7 +5066,7 @@ const ACCT = (() => {
       <div class="card hsec" style="margin-top:12px"><h3>📚 Testlar bo'yicha</h3><div id="hT"></div></div>
       <div class="card hsec" style="margin-top:12px"><h3>🕒 Barcha natijalar</h3><div id="hL"></div></div>
       ${window.TG_BOT ? `<div class="card hsec" style="margin-top:12px"><h3>👨‍👩‍👦 Ota-onamni ulash</h3><div class="sub" style="margin:0 0 10px">Ota-onangiz shu havolani bossa, Telegram bot orqali natijalaringizni ko'rib boradi.</div><button class="btn" id="hPar">✈️ Ota-onamga yuborish</button></div>` : ""}`;
-    if ($("hPar")) $("hPar").onclick = () => { const l = `https://t.me/${window.TG_BOT}?start=p_${cur.login}`, u = `https://t.me/share/url?url=${encodeURIComponent(l)}&text=${encodeURIComponent("Assalomu alaykum! Tarix bo'yicha natijalarimni shu bot orqali kuzatib boring 👇")}`; try { if (window.IN_TG && Telegram.WebApp.openTelegramLink) return Telegram.WebApp.openTelegramLink(u); } catch (e) {} window.open(u, "_blank"); };
+    if ($("hPar")) $("hPar").onclick = async () => { if (!(typeof TGB !== "undefined" && TGB.on())) { FX.toast("📲 Havolani olish uchun platformani Telegram botidan oching"); return; } let l = ""; try { l = (await TGB.call("plink", { login: cur.login })).url; } catch (e) { FX.toast("⚠️ " + TGB.msg(e)); return; } const u = `https://t.me/share/url?url=${encodeURIComponent(l)}&text=${encodeURIComponent("Assalomu alaykum! Tarix bo'yicha natijalarimni shu bot orqali kuzatib boring 👇")}`; try { if (window.IN_TG && Telegram.WebApp.openTelegramLink) return Telegram.WebApp.openTelegramLink(u); } catch (e) {} window.open(u, "_blank"); };
     watchH();
     const fill = () => {
       if (!$("hL")) { hListeners.delete(fill); return; }
@@ -6577,9 +6577,9 @@ const T = (() => {
     if (AUTH.FB) { show("auth"); await AUTH.ready().catch(() => {}); }
     ACCT.restore();
     if (window.IN_TG) { try { const w = Telegram.WebApp; w.ready(); w.expand(); w.disableVerticalSwipes && w.disableVerticalSwipes(); w.setHeaderColor && w.setHeaderColor("#0A0720"); w.setBackgroundColor && w.setBackgroundColor("#0A0720"); } catch (e) {} }
-    const h = window.IN_TG ? (/^(turnir-\d{4}|duel-[A-Za-z0-9_]+)$/.test(window.TG_START || "") ? "#" + window.TG_START : "") : location.hash;
+    const h = window.IN_TG ? (/^(turnir(-\d{4})?|duel-[A-Za-z0-9_]+)$/.test(window.TG_START || "") ? "#" + window.TG_START : "") : location.hash;
     if (h.startsWith("#duel-")) { const dc = h.slice(6); try { history.replaceState(null, "", location.pathname + location.search); } catch (e) {} if (ACCT.cur) return DUEL.openLink(dc); try { ls.set("zm_duel", dc); } catch (e) {} }
-    if (window.IN_TG && h && ACCT.cur) { openJoin(h.split("-")[1]); join(true); return; }
+    if (window.IN_TG && /^#turnir-\d{4}$/.test(h) && ACCT.cur) { openJoin(h.split("-")[1]); join(true); return; }
     if (h.startsWith("#turnir")) openJoin((h.split("-")[1] || "").slice(0, 4));
     else if (h === "#ustoz") openHost();
     else if (h === "#statistika") { if (isAdmin()) STAT.open(); else openHost(); }

@@ -13,6 +13,8 @@
 
 var ADMIN_TG = ['zulpanov_methods'];           // ustozning Telegram username'i (kichik harflarda)
 var CONTACT = '@ZULPANOV_METHODS';
+var CONTACT_URL = 'https://t.me/ZULPANOV_METHODS';
+var KURS_TEXT = 'Bizning tarix kursimizda mavzulashgan audio darslar, yangi darslik asosida mualliflikdagi milliy sertifikat kitoblari mavjud. Darslar Alimqul Zulpanov tomonidan qiziqarli va tushunarli tarzda olib boriladi. Milliy sertifikatga yoki attestatsiyaga kuchliroq tayyorlanmoqchi boʻlsangiz marhamat sizni kutamiz.';
 
 // ---------------- Yordamchilar ----------------
 var P = PropertiesService.getScriptProperties();
@@ -34,6 +36,16 @@ function botName_() {
   return n;
 }
 function appLink_(param) { return 'https://t.me/' + botName_() + '?startapp' + (param ? '=' + encodeURIComponent(param) : ''); }
+// Ota-ona havolasi imzosi: faqat o'quvchining o'zi (Mini App ichida) ola oladi
+function psig_(login) {
+  var b = Utilities.computeHmacSha256Signature('p:' + login, token_());
+  return b.map(function (x) { return ('0' + (x & 255).toString(16)).slice(-2); }).join('').slice(0, 10);
+}
+function adminChats_() {
+  var ids = {}, a = P.getProperty('ADMIN_CHAT'); if (a) ids[a] = 1;
+  all_('u:').forEach(function (r) { if (r.isAdmin) ids[String(r.tgId)] = 1; });
+  return Object.keys(ids);
+}
 
 // ---------------- Ma'lumotlar (Script properties) ----------------
 // u:<tgId> → {tgId,login,name,grp,isAdmin,at}   p:<tgId>:<login> → {tgId,login,name,at}
@@ -86,6 +98,12 @@ var FN = {
     var admin = isAdminTg_(u);
     P.setProperty('u:' + u.id, JSON.stringify({ tgId: u.id, login: login, name: String(input.name || '').slice(0, 80), grp: String(input.grp || '').slice(0, 40), isAdmin: admin, at: Date.now() }));
     return { ok: true, admin: admin };
+  },
+  plink: function (input, u) {
+    if (!u) throw new Error('Telegram foydalanuvchisi aniqlanmadi');
+    var r = getUser_(u.id), login = String((r && r.login) || input.login || '').toLowerCase().replace(/[^a-z0-9_]/g, '');
+    if (!login) throw new Error('Avval platformaga kiring');
+    return { url: 'https://t.me/' + botName_() + '?start=p_' + login + '_' + psig_(login) };
   },
   me: function (input, u) { if (!u) return null; var r = getUser_(u.id); return r ? { login: r.login, admin: !!r.isAdmin } : null; },
   unlink: function (input, u) {
@@ -149,13 +167,65 @@ function doPost(e) {
 function doGet() { return out_({ ok: true, bot: 'ZULPANOV METHODS TARIX' }); }
 
 // ---------------- Bot: xabarlarni qabul qilish (har daqiqada) ----------------
+function mainKb_() {
+  return { inline_keyboard: [
+    [{ text: '📚 Testlarni boshlash', url: appLink_() }],
+    [{ text: '🏆 Turnirga qo‘shilish', url: appLink_('turnir') }],
+    [{ text: '🎓 Kursga yozilish', callback_data: 'kurs' }, { text: '👨‍👩‍👧 Ota-onalar uchun', callback_data: 'ota' }],
+    [{ text: '📞 Ustozga yozish', url: CONTACT_URL }]
+  ] };
+}
+function sendStart_(chat, first) {
+  tg_('sendMessage', { chat_id: chat, parse_mode: 'HTML', reply_markup: mainKb_(),
+    text: '👋 Assalomu alaykum, ' + first + '!\n\n<b>ZULPANOV METHODS TARIX</b> — tarixni o‘yin va testlar bilan o‘rganing.\n\nBugun nima qilamiz? 👇' });
+}
+function sendKurs_(chat, from) {
+  P.setProperty('st:' + from.id, 'kurs');
+  tg_('sendMessage', { chat_id: chat, parse_mode: 'HTML',
+    text: '🎓 <b>Tarix kursi</b>\n\n' + esc_(KURS_TEXT) + '\n\n📱 Yozilish uchun pastdagi «Raqamni yuborish» tugmasini bosing yoki telefon raqamingizni yozing.',
+    reply_markup: { keyboard: [[{ text: '📱 Raqamni yuborish', request_contact: true }], [{ text: '❌ Bekor qilish' }]], resize_keyboard: true, one_time_keyboard: true } });
+}
+function sendOta_(chat) {
+  tg_('sendMessage', { chat_id: chat, parse_mode: 'HTML', reply_markup: { inline_keyboard: [[{ text: '📞 Ustozga yozish', url: CONTACT_URL }]] },
+    text: '👨‍👩‍👧 <b>Ota-onalar uchun</b>\n\nFarzandingizning test natijalari va ustoz xabarlarini shu bot orqali olib turishingiz mumkin:\n\n1️⃣ Farzandingiz platformada «Statistika» bo‘limini ochadi.\n2️⃣ «✈️ Ota-onamga yuborish» tugmasini bosib, havolani sizga yuboradi.\n3️⃣ Siz havolani bosasiz — tamom, ulandingiz ✅\n\nSavol bo‘lsa, ustozga yozing.' });
+}
+function kursDone_(chat, from, phone) {
+  P.deleteProperty('st:' + from.id);
+  var name = [from.first_name, from.last_name].filter(Boolean).join(' ');
+  var note = '🎓 <b>Kursga yangi ariza!</b>\n\n👤 ' + esc_(name) + (from.username ? ' (@' + esc_(from.username) + ')' : '') + '\n📱 ' + esc_(phone) + '\n🕒 ' + Utilities.formatDate(new Date(), 'Asia/Samarkand', 'dd.MM.yyyy HH:mm');
+  var arr = JSON.parse(P.getProperty('KURS_ARIZALAR') || '[]'); arr.push({ id: from.id, name: name, user: from.username || '', phone: phone, at: Date.now() });
+  P.setProperty('KURS_ARIZALAR', JSON.stringify(arr.slice(-100)));
+  adminChats_().forEach(function (id) { try { tg_('sendMessage', { chat_id: id, parse_mode: 'HTML', text: note }); } catch (e) { console.error(e); } });
+  tg_('sendMessage', { chat_id: chat, text: '✅ Rahmat! Arizangiz qabul qilindi. Ustoz tez orada siz bilan bog‘lanadi.', reply_markup: { remove_keyboard: true } });
+  tg_('sendMessage', { chat_id: chat, text: 'Shu orada platformada mashq qilib turing 👇', reply_markup: mainKb_() });
+}
+
 function onMessage_(m) {
   if (!m || !m.chat || m.chat.type !== 'private' || !m.from) return;
   var chat = m.chat.id, text = String(m.text || '').trim(), first = esc_(m.from.first_name || '');
+  if (isAdminTg_(m.from)) P.setProperty('ADMIN_CHAT', String(chat));
+  var st = P.getProperty('st:' + m.from.id);
+
+  if (m.contact) {
+    if (st === 'kurs') kursDone_(chat, m.from, m.contact.phone_number);
+    return;
+  }
+  if (st === 'kurs' && text && text.charAt(0) !== '/') {
+    if (text === '❌ Bekor qilish') { P.deleteProperty('st:' + m.from.id); tg_('sendMessage', { chat_id: chat, text: 'Bekor qilindi.', reply_markup: { remove_keyboard: true } }); return sendStart_(chat, first); }
+    var ph = text.replace(/[^\d+]/g, '');
+    if (ph.replace(/\D/g, '').length >= 9) return kursDone_(chat, m.from, ph);
+    tg_('sendMessage', { chat_id: chat, text: 'Telefon raqamingizni yozing (masalan, +998 90 123 45 67) yoki «📱 Raqamni yuborish» tugmasini bosing.' });
+    return;
+  }
+
   if (text.indexOf('/start') === 0) {
     var arg = text.split(/\s+/)[1] || '';
     if (arg.indexOf('p_') === 0) {
-      var login = arg.slice(2).toLowerCase().replace(/[^a-z0-9_]/g, ''); if (!login) return;
+      var raw = arg.slice(2).toLowerCase(), k = raw.lastIndexOf('_'), login = k > 0 ? raw.slice(0, k).replace(/[^a-z0-9_]/g, '') : '', sig = k > 0 ? raw.slice(k + 1) : '';
+      if (!login || sig !== psig_(login)) {
+        tg_('sendMessage', { chat_id: chat, text: '⚠️ Bu havola eskirgan yoki noto‘g‘ri.\n\nFarzandingizdan yangi havola so‘rang: platforma → «Statistika» → «✈️ Ota-onamga yuborish».' });
+        return;
+      }
       P.setProperty('p:' + m.from.id + ':' + login, JSON.stringify({ tgId: m.from.id, login: login, name: [m.from.first_name, m.from.last_name].filter(Boolean).join(' '), at: Date.now() }));
       var kid = all_('u:').filter(function (r) { return r.login === login; })[0];
       tg_('sendMessage', { chat_id: chat, parse_mode: 'HTML',
@@ -168,22 +238,46 @@ function onMessage_(m) {
         reply_markup: { inline_keyboard: [[{ text: '🏆 Turnirga kirish', url: appLink_(arg) }]] } });
       return;
     }
-    tg_('sendMessage', { chat_id: chat, parse_mode: 'HTML',
-      text: '👋 Assalomu alaykum, ' + first + '!\n\n<b>ZULPANOV METHODS TARIX</b> — tarix fanidan o‘quv platformasi:\n\n📚 Mavzulashgan testlar\n🎓 Milliy sertifikat variantlari\n🏆 Jonli va jamoaviy turnirlar\n⚡ O‘yinlar: Blits, Ha yoki Yo‘q, Duel\n📊 Shaxsiy statistika\n\nBoshlash uchun pastdagi tugmani bosing 👇',
-      reply_markup: { inline_keyboard: [[{ text: '📚 Testlarni ochish', url: appLink_() }]] } });
+    if (arg === 'kurs') return sendKurs_(chat, m.from);
+    return sendStart_(chat, first);
+  }
+  if (text === '/kurs') return sendKurs_(chat, m.from);
+  if (text === '/ota') return sendOta_(chat);
+  if (/^\d{4}$/.test(text)) {
+    tg_('sendMessage', { chat_id: chat, text: '🏆 Turnir kodi: ' + text + '\nQo‘shilish uchun tugmani bosing 👇',
+      reply_markup: { inline_keyboard: [[{ text: '🏆 Turnirga kirish', url: appLink_('turnir-' + text) }]] } });
     return;
   }
-  tg_('sendMessage', { chat_id: chat, text: '📚 Platformani ochish uchun pastdagi «📚 Testlar» tugmasini yoki /start ni bosing.\n\nSavollar bo‘yicha ustozga yozing: ' + CONTACT });
+  tg_('sendMessage', { chat_id: chat, text: 'Kerakli bo‘limni tanlang 👇\n\nSavollar bo‘yicha ustozga yozing: ' + CONTACT, reply_markup: mainKb_() });
+}
+
+function onCallback_(q) {
+  if (!q || !q.from) return;
+  try { tg_('answerCallbackQuery', { callback_query_id: q.id }); } catch (e) {}
+  var chat = q.message && q.message.chat && q.message.chat.id; if (!chat) return;
+  if (q.data === 'kurs') return sendKurs_(chat, q.from);
+  if (q.data === 'ota') return sendOta_(chat);
+}
+
+function setCommands_() {
+  if (P.getProperty('CMDV') === '2') return;
+  tg_('setMyCommands', { commands: [
+    { command: 'start', description: 'Bosh menyu' },
+    { command: 'kurs', description: 'Tarix kursiga yozilish' },
+    { command: 'ota', description: 'Ota-onalar uchun' }
+  ] });
+  P.setProperty('CMDV', '2');
 }
 
 function poll() {
   var lock = LockService.getScriptLock(); if (!lock.tryLock(1000)) return;
   try {
     var off = Number(P.getProperty('OFFSET') || 0);
-    var ups = tg_('getUpdates', { offset: off, timeout: 0, allowed_updates: ['message'] });
+    try { setCommands_(); } catch (e) { console.error(e); }
+    var ups = tg_('getUpdates', { offset: off, timeout: 0, allowed_updates: ['message', 'callback_query'] });
     ups.forEach(function (up) {
       P.setProperty('OFFSET', String(up.update_id + 1));
-      try { onMessage_(up.message); } catch (e) { console.error(e); }
+      try { if (up.callback_query) onCallback_(up.callback_query); else onMessage_(up.message); } catch (e) { console.error(e); }
     });
   } finally { lock.releaseLock(); }
 }
