@@ -15,7 +15,13 @@ var WORKER_URL = 'https://zulpanov-tarix-bot.zulponovalimqul.workers.dev';      
 var ADMIN_TG = ['zulpanov_methods'];           // ustozning Telegram username'i (kichik harflarda)
 var CONTACT = '@ZULPANOV_METHODS';
 var CONTACT_URL = 'https://t.me/ZULPANOV_METHODS';
-var KURS_TEXT = 'Bizning tarix kursimizda mavzulashgan audio darslar, yangi darslik asosida mualliflikdagi milliy sertifikat kitoblari mavjud. Darslar Alimqul Zulpanov tomonidan qiziqarli va tushunarli tarzda olib boriladi. Milliy sertifikatga yoki attestatsiyaga kuchliroq tayyorlanmoqchi boʻlsangiz marhamat sizni kutamiz.';
+var KURS_TEXT = '🎓 <b>Tarixni yodlamang — tushunib o‘rganing!</b>\n\n' +
+  'Sanalar chalkashib ketyaptimi? Testda bilgan savolingizdan ham adashyapsizmi? Bizning darslarda bunday bo‘lmaydi.\n\n' +
+  '✅ Mavzulashgan audio darslar: istalgan joyda, istalgan vaqtda tinglaysiz\n' +
+  '✅ Yangi darslik asosida yozilgan mualliflik Milliy sertifikat kitoblari\n' +
+  '✅ Har mavzudan keyin test va reyting: natijangizni o‘zingiz ko‘rib borasiz\n\n' +
+  'Darslarni <b>Alimqul Zulpanov</b> qiziqarli va tushunarli tarzda olib boradi.\n\n' +
+  '🎯 Milliy sertifikat yoki attestatsiyaga kuchliroq tayyorlanmoqchi bo‘lsangiz, marhamat, sizni kutamiz! 👇';   // HTML
 
 // ---------------- Yordamchilar ----------------
 var P = PropertiesService.getScriptProperties();
@@ -204,7 +210,7 @@ function sendStart_(chat, first) {
 }
 function sendKurs_(chat, from) {
   tg_('sendMessage', { chat_id: chat, parse_mode: 'HTML',
-    text: '🎓 <b>Darslar haqida</b>\n\n' + esc_(KURS_TEXT),
+    text: KURS_TEXT,
     reply_markup: { inline_keyboard: [[{ text: '✍️ Darslarga yozilish', callback_data: 'yozil' }], [{ text: '📞 Ustozga savol berish', url: CONTACT_URL }]] } });
 }
 function sendYozil_(chat, from) {
