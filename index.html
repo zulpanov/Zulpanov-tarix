@@ -6578,9 +6578,9 @@ const T = (() => {
     arr.forEach(x => {
       const d = document.createElement("div"); d.className = "strow";
       const mins = Math.max(0, Math.round((now - x.c) / 60000));
-      d.innerHTML = `<div class="st-ic">${x.ph === "run" ? "🔴" : "⏳"}</div><div class="st-m"><b>Kod ${esc(x.code)}</b><div class="st-s"></div><div class="st-s">${x.ph === "run" ? "Ketmoqda" : "O'quvchilar qo'shilmoqda"} · ${mins} daqiqa oldin ochilgan</div></div><button class="btn sm">Kuzatish →</button>`;
+      d.innerHTML = `<div class="st-ic">${x.ph === "run" ? "🔴" : "⏳"}</div><div class="st-m"><b>Kod ${esc(x.code)}</b><div class="st-s"></div><div class="st-s">${x.ph === "run" ? "Ketmoqda" : "O'quvchilar qo'shilmoqda"} · ${mins} daqiqa oldin ochilgan</div></div><button class="btn sm">Kuzatish →</button>${String(x.code).length === 5 ? "" : '<button class="btn sm ghost" data-x="1" title="Yakunlash" style="margin-left:6px">⏹</button>'}`;
       d.querySelector(".st-s").textContent = (x.hn ? "👤 " + x.hn + " · " : "") + (x.ttl || "");
-      d.onclick = () => String(x.code).length === 5 ? KT.host(x.code) : hAttach(x.code);
+      d.onclick = async e => { if (e.target.closest("[data-x]")) { if (!confirm(`Kod ${x.code} — o'yin yakunlansinmi?`)) return; try { await DBA.update(`t/${x.code}/meta`, { phase: "end" }); await DBA.set(`a/${x.code}`, null); FX.toast("⏹ Yakunlandi", "up"); } catch (er) { FX.toast("⚠️ " + (er.message || er)); } return; } String(x.code).length === 5 ? KT.host(x.code) : hAttach(x.code); };
       el.appendChild(d);
     });
   }
@@ -6616,7 +6616,7 @@ const T = (() => {
       <div class="sub" style="margin-bottom:4px">${esc(s.title)} · ${m.n} savol · ${Math.round(m.dur / 60000)} daqiqa</div>
       ${m.phase === "lobby" ? `<div class="sub" style="margin:0">Turnir kodi</div><div class="tcode">${st.code}</div>
         <div class="sub">O'quvchilar saytni ochib «Turnir rejimi»ni bosadi va shu kodni kiritadi.<br><span class="tlink"></span></div>
-        ${SHARE.html("thSh")}<button class="btn" id="thst" style="margin-top:10px">▶ Boshlash</button>`
+        ${SHARE.html("thSh")}<button class="btn" id="thst" style="margin-top:10px">▶ Boshlash</button><button class="btn ghost" id="thend" style="margin-top:8px">✕ Turnirni bekor qilish</button>`
       : `<div class="row" style="align-items:center"><div style="flex:1;text-align:left"><div class="sub" style="margin:0">Kod: <b>${st.code}</b> · Ishtirokchilar: <b id="tcnt">0</b> · Tugatganlar: <b id="tdn">0</b></div></div><div class="ttm" id="ttm" style="font-size:26px">--:--</div></div>
         <button class="btn" id="thend" style="margin-top:12px;background:var(--bad)">■ Turnirni yakunlash</button>`}
       ${m.team ? `<div id="thw" class="tnote" style="margin-top:12px"></div><button class="btn ghost" id="thpj">🖥 Proyektor rejimi</button>` : ""}
@@ -6629,7 +6629,7 @@ const T = (() => {
       SHARE.bind("thSh", { code: st.code, kind: m.team ? "team" : "turnir", ttl: mTitle(m), n: m.n, dur: Math.round(m.dur / 60000), link: link() });
       $("thst").onclick = () => { $("thst").disabled = true; DBA.update(`t/${st.code}/meta`, { phase: "run", startAt: DBA.now() + 5000 }); };
     }
-    if ($("thend")) $("thend").onclick = () => DBA.update(`t/${st.code}/meta`, { phase: "end" });
+    if ($("thend")) $("thend").onclick = () => { if (confirm("Turnir yakunlansinmi?")) DBA.update(`t/${st.code}/meta`, { phase: "end" }); };
     tz().insertAdjacentHTML("beforeend", `<button class="btn ghost" style="margin-top:12px" id="thback">← Ustoz paneli (turnir davom etaveradi)</button>`);
     $("thback").onclick = hSetup;
     hBoard();
@@ -6963,7 +6963,7 @@ const KT = (() => {
         ${ph !== "end" ? `<div style="width:150px;background:#fff;border-radius:12px;padding:6px">${qrSvg(webLink(code))}</div>` : ""}</div></div>
       <div class="stcards" style="margin-top:12px" id="ktC"></div>
       ${ph === "wait" ? SHARE.html("ktSh") : ""}
-      ${ph === "wait" ? `<div class="card" style="margin-top:12px"><button class="btn" id="ktGo">▶️ Turnirni boshlash</button><div class="st-s" style="margin-top:8px">Boshlanganda har bir o'quvchida ${Math.round(m.dur / 60000)} daqiqa vaqt bo'ladi. Kechikib kelganlar ham qo'shila oladi, lekin vaqt hamma uchun bir xil tugaydi.</div><div id="ktJ" style="margin-top:10px;display:flex;flex-wrap:wrap;gap:6px"></div></div>` : ""}
+      ${ph === "wait" ? `<div class="card" style="margin-top:12px"><button class="btn" id="ktGo">▶️ Turnirni boshlash</button><button class="btn ghost sm" id="ktEnd" style="margin-top:8px">⏹ Bekor qilish / yakunlash</button><div class="st-s" style="margin-top:8px">Boshlanganda har bir o'quvchida ${Math.round(m.dur / 60000)} daqiqa vaqt bo'ladi. Kechikib kelganlar ham qo'shila oladi, lekin vaqt hamma uchun bir xil tugaydi.</div><div id="ktJ" style="margin-top:10px;display:flex;flex-wrap:wrap;gap:6px"></div></div>` : ""}
       ${ph === "run" ? `<div class="card" style="margin-top:12px;text-align:center"><div class="st-s">Qolgan vaqt</div><div id="ktT" style="font-size:40px;font-weight:800">--:--</div><button class="btn ghost sm" id="ktEnd" style="margin-top:6px">⏹ Hozir yakunlash</button></div>` : ""}
       ${ph === "end" ? `<div class="card" style="margin-top:12px" id="ktPod"></div>` : ""}
       <div class="card" style="margin-top:12px"><b>${ph === "end" ? "📋 To'liq reyting" : "🏆 Jonli top-10"}</b><div id="ktB" style="margin-top:8px"></div></div>
