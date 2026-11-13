@@ -11,7 +11,7 @@
  * Sayt (Mini App) esa shu Web app orqali o'quvchini bog'laydi va xabarnomalar yuboradi.
  */
 
-var WORKER_URL = '';                            // Cloudflare Worker manzili (webhook qabulxonasi)
+var WORKER_URL = 'https://zulpanov-tarix-bot.zulponovalimqul.workers.dev';                            // Cloudflare Worker manzili (webhook qabulxonasi)
 var ADMIN_TG = ['zulpanov_methods'];           // ustozning Telegram username'i (kichik harflarda)
 var CONTACT = '@ZULPANOV_METHODS';
 var CONTACT_URL = 'https://t.me/ZULPANOV_METHODS';
