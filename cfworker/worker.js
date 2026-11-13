@@ -20,6 +20,16 @@ const ADMIN_TG = ["zulpanov_methods"];            // ustozning Telegram username
 const CONTACT = "@ZULPANOV_METHODS";
 const CONTACT_URL = "https://t.me/ZULPANOV_METHODS";
 const MAP_URL = "https://maps.app.goo.gl/dxLox5nZ6H4HQn6y5";
+const BOT_ABOUT = "Tarixdan 5 700+ test, Milliy sertifikat variantlari, turnir va duellar. Bir bosishda kirish. Muallif: Alimqul Zulpanov";
+const BOT_DESC = `📚 ZULPANOV METHODS TARIX — tarixni test orqali o‘rganing!
+
+✅ 5 700+ mavzulashgan test (5–11-sinf)
+🎓 Milliy sertifikat namunasidagi variantlar
+📅 Har kuni yangi «Kun testi»
+🏆 Turnirlar, duellar, XP va reyting
+👨‍👩‍👦 Ota-onalar natijani bot orqali kuzatadi
+
+Login va parol kerak emas — «START» ni bosing va boshlang!`;
 const BATCH = 35;                                 // bitta so'rovda nechta xabar (Cloudflare bepul rejasi: 50 ta tashqi so'rov)
 const KURS_TEXT = "🎓 <b>Tarixni yodlamang — tushunib o‘rganing!</b>\n\n" +
   "Sanalar chalkashib ketyaptimi? Testda bilgan savolingizdan ham adashyapsizmi? Bizning darslarda bunday bo‘lmaydi.\n\n" +
@@ -453,6 +463,10 @@ export default {
       } catch (e) { return json({ ok: false, err: String((e && e.message) || e) }); }
     }
 
+    if (req.method === "GET" && url.searchParams.get("setup") === "1") { // bot tavsifi (About va Description)
+      try { await tg(env, "setMyShortDescription", { short_description: BOT_ABOUT }); await tg(env, "setMyDescription", { description: BOT_DESC }); return new Response("✅ Bot tavsifi yangilandi", { headers: { "content-type": "text/plain; charset=utf-8" } }); }
+      catch (e) { return new Response("⚠️ " + ((e && e.message) || e), { headers: { "content-type": "text/plain; charset=utf-8" } }); }
+    }
     if (req.method !== "POST") {
       let st = "✅";
       try { token(env); const a = await fbAuth(env); const adm = await db(env, "GET", "admins/" + a.uid).catch(() => null); st += `\nFirebase uid: ${a.uid}\nAdmin huquqi: ${adm === true ? "bor ✅" : "yo‘q ⚠️"}`; }
