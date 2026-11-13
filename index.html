@@ -3268,19 +3268,21 @@ function start(){
   if(set.ms&&!HWCUR&&!MSACC.can(set)&&!MSACC.saved(set)){FX.toast("🔒 Bu variant hali yopiq. Ustoz ruxsat berganda ochiladi.");return}
   if(set.ms){const ac=ACCT.cur;if(!ac)return;FN=ac.f;LN=ac.l;name=FN+" "+LN;return MS.start()}
   const ac=ACCT.cur;
+  if(set.kt){if(!ac)return;FN=ac.f;LN=ac.l;name=FN+" "+LN;Q=set.qs.slice()}else
   if(set.kun){FN=ac?ac.f:"Mehmon";LN=ac?ac.l:"";name=ac?FN+" "+LN:"Mehmon";Q=set.qs.slice();KUN.started()}else{
   if(!ac)return;FN=ac.f;LN=ac.l;name=FN+" "+LN;
   if(!set.qs){Q=shuffle(SETS.filter(s=>s.qs&&!s.ms&&s.g===set.g).flatMap(s=>s.qs)).slice(0,20)}else if(!HWCUR){Q=ROT.pick(set,25)}else{Q=set.qs}}
   order=Q.map((q,i)=>({i,idx:shuffle([0,1,2,3])}));
   ans=Array(Q.length).fill(null);cur=0;t0=Date.now();
   clearInterval(tick);$("tm").textContent="00:00";
-  tick=setInterval(()=>$("tm").textContent=fmt(Date.now()-t0),1000);
+  if(set.kt){t0=Math.max(set.t0||Date.now(),Date.now()-1);const kt=set;tick=setInterval(()=>{const l=kt.end-DBA.now();$("tm").textContent="⏳ "+fmt(Math.max(0,l));if(l<=0&&set===kt){clearInterval(tick);$("mdl").classList.remove("on");FX.toast("⏰ Vaqt tugadi!");finish()}},1000)}
+  else tick=setInterval(()=>$("tm").textContent=fmt(Date.now()-t0),1000);
   try{$("qset").textContent=(set&&set.n?(clsOf(set.g)||"")+" · "+(set.g&&set.g.includes(" · ")?fanOf(set.g)+" · ":"")+set.n:(set&&set.title)||"")}catch(e){$("qset").textContent=""}
   $("qsheet").classList.add("hide");show("quiz");render();window.scrollTo(0,0);
 }
 function fmt(ms){const s=Math.floor(ms/1000);return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0")}
 var BKfn;function BK(fn){BKfn=fn;const hm=["home","auth"].some(i=>$(i)&&!$(i).classList.contains("hide"));$("bkb").classList.toggle("hide",!fn||hm)}
-function show(id){document.body.classList.remove("adm","dlm");if(id!=="tz"){try{BLITZ.leave()}catch(e){}try{HAYOQ.leave()}catch(e){}try{LADDER.leave()}catch(e){}try{BOSS.leave()}catch(e){}}try{$("amore").classList.add("hide")}catch(e){}["auth","home","start","quiz","res","tz"].forEach(s=>$(s).classList.toggle("hide",s!==id));BK(id==="res"?(()=>{if(FROM_T)goHome();else{renderTopics();show("start")}}):id==="start"?BKfn:null);setNav(id==="start"&&typeof VIEW!=="undefined"&&VIEW.k==="ms"?"ms":({home:"home",start:"tests",res:"tests"}[id]||null));window.scrollTo(0,0)}
+function show(id){try{KT.leave()}catch(e){}document.body.classList.remove("adm","dlm");if(id!=="tz"){try{BLITZ.leave()}catch(e){}try{HAYOQ.leave()}catch(e){}try{LADDER.leave()}catch(e){}try{BOSS.leave()}catch(e){}}try{$("amore").classList.add("hide")}catch(e){}["auth","home","start","quiz","res","tz"].forEach(s=>$(s).classList.toggle("hide",s!==id));BK(id==="res"?(()=>{if(FROM_T)goHome();else{renderTopics();show("start")}}):id==="start"?BKfn:null);setNav(id==="start"&&typeof VIEW!=="undefined"&&VIEW.k==="ms"?"ms":({home:"home",start:"tests",res:"tests"}[id]||null));window.scrollTo(0,0)}
 function setNav(active){const on=!!(active&&typeof ACCT!=="undefined"&&ACCT.cur);$("bnav").classList.toggle("hide",!on);[...$("bnav").children].forEach(b=>b.classList.toggle("on",b.dataset.g===active));const av=$("hdrAv");if(av){const c=typeof ACCT!=="undefined"&&ACCT.cur;av.classList.toggle("hide",!c);if(c){const k=c.uid+"|"+c.f+c.l;if(av.dataset.k!==k){av.dataset.k=k;av.innerHTML=AV.html(c.uid,c.f+" "+c.l,"fill")}}}}
 function goHome(){if(typeof ACCT!=="undefined"&&ACCT.cur){show("home");ACCT.renderHome()}else show("auth")}
 function goTests(){VIEW={k:"cls"};set=null;show("start");renderTopics()}
@@ -3313,7 +3315,7 @@ function render(){
 $("qnav").onclick=()=>$("qsheet").classList.toggle("hide");
 $("qsheet").onclick=e=>{if(e.target.id==="qsheet")$("qsheet").classList.add("hide")};
 let qxAt=0;$("qx").onclick=()=>{if(Date.now()-qxAt>3000){qxAt=Date.now();FX.toast("Testdan chiqish uchun ✕ ni yana bir marta bosing. Natija saqlanmaydi.");return}
-  qxAt=0;clearInterval(tick);$("qsheet").classList.add("hide");if(HWCUR||(set&&set.kun)){HWCUR=null;goHome();return}renderTopics();show("start");window.scrollTo(0,0)};
+  qxAt=0;clearInterval(tick);$("qsheet").classList.add("hide");if(set&&set.kt){KT.stop();goHome();return}if(HWCUR||(set&&set.kun)){HWCUR=null;goHome();return}renderTopics();show("start");window.scrollTo(0,0)};
 $("prev").onclick=()=>{if(cur>0){cur--;render();window.scrollTo(0,0)}};
 $("next").onclick=()=>{
   if(cur<Q.length-1){cur++;render();window.scrollTo(0,0);return}
@@ -3361,7 +3363,7 @@ function finish(){
   if(lv){setTimeout(()=>{FX.rain(pts>=70?220:120);FX.S.win()},900)}
   KUN.result(set,ok,Q.length);
   if(set.kun&&!ACCT.cur)return;
-  if(!FROM_T){const R={n:name,set:set.id,ttl:set.title,mode:"test",ok,tot:Q.length,pts,lv:lv||"",dur:Date.now()-t0,sec:by,items:order.map(({i},k)=>[Q[i]._k||"",ans[k]===null?null:String(Q[i].o[ans[k]])])};if(HWCUR)R.hw=HWCUR.id;saveResult(R)}
+  if(!FROM_T){const R={n:name,set:set.id,ttl:set.title,mode:"test",ok,tot:Q.length,pts,lv:lv||"",dur:Date.now()-t0,sec:by,items:order.map(({i},k)=>[Q[i]._k||"",ans[k]===null?null:String(Q[i].o[ans[k]])])};if(HWCUR)R.hw=HWCUR.id;if(set.kt){KT.submit(R);return}saveResult(R)}
 }
 function level(p){return p>=70?"A+":p>=65?"A":p>=60?"B+":p>=55?"B":p>=50?"C+":p>=45?"C":null}
 function isGirl(fn,ln){
@@ -4438,7 +4440,7 @@ const STAT = (() => {
       <div class="card" id="stVis" style="margin-top:12px"><h3 style="margin:0 0 6px">🌐 Saytga kirishlar</h3><div class="sub" style="margin:0">Yuklanmoqda…</div></div>
       <div class="sttabs" id="stTabs">${[["res", "🕒 Oxirgi natijalar"], ["stu", "👥 O'quvchilar"], ["tst", "📚 Testlar"], ["tur", "🏆 Turnirlar"]].map(([k, l]) => `<button data-t="${k}" class="${k === tab ? "on" : ""}">${l}</button>`).join("")}</div>
       <div id="stBody"></div>
-      <div style="text-align:center;margin-top:18px"><button class="btn ghost sm" id="stClr" style="color:var(--bad)">Barcha natijalarni o'chirish</button></div>`;
+      <div style="text-align:center;margin-top:18px"><button class="btn ghost sm" id="stClr" style="color:var(--bad)">Ko'rsatilgan natijalarni o'chirish</button></div>`;
     $("stQ").value = q; $("stSet").value = fset; $("stPer").value = per;
     $("stQ").oninput = e => { q = e.target.value; detail = null; render(); };
     $("stSet").onchange = e => { fset = e.target.value; render(); };
@@ -4447,19 +4449,26 @@ const STAT = (() => {
     $("stCsv").onclick = csv;
     let armed = false;
     $("stClr").onclick = () => {
-      if (!armed) { armed = true; $("stClr").textContent = "Rostdan ham o'chirilsinmi? Yana bir marta bosing"; setTimeout(() => { armed = false; if ($("stClr")) $("stClr").textContent = "Barcha natijalarni o'chirish"; }, 4000); return; }
+      if (!armed) { armed = true; $("stClr").textContent = "Rostdan ham o'chirilsinmi? Yana bir marta bosing"; setTimeout(() => { armed = false; if ($("stClr")) $("stClr").textContent = "Ko'rsatilgan natijalarni o'chirish"; }, 4000); return; }
       Object.keys(data || {}).forEach(k => DBA.set("r/" + k, null)); $("stClr").textContent = "O'chirildi";
     };
-    if (unsub) unsub();
-    unsub = DBA.on("r", v => { data = v || {}; if ($("stBody")) render(); });
-    if (DBA.kind === "mock") $("stNote").textContent = "Sinov rejimi: natijalar faqat shu qurilmada saqlanadi.";
+    if (unsub) { unsub(); unsub = null; }
+    load();
+  }
+  let days = 30;
+  async function load(more) {
+    if (more) days += 60;
+    if ($("stNote")) $("stNote").textContent = "Yuklanmoqda…";
+    try { data = (await (DBA.since ? DBA.since("r", "at", Date.now() - days * 86400e3) : DBA.get("r"))) || {}; } catch (e) { data = {}; if ($("stNote")) $("stNote").textContent = "⚠️ Yuklab bo'lmadi: " + (e.message || e); return; }
+    if ($("stBody")) render();
   }
   function cards(rs) {
     const stu = new Set(rs.map(r => norm(r.n))).size, avg = rs.length ? Math.round(rs.reduce((a, r) => a + (r.pts || 0), 0) / rs.length) : 0;
     const certs = rs.filter(r => r.lv).length, tur = new Set(rs.filter(r => r.mode === "turnir").map(r => r.code)).size;
     $("stCards").innerHTML = [["📝", rs.length, "Topshirilgan test"], ["👥", stu, "O'quvchi"], ["📈", avg, "O'rtacha ball"], ["🎓", certs, "Sertifikat olgan"], ["🏆", tur, "Turnir"]]
       .map(([i, v, l]) => `<div class="stc"><div class="stc-i">${i}</div><b>${v}</b><span>${l}</span></div>`).join("");
-    $("stNote").textContent = DBA.kind === "mock" ? "Sinov rejimi: natijalar faqat shu qurilmada saqlanadi." : `Jami ${list().length} ta natija. Ma'lumotlar jonli yangilanadi.`;
+    $("stNote").innerHTML = `Oxirgi <b>${days}</b> kundagi ${list().length} ta natija. <button class="lnk" id="stRef">🔄 Yangilash</button> · <button class="lnk" id="stMore">⏪ Yana oldingilarini ko'rsatish</button>`;
+    $("stRef").onclick = () => load(); $("stMore").onclick = () => load(true);
   }
   function row(r) {
     return `<div class="strow" data-id="${esc(r.id)}"><div class="st-ic">${r.mode === "turnir" ? "🏆" : "📝"}</div>
@@ -4818,7 +4827,7 @@ const ACCT = (() => {
   function apply(nav) {
     admLink();
     if (cur) { FN = cur.f; LN = cur.l; name = cur.f + " " + cur.l; }
-    renderBox(); if (typeof chk === "function") chk(); if (nav && cur) setTimeout(() => HW.pendingJoin(), 0); if (cur) setTimeout(() => VER.flush(), 3000); setNav(document.querySelector("#bnav button.on") ? document.querySelector("#bnav button.on").dataset.g : null);
+    renderBox(); if (typeof chk === "function") chk(); if (nav && cur) setTimeout(() => HW.pendingJoin(), 0); if (cur) setTimeout(() => VER.flush(), 3000); if (nav && cur) { const kc = KT.pending(); if (kc) setTimeout(() => KT.join(kc), 300); } setNav(document.querySelector("#bnav button.on") ? document.querySelector("#bnav button.on").dataset.g : null);
     if (nav) goHome(); else if (cur && !$("home").classList.contains("hide")) renderHome();
   }
   async function restore() {
@@ -4867,7 +4876,7 @@ const ACCT = (() => {
       try { await DBA.set("logins/" + a.login, uid); } catch (e) {}
       r = { f, l, g: "", login: a.login, tg: 1, bx: 50, c: DBA.now(), last: DBA.now() };
       await DBA.set("users/" + uid, r);
-      try { await DBA.set("pw/" + uid, "Telegram orqali"); } catch (e) {} ST.hit("new");
+      ST.hit("new");
       r.isNew = true;
     }
     if (r.b) { await AUTH.signOut(); throw { uz: "Hisobingiz ustoz tomonidan bloklangan." }; }
@@ -5123,31 +5132,41 @@ const ACC = (() => {
     unsubs.forEach(f => f()); unsubs = [];
     show("tz");
     $("tz").innerHTML = `${adminNav("acc")}<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap"><h1 style="margin:0">👥 O'quvchilar hisoblari</h1>
-      <div class="row" style="flex:0 0 auto"><button class="btn ghost sm" id="acShow">👁 Parollarni ko'rsatish</button><button class="btn ghost sm" id="acCsv">⬇ CSV</button></div></div>
+      <div class="row" style="flex:0 0 auto"><button class="btn ghost sm" id="acRef">🔄 Yangilash</button><button class="btn ghost sm" id="acCsv">⬇ CSV</button></div></div>
       <div class="sub" id="acN" style="margin:6px 0 12px">Yuklanmoqda…</div>
       <div class="tnote" style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><div style="flex:1">Ro'yxatdan o'tish: <b id="acReg">…</b></div><button class="btn sm" id="acRegB">…</button></div>
       <input id="acQ" placeholder="🔎 Ism, login yoki sinf bo'yicha qidirish" style="margin:0">
       </div>
-      <details class="card" style="margin-top:12px" id="acAdd"><summary style="cursor:pointer;font-weight:700">➕ O'quvchini o'zim qo'shaman</summary>
-        <div class="row" style="margin-top:12px"><div style="flex:1"><label>Ism</label><input id="nF"></div><div style="flex:1"><label>Familiya</label><input id="nL"></div></div>
-        <label>Sinf yoki guruh</label><input id="nG">
-        <div class="row"><div style="flex:1"><label>Login</label><input id="nU" autocapitalize="none"></div><div style="flex:1"><label>Parol</label><input id="nP"></div></div>
-        <div class="accerr" id="nE"></div><button class="btn" id="nGo">Qo'shish</button></details>
       <div id="acL" style="margin-top:12px"></div>`;
     $("acQ").value = q; $("acQ").oninput = e => { q = e.target.value; render(); };
-    $("acShow").onclick = () => { showAll = !showAll; $("acShow").textContent = showAll ? "🙈 Parollarni yashirish" : "👁 Parollarni ko'rsatish"; render(); };
+    $("acRef").onclick = () => loadU();
     $("acCsv").onclick = csv;
     $("acRegB").onclick = () => DBA.update("c/main", { regOff: cfg.regOff ? 0 : 1 });
-    $("nGo").onclick = add;
-    $("nF").oninput = $("nL").oninput = () => { if (!$("nU").dataset.t) $("nU").value = translit($("nF").value + "_" + $("nL").value); };
-    $("nU").oninput = () => $("nU").dataset.t = "1";
-    if (AUTH.FB) {
-      let U = {}, P = {}; const merge = () => { users = {}; Object.entries(U).forEach(([k, x]) => { if (x) users[k] = { ...x, p: P[k] || "" }; }); render(); };
-      unsubs.push(DBA.on("users", v => { U = v || {}; merge(); }));
-      unsubs.push(DBA.on("pw", v => { P = v || {}; merge(); }));
-    } else unsubs.push(DBA.on("u", v => { users = v || {}; render(); }));
-    unsubs.push(DBA.on("r", v => { res = v || {}; render(); }));
+    loadU();
     unsubs.push(DBA.on("c/main", v => { cfg = v || {}; if ($("acReg")) { $("acReg").textContent = cfg.regOff ? "yopiq 🔒" : "ochiq ✅"; $("acRegB").textContent = cfg.regOff ? "Ochish" : "Yopish"; } }));
+  }
+  // O'quvchilar ro'yxati bir marta yuklanadi. Testlar soni va o'rtacha ball — users/<uid>/rs (server yangilab boradi).
+  async function loadU() {
+    if ($("acN")) $("acN").textContent = "Yuklanmoqda…";
+    try { users = (await DBA.get("users")) || {}; } catch (e) { if ($("acN")) $("acN").textContent = "⚠️ Yuklab bo'lmadi"; return; }
+    render(); once();
+  }
+  let onceDone = false;
+  async function once() { // bir martalik ishlar: eski natijalardan hisoblagich, ochiq parollarni o'chirish
+    if (onceDone || !AUTH.FB) return; onceDone = true;
+    try {
+      const m = (await DBA.get("c/main")) || {};
+      if (!m.pwDel) { await DBA.set("pw", null); await DBA.update("c/main", { pwDel: DBA.now() }); }
+      if (!m.rsv) {
+        if ($("acN")) $("acN").textContent = "Eski natijalar bir marta hisoblanmoqda…";
+        const all = (await DBA.get("r")) || {}, by = {};
+        Object.values(all).forEach(r => { if (!r || !r.u) return; const o = by[r.u] = by[r.u] || { n: 0, s: 0, last: 0 }; o.n++; o.s += r.pts || 0; o.last = Math.max(o.last, r.at || 0); });
+        const up = {};
+        Object.entries(users).forEach(([uid, x]) => { if (!x || !x.f) return; const o = { n: 0, s: 0, last: 0 }; [x.login || uid].concat(x.al || []).forEach(l => { const b = by[l]; if (b) { o.n += b.n; o.s += b.s; o.last = Math.max(o.last, b.last); } }); up[uid + "/rs"] = o; users[uid].rs = o; });
+        if (Object.keys(up).length) await DBA.update("users", up);
+        await DBA.update("c/main", { rsv: DBA.now() }); render();
+      }
+    } catch (e) { onceDone = false; }
   }
   const translit = s => s.toLowerCase().replace(/[ʻʼ'`‘’]/g, "").replace(/sh/g, "sh").replace(/[^a-z0-9_]/g, "").slice(0, 20);
   async function add() {
@@ -5170,22 +5189,22 @@ const ACC = (() => {
     E(""); ["nF", "nL", "nG", "nU", "nP"].forEach(id => $(id).value = ""); delete $("nU").dataset.t;
     FX.toast(`✅ ${esc(f)} ${esc(l)} qo'shildi`, "up");
   }
-  function stats(u) { const us = [].concat(u); const rs = Object.values(res).filter(r => r && us.includes(r.u)); return { n: rs.length, avg: rs.length ? Math.round(rs.reduce((a, r) => a + (r.pts || 0), 0) / rs.length) : null }; }
+  function stats(x) { const r = (x && x.rs) || {}; return { n: r.n || 0, avg: r.n ? Math.round((r.s || 0) / r.n) : null }; }
   function render() {
     const L = $("acL"); if (!L) return;
     const nq = q.trim().toLowerCase();
-    const arr = Object.entries(users).filter(([u, x]) => x && x.f && !x.moved).map(([u, x]) => ({ ...x, u, login: x.login || u, ...stats([x.login || u].concat(x.al || [])) }))
+    const arr = Object.entries(users).filter(([u, x]) => x && x.f && !x.moved).map(([u, x]) => ({ ...x, u, login: x.login || u, ...stats(x) }))
       .filter(x => !nq || (x.f + " " + x.l + " " + x.login + " " + (x.g || "")).toLowerCase().includes(nq))
       .sort((a, b) => (a.g || "").localeCompare(b.g || "") || (a.l + a.f).localeCompare(b.l + b.f));
-    if ($("acN")) $("acN").textContent = `Jami ${Object.keys(users).length} ta o'quvchi. Ro'yxat jonli yangilanadi.`;
+    if ($("acN")) $("acN").textContent = `Jami ${Object.keys(users).length} ta o'quvchi.`;
     if (!arr.length) { L.innerHTML = `<div class="card" style="text-align:center"><p class="sub" style="margin:0">${Object.keys(users).length ? "Hech kim topilmadi." : "Hali hech kim ro'yxatdan o'tmagan."}</p></div>`; return; }
     L.innerHTML = `<div class="card">${arr.map(x => `<div class="acrow" data-u="${esc(x.u)}">
         ${AV.html(x.u, x.f + " " + x.l, "md")}
         <div class="st-m"><b>${esc(x.f)} ${esc(x.l)}</b>${x.b ? ' <span class="st-lv" style="background:var(--bad)">bloklangan</span>' : ""}
           <div class="st-s">${x.g ? esc(x.g) + " · " : ""}ro'yxat: ${dt(x.c)} · oxirgi kirish: ${dt(x.last)}</div>
-          <div class="cred"><span>Login: <code>${esc(x.login)}</code></span><span>Parol: <code class="pw">${x.pwc ? "o'quvchi o'zi almashtirgan" : showAll || shown.has(x.u) ? esc(x.p) : "••••••"}</code> <button class="lnk" data-a="eye">${showAll || shown.has(x.u) ? "yashirish" : "ko'rsatish"}</button></span></div>
+          <div class="cred"><span>${/^tg\d+$/.test(x.login) ? "✈️ Telegram orqali" : "Login: <code>" + esc(x.login) + "</code>"}</span></div>
           <div class="st-s">${x.n ? `${x.n} ta test · o'rtacha ${x.avg} ball` : "hali test ishlamagan"}</div>
-          <div class="acact"><button class="lnk" data-a="pw">🔑 Parolni o'zgartirish</button><button class="lnk" data-a="grp">👥 Guruhni o'zgartirish</button><button class="lnk" data-a="blk">${x.b ? "✅ Blokdan chiqarish" : "🚫 Bloklash"}</button><button class="lnk" data-a="av">🖼 Rasmini olib tashlash</button><button class="lnk" data-a="del" style="color:var(--bad)">🗑 O'chirish</button></div>
+          <div class="acact"><button class="lnk" data-a="grp">👥 Guruhni o'zgartirish</button><button class="lnk" data-a="blk">${x.b ? "✅ Blokdan chiqarish" : "🚫 Bloklash"}</button><button class="lnk" data-a="av">🖼 Rasmini olib tashlash</button><button class="lnk" data-a="del" style="color:var(--bad)">🗑 O'chirish</button></div>
           <div class="pwbox"></div></div></div>`).join("")}</div>`;
     L.querySelectorAll(".acrow").forEach(row => {
       const u = row.dataset.u;
@@ -5195,9 +5214,9 @@ const ACC = (() => {
         if (a === "av") { AV.get(u).then(p => { if (!p || (!p.av && !p.st)) return FX.toast("Bu o'quvchida rasm yo'q"); const np = { ...p }; delete np.av; delete np.st; DBA.set("lb/p/" + u, np); AV.set(u, np); FX.toast("🖼 Rasm olib tashlandi", "up"); }); }
         const base = AUTH.FB ? "users/" : "u/", X = users[u] || {}, lg = X.login || u;
         if (a === "grp") { const box = row.querySelector(".pwbox"); box.innerHTML = `<div class="row" style="margin-top:8px"><input placeholder="Guruh nomi" style="margin:0;flex:2"><button class="btn sm" data-a="grpok" style="flex:1">Saqlash</button></div>`; const i = box.querySelector("input"); i.value = X.g || ""; i.focus(); }
-        if (a === "grpok") { DBA.update(base + u, { g: row.querySelector(".pwbox input").value.trim().slice(0, 30) }); FX.toast("👥 Guruh yangilandi", "up"); }
-        if (a === "blk") DBA.update(base + u, { b: X.b ? 0 : 1 });
-        if (a === "del") { if (b.dataset.ok) { if (AUTH.FB) { b.disabled = true; AUTH.adminDelete(lg, X.p).then(() => Promise.all([DBA.set("users/" + u, null), DBA.set("pw/" + u, null), DBA.set("logins/" + lg, null), DBA.set("h/" + u, null)])).then(() => FX.toast("🗑 O'chirildi")).catch(e => FX.toast(AUTH.msg(e))); } else DBA.set("u/" + u, null); } else { b.dataset.ok = 1; b.textContent = "Rostdan o'chirilsinmi? Yana bosing"; setTimeout(() => { if (b.isConnected) { delete b.dataset.ok; b.textContent = "🗑 O'chirish"; } }, 4000); } }
+        if (a === "grpok") { const g = row.querySelector(".pwbox input").value.trim().slice(0, 30); DBA.update(base + u, { g }); X.g = g; render(); FX.toast("👥 Guruh yangilandi", "up"); }
+        if (a === "blk") { DBA.update(base + u, { b: X.b ? 0 : 1 }); X.b = X.b ? 0 : 1; render(); }
+        if (a === "del") { if (b.dataset.ok) { b.disabled = true; Promise.all([DBA.set("users/" + u, null), DBA.set("logins/" + lg, null), DBA.set("h/" + u, null), DBA.set("lb/p/" + u, null)]).then(() => { delete users[u]; render(); FX.toast("🗑 O'chirildi"); }).catch(e => { b.disabled = false; FX.toast("⚠️ " + (e.message || e)); }); } else { b.dataset.ok = 1; b.textContent = "Rostdan o'chirilsinmi? Yana bosing"; setTimeout(() => { if (b.isConnected) { delete b.dataset.ok; b.textContent = "🗑 O'chirish"; } }, 4000); } }
         if (a === "pw") {
           const box = row.querySelector(".pwbox");
           box.innerHTML = `<div class="row" style="margin-top:8px"><input placeholder="Yangi parol" style="margin:0;flex:2"><button class="btn sm" data-a="pwok" style="flex:1">Saqlash</button></div>`;
@@ -5214,8 +5233,8 @@ const ACC = (() => {
   }
   function csv() {
     const cell = v => `"${String(v == null ? "" : v).replace(/"/g, '""')}"`;
-    const rows = [["Familiya", "Ism", "Sinf/guruh", "Login", "Parol", "Ro'yxatdan o'tgan", "Oxirgi kirish", "Testlar soni", "O'rtacha ball", "Holat"].map(cell).join(";")]
-      .concat(Object.entries(users).filter(([u, x]) => x && x.f).map(([u, x]) => { const s = stats(x.login || u); return [x.l, x.f, x.g, x.login || u, x.p, dt(x.c), dt(x.last), s.n, s.avg == null ? "" : s.avg, x.b ? "bloklangan" : "faol"].map(cell).join(";"); }));
+    const rows = [["Familiya", "Ism", "Sinf/guruh", "Login", "Ro'yxatdan o'tgan", "Oxirgi kirish", "Testlar soni", "O'rtacha ball", "Holat"].map(cell).join(";")]
+      .concat(Object.entries(users).filter(([u, x]) => x && x.f).map(([u, x]) => { const s = stats(x); return [x.l, x.f, x.g, x.login || u, dt(x.c), dt(x.last), s.n, s.avg == null ? "" : s.avg, x.b ? "bloklangan" : "faol"].map(cell).join(";"); }));
     const blob = new Blob(["﻿" + rows.join("\n")], { type: "text/csv;charset=utf-8" });
     const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "oquvchilar_" + new Date().toISOString().slice(0, 10) + ".csv"; document.body.appendChild(a); a.click(); a.remove();
   }
@@ -5908,54 +5927,6 @@ async function sha256hex(s) { const b = await crypto.subtle.digest("SHA-256", ne
 function isAdmin() { if (typeof AUTH !== "undefined" && AUTH.FB) return AUTH.isAdmin; try { const s = JSON.parse(localStorage.getItem("zm_admin") || "null"); return !!(s && s.k === ADMIN.hash && s.exp > Date.now()); } catch (e) { return false; } }
 
 const DBA = (() => {
-  const useMQ = !(FIREBASE_CONFIG && FIREBASE_CONFIG.databaseURL) && (window.ZM_FORCE === "mqtt" || /^https?:$/.test(location.protocol));
-  if (useMQ) {
-    const PFX = "zulpanovtarix/v2/", BROKERS = ["wss://broker.emqx.io:8084/mqtt", "wss://broker.hivemq.com:8884/mqtt"];
-    const SRC = "https://unpkg.com/mqtt@5.10.1/dist/mqtt.min.js";
-    let client = null, ready = null, off = 0, tree = {}, pend = false;
-    const subs = new Set(), codes = new Map();
-    const clone = v => v === undefined ? null : JSON.parse(JSON.stringify(v));
-    const getAt = (o, p) => { const v = p.split("/").filter(Boolean).reduce((a, k) => a == null ? a : a[k], o); return v === undefined ? null : v; };
-    const setAt = (o, p, v) => { const ks = p.split("/").filter(Boolean); let c = o; ks.slice(0, -1).forEach(k => { if (typeof c[k] !== "object" || c[k] === null) c[k] = {}; c = c[k]; }); c[ks[ks.length - 1]] = v; };
-    const notify = () => { if (pend) return; pend = true; setTimeout(() => { pend = false; subs.forEach(s => s.cb(clone(getAt(tree, s.p)))); }, 30); };
-    const toPath = t => t.slice(PFX.length).replace(/^(t\/\d+)\/p\//, "$1/players/");
-    const delAt = (o, p) => { const ks = p.split("/").filter(Boolean); let c = o; for (const k of ks.slice(0, -1)) { if (!c[k]) return; c = c[k]; } delete c[ks[ks.length - 1]]; };
-    const toTopic = p => PFX + p.replace(/^(t\/\d+)\/players\//, "$1/p/");
-    function onMsg(topic, buf, packet) {
-      const p = toPath(topic);
-      if (!buf || !buf.length) { delAt(tree, p); notify(); return; }
-      let v; try { v = JSON.parse(String(buf)); } catch (e) { return; }
-      if (/\/meta$/.test(p) && v && v.ts && !(packet && packet.retain)) off = v.ts - Date.now();
-      setAt(tree, p, v); notify();
-    }
-    const load = src => new Promise((r, j) => { const s = document.createElement("script"); s.src = src; s.onload = r; s.onerror = j; document.head.appendChild(s); });
-    const init = () => ready || (ready = (async () => {
-      if (!window.mqtt) await load(SRC);
-      return await new Promise((res, rej) => {
-        let bi = 0;
-        const tryB = () => {
-          const c = mqtt.connect(BROKERS[bi], { clientId: "zm" + Math.random().toString(16).slice(2, 12), clean: true, connectTimeout: 6000, reconnectPeriod: 2000 });
-          let ok = false;
-          c.on("connect", () => { if (!ok) { ok = true; client = c; res(c); } else codes.forEach((_, sc) => c.subscribe(PFX + sc + "/#", { qos: 1 })); });
-          c.on("message", onMsg); c.on("error", () => {});
-          setTimeout(() => { if (!ok) { try { c.end(true); } catch (e) {} bi++; if (bi < BROKERS.length) tryB(); else rej(new Error("conn")); } }, 7000);
-        };
-        tryB();
-      });
-    })());
-    const codeOf = p => { const s = p.split("/"); return (s[0] === "t" || s[0] === "u" || s[0] === "h" || s[0] === "mx" || s[0] === "lb" || s[0] === "hwr") && s[1] ? s[0] + "/" + s[1] : s[0]; };
-    const ensure = sc => { if (!codes.has(sc)) codes.set(sc, new Promise(r => client.subscribe(PFX + sc + "/#", { qos: 1 }, () => setTimeout(r, 700)))); return codes.get(sc); };
-    const pub = (p, v) => {
-      if (v === null) { delAt(tree, p); notify(); client.publish(toTopic(p), "", { retain: true, qos: 1 }); return; } if (/\/meta$/.test(p)) v = { ...v, ts: Date.now() + off }; setAt(tree, p, v); notify(); client.publish(toTopic(p), JSON.stringify(v), { retain: true, qos: 1 }); };
-    return {
-      kind: "mqtt", init,
-      async get(p) { await init(); await ensure(codeOf(p)); return clone(getAt(tree, p)); },
-      async set(p, v) { await init(); await ensure(codeOf(p)); if (/^t\/\d+$/.test(p)) pub(p + "/meta", v.meta); else pub(p, v); },
-      async update(p, v) { await init(); await ensure(codeOf(p)); pub(p, { ...(getAt(tree, p) || {}), ...v }); },
-      on(p, cb) { const s = { p, cb }; subs.add(s); init().then(() => ensure(codeOf(p))).then(() => { if (subs.has(s)) cb(clone(getAt(tree, p))); }); return () => subs.delete(s); },
-      now() { return Date.now() + off; }
-    };
-  }
   if (FIREBASE_CONFIG && FIREBASE_CONFIG.databaseURL) {
     let ready = null, off = 0;
     const load = src => new Promise((r, j) => { const s = document.createElement("script"); s.src = src; s.onload = r; s.onerror = j; document.head.appendChild(s); });
@@ -5984,7 +5955,8 @@ const DBA = (() => {
       if (!online) { online = true; d.goOnline(); await waitConn(6000); }
       return d;
     }
-    const nudge = () => { lastAct = Date.now(); if (!online && ready) wake(); };
+    let held = false;
+    const nudge = () => { lastAct = Date.now(); if (!online && ready && !held) wake(); };
     ["pointerdown", "keydown", "touchstart", "scroll"].forEach(ev => addEventListener(ev, nudge, { passive: true, capture: true }));
     document.addEventListener("visibilitychange", () => { if (document.hidden) hidAt = Date.now(); else nudge(); });
     setInterval(() => {
@@ -5999,6 +5971,8 @@ const DBA = (() => {
       async set(p, v) { const d = await wake(); return d.ref(p).set(v); },
       async update(p, v) { const d = await wake(); return d.ref(p).update(v); },
       async inc(p) { const d = await init(); return d.ref(p).set(firebase.database.ServerValue.increment(1)); },
+      hold(on) { held = !!on; if (held && online && ready) { online = false; init().then(d => d.goOffline()); } },
+      async since(p, child, from) { const d = await wake(); return (await d.ref(p).orderByChild(child).startAt(from).get()).val(); },
       on(p, cb) {
         let r, fn, stop = false; live.set(p, (live.get(p) || 0) + 1);
         wake().then(d => { if (stop) return; r = d.ref(p); fn = s => cb(s.val()); r.on("value", fn, () => cb(null)); });
@@ -6007,22 +5981,7 @@ const DBA = (() => {
       now() { return Date.now() + off; }
     };
   }
-  // Sinov rejimi: faqat shu brauzerdagi oynalar orasida ishlaydi
-  const K = "zm_mockdb", bc = ("BroadcastChannel" in window) ? new BroadcastChannel("zm_mock") : null, subs = new Set();
-  const load = () => { try { return JSON.parse(localStorage.getItem(K) || "{}"); } catch (e) { return {}; } };
-  const getAt = (o, p) => { const v = p.split("/").filter(Boolean).reduce((a, k) => a == null ? a : a[k], o); return v === undefined ? null : v; };
-  const setAt = (o, p, v) => { const ks = p.split("/").filter(Boolean); let c = o; ks.slice(0, -1).forEach(k => { if (typeof c[k] !== "object" || c[k] === null) c[k] = {}; c = c[k]; }); if (v === null) delete c[ks[ks.length - 1]]; else c[ks[ks.length - 1]] = v; };
-  const fire = () => { const o = load(); subs.forEach(s => s.cb(JSON.parse(JSON.stringify(getAt(o, s.p))))); };
-  if (bc) bc.onmessage = fire;
-  const save = o => { try { localStorage.setItem(K, JSON.stringify(o)); } catch (e) {} bc && bc.postMessage(1); setTimeout(fire, 0); };
-  return {
-    kind: "mock", init: async () => 1,
-    async get(p) { return getAt(load(), p); },
-    async set(p, v) { const o = load(); setAt(o, p, v); save(o); },
-    async update(p, v) { const o = load(); Object.entries(v).forEach(([k, x]) => setAt(o, p + "/" + k, x)); save(o); },
-    on(p, cb) { const s = { p, cb }; subs.add(s); setTimeout(() => cb(getAt(load(), p)), 0); return () => subs.delete(s); },
-    now() { return Date.now(); }
-  };
+  throw new Error("Firebase sozlanmagan");
 })();
 
 // ================== AUTH (Firebase bo'lsa haqiqiy login, aks holda oddiy rejim) ==================
@@ -6166,9 +6125,9 @@ const T = (() => {
     if (!ACCT.cur) { show("auth"); FX.toast("🔐 Avval login va parolingiz bilan kiring"); return; }
     show("tz"); setNav("turnir"); BK(goHome);
     tz().innerHTML = `<div class="card">
-      <div style="text-align:center"><div class="hero-logo" style="width:70px;height:70px;border-radius:22px"><span style="font-size:32px">🏆</span></div><h1>Turnir yoki Boss jangi</h1><p class="sub">Ustoz bergan 4 xonali kodni kiriting.</p></div>
+      <div style="text-align:center"><div class="hero-logo" style="width:70px;height:70px;border-radius:22px"><span style="font-size:32px">🏆</span></div><h1>Turnir yoki Boss jangi</h1><p class="sub">Ustoz bergan 4 yoki 5 xonali kodni kiriting.</p></div>
       <div class="tnote">👤 <b id="tjn"></b></div>
-      <label>Turnir kodi</label><input id="tjc" inputmode="numeric" maxlength="4" placeholder="0000" style="font-size:28px;letter-spacing:.3em;text-align:center">
+      <label>Turnir kodi</label><input id="tjc" inputmode="numeric" maxlength="5" placeholder="0000" style="font-size:28px;letter-spacing:.3em;text-align:center">
       <div id="tjerr" style="color:var(--bad);font-size:14px;margin:-6px 0 12px"></div>
       <button class="btn" id="tjgo">Qo'shilish</button>
       </div>`;
@@ -6181,7 +6140,8 @@ const T = (() => {
     st.celebrated = false; st.streak = 0; st.wst = 0; st.myRank = 0; st.ps = {}; st.tn = {}; st.prevP = null; st.feed = []; st.lead = null; st.meKey = null;
     const ac = ACCT.cur; if (!ac) { show("auth"); return; }
     const code = $("tjc").value.trim(), err = m => $("tjerr").textContent = m;
-    if (!/^\d{4}$/.test(code)) return err("Kod 4 ta raqamdan iborat bo'lishi kerak.");
+    if (/^\d{5}$/.test(code)) return KT.join(code);
+    if (!/^\d{4}$/.test(code)) return err("Kod 4 yoki 5 ta raqamdan iborat bo'lishi kerak.");
     $("tjgo").disabled = true; err("");
     let meta; try { meta = await DBA.get(`t/${code}/meta`); } catch (e) { $("tjgo").disabled = false; return err("Ulanib bo'lmadi. Internetni tekshiring."); }
     const giveUp = m => { $("tjgo").disabled = false; if (auto) { ls.del("zm_active"); goHome(); return; } return err(m); };
@@ -6482,7 +6442,8 @@ const T = (() => {
     tz().innerHTML = `${adminNav("tur")}<div class="card" id="tact"><h1 style="display:flex;align-items:center;gap:8px"><span class="live-dot"></span>Davom etayotgan turnirlar</h1><div id="tactl"><div class="sub" style="margin:0">Yuklanmoqda…</div></div></div>
       <div class="card" style="margin-top:12px"><h1>🏆 Yangi turnir</h1>
       ${DBA.kind === "mock" ? '<div class="tnote warn">Sinov rejimi: Firebase hali ulanmagan. Turnir faqat shu qurilmadagi oynalar orasida ishlaydi.</div>' : ""}
-      <div class="seg" id="thm"><button data-m="solo" class="on">🏆 Yakka turnir</button><button data-m="team">👥 Jamoaviy turnir</button></div>
+      <div class="seg" id="thm"><button data-m="solo" class="on">🏆 Yakka turnir</button><button data-m="team">👥 Jamoaviy</button><button data-m="big">🏟 Katta (200+)</button></div>
+      <div class="tnote hide" id="thbig">🏟 <b>Katta turnir</b> — 200–300 kishigacha. O'quvchilar savollarni ulanmasdan ishlaydi, natijani server tekshiradi. Sizning ekraningizda jonli top-10 chiqadi. Jonli «poyga» effekti bo'lmaydi.</div>
       <div id="thteam" class="hide"><div class="row"><div style="flex:1"><label>Jamoalar soni</label><select id="thk">${[2, 3, 4, 5, 6].map(x => `<option${x === 2 ? " selected" : ""}>${x}</option>`).join("")}</select></div><div style="flex:1"><label>Bir jamoada nechta o'quvchi</label><input id="thz" type="number" min="1" max="30" value="5"></div></div>
         <label>Jamoa nomlari (birinchi qo'shilgan o'quvchi — sardor — nomni o'zgartira oladi)</label><div id="thnm"></div></div>
       <label>Mavzular (sinfni bosib oching)</label><div id="ths" class="tpks">${opts}</div>
@@ -6497,7 +6458,7 @@ const T = (() => {
     $("thc").onclick = hCreate;
     const nms = () => { const k = +$("thk").value, old = [...$("thnm").querySelectorAll("input")].map(i => i.value); $("thnm").innerHTML = [...Array(k)].map((_, i) => `<div class="tmnm"><span>${TC[i][0]}</span><input maxlength="24" value="${esc(old[i] || TC[i][2])}"></div>`).join(""); };
     nms(); $("thk").onchange = nms;
-    $("thm").onclick = e => { const b = e.target.closest("[data-m]"); if (!b) return; [...$("thm").children].forEach(x => x.classList.toggle("on", x === b)); $("thteam").classList.toggle("hide", b.dataset.m !== "team"); $("thc").textContent = b.dataset.m === "team" ? "👥 Jamoaviy turnirni ochish" : "Turnirni ochish"; };
+    $("thm").onclick = e => { const b = e.target.closest("[data-m]"); if (!b) return; [...$("thm").children].forEach(x => x.classList.toggle("on", x === b)); $("thteam").classList.toggle("hide", b.dataset.m !== "team"); $("thbig").classList.toggle("hide", b.dataset.m !== "big"); $("thc").textContent = b.dataset.m === "team" ? "👥 Jamoaviy turnirni ochish" : b.dataset.m === "big" ? "🏟 Katta turnirni ochish" : "Turnirni ochish"; };
     st.unsub.push(DBA.on("a", v => hActive(v || {})));
   }
   function hActive(v) {
@@ -6511,7 +6472,7 @@ const T = (() => {
       const mins = Math.max(0, Math.round((now - x.c) / 60000));
       d.innerHTML = `<div class="st-ic">${x.ph === "run" ? "🔴" : "⏳"}</div><div class="st-m"><b>Kod ${esc(x.code)}</b><div class="st-s"></div><div class="st-s">${x.ph === "run" ? "Ketmoqda" : "O'quvchilar qo'shilmoqda"} · ${mins} daqiqa oldin ochilgan</div></div><button class="btn sm">Kuzatish →</button>`;
       d.querySelector(".st-s").textContent = x.ttl || "";
-      d.onclick = () => hAttach(x.code);
+      d.onclick = () => String(x.code).length === 5 ? KT.host(x.code) : hAttach(x.code);
       el.appendChild(d);
     });
   }
@@ -6521,6 +6482,7 @@ const T = (() => {
     if (!ids.length) { $("thc").disabled = false; $("thE").textContent = "Kamida bitta mavzuni belgilang."; return; }
     const ss = ids.map(setById), pool = ss.reduce((a, s) => a + s.qs.length, 0), nq = Math.max(5, Math.min(pool, +$("thn").value || 30)), dur = Math.max(1, +$("thd").value || 30) * 60000;
     const ttl = ss.length === 1 ? ss[0].title : (ss[0].g.split(" · ").pop() + ": " + ss.map(s => s.n).join(", ") + "-mavzular");
+    if ($("thm").querySelector(".on").dataset.m === "big") { try { await KT.create(ids, nq, dur, ttl); } catch (e) { $("thc").disabled = false; $("thE").textContent = "⚠️ " + (e.message || e); } return; }
     let code; for (let k = 0; k < 20; k++) { code = String(1000 + Math.floor(Math.random() * 9000)); if (!(await DBA.get(`t/${code}/meta`))) break; }
     const meta = { phase: "lobby", set: ids[0], sets: ids, ttl, seed: Math.floor(Math.random() * 1e9), dur, n: nq, c: DBA.now() };
     if ($("thm").querySelector(".on").dataset.m === "team") meta.team = { k: +$("thk").value, sz: Math.max(1, Math.min(30, +$("thz").value || 5)), nm: [...$("thnm").querySelectorAll("input")].map((i, j) => i.value.trim().slice(0, 24) || TC[j][2]) };
@@ -6598,7 +6560,7 @@ const T = (() => {
     if (!st.celebrated) { st.celebrated = true; setTimeout(() => { FX.rain(260); FX.S.win(); }, 1500); }
     if (!st.meta.saved && list.length) {
       const s = mSet(st.meta);
-      list.forEach((p, i) => { const rid = `${st.code}${st.meta.seed % 1000}_${p.k}`, rk = { n: p.n, u: p.u || "", set: s.id, ttl: s.title, mode: "turnir", code: st.code, ok: p.s || 0, tot: st.meta.n, pts: Math.round((p.s || 0) * ppq()), lv: level(Math.round((p.s || 0) * ppq())) || "", dur: p.t || 0, rank: i + 1, cnt: list.length, at: DBA.now() }; if (isTeam()) { rk.ttl = "👥 " + rk.ttl; rk.tmN = tName(p.tm); } if (p.u) DBA.set(`h/${p.k}/${rid}`, { ttl: rk.ttl, mode: "turnir", ok: rk.ok, tot: rk.tot, pts: rk.pts, lv: rk.lv, rank: rk.rank, cnt: rk.cnt, at: rk.at }); DBA.set(`r/${rid}`, { n: p.n, set: s.id, ttl: s.title, mode: "turnir", code: st.code, ok: p.s || 0, tot: st.meta.n, pts: Math.round((p.s || 0) * ppq()), lv: level(Math.round((p.s || 0) * ppq())) || "", dur: p.t || 0, rank: i + 1, cnt: list.length, at: DBA.now(), u: p.u || "" }); });
+      list.forEach((p, i) => { const rid = `${st.code}${st.meta.seed % 1000}_${p.k}`, rk = { n: p.n, u: p.u || "", set: s.id, ttl: s.title, mode: "turnir", code: st.code, ok: p.s || 0, tot: st.meta.n, pts: Math.round((p.s || 0) * ppq()), lv: level(Math.round((p.s || 0) * ppq())) || "", dur: p.t || 0, rank: i + 1, cnt: list.length, at: DBA.now() }; if (isTeam()) { rk.ttl = "👥 " + rk.ttl; rk.tmN = tName(p.tm); } if (p.u) DBA.set(`h/${p.k}/${rid}`, { ttl: rk.ttl, mode: "turnir", ok: rk.ok, tot: rk.tot, pts: rk.pts, lv: rk.lv, rank: rk.rank, cnt: rk.cnt, at: rk.at }); if (p.u) DBA.get(`users/${p.k}/rs`).then(o => DBA.set(`users/${p.k}/rs`, { n: ((o && o.n) || 0) + 1, s: ((o && o.s) || 0) + rk.pts, last: rk.at })).catch(() => {}); DBA.set(`r/${rid}`, { n: p.n, set: s.id, ttl: s.title, mode: "turnir", code: st.code, ok: p.s || 0, tot: st.meta.n, pts: Math.round((p.s || 0) * ppq()), lv: level(Math.round((p.s || 0) * ppq())) || "", dur: p.t || 0, rank: i + 1, cnt: list.length, at: DBA.now(), u: p.u || "" }); });
       DBA.update(`t/${st.code}/meta`, { saved: 1 });
     }
     $("thnew").onclick = hSetup;
@@ -6662,6 +6624,8 @@ const T = (() => {
     if (window.IN_TG) { try { const w = Telegram.WebApp; w.ready(); w.expand(); w.disableVerticalSwipes && w.disableVerticalSwipes(); w.setHeaderColor && w.setHeaderColor("#0A0720"); w.setBackgroundColor && w.setBackgroundColor("#0A0720"); } catch (e) {} }
     try { ST.visit(); } catch (e) {}
     if ((window.IN_TG ? window.TG_START === "kun" : location.hash === "#kun")) { try { if (!window.IN_TG) history.replaceState(null, "", location.pathname + location.search); } catch (e) {} KUN.go(); return; }
+    const km = (window.IN_TG ? "#" + (window.TG_START || "") : location.hash).match(/^#kt-(\d{5})$/);
+    if (km) { try { if (!window.IN_TG) history.replaceState(null, "", location.pathname + location.search); } catch (e) {} return KT.join(km[1]); }
     const gm = (window.IN_TG ? "#" + (window.TG_START || "") : location.hash).match(/^#g-([A-Za-z0-9]{6,8})$/);
     if (gm) { try { if (!window.IN_TG) history.replaceState(null, "", location.pathname + location.search); } catch (e) {} if (ACCT.cur) HW.join(gm[1]).catch(e => FX.toast("⚠️ " + (e && e.message || e))); else try { localStorage.setItem("zm_gj", gm[1].toUpperCase()); } catch (e) {} }
     const h = window.IN_TG ? (/^(turnir(-\d{4})?|duel-[A-Za-z0-9_]+)$/.test(window.TG_START || "") ? "#" + window.TG_START : "") : location.hash;
@@ -6673,6 +6637,171 @@ const T = (() => {
     else { let a = null; try { a = JSON.parse(ls.get("zm_active") || "null"); } catch (e) {} if (a && a.code && ACCT.cur && a.u === ACCT.cur.login) { openJoin(a.code); $("tjerr").textContent = "Turniringizga qayta ulanmoqda…"; join(true); } else goHome(); }
   }
   return { openJoin, openHost, boot, st, leave: clear };
+})();
+// ================== KATTA TURNIR (200+ ishtirokchi) ==================
+// O'quvchi bazaga doimiy ulanmaydi: kod bilan qo'shiladi (REST), boshlanishini so'rab turadi, savollarni
+// ulanmasdan ishlaydi va oxirida natijani serverga bitta so'rov bilan yuboradi. Ballni server hisoblaydi.
+// Ustoz ekrani (bitta ulanish) qo'shilganlar, tugatganlar va top-10 ni jonli ko'rsatadi.
+const KT = (() => {
+  const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const URL_V = "https://zulpanov-tarix-bot.zulponovalimqul.workers.dev/v";
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
+  const fmt = ms => { ms = Math.max(0, ms); const s = Math.ceil(ms / 1000); return String(Math.floor(s / 60)).padStart(2, "0") + ":" + String(s % 60).padStart(2, "0"); };
+  const fsec = ms => { const s = Math.round((ms || 0) / 1000); return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0"); };
+  const link = code => window.TG_BOT ? `https://t.me/${window.TG_BOT}?startapp=kt-${code}` : location.href.split("#")[0].split("?")[0] + "#kt-" + code;
+  const webLink = code => "https://zulpanov.github.io/Zulpanov-tarix/#kt-" + code;
+  async function rest(method, path, body) {
+    const t = await AUTH.idToken(false);
+    const r = await fetch(`${FIREBASE_CONFIG.databaseURL}/${path}.json?auth=${encodeURIComponent(t)}`, { method, body: body === undefined ? undefined : JSON.stringify(body) });
+    if (!r.ok) throw new Error("HTTP " + r.status); return r.json();
+  }
+  const rng = seed => () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+  const shuf = (a, r) => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  function questions(m) {
+    const pool = (m.sets || []).map(id => SETS.find(s => s.id === id)).filter(s => s && s.qs).flatMap(s => s.qs.map(q => ({ ...q, m: s.title, t: q.t || s.title })));
+    return shuf(pool, rng(m.seed)).slice(0, m.n);
+  }
+  let S = null; // o'quvchi holati: { code, meta, stop }
+  const stop = () => { if (S) S.stop = true; try { DBA.hold(false); } catch (e) {} };
+
+  // ---------------- O'QUVCHI ----------------
+  async function join(code) {
+    code = String(code || "").replace(/\D/g, "").slice(0, 5);
+    const ac = ACCT.cur;
+    if (!ac) { try { localStorage.setItem("zm_kt", code); } catch (e) {} goHome(); FX.toast("🏟 Turnirga kirish uchun avval Telegram orqali kiring"); return; }
+    stop(); S = { code, stop: false };
+    show("tz"); setNav("turnir"); BK(() => { stop(); goHome(); });
+    $("tz").innerHTML = `<div class="card" style="text-align:center"><div style="font-size:44px">🏟</div><h1>Katta turnir · ${code}</h1><div class="sub" id="ktS">Ulanmoqda…</div></div>`;
+    let m; try { m = await rest("GET", `kt/${code}/meta`); } catch (e) { $("ktS").textContent = "⚠️ Ulanib bo'lmadi. Internetni tekshirib, qayta urining."; return; }
+    if (!m) { $("ktS").textContent = "Bunday kodli turnir topilmadi."; return; }
+    S.meta = m;
+    let mine = null; try { mine = await rest("GET", `kt/${code}/r/${ac.uid}`); } catch (e) {}
+    if (mine || m.phase === "end") return final(code, mine);
+    try { await rest("PUT", `kt/${code}/j/${ac.uid}`, { n: (ac.f + " " + ac.l).slice(0, 80), g: ac.g || "", at: { ".sv": "timestamp" } }); } catch (e) {}
+    try { DBA.hold(true); } catch (e) {}
+    wait();
+  }
+  async function wait() {
+    const s = S; if (!s || s.stop) return;
+    const draw = m => { const el = $("ktS"); if (!el) return; el.innerHTML = `<b>${esc(m.ttl)}</b><br>${m.n} ta savol · ${Math.round(m.dur / 60000)} daqiqa<br><br>✅ Siz ro'yxatdasiz${m.jn ? ` · ${m.jn} kishi qo'shildi` : ""}.<br><b>Ustoz boshlashini kuting…</b><br><small>Sahifani yopmang — boshlanganda savollar o'zi chiqadi.</small>`; };
+    draw(s.meta);
+    while (!s.stop) {
+      const m = s.meta;
+      if (m.phase === "run" && m.startAt) return play(m);
+      if (m.phase === "end") return final(s.code, null);
+      await sleep(3500 + Math.random() * 2500);
+      if (s.stop) return;
+      try { s.meta = await rest("GET", `kt/${s.code}/meta`) || s.meta; draw(s.meta); } catch (e) {}
+    }
+  }
+  function play(m) {
+    const end = m.startAt + m.dur;
+    if (DBA.now() > end) return final(S.code, null);
+    const Q = questions(m);
+    if (!Q.length) { $("ktS").textContent = "⚠️ Savollar yuklanmadi. Sahifani yangilab qayta kiring."; return; }
+    set = { id: "kt", kt: S.code, n: "🏟", title: "🏟 " + m.ttl, qs: Q, g: "Turnir", subj: "Tarix", end, t0: m.startAt };
+    start();
+  }
+  async function submit(R) {
+    const box = $("kunRes"), s = S; if (!box || !s) return;
+    box.innerHTML = `<div class="card" style="margin:0 0 14px;background:rgba(124,58,237,.12)" id="ktBox"><b>📤 Natija yuborilmoqda…</b></div>`;
+    const input = { code: s.code, items: R.items, dur: R.dur };
+    let res = null, err = "";
+    for (let k = 0; k < 6 && !res; k++) {
+      try { const idToken = await AUTH.idToken(false); const r = await fetch(URL_V, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ fn: "kt", idToken, input }) }).then(x => x.json()); if (r.ok) res = r.r; else { err = r.err || "Xato"; if (!/DB |Firebase|kaliti|yuklanmadi/i.test(err)) break; } }
+      catch (e) { err = "Internet yo'q"; }
+      if (!res) await sleep(2000 + k * 2500 + Math.random() * 2000);
+    }
+    try { DBA.hold(false); } catch (e) {}
+    const el = $("ktBox"); if (!el) return;
+    if (!res) { el.innerHTML = `<b>⚠️ Natija qabul qilinmadi</b><div class="st-s" style="margin-top:4px">${esc(err)}</div><button class="btn sm" id="ktRe" style="margin-top:8px">🔁 Qayta yuborish</button>`; $("ktRe").onclick = () => submit(R); return; }
+    el.innerHTML = `<b>✅ Natijangiz qabul qilindi: ${res.pts} ball (${res.ok}/${res.tot})</b><div class="st-s" style="margin-top:4px" id="ktW">O'rinlar ustoz turnirni yakunlagach e'lon qilinadi…</div><button class="btn sm ghost" id="ktF" style="margin-top:8px">🏁 O'rinlarni ko'rish</button>`;
+    $("ktF").onclick = () => final(s.code, null);
+    (async () => { while (S === s && !s.stop) { await sleep(8000 + Math.random() * 4000); if (S !== s || s.stop || !$("ktW")) return; try { const m = await rest("GET", `kt/${s.code}/meta/phase`); if (m === "end") { $("ktW").innerHTML = "🏁 Turnir yakunlandi! <b>O'rinlarni ko'rish</b> tugmasini bosing."; FX.S.win(); return; } } catch (e) {} } })();
+  }
+  async function final(code, mine) {
+    stop(); S = { code, stop: true };
+    show("tz"); setNav("turnir"); BK(goHome);
+    $("tz").innerHTML = `<div class="card" style="text-align:center"><div style="font-size:44px">🏁</div><h1>Katta turnir · ${code}</h1><div id="ktFin" class="sub">Yuklanmoqda…</div></div><div class="card" id="ktTop" style="margin-top:12px;display:none"></div>`;
+    const ac = ACCT.cur; let m = null, res = null, rk = null;
+    try { [m, res, rk, mine] = await Promise.all([rest("GET", `kt/${code}/meta`), rest("GET", `kt/${code}/res`), ac ? rest("GET", `kt/${code}/rk/${ac.uid}`) : null, mine || (ac ? rest("GET", `kt/${code}/r/${ac.uid}`) : null)]); } catch (e) {}
+    const el = $("ktFin"); if (!el) return;
+    if (!m) { el.textContent = "Turnir topilmadi."; return; }
+    if (m.phase !== "end") { el.innerHTML = `<b>${esc(m.ttl)}</b><br>${mine ? `Sizning natijangiz: <b>${mine.pts} ball</b> (${mine.ok}/${mine.tot})<br>` : ""}Turnir hali yakunlanmagan. Ustoz yakunlagach o'rinlar chiqadi.<br><button class="btn sm" id="ktAg" style="margin-top:10px">🔄 Yangilash</button>`; $("ktAg").onclick = () => final(code, mine); return; }
+    el.innerHTML = `<b>${esc(m.ttl)}</b><br>${mine ? `<div style="font-size:30px;font-weight:800;margin:10px 0 2px">${rk ? rk + "-o'rin" : "—"}</div>${res ? `${res.cnt} ishtirokchi orasida · ` : ""}<b>${mine.pts} ball</b> (${mine.ok}/${mine.tot}) · ${fsec(mine.t)}` : "Siz bu turnirda natija topshirmagansiz."}`;
+    if (res && res.top) { const T = $("ktTop"); T.style.display = ""; T.innerHTML = `<b>🏆 Eng yaxshi 10 talik</b><div style="margin-top:8px">${res.top.map((p, i) => `<div class="trow"><div class="tr-r">${i < 3 ? ["🥇", "🥈", "🥉"][i] : i + 1}</div><div class="tr-n"><div class="tr-nm">${esc(p.n)}</div><div class="st-s">${esc(p.g || "")} · ${fsec(p.t)}</div></div><div class="tr-s">${p.pts}</div></div>`).join("")}</div>`; }
+    if (rk && rk <= 3) setTimeout(() => { FX.rain(200); FX.S.win(); }, 600);
+  }
+
+  // ---------------- USTOZ ----------------
+  let H = null; // { code, meta, j, r, un: [] }
+  const hLeave = () => { if (H) { H.un.forEach(f => f()); clearInterval(H.tk); H = null; } };
+  async function create(ids, n, dur, ttl) {
+    let code; for (let k = 0; k < 20; k++) { code = String(10000 + Math.floor(Math.random() * 90000)); if (!(await DBA.get(`kt/${code}/meta`))) break; }
+    const meta = { phase: "wait", sets: ids, n, dur, ttl, seed: Math.floor(Math.random() * 1e9), c: DBA.now(), jn: 0 };
+    await DBA.set(`kt/${code}/meta`, meta);
+    DBA.set(`a/${code}`, { code, ttl: "🏟 " + ttl, c: meta.c, ph: "lobby" }).catch(() => {});
+    host(code);
+  }
+  function host(code) {
+    if (!isAdmin()) return T.openHost();
+    hLeave(); try { T.leave(); } catch (e) {}
+    show("tz"); setNav(null); BK(() => { hLeave(); T.openHost(); });
+    H = { code, meta: null, j: {}, r: {}, un: [], jn: 0 };
+    H.un.push(DBA.on(`kt/${code}/meta`, v => { if (!v || !H) return; const ph = H.meta && H.meta.phase; H.meta = v; if (ph !== v.phase) draw(); else upd(); }));
+    H.un.push(DBA.on(`kt/${code}/j`, v => { if (!H) return; H.j = v || {}; upd(); }));
+    H.un.push(DBA.on(`kt/${code}/r`, v => { if (!H) return; H.r = v || {}; upd(); }));
+    H.tk = setInterval(() => { if (!H || !H.meta) return; tick(); }, 1000);
+  }
+  const ranked = () => Object.entries(H.r || {}).filter(([k, p]) => p && p.n).map(([k, p]) => ({ k, ...p })).sort((a, b) => (b.pts || 0) - (a.pts || 0) || (a.t || 0) - (b.t || 0) || String(a.n).localeCompare(String(b.n)));
+  function qrSvg(txt) { try { qrcode.stringToBytes = qrcode.stringToBytesFuncs["UTF-8"]; const q = qrcode(0, "M"); q.addData(txt); q.make(); return q.createSvgTag({ cellSize: 4, margin: 2, scalable: true }); } catch (e) { return ""; } }
+  function draw() {
+    const m = H.meta, code = H.code, ph = m.phase;
+    $("tz").innerHTML = `${adminNav("tur")}<div class="card"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap">
+        <div style="flex:1;min-width:200px"><div class="st-s">🏟 Katta turnir · ${ph === "wait" ? "o'quvchilar qo'shilmoqda" : ph === "run" ? "ketmoqda" : "yakunlandi"}</div><h1 style="margin:4px 0">${esc(m.ttl)}</h1><div class="st-s">${m.n} ta savol · ${Math.round(m.dur / 60000)} daqiqa</div>
+          <div style="font-size:44px;font-weight:800;letter-spacing:.12em;margin:10px 0 4px">${code}</div>
+          <div class="st-s">O'quvchi: Telegram botga <b>${code}</b> deb yozadi yoki saytda «Turnir» → kodni kiritadi.</div>
+          <div class="row" style="margin-top:10px;flex-wrap:wrap"><button class="btn ghost sm" id="ktCp">🔗 Havolani nusxalash</button>${ph === "end" ? `<button class="btn ghost sm" id="ktCr">📋 Natijalarni nusxalash</button><button class="btn ghost sm" id="ktCsv">⬇ CSV</button>` : ""}</div></div>
+        ${ph !== "end" ? `<div style="width:150px;background:#fff;border-radius:12px;padding:6px">${qrSvg(webLink(code))}</div>` : ""}</div></div>
+      <div class="stcards" style="margin-top:12px" id="ktC"></div>
+      ${ph === "wait" ? `<div class="card" style="margin-top:12px"><button class="btn" id="ktGo">▶️ Turnirni boshlash</button><div class="st-s" style="margin-top:8px">Boshlanganda har bir o'quvchida ${Math.round(m.dur / 60000)} daqiqa vaqt bo'ladi. Kechikib kelganlar ham qo'shila oladi, lekin vaqt hamma uchun bir xil tugaydi.</div><div id="ktJ" style="margin-top:10px;display:flex;flex-wrap:wrap;gap:6px"></div></div>` : ""}
+      ${ph === "run" ? `<div class="card" style="margin-top:12px;text-align:center"><div class="st-s">Qolgan vaqt</div><div id="ktT" style="font-size:40px;font-weight:800">--:--</div><button class="btn ghost sm" id="ktEnd" style="margin-top:6px">⏹ Hozir yakunlash</button></div>` : ""}
+      ${ph === "end" ? `<div class="card" style="margin-top:12px" id="ktPod"></div>` : ""}
+      <div class="card" style="margin-top:12px"><b>${ph === "end" ? "📋 To'liq reyting" : "🏆 Jonli top-10"}</b><div id="ktB" style="margin-top:8px"></div></div>
+      ${ph === "end" ? `<div style="text-align:center;margin-top:14px"><button class="btn" id="ktNew">➕ Yangi turnir</button></div>` : ""}`;
+    $("ktCp").onclick = async () => { const t = `🏟 Katta turnir: ${m.ttl}\nKod: ${code}\nKirish: ${link(code)}`; try { await navigator.clipboard.writeText(t); FX.toast("✅ Nusxalandi — guruh chatiga tashlang", "up"); } catch (e) { prompt("Nusxalang:", t); } };
+    if ($("ktGo")) $("ktGo").onclick = async () => { $("ktGo").disabled = true; await DBA.update(`kt/${code}/meta`, { phase: "run", startAt: DBA.now() + 5000, jn: Object.keys(H.j || {}).length }); DBA.update(`a/${code}`, { ph: "run" }).catch(() => {}); };
+    if ($("ktEnd")) $("ktEnd").onclick = () => { if (confirm("Turnir hozir yakunlansinmi? Hali ishlayotganlarning natijasi qabul qilinmaydi.")) finish(); };
+    if ($("ktNew")) $("ktNew").onclick = () => { hLeave(); try { localStorage.removeItem("zm_kthost"); } catch (e) {} T.openHost(); };
+    if ($("ktCr")) $("ktCr").onclick = () => { const t = `🏟 ${m.ttl} — natijalar\n` + ranked().map((p, i) => `${i + 1}. ${p.n}${p.g ? " (" + p.g + ")" : ""} — ${p.pts} ball, ${fsec(p.t)}`).join("\n"); navigator.clipboard && navigator.clipboard.writeText(t).then(() => FX.toast("✅ Nusxalandi", "up"), () => {}); };
+    if ($("ktCsv")) $("ktCsv").onclick = () => { const c = v => `"${String(v == null ? "" : v).replace(/"/g, '""')}"`; const rows = [["O'rin", "Ism", "Guruh", "Ball", "To'g'ri", "Savollar", "Vaqt"].map(c).join(";")].concat(ranked().map((p, i) => [i + 1, p.n, p.g, p.pts, p.ok, p.tot, fsec(p.t)].map(c).join(";"))); const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob(["﻿" + rows.join("\n")], { type: "text/csv;charset=utf-8" })); a.download = `turnir_${code}.csv`; document.body.appendChild(a); a.click(); a.remove(); };
+    upd(); tick();
+  }
+  function upd() {
+    if (!H || !H.meta || !$("ktB")) return;
+    const m = H.meta, jn = Object.keys(H.j || {}).length, rs = ranked(), avg = rs.length ? Math.round(rs.reduce((a, p) => a + (p.pts || 0), 0) / rs.length) : 0;
+    $("ktC").innerHTML = [["👥", jn, "Qo'shildi"], ["✅", rs.length, "Tugatdi"], ["⏳", Math.max(0, jn - rs.length), "Ishlayapti"], ["📈", rs.length ? avg : "—", "O'rtacha ball"]].map(([i, v, l]) => `<div class="stc"><div class="stc-i">${i}</div><b>${v}</b><span>${l}</span></div>`).join("");
+    if ($("ktJ")) { const names = Object.values(H.j || {}).sort((a, b) => (b.at || 0) - (a.at || 0)).slice(0, 40); $("ktJ").innerHTML = names.map(p => `<span class="chipg">${esc(p.n)}</span>`).join("") + (jn > 40 ? `<span class="chipg">+${jn - 40}</span>` : ""); }
+    if (m.phase === "wait" && jn !== H.jn && Date.now() - (H.jt || 0) > 5000) { H.jn = jn; H.jt = Date.now(); DBA.update(`kt/${H.code}/meta`, { jn }).catch(() => {}); }
+    const list = m.phase === "end" ? rs : rs.slice(0, 10);
+    $("ktB").innerHTML = list.length ? list.map((p, i) => `<div class="trow big"><div class="tr-r">${i < 3 ? ["🥇", "🥈", "🥉"][i] : i + 1}</div>${AV.html(p.k, p.n)}<div class="tr-n"><div class="tr-nm">${esc(p.n)}</div><div class="st-s">${esc(p.g || "")}${p.g ? " · " : ""}${p.ok}/${p.tot} · ${fsec(p.t)}</div></div><div class="tr-s">${p.pts}</div></div>`).join("") : '<div class="sub" style="margin:0">Hali hech kim tugatmadi.</div>';
+    if ($("ktPod")) { const t = [rs[1], rs[0], rs[2]], hh = [110, 150, 85], cl = ["#c0c7d0", "#e8b93f", "#c98a4b"]; $("ktPod").innerHTML = `<h1 style="text-align:center">🏁 G'oliblar</h1><div class="podium">${t.map((p, j) => p ? `<div class="pd"><div class="pd-n">${esc(p.n)}</div><div class="pd-s">${p.pts} ball</div><div class="pd-b" style="height:${hh[j]}px;background:${cl[j]}">${[2, 1, 3][j]}</div></div>` : '<div class="pd"></div>').join("")}</div>`; }
+  }
+  function tick() {
+    const m = H.meta; if (m.phase !== "run") return;
+    const left = m.startAt + m.dur - DBA.now();
+    if ($("ktT")) $("ktT").textContent = left > m.dur ? "Boshlanmoqda…" : fmt(left);
+    const jn = Object.keys(H.j || {}).length, rn = Object.keys(H.r || {}).length;
+    if (left < -90e3 || (left < 0 && jn && rn >= jn)) finish();
+  }
+  async function finish() {
+    if (!H || H.ending) return; H.ending = true;
+    const rs = ranked(), rk = {}; rs.forEach((p, i) => rk[p.k] = i + 1);
+    const res = { cnt: rs.length, top: rs.slice(0, 10).map(p => ({ n: p.n, g: p.g || "", pts: p.pts, ok: p.ok, t: p.t })) };
+    try { await DBA.update(`kt/${H.code}`, { rk, res }); await DBA.update(`kt/${H.code}/meta`, { phase: "end", endAt: DBA.now() }); DBA.update(`a/${H.code}`, { ph: "end" }).catch(() => {}); FX.rain(220); FX.S.win(); }
+    catch (e) { H.ending = false; FX.toast("⚠️ Yakunlab bo'lmadi: " + (e.message || e)); }
+  }
+  return { join, submit, create, host, stop, leave: hLeave, pending: () => { try { const c = localStorage.getItem("zm_kt"); localStorage.removeItem("zm_kt"); return c; } catch (e) { return null; } } };
 })();
 setTimeout(T.boot, 0);
 

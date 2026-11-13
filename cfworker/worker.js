@@ -230,7 +230,7 @@ async function sendYozil(env, chat, from) {
 const sendOta = (env, chat) => tg(env, "sendMessage", { chat_id: chat, parse_mode: "HTML", reply_markup: { inline_keyboard: [[{ text: "📞 Ustozga yozish", url: CONTACT_URL }]] },
   text: "👨‍👩‍👧 <b>Ota-onalar uchun</b>\n\nFarzandingizning test natijalari va ustoz xabarlarini shu bot orqali olib turishingiz mumkin:\n\n1️⃣ Farzandingiz platformada «Statistika» bo‘limini ochadi.\n2️⃣ «✈️ Ota-onamga yuborish» tugmasini bosib, havolani sizga yuboradi.\n3️⃣ Siz havolani bosasiz — tamom, ulandingiz ✅\n\nSavol bo‘lsa, ustozga yozing." });
 const turnirMsg = (env, chat, code) => tg(env, "sendMessage", { chat_id: chat, text: "🏆 Turnir kodi: " + code + "\nQo‘shilish uchun tugmani bosing 👇",
-  reply_markup: { inline_keyboard: [[{ text: "🏆 Turnirga kirish", url: appLink("turnir-" + code) }]] } });
+  reply_markup: { inline_keyboard: [[{ text: "🏆 Turnirga kirish", url: appLink((code.length === 5 ? "kt-" : "turnir-") + code) }]] } });
 
 async function adminChats(env) {
   const ids = new Set(), a = await db(env, "GET", "tg/adm").catch(() => null);
@@ -282,7 +282,7 @@ async function onMessage(env, m) {
   }
   if (text === "/kurs") return sendKurs(env, chat);
   if (text === "/ota") return sendOta(env, chat);
-  if (/^\d{4}$/.test(text)) return turnirMsg(env, chat, text);
+  if (/^\d{4,5}$/.test(text)) return turnirMsg(env, chat, text);
   return tg(env, "sendMessage", { chat_id: chat, text: "Kerakli bo‘limni tanlang 👇\n\nSavollar bo‘yicha ustozga yozing: " + CONTACT, reply_markup: mainKb() });
 }
 async function onCallback(env, q) {
@@ -382,23 +382,45 @@ async function grade(env, i) {
   return { ok, tot: items.length };
 }
 
+async function saveRes(env, uid, user, g, info) {
+  const pts = Math.round(g.ok * 100 / g.tot), lv = lvOf(pts), at = Date.now();
+  const id = at.toString(36) + Math.random().toString(36).slice(2, 6);
+  const h = { ttl: str(info.ttl, 100), mode: "test", ok: g.ok, tot: g.tot, pts, lv, at, v: 1 }; if (info.hw) h.hw = str(info.hw, 40);
+  await db(env, "PUT", `h/${uid}/${id}`, h);
+  const s0 = g.sec || null, sec = s0 ? Object.fromEntries(Object.entries(s0).slice(0, 30).map(([k, v]) => [sKey(k).slice(0, 60), Array.isArray(v) ? v.slice(0, 2).map(Number) : 0])) : undefined;
+  await db(env, "PUT", "r/" + id, { ...h, n: str(((user.f || "") + " " + (user.l || "")).trim() || info.n, 80), u: str(user.login, 40), set: str(info.set, 40), dur: info.dur || 0, ...(info.code ? { code: info.code } : {}), ...(sec ? { sec } : {}) }).catch(() => {});
+  if (user.f) { const o = user.rs || {}; await db(env, "PUT", `users/${uid}/rs`, { n: (o.n || 0) + 1, s: (o.s || 0) + pts, last: at }).catch(() => {}); }
+  const x = await syncLb(env, uid, user).catch(() => null);
+  return { id, ok: g.ok, tot: g.tot, pts, lv, ...(x || {}) };
+}
 const VFN = {
   async res(env, uid, i) {
     const g = await grade(env, i);
     const dur = Math.max(0, Number(i.dur) || 0);
     if (dur && dur < g.tot * 700) throw new Error("Juda tez yakunlandi — natija qabul qilinmadi");
+    if (!g.sec && i.sec && typeof i.sec === "object") g.sec = i.sec;
     const user = await db(env, "GET", "users/" + uid) || {};
-    const pts = Math.round(g.ok * 100 / g.tot), lv = lvOf(pts), at = Date.now();
-    const id = at.toString(36) + Math.random().toString(36).slice(2, 6);
-    const hw = i.hw ? str(i.hw, 40) : "";
-    const h = { ttl: str(i.ttl, 100), mode: "test", ok: g.ok, tot: g.tot, pts, lv, at, v: 1 }; if (hw) h.hw = hw;
-    await db(env, "PUT", `h/${uid}/${id}`, h);
-    const s0 = g.sec || (i.sec && typeof i.sec === "object" ? i.sec : null), sec = s0 ? Object.fromEntries(Object.entries(s0).slice(0, 30).map(([k, v]) => [sKey(k).slice(0, 60), Array.isArray(v) ? v.slice(0, 2).map(Number) : 0])) : undefined;
-    await db(env, "PUT", "r/" + id, { ...h, n: str(((user.f || "") + " " + (user.l || "")).trim() || i.n, 80), u: str(user.login, 40), set: str(i.set, 40), dur, ...(sec ? { sec } : {}) }).catch(() => {});
-    const x = await syncLb(env, uid, user).catch(() => null);
-    return { id, ok: g.ok, tot: g.tot, pts, lv, ...(x || {}) };
+    return saveRes(env, uid, user, g, { ttl: i.ttl, hw: i.hw, set: i.set, n: i.n, dur });
   },
   async lb(env, uid) { return syncLb(env, uid); },
+  // Katta turnir: o'quvchi testni ulanmasdan ishlaydi, oxirida bitta so'rov yuboradi
+  async kt(env, uid, i) {
+    const code = str(i.code, 6); if (!/^\d{5}$/.test(code)) throw new Error("Kod noto‘g‘ri");
+    const m = await db(env, "GET", `kt/${code}/meta`); if (!m) throw new Error("Turnir topilmadi");
+    const now = Date.now();
+    if (!m.startAt || now < m.startAt - 5000) throw new Error("Turnir hali boshlanmagan");
+    if (now > m.startAt + m.dur + 120e3) throw new Error("Vaqt tugagan — natija qabul qilinmadi");
+    if (await db(env, "GET", `kt/${code}/r/${uid}`)) throw new Error("Natijangiz allaqachon qabul qilingan");
+    const items = Array.isArray(i.items) ? i.items : [], sets = new Set(m.sets || []);
+    if (!items.length || items.length > (m.n || 0)) throw new Error("Savollar soni mos emas");
+    items.forEach(it => { const k = str(it && it[0], 80), mm = k.match(/^(c_[A-Za-z0-9]+)_|^(.+)_\d+$/); if (!mm || !sets.has(mm[1] || mm[2])) throw new Error("Bu savol turnirga tegishli emas"); });
+    const g = await grade(env, { items }); g.tot = m.n;
+    const user = await db(env, "GET", "users/" + uid) || {};
+    const t = Math.max(0, Math.min(m.dur, now - m.startAt)), pts = Math.round(g.ok * 100 / g.tot);
+    await db(env, "PUT", `kt/${code}/r/${uid}`, { n: str(((user.f || "") + " " + (user.l || "")).trim() || "O‘quvchi", 80), g: str(user.g, 30), ok: g.ok, tot: g.tot, pts, t, at: now });
+    await saveRes(env, uid, user, g, { ttl: "🏟 " + str(m.ttl, 90), set: "kt", dur: t, code });
+    return { ok: g.ok, tot: g.tot, pts };
+  },
 };
 
 // ---------------- Kirish nuqtasi ----------------
