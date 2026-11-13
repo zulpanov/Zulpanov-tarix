@@ -4147,10 +4147,11 @@ const BOSS = (() => {
   function hRender() {
     const m = B.meta; if (!m || !$("tz")) return;
     if (m.phase === "vote") {
-      $("tz").innerHTML = `${adminNav("boss")}<div class="card" style="text-align:center"><div class="sub" style="margin:0">🏰 Boss jangi · ${esc(m.cls)} · o'quvchilar ovoz bermoqda</div><div class="tcode">${B.code}</div><div class="sub" style="margin:0">Turnir bo'limida shu kodni kiritib qo'shiling</div><div class="sub" style="margin:6px 0 0;word-break:break-all;font-size:12px">${esc(link())}</div></div>
+      $("tz").innerHTML = `${adminNav("boss")}<div class="card" style="text-align:center"><div class="sub" style="margin:0">🏰 Boss jangi · ${esc(m.cls)} · o'quvchilar ovoz bermoqda</div><div class="tcode">${B.code}</div><div class="sub" style="margin:0">Turnir bo'limida shu kodni kiritib qo'shiling</div><div class="sub" style="margin:6px 0 0;word-break:break-all;font-size:12px">${esc(link())}</div></div>${SHARE.html("bhSh")}
         <div class="card" style="margin-top:12px"><div style="display:flex;justify-content:space-between;align-items:center"><b>🗳 Ovozlar</b><span class="sub" style="margin:0">👥 <b id="bhP">0</b> ta o'quvchi</span></div><div id="bhV" style="margin-top:10px"></div>
         <div class="row" style="margin-top:12px"><div style="flex:1"><label>Qal'a joni</label><input id="bhH" type="number" min="5" max="2000" placeholder="avto"></div></div><div class="tnote" id="bhHn"></div>
         <button class="btn" id="bhStart" disabled>⚔️ Jangni boshlash</button><button class="btn ghost" style="margin-top:10px" id="bhX">✕ Bekor qilish</button></div>`;
+      SHARE.bind("bhSh", { code: B.code, kind: "boss", ttl: m.cls, link: link() });
       $("bhStart").onclick = start; $("bhX").onclick = async () => { await DBA.update(`t/${B.code}/meta`, { phase: "end", win: 0, cancel: 1 }); leave(); setup(); };
       $("bhH").oninput = hUpd; hUpd(); return;
     }
@@ -6563,7 +6564,7 @@ const T = (() => {
       <div class="sub" style="margin-bottom:4px">${esc(s.title)} · ${m.n} savol · ${Math.round(m.dur / 60000)} daqiqa</div>
       ${m.phase === "lobby" ? `<div class="sub" style="margin:0">Turnir kodi</div><div class="tcode">${st.code}</div>
         <div class="sub">O'quvchilar saytni ochib «Turnir rejimi»ni bosadi va shu kodni kiritadi.<br><span class="tlink"></span></div>
-        <div class="row"><button class="btn ghost" id="thcp">Havolani nusxalash</button><button class="btn ghost" id="thtg">✈️ Telegram'da ulashish</button></div>${TGB.on() ? `<div class="row" style="margin-top:10px;align-items:center"><select id="tanG" style="margin:0;flex:1"><option value="">Barcha o'quvchilar</option></select><button class="btn ghost" id="tanB" style="flex:1">📣 Botda e'lon qilish</button></div>` : ""}<button class="btn" id="thst" style="margin-top:10px">▶ Boshlash</button>`
+        ${SHARE.html("thSh")}<button class="btn" id="thst" style="margin-top:10px">▶ Boshlash</button>`
       : `<div class="row" style="align-items:center"><div style="flex:1;text-align:left"><div class="sub" style="margin:0">Kod: <b>${st.code}</b> · Ishtirokchilar: <b id="tcnt">0</b> · Tugatganlar: <b id="tdn">0</b></div></div><div class="ttm" id="ttm" style="font-size:26px">--:--</div></div>
         <button class="btn" id="thend" style="margin-top:12px;background:var(--bad)">■ Turnirni yakunlash</button>`}
       ${m.team ? `<div id="thw" class="tnote" style="margin-top:12px"></div><button class="btn ghost" id="thpj">🖥 Proyektor rejimi</button>` : ""}
@@ -6573,10 +6574,7 @@ const T = (() => {
     if (st.proj) hProj();
     if ($("thst")) {
       tz().querySelector(".tlink").textContent = link();
-      if ($("tanB")) { TGB.groups().then(gs => { if ($("tanG")) $("tanG").insertAdjacentHTML("beforeend", gs.map(g => `<option>${esc(g)}</option>`).join("")); });
-        $("tanB").onclick = () => { $("tanB").disabled = true; TGB.call("announce", { code: st.code, ttl: mTitle(m), team: !!m.team, n: m.n, dur: Math.round(m.dur / 60000), grp: $("tanG").value }).then(r => { $("tanB").textContent = `✅ ${r.sent} kishiga yuborildi`; FX.toast(`📣 ${r.sent} ta o'quvchiga e'lon yuborildi`, "up"); }).catch(e => { $("tanB").disabled = false; FX.toast("Bot: " + TGB.msg(e)); }); }; }
-      $("thtg").onclick = () => { const u = `https://t.me/share/url?url=${encodeURIComponent(link())}&text=${encodeURIComponent(`${m.team ? "👥 Jamoaviy turnir" : "🏆 Turnir"}! Kod: ${st.code}\n${mTitle(m)}`)}`; try { if (window.IN_TG && Telegram.WebApp.openTelegramLink) return Telegram.WebApp.openTelegramLink(u); } catch (e) {} window.open(u, "_blank"); };
-      $("thcp").onclick = () => { navigator.clipboard && navigator.clipboard.writeText(link()).then(() => $("thcp").textContent = "Nusxalandi ✓", () => {}); };
+      SHARE.bind("thSh", { code: st.code, kind: m.team ? "team" : "turnir", ttl: mTitle(m), n: m.n, dur: Math.round(m.dur / 60000), link: link() });
       $("thst").onclick = () => { $("thst").disabled = true; DBA.update(`t/${st.code}/meta`, { phase: "run", startAt: DBA.now() + 5000 }); };
     }
     if ($("thend")) $("thend").onclick = () => DBA.update(`t/${st.code}/meta`, { phase: "end" });
@@ -6692,6 +6690,47 @@ const T = (() => {
     else { let a = null; try { a = JSON.parse(ls.get("zm_active") || "null"); } catch (e) {} if (a && a.code && ACCT.cur && a.u === ACCT.cur.login) { openJoin(a.code); $("tjerr").textContent = "Turniringizga qayta ulanmoqda…"; join(true); } else goHome(); }
   }
   return { openJoin, openHost, boot, st, leave: clear };
+})();
+// ================== O'YIN KODINI ULASHISH (turnir, jamoaviy, katta turnir, boss) ==================
+const SHARE = (() => {
+  const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const HEAD = { turnir: "🏆 Turnir", team: "👥 Jamoaviy turnir", kt: "🏟 Katta turnir", boss: "🏰 Boss jangi" };
+  let stats = null;
+  function html(id) {
+    return `<div class="card" style="margin-top:12px;text-align:left" id="${id}"><b>📣 Ulashish</b>
+      <div class="row" style="margin-top:10px;flex-wrap:wrap;gap:8px"><button class="btn ghost" data-sh="tg" style="flex:1;min-width:150px">✈️ Telegram'da ulashish</button><button class="btn ghost" data-sh="cp" style="flex:1;min-width:150px">🔗 Havolani nusxalash</button></div>
+      ${TGB.on() ? `<div class="sub" style="margin:12px 0 6px">Bot orqali yuborish:</div>
+      <div class="row" style="flex-wrap:wrap;gap:8px"><button class="btn ghost" data-sh="all" style="flex:1;min-width:150px">📣 Barchaga</button><button class="btn ghost" data-sh="center" style="flex:1;min-width:150px">🏫 O'quv markazi o'quvchilariga</button></div>
+      <div class="row" style="margin-top:8px;gap:8px;align-items:center"><select data-sh="g" style="margin:0;flex:1"><option value="">— guruhni tanlang —</option></select><button class="btn ghost" data-sh="grp" style="flex:1">👥 Guruhga</button></div>
+      <div class="st-s" data-sh="info" style="margin-top:6px"></div>` : `<div class="st-s" style="margin-top:8px">Bot orqali hammaga yuborish uchun admin panelni Telegram'dagi bot ichidan oching.</div>`}</div>`;
+  }
+  // o = { code, kind, ttl, n, dur, link }
+  function bind(id, o) {
+    const box = $(id); if (!box) return;
+    const q = k => box.querySelector(`[data-sh="${k}"]`), head = HEAD[o.kind] || HEAD.turnir;
+    const msg = () => `${head}! ${o.ttl || ""}\nKod: ${o.code}${o.n ? ` · ${o.n} ta savol` : ""}${o.dur ? ` · ${o.dur} daqiqa` : ""}\nKirish:`;
+    q("tg").onclick = () => { const u = `https://t.me/share/url?url=${encodeURIComponent(o.link)}&text=${encodeURIComponent(msg())}`; try { if (window.IN_TG && Telegram.WebApp.openTelegramLink) return Telegram.WebApp.openTelegramLink(u); } catch (e) {} window.open(u, "_blank"); };
+    q("cp").onclick = async () => { const t = msg() + " " + o.link; try { await navigator.clipboard.writeText(t); FX.toast("✅ Nusxalandi", "up"); } catch (e) { prompt("Nusxalang:", t); } };
+    if (!q("all")) return;
+    const key = t => `zm_ann_${o.code}_${t}`, sent = t => { try { return localStorage.getItem(key(t)); } catch (e) { return null; } };
+    const mark = (t, n) => { try { localStorage.setItem(key(t), String(n)); } catch (e) {} };
+    const paint = () => [["all", "📣 Barchaga"], ["center", "🏫 O'quv markazi o'quvchilariga"], ["grp", "👥 Guruhga"]].forEach(([t, l]) => { const b = q(t), v = t === "grp" ? sent("grp_" + q("g").value) : sent(t); if (!b) return; b.disabled = !!v; b.textContent = v ? `✅ ${v} kishiga yuborildi` : l; });
+    const cnt = t => { if (!stats) return null; const gs = stats.groups || {}; return t === "all" ? stats.students : t === "center" ? Object.values(gs).reduce((a, n) => a + n, 0) : (gs[q("g").value] || 0); };
+    TGB.groups().then(gs => { const sel = q("g"); if (sel) sel.insertAdjacentHTML("beforeend", gs.map(g => `<option>${esc(g)}</option>`).join("")); });
+    (stats ? Promise.resolve(stats) : TGB.call("stats")).then(x => { stats = x; if (q("info")) q("info").textContent = `Botda: ${x.students} kishi, shundan o'quv markazida ${cnt("center")} kishi.`; }).catch(() => {});
+    q("g").onchange = paint; paint();
+    const go = async t => {
+      const grp = t === "grp" ? q("g").value : "";
+      if (t === "grp" && !grp) return FX.toast("Avval guruhni tanlang");
+      const n = cnt(t), who = t === "all" ? "botdagi hammaga" : t === "center" ? "o'quv markazi o'quvchilariga" : `«${grp}» guruhiga`;
+      if (!confirm(`${head} kodi ${who}${n != null ? ` (${n} kishi)` : ""} yuborilsinmi?`)) return;
+      const b = q(t); b.disabled = true; b.textContent = "Yuborilmoqda…";
+      try { const r = await TGB.call("announce", { code: o.code, kind: o.kind, ttl: o.ttl, team: o.kind === "team", n: o.n, dur: o.dur, to: t, grp }); mark(t === "grp" ? "grp_" + grp : t, r.sent); paint(); FX.toast(`📣 ${r.sent} kishiga yuborildi`, "up"); }
+      catch (e) { b.disabled = false; paint(); FX.toast("Bot: " + TGB.msg(e)); }
+    };
+    q("all").onclick = () => go("all"); q("center").onclick = () => go("center"); q("grp").onclick = () => go("grp");
+  }
+  return { html, bind };
 })();
 // ================== KATTA TURNIR (200+ ishtirokchi) ==================
 // O'quvchi bazaga doimiy ulanmaydi: kod bilan qo'shiladi (REST), boshlanishini so'rab turadi, savollarni
@@ -6819,12 +6858,14 @@ const KT = (() => {
           <div class="row" style="margin-top:10px;flex-wrap:wrap"><button class="btn ghost sm" id="ktCp">🔗 Havolani nusxalash</button>${ph === "end" ? `<button class="btn ghost sm" id="ktCr">📋 Natijalarni nusxalash</button><button class="btn ghost sm" id="ktCsv">⬇ CSV</button>` : ""}</div></div>
         ${ph !== "end" ? `<div style="width:150px;background:#fff;border-radius:12px;padding:6px">${qrSvg(webLink(code))}</div>` : ""}</div></div>
       <div class="stcards" style="margin-top:12px" id="ktC"></div>
+      ${ph === "wait" ? SHARE.html("ktSh") : ""}
       ${ph === "wait" ? `<div class="card" style="margin-top:12px"><button class="btn" id="ktGo">▶️ Turnirni boshlash</button><div class="st-s" style="margin-top:8px">Boshlanganda har bir o'quvchida ${Math.round(m.dur / 60000)} daqiqa vaqt bo'ladi. Kechikib kelganlar ham qo'shila oladi, lekin vaqt hamma uchun bir xil tugaydi.</div><div id="ktJ" style="margin-top:10px;display:flex;flex-wrap:wrap;gap:6px"></div></div>` : ""}
       ${ph === "run" ? `<div class="card" style="margin-top:12px;text-align:center"><div class="st-s">Qolgan vaqt</div><div id="ktT" style="font-size:40px;font-weight:800">--:--</div><button class="btn ghost sm" id="ktEnd" style="margin-top:6px">⏹ Hozir yakunlash</button></div>` : ""}
       ${ph === "end" ? `<div class="card" style="margin-top:12px" id="ktPod"></div>` : ""}
       <div class="card" style="margin-top:12px"><b>${ph === "end" ? "📋 To'liq reyting" : "🏆 Jonli top-10"}</b><div id="ktB" style="margin-top:8px"></div></div>
       ${ph === "end" ? `<div style="text-align:center;margin-top:14px"><button class="btn" id="ktNew">➕ Yangi turnir</button></div>` : ""}`;
     $("ktCp").onclick = async () => { const t = `🏟 Katta turnir: ${m.ttl}\nKod: ${code}\nKirish: ${link(code)}`; try { await navigator.clipboard.writeText(t); FX.toast("✅ Nusxalandi — guruh chatiga tashlang", "up"); } catch (e) { prompt("Nusxalang:", t); } };
+    if ($("ktSh")) SHARE.bind("ktSh", { code, kind: "kt", ttl: m.ttl, n: m.n, dur: Math.round(m.dur / 60000), link: link(code) });
     if ($("ktGo")) $("ktGo").onclick = async () => { $("ktGo").disabled = true; await DBA.update(`kt/${code}/meta`, { phase: "run", startAt: DBA.now() + 5000, jn: Object.keys(H.j || {}).length }); DBA.update(`a/${code}`, { ph: "run" }).catch(() => {}); };
     if ($("ktEnd")) $("ktEnd").onclick = () => { if (confirm("Turnir hozir yakunlansinmi? Hali ishlayotganlarning natijasi qabul qilinmaydi.")) finish(); };
     if ($("ktNew")) $("ktNew").onclick = () => { hLeave(); try { localStorage.removeItem("zm_kthost"); } catch (e) {} T.openHost(); };

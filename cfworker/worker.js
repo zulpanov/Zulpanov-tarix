@@ -185,11 +185,14 @@ const FN = {
   },
   async announce(env, input, u) {
     requireAdmin(u);
-    const code = String(input.code || "").replace(/\D/g, "").slice(0, 4);
-    const list = await students(env, String(input.grp || ""));
-    const text = (input.team ? "👥 <b>Jamoaviy turnir!</b>" : "🏆 <b>Turnir boshlanmoqda!</b>") + "\n\n📚 " + esc(input.ttl || "") + "\n🔢 Kod: <b>" + code + "</b>" +
+    const code = String(input.code || "").replace(/\D/g, "").slice(0, 5), kt = code.length === 5, to = String(input.to || "");
+    let list = await students(env, to === "all" || to === "center" ? "" : String(input.grp || ""));
+    if (to === "center") list = list.filter(r => r.grp);
+    const kind = String(input.kind || (input.team ? "team" : kt ? "kt" : "turnir"));
+    const head = { team: "👥 <b>Jamoaviy turnir!</b>", kt: "🏟 <b>Katta turnir!</b>", boss: "🏰 <b>Boss jangi!</b>" }[kind] || "🏆 <b>Turnir boshlanmoqda!</b>";
+    const text = head + "\n\n📚 " + esc(input.ttl || "") + "\n🔢 Kod: <b>" + code + "</b>" +
       (input.n ? "\n❓ " + (+input.n) + " ta savol" : "") + (input.dur ? " · ⏱ " + (+input.dur) + " daqiqa" : "") + "\n\nQo‘shilish uchun tugmani bosing 👇";
-    return sendBatch(env, list, input.from, () => ({ text, parse_mode: "HTML", reply_markup: { inline_keyboard: [[{ text: "🏆 Turnirga kirish", url: appLink("turnir-" + code) }]] } }));
+    return sendBatch(env, list, input.from, () => ({ text, parse_mode: "HTML", reply_markup: { inline_keyboard: [[{ text: "🚀 Kirish", url: appLink((kt ? "kt-" : "turnir-") + code) }]] } }));
   },
   async notifyHw(env, input, u) {
     requireAdmin(u);
