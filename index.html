@@ -27,7 +27,7 @@
 window.TG_BOT = "alimqul_tarix_testbot";   // bot username (@ belgisisiz), masalan: zulpanov_tarix_bot
 window.TG_APP = "";   // BotFather /newapp da berilgan qisqa nom, masalan: app
 (function(){var h=location.hash||"",q=location.search||"";if(!/tgWebApp/.test(h+q))return;window.IN_TG=true;
-  var m=(h+"&"+q).match(/tgWebAppStartParam=([^&]+)/);window.TG_START=m?decodeURIComponent(m[1]):"";
+  var m=(h+"&"+q).match(/tgWebAppStartParam=([^&]+)/);window.TG_START=m?decodeURIComponent(m[1]):"";window.TG_SRC="";(function(){var t=window.TG_START,i=t.indexOf("__");if(i>=0){window.TG_SRC=t.slice(i+2);t=t.slice(0,i)}if(/^s-/.test(t)){window.TG_SRC=t.slice(2);t=""}window.TG_START=t})();
   document.write('<script src="https://telegram.org/js/telegram-web-app.js"><\/script>');})();
 </script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&family=PT+Serif:wght@400;700&display=swap" rel="stylesheet">
@@ -3216,14 +3216,27 @@ const ROT=(()=>{const key=st=>"zm_rot_"+((typeof ACCT!=="undefined"&&ACCT.cur&&(
 const ST=(()=>{ // st/<kun>/<kalit> = son. Faqat sonlar, shaxsiy ma'lumot yo'q
   const day=()=>new Date(Date.now()+5*3600e3).toISOString().slice(0,10); // Toshkent vaqti
   const hit=k=>{try{if(DBA.inc)DBA.inc("st/"+day()+"/"+k).catch(()=>{})}catch(e){}};
+  const norm=t=>String(t||"").toLowerCase().replace(/[^a-z0-9]/g,"").slice(0,8);
+  // Manba: havoladagi ?s=belgi (yoki Telegramda startapp=...__belgi). Oxirgisi 30 kun eslab qolinadi.
+  let cur=null;
+  function src(){
+    if(cur)return cur;
+    let t="";try{t=norm(new URLSearchParams(location.search).get("s")||new URLSearchParams(location.search).get("utm_source"))}catch(e){}
+    if(!t&&window.TG_SRC)t=norm(window.TG_SRC);
+    if(t==="instagram")t="ig";
+    if(!t&&/instagram/i.test(document.referrer||""))t="ig";
+    if(t){try{localStorage.setItem("zm_src",JSON.stringify({s:t,t:Date.now()}))}catch(e){}return cur=t}
+    try{const o=JSON.parse(localStorage.getItem("zm_src")||"null");if(o&&o.s&&Date.now()-o.t<30*864e5)return cur=o.s}catch(e){}
+    return cur=window.IN_TG?"tg":"web";
+  }
+  // Telegramga o'tkazadigan havolaga manbani qo'shish: startapp=asos__belgi
+  const tg=base=>{const t=src(),own=t==="tg"||t==="web";if(own)return base;return base?base+"__"+t:"s-"+t};
   function visit(){
     try{if(sessionStorage.getItem("zm_vs"))return;sessionStorage.setItem("zm_vs","1")}catch(e){}
     const d=day();let first=false;try{if(localStorage.getItem("zm_vd")!==d){localStorage.setItem("zm_vd",d);first=true}}catch(e){}
-    const q=location.search+"&"+(window.TG_START||""),ref=document.referrer||"";
-    const src=/[?&](s|utm_source)=(ig|instagram)/i.test(q)||/instagram/i.test(ref)||/^ig/.test(window.TG_START||"")?"ig":window.IN_TG?"tg":"web";
-    hit("v");if(first){hit("u");hit("s_"+src)}
+    hit("v");if(first){hit("u");hit("s_"+src())}
   }
-  return{day,hit,visit};
+  return{day,hit,visit,src,tg};
 })();
 const KUN=(()=>{
   const day=()=>ST.day(),dd=()=>{const[y,m,d]=day().split("-");return d+"."+m};
@@ -3240,8 +3253,8 @@ const KUN=(()=>{
   }
   const doneKey=()=>"zm_kun_"+day(),done=()=>{try{return localStorage.getItem(doneKey())}catch(e){return null}};
   function go(){set=make();start()}
-  function started(){ST.hit("kun_s")}
-  const link=()=>"https://zulpanov.github.io/Zulpanov-tarix/#kun";
+  function started(){ST.hit("kun_s");ST.hit("ks_"+ST.src())}
+  const link=()=>"https://zulpanov.github.io/Zulpanov-tarix/?s=dost#kun";
   function result(st,ok,tot){
     const box=$("kunRes");if(!box)return;box.innerHTML="";if(!st||!st.kun)return;
     try{localStorage.setItem(doneKey(),ok+"/"+tot)}catch(e){}
@@ -3252,7 +3265,7 @@ const KUN=(()=>{
       <b>📅 Ertaga yangi 10 ta savol!</b><div class="st-s" style="margin:4px 0 10px">Do'stlaringizni ham sinab ko'ring — kim ko'proq topadi?</div>
       <a class="btn" href="${share}" target="_blank" rel="noopener" style="display:block;text-align:center;text-decoration:none">✈️ Do'stlarimga yuborish</a>
       ${ACCT.cur?"":`<div class="st-s" style="margin:12px 0 8px">Natijangiz saqlanishi, XP to'plash, 5 700+ test va reytingga chiqish uchun kiring:</div>
-      ${window.IN_TG?`<button class="btn ghost" id="kunIn" style="width:100%">✈️ Telegram orqali kirish (+50 XP)</button>`:`<a class="btn ghost" href="https://t.me/${window.TG_BOT}?startapp=kun" style="display:block;text-align:center;text-decoration:none">✈️ Telegram orqali kirish (+50 XP)</a>`}`}</div>`;
+      ${window.IN_TG?`<button class="btn ghost" id="kunIn" style="width:100%">✈️ Telegram orqali kirish (+50 XP)</button>`:`<a class="btn ghost" href="https://t.me/${window.TG_BOT}?startapp=${ST.tg("kun")}" style="display:block;text-align:center;text-decoration:none">✈️ Telegram orqali kirish (+50 XP)</a>`}`}</div>`;
     if($("kunIn"))$("kunIn").onclick=()=>goHome();
   }
   function card(){ // auth va bosh sahifadagi tugma
@@ -4411,17 +4424,37 @@ const STAT = (() => {
     const now = Date.now(), lim = per === "day" ? 86400e3 : per === "week" ? 7 * 86400e3 : per === "month" ? 30 * 86400e3 : Infinity;
     return list().filter(r => (!q || norm(r.n + " " + (r.u || "")).includes(norm(q))) && (!fset || r.set === fset) && (now - r.at <= lim));
   }
+  // Saytga kirishlar: kunlik grafik, voronka, kanallar (havola belgilari) va havola yasash
+  const SRCN = { dost: "🤝 Do'st yuborgan", ig: "📸 Instagram", kanal: "📣 Telegram kanal", kitob: "📕 Kitob (QR)", turnir: "🏟 Turnir e'loni", ustoz: "👩‍🏫 Ustozlar", ota: "👨‍👩‍👦 Ota-onalar", rek1: "💰 Reklama 1", rek2: "💰 Reklama 2", tg: "✈️ Telegram (belgisiz)", web: "🌐 Brauzer (belgisiz)" };
   async function visits() {
     let v = null; try { v = await DBA.get("st"); } catch (e) {}
     const el = $("stVis"); if (!el) return;
     const days = []; for (let i = 13; i >= 0; i--) days.push(new Date(Date.now() + 5 * 3600e3 - i * 86400e3).toISOString().slice(0, 10));
     const g = (d, k) => ((v || {})[d] || {})[k] || 0, sum = k => days.reduce((a, d) => a + g(d, k), 0);
     const mx = Math.max(1, ...days.map(d => g(d, "u")));
-    const tot = [["u", "👤 Kirgan odam"], ["s_tg", "✈️ Telegramdan"], ["s_web", "🌐 Brauzerdan"], ["s_ig", "📸 Instagramdan"], ["new", "🆕 Yangi hisob"], ["kun_s", "📅 Kun testi boshlandi"], ["kun_f", "✅ Tugatdi (kirganlar)"], ["kun_g", "✅ Tugatdi (mehmonlar)"]];
+    const pc = (a, b) => b ? Math.round(a / b * 100) + "%" : "—";
+    // voronka
+    const F = [["Saytga kirdi", sum("u")], ["Kun testini boshladi", sum("kun_s")], ["Kun testini tugatdi", sum("kun_f") + sum("kun_g")], ["Ro'yxatdan o'tdi", sum("new")]];
+    const f0 = Math.max(1, F[0][1]);
+    // kanallar
+    const tags = new Set(); days.forEach(d => Object.keys((v || {})[d] || {}).forEach(k => { const m = k.match(/^(s|ks|n)_([a-z0-9]+)$/); if (m) tags.add(m[2]); }));
+    const rows = [...tags].map(t => ({ t, u: sum("s_" + t), k: sum("ks_" + t), n: sum("n_" + t) })).sort((a, b) => b.n - a.n || b.u - a.u);
     el.innerHTML = `<h3 style="margin:0 0 4px">🌐 Saytga kirishlar · oxirgi 14 kun</h3><div class="sub" style="margin:0 0 10px">Har kuni har bir qurilma bir marta sanaladi. Hisoblash 13.11.2026 dan boshlangan.</div>
       <div class="chart" style="height:120px">${days.map(d => `<div class="cb" title="${d}: ${g(d, "u")} kishi, ${g(d, "v")} marta kirish"><small>${g(d, "u") || ""}</small><i style="height:${Math.max(3, g(d, "u") / mx * 100)}%;background:var(--ac)"></i></div>`).join("")}</div>
-      <div class="st-s" style="display:flex;justify-content:space-between;margin:4px 0 12px"><span>${days[0].slice(8)}.${days[0].slice(5, 7)}</span><span>bugun</span></div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px">${tot.map(([k, l]) => `<div class="strow" style="cursor:default;margin:0"><div class="st-m"><div class="st-s">${l}</div><b style="font-size:18px">${sum(k)}</b>${k === "u" ? ` <span class="st-s">· bugun ${g(days[13], "u")}</span>` : ""}</div></div>`).join("")}</div>`;
+      <div class="st-s" style="display:flex;justify-content:space-between;margin:4px 0 14px"><span>${days[0].slice(8)}.${days[0].slice(5, 7)}</span><span>bugun</span></div>
+      <b>🔻 Voronka</b><div style="margin:8px 0 14px">${F.map(([l, n], i) => `<div class="mr"><div class="mh"><b>${l}</b><span>${n}${i ? " · " + pc(n, F[i - 1][1]) + " oldingisidan" : ""}</span></div><div class="bar" style="margin:0"><i style="width:${Math.max(2, n / f0 * 100)}%"></i></div></div>`).join("")}</div>
+      <b>📊 Kanallar bo'yicha</b><div class="sub" style="margin:2px 0 8px">Belgili havola orqali kelganlar. Ro'yxatdan o'tish — o'sha belgidan kelib, keyin Telegram orqali kirganlar.</div>
+      ${rows.length ? `<div style="overflow-x:auto"><table class="mstb" style="width:100%;font-size:13px"><tr><th style="text-align:left">Kanal</th><th>Kirdi</th><th>Kun testi</th><th>Ro'yxat</th><th>Ro'yxat %</th></tr>${rows.map(r => `<tr><td style="text-align:left">${esc(SRCN[r.t] || "🏷 " + r.t)}</td><td>${r.u}</td><td>${r.k}</td><td><b>${r.n}</b></td><td>${pc(r.n, r.u)}</td></tr>`).join("")}</table></div>` : '<div class="sub" style="margin:0">Hali ma\'lumot yo\'q.</div>'}
+      <div class="card" style="margin:14px 0 0;background:var(--card2)"><b>🔗 Belgili havola yasash</b><div class="sub" style="margin:2px 0 8px">Har bir joyga o'z havolasini qo'ying — qaysi biri odam olib kelayotgani shu jadvalda ko'rinadi.</div>
+        <div class="row" style="gap:8px;flex-wrap:wrap"><select id="lkT" style="flex:1;min-width:150px;margin:0">${Object.entries(SRCN).filter(([k]) => k !== "tg" && k !== "web").map(([k, l]) => `<option value="${k}">${esc(l)}</option>`).join("")}<option value="">✏️ O'zim yozaman…</option></select><input id="lkC" placeholder="belgi, masalan: maktab5" maxlength="8" style="flex:1;min-width:120px;margin:0;display:none"></div>
+        <div class="row" style="gap:8px;flex-wrap:wrap;margin-top:8px"><select id="lkW" style="flex:1;min-width:150px;margin:0"><option value="kun">📅 Kun testiga (ro'yxatsiz)</option><option value="bot">✈️ Telegram botga</option><option value="home">🏠 Saytning bosh sahifasiga</option></select></div>
+        <div style="margin-top:8px;padding:10px;border-radius:10px;background:var(--bg);word-break:break-all;font-size:13px" id="lkO"></div>
+        <button class="btn sm" id="lkCp" style="margin-top:8px">📋 Nusxalash</button></div>`;
+    const site = "https://zulpanov.github.io/Zulpanov-tarix/";
+    const mk = () => { const sel = $("lkT").value; $("lkC").style.display = sel ? "none" : ""; const t = (sel || $("lkC").value).toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, 8); const w = $("lkW").value;
+      const u = !t ? "" : w === "bot" ? `https://t.me/${window.TG_BOT}?startapp=s-${t}` : w === "home" ? `${site}?s=${t}` : `${site}?s=${t}#kun`; $("lkO").textContent = u || "Belgini yozing (lotin harflari va raqamlar)"; return u; };
+    $("lkT").onchange = mk; $("lkW").onchange = mk; $("lkC").oninput = mk; mk();
+    $("lkCp").onclick = async () => { const u = mk(); if (!u) return; try { await navigator.clipboard.writeText(u); FX.toast("✅ Havola nusxalandi", "up"); } catch (e) { prompt("Nusxalang:", u); } };
   }
   const lvColor = lv => !lv ? "var(--bad)" : /A/.test(lv) ? "var(--ok)" : /B/.test(lv) ? "var(--ac2)" : "var(--ac)";
   function open() {
@@ -4874,9 +4907,9 @@ const ACCT = (() => {
     let r = await DBA.get("users/" + uid);
     if (!r) {
       try { await DBA.set("logins/" + a.login, uid); } catch (e) {}
-      r = { f, l, g: "", login: a.login, tg: 1, bx: 50, c: DBA.now(), last: DBA.now() };
+      r = { f, l, g: "", login: a.login, tg: 1, bx: 50, src: ST.src(), c: DBA.now(), last: DBA.now() };
       await DBA.set("users/" + uid, r);
-      ST.hit("new");
+      ST.hit("new"); ST.hit("n_" + ST.src());
       r.isNew = true;
     }
     if (r.b) { await AUTH.signOut(); throw { uz: "Hisobingiz ustoz tomonidan bloklangan." }; }
@@ -4952,7 +4985,7 @@ const ACCT = (() => {
         <div class="xpchips"><span>Kun ketma-ketligi</span><span>Nishonlar</span><span>Reyting</span></div>
         ${KUN.card()}
         ${inTg ? `<button class="tgbtn" id="aTg">${tgIc}<span>Telegram orqali kirib, XP olish</span></button>`
-               : `<a class="tgbtn" id="aTgL" href="https://t.me/alimqul_tarix_testbot?startapp${HW.pend() ? "=g-" + HW.pend() : ""}">${tgIc}<span>Telegram orqali kirib, XP olish</span></a><p class="sub" style="text-align:center;margin:10px 0 0">Telegram ilovasi ochiladi · login va parol kerak emas</p>`}
+               : `<a class="tgbtn" id="aTgL" href="https://t.me/alimqul_tarix_testbot?startapp${(x => x ? "=" + x : "")(ST.tg(HW.pend() ? "g-" + HW.pend() : ""))}">${tgIc}<span>Telegram orqali kirib, XP olish</span></a><p class="sub" style="text-align:center;margin:10px 0 0">Telegram ilovasi ochiladi · login va parol kerak emas</p>`}
         <div class="accerr" id="aE" style="text-align:center"></div>
         ${inTg ? `<button class="xpmv" id="aMvL">Avval login bilan ro'yxatdan o'tganmisiz? <u>Hisobni ko'chirish</u></button><div id="aMove"></div>` : ""}
       </div>`;
