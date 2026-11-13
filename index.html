@@ -537,6 +537,18 @@ body.dlm #bkb{display:none!important}
 .zn-poll{display:flex;justify-content:space-around;align-items:flex-end;height:130px;margin-top:8px}.zn-poll div{display:flex;flex-direction:column;align-items:center;gap:3px;width:22%}.zn-poll span{width:70%;border-radius:6px 6px 0 0;background:linear-gradient(180deg,#22D3EE,#7C3AED);min-height:2px}.zn-poll em{font-style:normal;font-size:12px;font-weight:700}.zn-poll b{font-size:13px}
 .zn-ld{display:flex;flex-direction:column;gap:3px}.zn-st{display:flex;align-items:center;gap:10px;padding:5px 10px;border-radius:10px;font-size:13px;color:var(--mu)}.zn-st span{width:22px;text-align:right;font-weight:700}.zn-st b{flex:1;font-weight:600}.zn-st.safe{color:#FCD34D}.zn-st.ok{color:#86EFAC}.zn-st.cur{background:linear-gradient(90deg,rgba(124,58,237,.5),rgba(6,182,212,.3));color:#fff}
 .zn-res{text-align:center;padding:20px}.zn-res.win{border-color:rgba(250,204,21,.6)!important;background:linear-gradient(160deg,rgba(250,204,21,.18),rgba(255,255,255,.04))!important}.zn-rt{font-size:20px;font-weight:900}.zn-coin{font-size:44px;font-weight:900;margin:8px 0 2px;background:linear-gradient(180deg,#FDE047,#F59E0B);-webkit-background-clip:text;background-clip:text;color:transparent}
+#auth .sky{display:none}
+.xpin{display:flex;flex-direction:column;align-items:center;text-align:center;gap:14px;padding:8px 2px 4px}
+.xpring{width:170px;height:170px;border-radius:50%;border:10px solid #1c1745;box-sizing:border-box;display:flex;align-items:center;justify-content:center;position:relative;margin-top:6px}
+.xpring:before{content:"";position:absolute;inset:-10px;border-radius:50%;border:10px solid #F59E0B;border-right-color:transparent;border-bottom-color:transparent;transform:rotate(-45deg)}
+.xpring div{display:flex;flex-direction:column;align-items:center}.xpring small{font-size:13px;color:var(--mu)}.xpring b{font-family:Poppins,sans-serif;font-weight:800;font-size:50px;line-height:1}.xpring em{font-style:normal;font-size:13px;color:#F59E0B;font-weight:700}
+.xpin h2{font-family:Poppins,sans-serif;font-weight:800;font-size:24px;line-height:1.2;margin:6px 0 0}
+.xpin>p{font-size:15px;color:var(--mu);line-height:1.5;margin:0}
+.xpchips{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}.xpchips span{background:#141033;border:1px solid var(--line);border-radius:999px;padding:7px 12px;font-size:13px;font-weight:600}
+.tgbtn{width:100%;min-height:60px;border:0;border-radius:20px;background:#2AABEE;color:#fff;font:700 17px Inter,sans-serif;display:flex;align-items:center;justify-content:center;gap:12px;cursor:pointer;text-decoration:none;margin-top:10px;box-sizing:border-box;padding:0 14px}
+.tgbtn:disabled{opacity:.7}
+.xpmv{background:none;border:0;color:var(--mu);font:500 13px Inter,sans-serif;cursor:pointer;padding:10px}
+.tgmv{width:100%;text-align:left;border-top:1px solid var(--line);padding-top:14px}
 </style>
 </head>
 <body>
@@ -4919,7 +4931,7 @@ const ACCT = (() => {
       let r = null; try { r = await DBA.get("users/" + uid); } catch (e) {}
       if (!r || r.moved) { cur = null; L.del("zm_user"); ready = true; renderBox(); return; } // admin, o'chirilgan yoki ko'chirilgan hisob
       if (r.b) { await AUTH.signOut(); logout("Hisobingiz ustoz tomonidan bloklangan."); ready = true; return; }
-      cur = { uid, login: r.login, f: r.f, l: r.l, g: r.g || "" };
+      cur = { uid, login: r.login, f: r.f, l: r.l, g: r.g || "", bx: r.bx || 0 };
       L.set("zm_user", JSON.stringify({ uid, u: r.login, f: r.f, l: r.l, g: r.g || "" }));
       DBA.update("users/" + uid, { last: DBA.now() }); apply(); ready = true; return;
     }
@@ -4951,17 +4963,18 @@ const ACCT = (() => {
     let r = await DBA.get("users/" + uid);
     if (!r) {
       try { await DBA.set("logins/" + a.login, uid); } catch (e) {}
-      r = { f, l, g: "", login: a.login, tg: 1, c: DBA.now(), last: DBA.now() };
+      r = { f, l, g: "", login: a.login, tg: 1, bx: 50, c: DBA.now(), last: DBA.now() };
       await DBA.set("users/" + uid, r);
       try { await DBA.set("pw/" + uid, "Telegram orqali"); } catch (e) {}
       r.isNew = true;
     }
     if (r.b) { await AUTH.signOut(); throw { uz: "Hisobingiz ustoz tomonidan bloklangan." }; }
-    cur = { uid, login: r.login, f: r.f, l: r.l, g: r.g || "" };
+    cur = { uid, login: r.login, f: r.f, l: r.l, g: r.g || "", bx: r.bx || 0 };
     L.set("zm_user", JSON.stringify({ uid, u: r.login, f: r.f, l: r.l, g: r.g || "" }));
     DBA.update("users/" + uid, { last: DBA.now() }).catch(() => {});
+    tgAdmin();
     ready = true; apply(true);
-    if (create) { FX.toast(r.isNew ? "🎉 Xush kelibsiz! Hisobingiz ochildi" : `👋 Xush kelibsiz, ${esc(r.f)}!`, "up"); if (r.isNew) FX.burst(innerWidth / 2, 160, 50, 7); }
+    if (create) { FX.toast(r.isNew ? "🎉 Xush kelibsiz! Sizga <b>+50 XP</b> sovg'a" : `👋 Xush kelibsiz, ${esc(r.f)}!`, "up"); if (r.isNew) FX.burst(innerWidth / 2, 160, 50, 7); }
     TGB.link(r.login);
     return uid;
   }
@@ -4969,18 +4982,64 @@ const ACCT = (() => {
     const b = $("aTg"), E = m => { const x = $("aE"); if (x) x.textContent = m; };
     if (b) { b.disabled = true; b.textContent = "Kirilmoqda…"; }
     try { await tgLogin(true); }
-    catch (e) { if (b) { b.disabled = false; b.textContent = "✈️ Telegram orqali kirish"; } E((e && e.uz) || AUTH.msg(e)); }
+    catch (e) { if (b) { b.disabled = false; b.textContent = "Telegram orqali kirib, XP olish"; } E((e && e.uz) || AUTH.msg(e)); }
   }
   function logout(msg) { if (AUTH.FB && AUTH.uid && !AUTH.isAdmin) AUTH.signOut(); cur = null; L.del("zm_user"); L.del("zm_active"); if (hUn) { hUn(); hUn = null; } renderBox(msg); if (typeof chk === "function") chk(); show("auth"); }
+  // Ustozning Telegram hisobi (@zulpanov_methods) — admin huquqini avtomatik beramiz
+  async function tgAdmin() {
+    try {
+      const un = String(((window.Telegram && Telegram.WebApp && Telegram.WebApp.initDataUnsafe || {}).user || {}).username || "").toLowerCase();
+      if (!TGB.on() || un !== "zulpanov_methods" || AUTH.isAdmin) return;
+      await TGB.call("grantAdmin", { idToken: await AUTH.idToken() });
+      await AUTH.refreshAdmin();
+    } catch (e) {}
+  }
+  // Eski login-parolli hisobni Telegram'ga bir marta ko'chirish
+  function moveForm() {
+    const F = $("aMove"); if (!F) return;
+    F.innerHTML = `<div class="tgmv"><b>Eski hisobni ko'chirish</b><p class="sub" style="margin:4px 0 10px">Avval login va parol bilan ro'yxatdan o'tgan bo'lsangiz, ularni <b>bir marta</b> kiriting. Barcha natijalaringiz Telegram hisobingizga o'tadi, keyin login-parol kerak bo'lmaydi.</p>
+      <label>Login</label><input id="aL" autocomplete="username" autocapitalize="none" placeholder="masalan: ali_valiyev">
+      <label>Parol</label><input id="aP" type="password" autocomplete="current-password" placeholder="••••">
+      <div class="accerr" id="aE2"></div><button class="btn" id="aMv" style="width:100%">Ko'chirish va kirish</button></div>`;
+    $("aMv").onclick = moveGo; $("aP").onkeydown = e => { if (e.key === "Enter") moveGo(); };
+  }
+  async function moveGo() {
+    const u = normLogin($("aL").value), p = $("aP").value, E = m => $("aE2").textContent = m, b = $("aMv");
+    if (!u || !p) return E("Login va parolni kiriting.");
+    if (u === ADMIN.login) return E("Ustoz hisobini ko'chirish shart emas — Telegram orqali kirsangiz, admin huquqi o'zi beriladi.");
+    b.disabled = true; E("");
+    try {
+      const uid = await AUTH.signIn(u, p);
+      const r = await DBA.get("users/" + uid);
+      if (!r) { await AUTH.signOut(); throw { uz: "Hisob topilmadi." }; }
+      if (r.b) { await AUTH.signOut(); throw { uz: "Hisobingiz ustoz tomonidan bloklangan." }; }
+      const res = await TGB.call("bindLegacy", { idToken: await AUTH.idToken() });
+      await AUTH.setPwNow(res.pw);
+      cur = { uid, login: u, f: r.f, l: r.l, g: r.g || "", bx: r.bx || 0 };
+      L.set("zm_user", JSON.stringify({ uid, u, f: r.f, l: r.l, g: r.g || "" }));
+      DBA.update("users/" + uid, { last: DBA.now(), tg: 1 }).catch(() => {});
+      ready = true; apply(true); TGB.link(u); tgAdmin();
+      FX.toast(`✅ Hisobingiz Telegram'ga ko'chirildi, ${esc(r.f)}!`, "up");
+    } catch (e) { b.disabled = false; E((e && e.uz) || (e && e.message && !e.code ? e.message : AUTH.msg(e))); }
+  }
   function renderBox(msg) {
     const box = $("acc"); if (!box) return;
     if (cur) { box.innerHTML = ""; return; }
-    const tgB = AUTH.FB && TGB.on() ? `<button class="btn" id="aTg" style="width:100%;margin:0 0 6px">✈️ Telegram orqali kirish</button><p class="sub" style="text-align:center;margin:0 0 14px">Bir bosishda — login va parol shart emas</p><p class="sub" style="text-align:center;margin:0 0 10px;font-size:12px;opacity:.8">Avval login va parol bilan ro'yxatdan o'tganmisiz? Pastdan kiring 👇</p>` : "";
-    box.innerHTML = `${tgB}<div class="acctabs"><button data-m="in" class="on">Kirish</button><button data-m="up">Ro'yxatdan o'tish</button></div><div id="accF"></div>`;
+    const inTg = AUTH.FB && TGB.on();
+    const tgIc = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 4L3 11l6 2 2 6 3-4 5 4z"></path><path d="M9 13l12-9"></path></svg>`;
+    box.innerHTML = `<div class="xpin">
+        <div class="xpring"><div><small>Daraja</small><b>1</b><em>Boshlovchi</em></div></div>
+        <h2>Kirish uchun +50 XP sovg'a</h2>
+        <p>Har bir to'g'ri javob — ball. Ball to'plang, darajangizni oshiring, haftalik reytingga chiqing.</p>
+        <div class="xpchips"><span>Kun ketma-ketligi</span><span>Nishonlar</span><span>Reyting</span></div>
+        ${inTg ? `<button class="tgbtn" id="aTg">${tgIc}<span>Telegram orqali kirib, XP olish</span></button>`
+               : `<a class="tgbtn" id="aTgL" href="https://t.me/alimqul_tarix_testbot?startapp">${tgIc}<span>Telegram orqali kirib, XP olish</span></a><p class="sub" style="text-align:center;margin:10px 0 0">Telegram ilovasi ochiladi · login va parol kerak emas</p>`}
+        <div class="accerr" id="aE" style="text-align:center"></div>
+        ${inTg ? `<button class="xpmv" id="aMvL">Avval login bilan ro'yxatdan o'tganmisiz? <u>Hisobni ko'chirish</u></button><div id="aMove"></div>` : ""}
+      </div>`;
     if ($("aTg")) $("aTg").onclick = tgGo;
-    const tabs = box.querySelector(".acctabs");
-    tabs.onclick = e => { const b = e.target.closest("button"); if (!b) return; [...tabs.children].forEach(x => x.classList.toggle("on", x === b)); form(b.dataset.m); };
-    form("in", msg);
+    if ($("aMvL")) $("aMvL").onclick = () => { $("aMvL").remove(); moveForm(); };
+    if (msg) $("aE").textContent = msg;
   }
   function form(mode, msg) {
     const F = $("accF");
@@ -5617,6 +5676,7 @@ const GAME = (() => {
   const LEVELS = [[0, "Boshlovchi", "🌱"], [300, "Izlanuvchi", "🔎"], [800, "Bilimdon", "📘"], [1600, "Tarixchi", "📜"], [3000, "Ustoz", "🎓"], [5000, "Akademik", "👑"]];
   const KEYQ = {}; // savol kaliti -> savol
   SETS.filter(s => s.qs).forEach(s => s.qs.forEach((q, i) => { if (!q._k) { q._k = s.id + "_" + i; KEYQ[q._k] = q; } }));
+  const bonus = () => ((ACCT.cur || {}).bx || 0);
   const xpOf = r => (r.ok || 0) * 10 + (r.lv ? 20 : 0) + (r.mode === "turnir" ? (r.rank === 1 ? 50 : r.rank === 2 ? 30 : r.rank === 3 ? 20 : 0) : 0);
   const dayKey = ms => { const d = new Date(ms); return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate(); };
   function weekStart(ms) { const d = new Date(ms); const w = (d.getDay() + 6) % 7; d.setHours(0, 0, 0, 0); d.setDate(d.getDate() - w); return d.getTime(); }
@@ -5670,7 +5730,7 @@ const GAME = (() => {
   // ---- daraja/nishon o'zgarishi ----
   function announce(rs) {
     const c = ACCT.cur; if (!c) return;
-    const xp = rs.reduce((a, r) => a + xpOf(r), 0), lv = level(xp), K = "zm_lv_" + c.uid, B = "zm_bd_" + c.uid;
+    const xp = rs.reduce((a, r) => a + xpOf(r), 0) + bonus(), lv = level(xp), K = "zm_lv_" + c.uid, B = "zm_bd_" + c.uid;
     const st = streak(rs); try { const bk = "zm_beststreak_" + c.uid; if (st > +(localStorage.getItem(bk) || 0)) localStorage.setItem(bk, st); } catch (e) {}
     let pl = null, pb = null; try { pl = localStorage.getItem(K); pb = JSON.parse(localStorage.getItem(B) || "null"); } catch (e) {}
     const got = badges(rs, fixedCount()).filter(b => b.ok).map(b => b.n);
@@ -5686,14 +5746,14 @@ const GAME = (() => {
   function homeRender() {
     const c = ACCT.cur, box = $("wlLv"); if (!c || !box) return;
     watch();
-    const rs = ACCT.recs, xp = rs.reduce((a, r) => a + xpOf(r), 0), lv = level(xp), st = streak(rs), ne = errList().length;
+    const rs = ACCT.recs, xp = rs.reduce((a, r) => a + xpOf(r), 0) + bonus(), lv = level(xp), st = streak(rs), ne = errList().length;
     if ($("hpRing")) $("hpRing").style.setProperty("--p", lv.pct);
     box.innerHTML = `<div class="lvrow"><div class="lvic">${lv.ic}</div><div style="flex:1;min-width:0"><div class="lvn"><b>${lv.name}</b><span>${xp} XP${lv.to ? ` / ${lv.to}` : ""}</span></div><div class="lvbar"><i style="width:${lv.pct}%"></i></div><div class="st-s">${lv.next ? `Keyingi daraja: ${lv.next}` : "Eng yuqori daraja!"}</div></div><div class="strk${st ? " on" : ""}" title="Ketma-ket kunlar">🔥<b>${st}</b></div></div>`;
     if ($("errN")) { $("errN").textContent = ne ? ne + " ta xato" : "xato yo'q"; $("errT").classList.toggle("dim", !ne); }
   }
   // ---- statistika sahifasiga nishonlar ----
   function statBlock() {
-    const rs = ACCT.recs, xp = rs.reduce((a, r) => a + xpOf(r), 0), lv = level(xp), bs = badges(rs, fixedCount());
+    const rs = ACCT.recs, xp = rs.reduce((a, r) => a + xpOf(r), 0) + bonus(), lv = level(xp), bs = badges(rs, fixedCount());
     return `<div class="lvrow" style="margin-bottom:14px"><div class="lvic">${lv.ic}</div><div style="flex:1"><div class="lvn"><b>${lv.name}</b><span>${xp} XP</span></div><div class="lvbar"><i style="width:${lv.pct}%"></i></div></div></div>
       <div class="bdg">${bs.map(b => `<div class="bd${b.ok ? " on" : ""}" title="${esc(b.d)}"><div class="bdi">${b.ic}</div><b>${esc(b.n)}</b><span>${esc(b.d)}</span></div>`).join("")}</div>
       <div class="st-s" style="margin-top:10px">XP qanday beriladi: har bir to'g'ri javob — 10 XP, sertifikat — +20 XP, turnirda 1-o'rin — +50, 2-o'rin — +30, 3-o'rin — +20 XP.</div>`;
@@ -6060,6 +6120,9 @@ const AUTH = (() => {
   }
   return {
     FB, msg, ready, email,
+    async idToken() { const f = await fb(); const u = f.auth().currentUser; if (!u) throw new Error("no user"); return u.getIdToken(true); },
+    async setPwNow(p) { const f = await fb(); const u = f.auth().currentUser; if (!u) throw new Error("no user"); await u.updatePassword(p); },
+    async refreshAdmin() { try { admin = !!(user && await DBA.get("admins/" + user.uid)); } catch (e) {} return admin; },
     get uid() { return user ? user.uid : null; },
     get isAdmin() { return admin; },
     async changePw(oldPw, newPw) { const f = await fb(); const u = f.auth().currentUser; if (!u) throw new Error("no user"); const cred = f.auth.EmailAuthProvider.credential(u.email, oldPw); await u.reauthenticateWithCredential(cred); await u.updatePassword(newPw); },

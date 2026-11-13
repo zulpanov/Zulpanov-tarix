@@ -90,6 +90,13 @@ async function verifyInit(env, initData) {
   if (Date.now() / 1000 - Number(p.get("auth_date") || 0) > 7 * 86400) throw new Error("Sessiya eskirgan — botni qayta oching");
   return p.get("user") ? JSON.parse(p.get("user")) : null;
 }
+// Firebase sessiyasini tekshirish (idToken → uid, email)
+async function lookup(idToken) {
+  const j = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${FB.apiKey}`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ idToken: String(idToken || "") }) }).then(r => r.json());
+  const x = j.users && j.users[0]; if (!x) throw new Error("Sessiya topilmadi — qayta urinib ko‘ring");
+  return { uid: x.localId, email: x.email || "" };
+}
+const acctKey = async (env, id) => await hmacHex(token(env), "acct:" + id);
 const need = u => { if (!u) throw new Error("Telegram foydalanuvchisi aniqlanmadi"); return u; };
 const requireAdmin = u => { need(u); if (!isAdminTg(u)) throw new Error("Faqat ustoz uchun"); };
 
@@ -115,8 +122,26 @@ const FN = {
   // Telegram orqali kirish: har bir Telegram foydalanuvchisi uchun o'zgarmas, faqat server biladigan hisob
   async auth(env, input, u) {
     need(u);
-    const k = await hmacHex(token(env), "acct:" + u.id);
-    return { email: `tg${u.id}.${k.slice(0, 8)}@${DOMAIN}`, pw: k.slice(8, 40), login: "tg" + u.id, f: u.first_name || "", l: u.last_name || "", photo: u.photo_url || "" };
+    const k = await acctKey(env, u.id);
+    const ln = await db(env, "GET", "tg/link/" + u.id).catch(() => null); // eski (login-parolli) hisobga ulangan bo'lsa
+    return { email: ln && ln.email ? ln.email : `tg${u.id}.${k.slice(0, 8)}@${DOMAIN}`, pw: k.slice(8, 40), login: "tg" + u.id, linked: !!(ln && ln.email), f: u.first_name || "", l: u.last_name || "", photo: u.photo_url || "" };
+  },
+  // Eski login-parolli hisobni Telegram'ga ko'chirish: o'quvchi bir marta eski login-paroli bilan kirgan bo'lishi kerak
+  async bindLegacy(env, input, u) {
+    need(u);
+    const a = await lookup(input.idToken);
+    if (!a.email || /^tg\d+\./.test(a.email) || a.email === BOT_EMAIL) throw new Error("Bu hisobni ko‘chirib bo‘lmaydi");
+    const ex = await db(env, "GET", "tg/link/" + u.id).catch(() => null);
+    if (ex && ex.uid && ex.uid !== a.uid) throw new Error("Bu Telegram allaqachon boshqa hisobga ulangan");
+    await db(env, "PUT", "tg/link/" + u.id, { email: a.email, uid: a.uid, at: Date.now() });
+    return { pw: (await acctKey(env, u.id)).slice(8, 40) };
+  },
+  // Ustozning Telegram hisobiga admin huquqi
+  async grantAdmin(env, input, u) {
+    requireAdmin(u);
+    const a = await lookup(input.idToken);
+    await db(env, "PUT", "admins/" + a.uid, true);
+    return { ok: true };
   },
   async link(env, input, u) {
     need(u);
