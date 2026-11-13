@@ -82,16 +82,22 @@
     },
     "a": {
       ".read": true,
-      ".write": "auth != null && root.child('admins').child(auth.uid).val() === true"
+      ".write": "auth != null && root.child('admins').child(auth.uid).val() === true",
+      "$code": {
+        ".write": "auth != null && (newData.exists() ? (newData.child('host').val() === auth.uid && (!data.exists() || data.child('host').val() === auth.uid)) : data.child('host').val() === auth.uid)"
+      }
     },
     "t": {
       "$code": {
         ".read": "auth != null",
-        ".write": "auth != null && root.child('admins').child(auth.uid).val() === true",
+        ".write": "auth != null && (root.child('admins').child(auth.uid).val() === true || data.child('meta/host').val() === auth.uid || (!data.exists() && newData.child('meta/host').val() === auth.uid && root.child('c/main/stuOff').val() !== true))",
         "players": {
           "$pid": {
             ".write": "auth != null && auth.uid === $pid"
           }
+        },
+        "meta": {
+          ".validate": "!newData.child('host').exists() || ((newData.child('host').val() === auth.uid || root.child('admins').child(auth.uid).val() === true) && newData.child('n').val() <= 20 && newData.child('dur').val() <= 1200000 && (!newData.child('team').exists() || newData.child('team/k').val() * newData.child('team/sz').val() <= 30))"
         }
       }
     },

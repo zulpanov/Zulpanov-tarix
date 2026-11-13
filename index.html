@@ -6186,10 +6186,12 @@ const T = (() => {
       <label>Turnir kodi</label><input id="tjc" inputmode="numeric" maxlength="5" placeholder="0000" style="font-size:28px;letter-spacing:.3em;text-align:center">
       <div id="tjerr" style="color:var(--bad);font-size:14px;margin:-6px 0 12px"></div>
       <button class="btn" id="tjgo">Qo'shilish</button>
+      ${isAdmin() ? "" : `<button class="btn ghost" id="tjmy" style="margin-top:10px">➕ O'zim o'yin ochaman (do'stlar bilan)</button>`}
       </div>`;
     $("tjn").textContent = ACCT.cur.f + " " + ACCT.cur.l + " (@" + ACCT.cur.login + ")";
     $("tjc").value = code;
     $("tjgo").onclick = join;
+    if ($("tjmy")) $("tjmy").onclick = myOpen;
   }
   async function join(auto) {
     auto = auto === true;
@@ -6208,6 +6210,7 @@ const T = (() => {
     const was = await DBA.get(`t/${code}/players/${st.pid}`);
     if (meta.phase === "end" && !was) return giveUp("Bu turnir allaqachon tugagan.");
     if (await DBA.get(`t/${code}/ban/${st.pid}`)) return giveUp("Siz bu turnirdan chiqarilgansiz.");
+    if (meta.host && !was) { const ps = await DBA.get(`t/${code}/players`); if (Object.keys(ps || {}).length >= MY_MAX) return giveUp(`O'yin to'lgan (${MY_MAX} kishi).`); }
     if (meta.team && meta.phase !== "lobby" && !(was && was.tm != null)) return giveUp("Jamoaviy turnir allaqachon boshlangan — endi qo'shilib bo'lmaydi.");
     ls.set("zm_active", JSON.stringify({ code, u: ac.login }));
     const me = await DBA.get(`t/${code}/players/${st.pid}`);
@@ -6231,10 +6234,10 @@ const T = (() => {
   }
   const myDone = () => { const p = st.players[st.pid]; return p && p.d; };
   function sLobby() {
-    tz().innerHTML = `<div class="card" style="text-align:center"><div style="font-size:44px">⏳</div><h1>Ustoz boshlashini kuting</h1>
+    tz().innerHTML = `<div class="card" style="text-align:center"><div style="font-size:44px">⏳</div><h1>${amHost() ? "O'yiningiz tayyor" : st.meta.host ? "Boshlanishini kuting" : "Ustoz boshlashini kuting"}</h1>
       <p class="sub"><b></b>, siz <b>${st.code}</b> turniriga qo'shildingiz. Test: ${esc(mTitle(st.meta))} · ${st.meta.n} savol · ${Math.round(st.meta.dur / 60000)} daqiqa</p>
-      <div class="tnote">Ishtirokchilar: <b id="tcnt">0</b></div></div><div class="card" style="margin-top:12px"><div id="tbd"></div></div>`;
-    tz().querySelector(".sub b").textContent = name; sBoard();
+      <div class="tnote">Ishtirokchilar: <b id="tcnt">0</b></div></div>${myBar()}<div class="card" style="margin-top:12px"><div id="tbd"></div></div>`;
+    tz().querySelector(".sub b").textContent = name; myBind(); sBoard();
   }
   function sPlay() {
     setNav(null); BK(null);
@@ -6274,7 +6277,15 @@ const T = (() => {
     DBA.update(`t/${st.code}/players/${st.pid}`, { s, a: st.cur, t: DBA.now() - st.meta.startAt, d: st.cur >= st.Q.length ? 1 : 0, sk: st.streak || 0 });
     setTimeout(() => { if (st.meta.phase !== "run") return; if (st.cur >= st.Q.length) finishMine(); else sQ(); }, 900);
   }
+  function mySubmit() {
+    const m = st.meta; if (!m || !m.host || !st.Q.length) return;
+    const k = "zm_tsub_" + st.code + "_" + (m.seed || 0); if (ls.get(k)) return;
+    if (!st.ans.some(a => a != null)) return; ls.set(k, "1");
+    const items = st.Q.map((q, i) => [q._k || "", st.ans[i] == null ? null : String(q.o[st.ans[i]])]);
+    try { VER.send({ n: name, set: "tg", ttl: "🎮 Do'stlar o'yini: " + mTitle(m), mode: "test", items, tot: items.length, pts: -1, dur: Math.max(items.length * 1000, DBA.now() - m.startAt) }).catch(() => {}); } catch (e) {}
+  }
   function finishMine() {
+    mySubmit();
     if (!myDone()) DBA.update(`t/${st.code}/players/${st.pid}`, { d: 1, a: Math.max(st.cur, (st.players[st.pid] || {}).a || 0) });
     sWait();
   }
@@ -6294,6 +6305,11 @@ const T = (() => {
   function sTick() {
     const m = st.meta; if (!m || m.phase !== "run") return;
     const now = DBA.now();
+    if (m.host && now > m.startAt) {
+      const ps = Object.values(st.players || {}), all = ps.length && ps.every(p => p && p.d);
+      if (amHost() && !st.ending && (now > m.startAt + m.dur + 3000 || all)) { st.ending = true; DBA.update(`t/${st.code}/meta`, { phase: "end" }).catch(() => { st.ending = false; }); DBA.set(`a/${st.code}`, null).catch(() => {}); }
+      if (!amHost() && now > m.startAt + m.dur + 20000) { st.meta = { ...m, phase: "end" }; return sRoute(true); }
+    }
     if (now < m.startAt) { const n = Math.ceil((m.startAt - now) / 1000); if ($("tcd")) { if ($("tcd").textContent != n) { const e = $("tcd"); e.textContent = n; e.style.animation = "none"; void e.offsetWidth; e.style.animation = ""; FX.S.tick(); } } else if ($("tqa")) sQ(); return; }
     if ($("tcd")) { FX.toast("🚀 Boshladik!", "up"); sQ(); }
     const left = m.startAt + m.dur - now;
@@ -6302,7 +6318,7 @@ const T = (() => {
     if (left <= 0 && $("tqa") && !myDone()) finishMine();
   }
   function sEnd() {
-    ls.del("zm_active");
+    ls.del("zm_active"); mySubmit();
     clearInterval(st.timer); st.myRank = 0;
     const list = ranked(), i = list.findIndex(p => p.k === st.pid);
     tz().innerHTML = `<div class="card" style="text-align:center"><h1>🏁 Turnir yakunlandi</h1>${podium(list)}
@@ -6366,8 +6382,8 @@ const T = (() => {
   function sTeamLobby() {
     tz().innerHTML = `<div class="card" style="text-align:center"><div style="font-size:40px">👥</div><h1>Jamoaviy turnir</h1>
       <p class="sub">Kod <b>${st.code}</b> · ${esc(mTitle(st.meta))} · ${st.meta.n} savol · ${Math.round(st.meta.dur / 60000)} daqiqa<br>Har jamoada ko'pi bilan <b>${st.meta.team.sz}</b> kishi. Jamoalar soni teng bo'ladi (farq 1 kishidan oshmaydi).</p>
-      <div id="tme"></div></div><div class="card" style="margin-top:12px"><b>Jamoalar</b><div id="tlt" class="tmg" style="margin-top:10px"></div></div>`;
-    st.meKey = null; sTeamLobbyUpd();
+      <div id="tme"></div></div>${myBar()}<div class="card" style="margin-top:12px"><b>Jamoalar</b><div id="tlt" class="tmg" style="margin-top:10px"></div></div>`;
+    myBind(); st.meKey = null; sTeamLobbyUpd();
   }
   function sTeamLobbyUpd() {
     if (!$("tlt")) return sTeamLobby();
@@ -6516,6 +6532,8 @@ const T = (() => {
     nms(); $("thk").onchange = nms;
     $("thm").onclick = e => { const b = e.target.closest("[data-m]"); if (!b) return; [...$("thm").children].forEach(x => x.classList.toggle("on", x === b)); $("thteam").classList.toggle("hide", b.dataset.m !== "team"); $("thbig").classList.toggle("hide", b.dataset.m !== "big"); $("thc").textContent = b.dataset.m === "team" ? "👥 Jamoaviy turnirni ochish" : b.dataset.m === "big" ? "🏟 Katta turnirni ochish" : "Turnirni ochish"; };
     st.unsub.push(DBA.on("a", v => hActive(v || {})));
+    $("tact").insertAdjacentHTML("beforeend", `<div class="row" style="margin-top:10px;align-items:center;gap:8px"><span class="sub" style="margin:0;flex:1">🎮 O'quvchilar o'zi o'yin ochishi</span><button class="btn ghost sm" id="stuTg">…</button></div>`);
+    DBA.get("c/main").then(c => { const b = $("stuTg"); if (!b) return; let off = !!(c && c.stuOff); const paint = () => b.textContent = off ? "🔒 O'chirilgan — yoqish" : "✅ Yoqilgan — o'chirish"; paint(); b.onclick = async () => { off = !off; paint(); await DBA.update("c/main", { stuOff: off }); FX.toast(off ? "O'quvchilar o'yin ocha olmaydi" : "O'quvchilar o'yin ocha oladi", "up"); }; }).catch(() => {});
   }
   function hActive(v) {
     const el = $("tactl"); if (!el) return;
@@ -6527,7 +6545,7 @@ const T = (() => {
       const d = document.createElement("div"); d.className = "strow";
       const mins = Math.max(0, Math.round((now - x.c) / 60000));
       d.innerHTML = `<div class="st-ic">${x.ph === "run" ? "🔴" : "⏳"}</div><div class="st-m"><b>Kod ${esc(x.code)}</b><div class="st-s"></div><div class="st-s">${x.ph === "run" ? "Ketmoqda" : "O'quvchilar qo'shilmoqda"} · ${mins} daqiqa oldin ochilgan</div></div><button class="btn sm">Kuzatish →</button>`;
-      d.querySelector(".st-s").textContent = x.ttl || "";
+      d.querySelector(".st-s").textContent = (x.hn ? "👤 " + x.hn + " · " : "") + (x.ttl || "");
       d.onclick = () => String(x.code).length === 5 ? KT.host(x.code) : hAttach(x.code);
       el.appendChild(d);
     });
@@ -6611,7 +6629,7 @@ const T = (() => {
       <div class="card" style="margin-top:12px"><b>To'liq reyting</b><div id="thb" style="margin-top:10px"></div></div>`;
     if (!isTeam()) board($("thb"), list, { big: true, n: st.meta.n });
     if (!st.celebrated) { st.celebrated = true; setTimeout(() => { FX.rain(260); FX.S.win(); }, 1500); }
-    if (!st.meta.saved && list.length) {
+    if (!st.meta.saved && list.length && !st.meta.host) {
       const s = mSet(st.meta);
       list.forEach((p, i) => { const rid = `${st.code}${st.meta.seed % 1000}_${p.k}`, rk = { n: p.n, u: p.u || "", set: s.id, ttl: s.title, mode: "turnir", code: st.code, ok: p.s || 0, tot: st.meta.n, pts: Math.round((p.s || 0) * ppq()), lv: level(Math.round((p.s || 0) * ppq())) || "", dur: p.t || 0, rank: i + 1, cnt: list.length, at: DBA.now() }; if (isTeam()) { rk.ttl = "👥 " + rk.ttl; rk.tmN = tName(p.tm); } if (p.u) DBA.set(`h/${p.k}/${rid}`, { ttl: rk.ttl, mode: "turnir", ok: rk.ok, tot: rk.tot, pts: rk.pts, lv: rk.lv, rank: rk.rank, cnt: rk.cnt, at: rk.at }); if (p.u) DBA.get(`users/${p.k}/rs`).then(o => DBA.set(`users/${p.k}/rs`, { n: ((o && o.n) || 0) + 1, s: ((o && o.s) || 0) + rk.pts, last: rk.at })).catch(() => {}); DBA.set(`r/${rid}`, { n: p.n, set: s.id, ttl: s.title, mode: "turnir", code: st.code, ok: p.s || 0, tot: st.meta.n, pts: Math.round((p.s || 0) * ppq()), lv: level(Math.round((p.s || 0) * ppq())) || "", dur: p.t || 0, rank: i + 1, cnt: list.length, at: DBA.now(), u: p.u || "" }); });
       DBA.update(`t/${st.code}/meta`, { saved: 1 });
@@ -6689,7 +6707,59 @@ const T = (() => {
     else if (h === "#statistika") { if (isAdmin()) STAT.open(); else openHost(); }
     else { let a = null; try { a = JSON.parse(ls.get("zm_active") || "null"); } catch (e) {} if (a && a.code && ACCT.cur && a.u === ACCT.cur.login) { openJoin(a.code); $("tjerr").textContent = "Turniringizga qayta ulanmoqda…"; join(true); } else goHome(); }
   }
-  return { openJoin, openHost, boot, st, leave: clear };
+  // ================== DO'STLAR O'YINI (o'quvchi ochadi) ==================
+  const MY_MAX = 30;
+  const amHost = () => !!(st.meta && st.meta.host && st.meta.host === st.pid);
+  function myBar() {
+    if (!amHost()) return "";
+    return `<div class="card" style="margin-top:12px;text-align:center"><div class="sub" style="margin:0">O'yin kodi</div><div class="tcode">${st.code}</div><div class="sub" style="margin:0">Do'stlaringiz «Turnir» bo'limida shu kodni kiritadi (ko'pi bilan ${MY_MAX} kishi).</div>${SHARE.html("mySh")}<button class="btn" id="myGo" style="margin-top:12px">▶ Boshlash</button><button class="btn ghost" id="myX" style="margin-top:8px">✕ O'yinni yopish</button></div>`;
+  }
+  function myBind() {
+    if (!amHost() || !$("myGo")) return;
+    const m = st.meta;
+    SHARE.bind("mySh", { code: st.code, kind: m.team ? "team" : "turnir", ttl: mTitle(m), n: m.n, dur: Math.round(m.dur / 60000), link: link() });
+    $("myGo").onclick = async () => { const n = Object.keys(st.players || {}).length; if (n < 2 && !confirm("Hozircha faqat siz qo'shilgansiz. Baribir boshlaysizmi?")) return; $("myGo").disabled = true; await DBA.update(`t/${st.code}/meta`, { phase: "run", startAt: DBA.now() + 5000 }); DBA.update(`a/${st.code}`, { ph: "run" }).catch(() => {}); };
+    $("myX").onclick = async () => { if (!confirm("O'yin yopilsinmi?")) return; await DBA.update(`t/${st.code}/meta`, { phase: "end" }); DBA.set(`a/${st.code}`, null).catch(() => {}); ls.del("zm_mygame"); ls.del("zm_active"); clear(); goHome(); };
+  }
+  async function myOpen() {
+    const ac = ACCT.cur; if (!ac) { show("auth"); return; }
+    clear(); st.role = "student"; show("tz"); setNav("turnir"); BK(() => openJoin());
+    tz().innerHTML = `<div class="card"><div class="sub">Yuklanmoqda…</div></div>`;
+    let cfg = null, old = null; const oc = ls.get("zm_mygame");
+    try { [cfg, old] = await Promise.all([DBA.get("c/main"), oc ? DBA.get(`t/${oc}/meta`) : null]); } catch (e) {}
+    if (cfg && cfg.stuOff) { tz().innerHTML = `<div class="card" style="text-align:center"><div style="font-size:40px">🔒</div><h1>Hozircha yopiq</h1><p class="sub">Ustoz o'quvchilar o'yin ochishini vaqtincha o'chirib qo'ygan.</p><button class="btn ghost" onclick="T.openJoin()">Orqaga</button></div>`; return; }
+    const pick = SETS.filter(x => x.qs && !x.ms && x.qs.length >= 5), gs = []; pick.forEach(x => { if (!gs.includes(x.g)) gs.push(x.g); });
+    const opts = gs.map(g => { const it = pick.filter(x => x.g === g); return `<details class="tpk"><summary class="tpk-h"><b>${esc(g)}</b><small class="tpk-n">0/${it.length}</small></summary>${it.map(x => `<label class="tpk-i"><input type="checkbox" value="${x.id}"><span>${esc(x.title)}</span></label>`).join("")}</details>`; }).join("");
+    const live = old && old.host === ac.uid && old.phase !== "end" && DBA.now() - (old.c || 0) < 40 * 60000;
+    tz().innerHTML = `${live ? `<div class="card" style="margin-bottom:12px"><b>🎮 Ochiq o'yiningiz bor · kod ${esc(oc)}</b><div class="row" style="margin-top:10px"><button class="btn" id="myCont">Davom etish</button><button class="btn ghost" id="myEnd">Yopish</button></div></div>` : ""}
+      <div class="card"><h1>🎮 Do'stlar o'yini</h1><p class="sub">O'yin ochasiz, kodni do'stlaringizga yuborasiz va birga bellashasiz. Natijalar XP sifatida hisoblanadi.</p>
+      <div class="seg" id="mym"><button data-m="solo" class="on">🏆 Yakka</button><button data-m="team">👥 Jamoaviy</button></div>
+      <div id="myteam" class="hide"><label>Jamoalar soni</label><select id="myk"><option>2</option><option>3</option><option>4</option></select></div>
+      <label>Mavzular (sinfni bosib oching)</label><div id="mys" class="tpks">${opts}</div>
+      <div class="row"><div style="flex:1"><label>Savollar soni</label><select id="myn"><option>10</option><option>15</option><option>20</option></select></div><div style="flex:1"><label>Vaqt</label><select id="myd"><option value="5">5 daqiqa</option><option value="10" selected>10 daqiqa</option><option value="15">15 daqiqa</option><option value="20">20 daqiqa</option></select></div></div>
+      <div class="accerr" id="myE"></div><button class="btn" id="myC">🚀 O'yinni ochish</button></div>`;
+    if (live) { $("myCont").onclick = () => { openJoin(oc); join(); }; $("myEnd").onclick = async () => { await DBA.update(`t/${oc}/meta`, { phase: "end" }).catch(() => {}); DBA.set(`a/${oc}`, null).catch(() => {}); ls.del("zm_mygame"); myOpen(); }; }
+    $("mys").onchange = () => $("mys").querySelectorAll(".tpk").forEach(d => d.querySelector(".tpk-n").textContent = d.querySelectorAll("input:checked").length + "/" + d.querySelectorAll("input").length);
+    $("mym").onclick = e => { const b = e.target.closest("[data-m]"); if (!b) return; [...$("mym").children].forEach(x => x.classList.toggle("on", x === b)); $("myteam").classList.toggle("hide", b.dataset.m !== "team"); };
+    $("myC").onclick = async () => {
+      const ids = [...$("mys").querySelectorAll("input:checked")].map(i => i.value), E = t => $("myE").textContent = t;
+      if (!ids.length) return E("Kamida bitta mavzuni belgilang.");
+      $("myC").disabled = true; E("");
+      try {
+        if (live) { await DBA.update(`t/${oc}/meta`, { phase: "end" }).catch(() => {}); DBA.set(`a/${oc}`, null).catch(() => {}); }
+        const ss = ids.map(setById), pool = ss.reduce((a, x) => a + x.qs.length, 0), nq = Math.min(pool, +$("myn").value), dur = Math.min(20, +$("myd").value) * 60000;
+        const ttl = ss.length === 1 ? ss[0].title : (ss[0].g.split(" · ").pop() + ": " + ss.map(x => x.n).join(", ") + "-mavzular");
+        let code; for (let k = 0; k < 20; k++) { code = String(1000 + Math.floor(Math.random() * 9000)); if (!(await DBA.get(`t/${code}/meta`))) break; }
+        const meta = { phase: "lobby", set: ids[0], sets: ids, ttl, seed: Math.floor(Math.random() * 1e9), dur, n: nq, c: DBA.now(), host: ac.uid, hn: (ac.f + " " + ac.l).slice(0, 60), stu: 1 };
+        if ($("mym").querySelector(".on").dataset.m === "team") { const k = +$("myk").value; meta.team = { k, sz: Math.floor(MY_MAX / k), nm: TC.slice(0, k).map(t => t[2]) }; }
+        await DBA.set(`t/${code}/meta`, meta);
+        DBA.set(`a/${code}`, { code, set: ids[0], ttl: "🎮 " + (meta.team ? "👥 " : "") + ttl, ph: "lobby", c: meta.c, host: ac.uid, hn: meta.hn }).catch(() => {});
+        ls.set("zm_mygame", code);
+        openJoin(code); join();
+      } catch (e) { $("myC").disabled = false; E("⚠️ O'yin ochilmadi: " + (e.message || e)); }
+    };
+  }
+  return { openJoin, openHost, boot, st, leave: clear, myOpen };
 })();
 // ================== O'YIN KODINI ULASHISH (turnir, jamoaviy, katta turnir, boss) ==================
 const SHARE = (() => {
@@ -6699,10 +6769,10 @@ const SHARE = (() => {
   function html(id) {
     return `<div class="card" style="margin-top:12px;text-align:left" id="${id}"><b>📣 Ulashish</b>
       <div class="row" style="margin-top:10px;flex-wrap:wrap;gap:8px"><button class="btn ghost" data-sh="tg" style="flex:1;min-width:150px">✈️ Telegram'da ulashish</button><button class="btn ghost" data-sh="cp" style="flex:1;min-width:150px">🔗 Havolani nusxalash</button></div>
-      ${TGB.on() ? `<div class="sub" style="margin:12px 0 6px">Bot orqali yuborish:</div>
+      ${TGB.on() && isAdmin() ? `<div class="sub" style="margin:12px 0 6px">Bot orqali yuborish:</div>
       <div class="row" style="flex-wrap:wrap;gap:8px"><button class="btn ghost" data-sh="all" style="flex:1;min-width:150px">📣 Barchaga</button><button class="btn ghost" data-sh="center" style="flex:1;min-width:150px">🏫 O'quv markazi o'quvchilariga</button></div>
       <div class="row" style="margin-top:8px;gap:8px;align-items:center"><select data-sh="g" style="margin:0;flex:1"><option value="">— guruhni tanlang —</option></select><button class="btn ghost" data-sh="grp" style="flex:1">👥 Guruhga</button></div>
-      <div class="st-s" data-sh="info" style="margin-top:6px"></div>` : `<div class="st-s" style="margin-top:8px">Bot orqali hammaga yuborish uchun admin panelni Telegram'dagi bot ichidan oching.</div>`}</div>`;
+      <div class="st-s" data-sh="info" style="margin-top:6px"></div>` : `${isAdmin() ? `<div class="st-s" style="margin-top:8px">Bot orqali hammaga yuborish uchun admin panelni Telegram'dagi bot ichidan oching.</div>` : ""}`}</div>`;
   }
   // o = { code, kind, ttl, n, dur, link }
   function bind(id, o) {
