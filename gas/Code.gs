@@ -11,6 +11,7 @@
  * Sayt (Mini App) esa shu Web app orqali o'quvchini bog'laydi va xabarnomalar yuboradi.
  */
 
+var WORKER_URL = '';                            // Cloudflare Worker manzili (webhook qabulxonasi)
 var ADMIN_TG = ['zulpanov_methods'];           // ustozning Telegram username'i (kichik harflarda)
 var CONTACT = '@ZULPANOV_METHODS';
 var CONTACT_URL = 'https://t.me/ZULPANOV_METHODS';
@@ -155,10 +156,27 @@ var FN = {
   }
 };
 
+// Webhook maxfiy kaliti: tokendan hosil qilinadi, Telegram uni har so'rovda qaytaradi
+function whSecret_() {
+  return Utilities.computeHmacSha256Signature('wh', token_()).map(function (x) { return ('0' + (x & 255).toString(16)).slice(-2); }).join('').slice(0, 32);
+}
+function handleUpdate_(up) {
+  if (!up || up.update_id == null) return;
+  var c = CacheService.getScriptCache(), k = 'up:' + up.update_id;
+  if (c.get(k)) return; c.put(k, '1', 21600);
+  if (up.callback_query) onCallback_(up.callback_query); else onMessage_(up.message);
+}
+
 function out_(o) { return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON); }
 function doPost(e) {
   try {
     var b = JSON.parse((e && e.postData && e.postData.contents) || '{}');
+    if (b.tg) {
+      if (String(b.s || '') !== whSecret_()) return out_({ ok: false });
+      try { setCommands_(); } catch (e1) {}
+      handleUpdate_(JSON.parse(b.tg));
+      return out_({ ok: true });
+    }
     if (!FN[b.fn]) return out_({ ok: false, err: 'Noma’lum amal' });
     var u = verifyInit_(b.initData);
     return out_({ ok: true, r: FN[b.fn](b.input || {}, u) });
@@ -282,7 +300,17 @@ function poll() {
   } finally { lock.releaseLock(); }
 }
 
-// ---------------- Bir martalik sozlash ----------------
+// ---------------- Webhook rejimi (Cloudflare Worker orqali, tezkor) ----------------
+function setupWebhook() {
+  if (!WORKER_URL) throw new Error('WORKER_URL bo‘sh');
+  ScriptApp.getProjectTriggers().forEach(function (t) { if (t.getHandlerFunction() === 'poll') ScriptApp.deleteTrigger(t); });
+  try { poll(); } catch (e) {}   // navbatda qolgan xabarlarni olib qo'yish
+  tg_('setWebhook', { url: WORKER_URL, secret_token: whSecret_(), allowed_updates: ['message', 'callback_query'], drop_pending_updates: false, max_connections: 20 });
+  P.deleteProperty('CMDV'); setCommands_();
+  console.log('✅ Webhook yoqildi: ' + WORKER_URL + '\n' + JSON.stringify(tg_('getWebhookInfo')));
+}
+
+// ---------------- Bir martalik sozlash (eski usul: har daqiqada tekshirish) ----------------
 function setup() {
   tg_('deleteWebhook', { drop_pending_updates: false });
   P.deleteProperty('BOT_NAME');
