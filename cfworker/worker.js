@@ -393,7 +393,7 @@ const VFN = {
     const hw = i.hw ? str(i.hw, 40) : "";
     const h = { ttl: str(i.ttl, 100), mode: "test", ok: g.ok, tot: g.tot, pts, lv, at, v: 1 }; if (hw) h.hw = hw;
     await db(env, "PUT", `h/${uid}/${id}`, h);
-    const sec = g.sec || (i.sec && typeof i.sec === "object" ? i.sec : undefined);
+    const s0 = g.sec || (i.sec && typeof i.sec === "object" ? i.sec : null), sec = s0 ? Object.fromEntries(Object.entries(s0).slice(0, 30).map(([k, v]) => [sKey(k).slice(0, 60), Array.isArray(v) ? v.slice(0, 2).map(Number) : 0])) : undefined;
     await db(env, "PUT", "r/" + id, { ...h, n: str(((user.f || "") + " " + (user.l || "")).trim() || i.n, 80), u: str(user.login, 40), set: str(i.set, 40), dur, ...(sec ? { sec } : {}) }).catch(() => {});
     const x = await syncLb(env, uid, user).catch(() => null);
     return { id, ok: g.ok, tot: g.tot, pts, lv, ...(x || {}) };
