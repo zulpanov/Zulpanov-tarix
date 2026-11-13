@@ -27,7 +27,7 @@
 window.TG_BOT = "alimqul_tarix_testbot";   // bot username (@ belgisisiz), masalan: zulpanov_tarix_bot
 window.TG_APP = "";   // BotFather /newapp da berilgan qisqa nom, masalan: app
 (function(){var h=location.hash||"",q=location.search||"";if(!/tgWebApp/.test(h+q))return;window.IN_TG=true;
-  var m=(h+"&"+q).match(/tgWebAppStartParam=([^&]+)/);window.TG_START=m?decodeURIComponent(m[1]):"";window.TG_SRC="";(function(){var t=window.TG_START,i=t.indexOf("__");if(i>=0){window.TG_SRC=t.slice(i+2);t=t.slice(0,i)}if(/^s-/.test(t)){window.TG_SRC=t.slice(2);t=""}window.TG_START=t})();
+  var m=(h+"&"+q).match(/tgWebAppStartParam=([^&]+)/);window.TG_START=m?decodeURIComponent(m[1]):"";window.TG_SRC="";(function(){var t=window.TG_START,i=t.indexOf("__");if(i>=0){window.TG_SRC=t.slice(i+2);t=t.slice(0,i)}if(/^s-/.test(t)){window.TG_SRC=t.slice(2);t=""}if(/^r-/.test(t)){window.TG_REF=t.slice(2);if(!window.TG_SRC)window.TG_SRC="dost";t=""}window.TG_START=t})();
   document.write('<script src="https://telegram.org/js/telegram-web-app.js"><\/script>');})();
 </script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&family=PT+Serif:wght@400;700&display=swap" rel="stylesheet">
@@ -3223,6 +3223,7 @@ const ST=(()=>{ // st/<kun>/<kalit> = son. Faqat sonlar, shaxsiy ma'lumot yo'q
     if(cur)return cur;
     let t="";try{t=norm(new URLSearchParams(location.search).get("s")||new URLSearchParams(location.search).get("utm_source"))}catch(e){}
     if(!t&&window.TG_SRC)t=norm(window.TG_SRC);
+    try{if(!t&&new URLSearchParams(location.search).get("r"))t="dost"}catch(e){}
     if(t==="instagram")t="ig";
     if(!t&&/instagram/i.test(document.referrer||""))t="ig";
     if(t){try{localStorage.setItem("zm_src",JSON.stringify({s:t,t:Date.now()}))}catch(e){}return cur=t}
@@ -3230,13 +3231,31 @@ const ST=(()=>{ // st/<kun>/<kalit> = son. Faqat sonlar, shaxsiy ma'lumot yo'q
     return cur=window.IN_TG?"tg":"web";
   }
   // Telegramga o'tkazadigan havolaga manbani qo'shish: startapp=asos__belgi
-  const tg=base=>{const t=src(),own=t==="tg"||t==="web";if(own)return base;return base?base+"__"+t:"s-"+t};
+  const tg=base=>{const r=ref();if(r&&!base)return "r-"+r;const t=src(),own=t==="tg"||t==="web";if(own)return base;return base?base+"__"+t:"s-"+t};
   function visit(){
     try{if(sessionStorage.getItem("zm_vs"))return;sessionStorage.setItem("zm_vs","1")}catch(e){}
     const d=day();let first=false;try{if(localStorage.getItem("zm_vd")!==d){localStorage.setItem("zm_vd",d);first=true}}catch(e){}
     hit("v");if(first){hit("u");hit("s_"+src())}
   }
-  return{day,hit,visit,src,tg};
+  function ref(){
+    let r="";try{r=new URLSearchParams(location.search).get("r")||""}catch(e){}
+    if(!r&&window.TG_REF)r=window.TG_REF;
+    r=String(r).replace(/[^A-Za-z0-9]/g,"").slice(0,12);
+    if(r){try{localStorage.setItem("zm_ref",JSON.stringify({r,t:Date.now()}))}catch(e){}return r}
+    try{const o=JSON.parse(localStorage.getItem("zm_ref")||"null");if(o&&o.r&&Date.now()-o.t<30*864e5)return o.r}catch(e){}
+    return "";
+  }
+  const myRef=()=>{const c=typeof ACCT!=="undefined"&&ACCT.cur;return c&&c.uid?String(c.uid).slice(0,10):""};
+  return{day,hit,visit,src,tg,ref,myRef};
+})();
+const REF=(()=>{ // Do'stlarni taklif qilish: shaxsiy havola (bonus kunlar premium ishga tushganda hisoblanadi)
+  const url=()=>"https://zulpanov.github.io/Zulpanov-tarix/?s=dost&r="+ST.myRef()+"#kun";
+  function card(){ if(!ST.myRef())return ""; return `<button class="kunbtn" id="refGo" style="margin-top:10px;border-color:rgba(52,211,153,.45);background:linear-gradient(135deg,rgba(52,211,153,.14),rgba(59,130,246,.10))"><span class="kun-i">🤝</span><span class="kun-t"><b>Do'stlarni taklif qilish</b><small>Har bir do'stingiz uchun +3 kun Premium (tez orada)</small></span><span class="kun-a">›</span></button>`; }
+  function bind(){ const b=$("refGo"); if(!b)return; b.onclick=()=>{ const u=url(), txt="📚 Tarixdan testlar, Milliy sertifikat variantlari va turnirlar. Men shu yerda tayyorlanyapman — sen ham qo'shil! Ro'yxatdan o'tmasdan Kun testini ishlab ko'r:";
+      const sh=`https://t.me/share/url?url=${encodeURIComponent(u)}&text=${encodeURIComponent(txt)}`;
+      try{ if(window.Telegram&&Telegram.WebApp&&Telegram.WebApp.openTelegramLink){Telegram.WebApp.openTelegramLink(sh);return} }catch(e){}
+      window.open(sh,"_blank"); }; }
+  return{card,bind,url};
 })();
 const KUN=(()=>{
   const day=()=>ST.day(),dd=()=>{const[y,m,d]=day().split("-");return d+"."+m};
@@ -3254,7 +3273,7 @@ const KUN=(()=>{
   const doneKey=()=>"zm_kun_"+day(),done=()=>{try{return localStorage.getItem(doneKey())}catch(e){return null}};
   function go(){set=make();start()}
   function started(){ST.hit("kun_s");ST.hit("ks_"+ST.src())}
-  const link=()=>"https://zulpanov.github.io/Zulpanov-tarix/?s=dost#kun";
+  const link=()=>"https://zulpanov.github.io/Zulpanov-tarix/?s=dost"+(ST.myRef()?"&r="+ST.myRef():"")+"#kun";
   function result(st,ok,tot){
     const box=$("kunRes");if(!box)return;box.innerHTML="";if(!st||!st.kun)return;
     try{localStorage.setItem(doneKey(),ok+"/"+tot)}catch(e){}
@@ -4662,6 +4681,7 @@ const BOTP = (() => {
         <button class="btn" id="bpR">📊 Hisobotlarni yuborish</button><div class="accerr" id="bpRe"></div></div>
       <div class="card" style="margin-top:12px"><h1>✉️ Xabar yuborish</h1>
         <div class="row"><div style="flex:1"><label>Kimga</label><select id="bpT"><option value="stu">O'quvchilarga</option><option value="par">Ota-onalarga</option><option value="all">Hammaga</option></select></div><div style="flex:1"><label>Guruh</label><select id="bpG2">${gopt}</select></div></div>
+        <label>Shablon</label><select id="bpTpl"><option value="">— tanlang yoki o'zingiz yozing —</option><option>❗ Bugungi dars bekor qilindi. Keyingi dars: [kun], soat [vaqt].</option><option>⏰ Eslatma: ertaga soat [vaqt] da dars bor. Kechikmang!</option><option>📝 Yangi uy vazifasi berildi. Muddat: [sana]. Platformada «Vazifalar» bo'limini oching.</option><option>🎓 Milliy sertifikat imtihoniga [N] kun qoldi! Har kuni kamida 1 ta variant ishlang.</option><option>🆕 Platformaga yangi testlar qo'shildi: [mavzu]. Sinab ko'ring!</option><option>🏆 [sana] kuni soat [vaqt] da «Tarix chempionati» bo'lib o'tadi. G'oliblarga sovg'alar bor!</option><option>📚 Tarix kursiga qabul ochildi! BRO ACADEMY, Bulung'ur tumani, 39-kollej ro'parasida. Dushanba, chorshanba, juma — soat 14:00. Yozilish: @ZULPANOV_METHODS</option><option>📅 Bugungi Kun testi tayyor — 10 ta savol. Do'stlaringiz bilan natijani solishtiring!</option></select>
         <label>Xabar matni</label><textarea id="bpM" rows="4" placeholder="Masalan: Ertaga soat 15:00 da dars bo'ladi." style="width:100%"></textarea>
         <button class="btn" id="bpB">✉️ Yuborish</button><div class="accerr" id="bpBe"></div></div>`;
     if (!TGB.on()) { ["bpR", "bpB"].forEach(id => $(id).disabled = true); return; }
@@ -4669,6 +4689,7 @@ const BOTP = (() => {
       $("bpS").innerHTML = `Botga ulangan o'quvchilar: <b>${s.students}</b> · ota-onalar: <b>${s.parents}</b> (${s.kids} ta o'quvchining)` + (Object.keys(s.groups || {}).length ? "<br>" + Object.entries(s.groups).map(([g, n]) => `${esc(g)}: ${n}`).join(" · ") : "")
         + ((s.arizalar || []).length ? `<div style="margin-top:10px"><b>🎓 Oxirgi arizalar</b>${s.arizalar.map(a => `<div style="margin-top:4px">${esc(a.name)}${a.user ? " (@" + esc(a.user) + ")" : ""} — <a href="tel:${esc(a.phone)}">${esc(a.phone)}</a> · ${dt(a.at)}</div>`).join("")}</div>` : ""); }).catch(e => { $("bpS").textContent = "Bot bilan bog'lanib bo'lmadi: " + TGB.msg(e) + ". Admin panelga bot ichidan qayta kiring."; });
     $("bpR").onclick = report; $("bpB").onclick = broadcast;
+    $("bpTpl").onchange = () => { const v = $("bpTpl").value; if (v) { $("bpM").value = v; $("bpM").focus(); const i = v.indexOf("["); if (i >= 0) { const j = v.indexOf("]", i); try { $("bpM").setSelectionRange(i, j + 1); } catch (e) {} } } };
   }
   async function report() {
     const b = $("bpR"), E = m => $("bpRe").textContent = m; b.disabled = true; E("Tayyorlanmoqda…");
@@ -4908,6 +4929,7 @@ const ACCT = (() => {
     if (!r) {
       try { await DBA.set("logins/" + a.login, uid); } catch (e) {}
       r = { f, l, g: "", login: a.login, tg: 1, bx: 50, src: ST.src(), c: DBA.now(), last: DBA.now() };
+      { const rf = ST.ref(); if (rf && rf !== String(uid).slice(0, 10)) r.ref = rf; }
       await DBA.set("users/" + uid, r);
       ST.hit("new"); ST.hit("n_" + ST.src());
       r.isNew = true;
@@ -5090,7 +5112,7 @@ const ACCT = (() => {
     $("wlAv").innerHTML = AV.html(cur.uid, cur.f + " " + cur.l, "fill"); $("wlAv").onclick = () => PRF.open(); $("wlAv").style.cursor = "pointer";
     if (!$("wlPf")) $("wlX").insertAdjacentHTML("beforebegin", `<button class="btn ghost sm" id="wlPf" style="margin-right:6px" title="Profil sozlamalari">⚙️</button>`); $("wlPf").onclick = () => PRF.open(); $("wlN").textContent = cur.f + " " + cur.l;
     $("wlG").textContent = "@" + cur.login + (cur.g ? " · " + cur.g : ""); $("wlHi").textContent = greet();
-    PWA.render(); try { $("homeKun").innerHTML = KUN.card(); KUN.bind(); } catch (e) {}
+    PWA.render(); try { $("homeKun").innerHTML = KUN.card() + REF.card(); KUN.bind(); REF.bind(); } catch (e) {}
     $("wlX").onclick = () => { if (TGB.on()) TGB.call("unlink").catch(() => {}); logout(); };
     watchH();
     const fill = () => {
