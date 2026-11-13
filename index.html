@@ -347,6 +347,9 @@ input,select,textarea,button{font-family:inherit}
 @media (prefers-reduced-motion:reduce){.planet,.sky-ring,.sat{animation:none}}
 
 /* ===== ADMIN: PANEL + PASTKI MENYU ===== */
+.kunbtn{display:flex;align-items:center;gap:12px;width:100%;margin:14px 0 4px;padding:12px 14px;border:1px solid rgba(250,204,21,.45);border-radius:16px;background:linear-gradient(135deg,rgba(250,204,21,.16),rgba(249,115,22,.12));color:var(--tx);font-family:inherit;text-align:left;cursor:pointer}
+.kunbtn .kun-i{font-size:28px}.kunbtn .kun-t{flex:1;display:flex;flex-direction:column;gap:2px}.kunbtn .kun-t b{font-size:15px}.kunbtn .kun-t small{font-size:12px;color:var(--mu)}.kunbtn .kun-a{font-size:22px;color:var(--mu)}
+#homeKun .kunbtn{margin:0}
 .anav{display:none}body.adm .anav{display:grid}body.adm #bnav{display:none!important}body.adm .wrap{padding-bottom:110px}
 body.adm #bkb{display:none!important}
 .adh{display:flex;align-items:center;gap:10px;margin:2px 0 12px}.adh-t{flex:1;min-width:0}.adh-t small{display:block;font-size:11.5px;color:var(--mu)}.adh-t b{font-size:17px}.adh0 .adh-t b{font-size:18px}
@@ -583,6 +586,7 @@ body.dlm #bkb{display:none!important}
       <div id="wlLv" style="position:relative;z-index:1;margin-top:12px"></div>
       <div class="wl-stats"><div><b id="wlT">0</b><span>Ishlangan test</span></div><div><b id="wlA">—</b><span>O'rtacha ball</span></div><div><b id="wlB">—</b><span>Eng yuqori</span></div></div>
     </div>
+    <div id="homeKun" style="margin-top:12px"></div>
     <div id="homeHW"></div>
     <div class="card contc" id="homeLast" style="display:none"></div>
     <div class="hsec-t">Bo'limlar</div>
@@ -632,6 +636,7 @@ body.dlm #bkb{display:none!important}
       </div>
       <div class="mast" id="mast"></div>
       <div id="certBox" style="margin-bottom:18px"><img id="cert" alt="Sertifikat" style="width:100%;border-radius:12px;display:block"><p style="font-size:12px;color:var(--mu);margin-top:8px">📲 Saqlash uchun sertifikat ustiga barmog'ingizni bosib turing → "Rasmni saqlash"</p></div>
+      <div id="kunRes"></div>
       <button class="btn" id="again">🏠 Bosh sahifaga qaytish</button>
     </div>
     <div class="filter"><button class="on" data-f="all">Hammasi</button><button data-f="wrong">Xatolar</button><button data-f="good">To'g'rilar</button></div>
@@ -3207,13 +3212,65 @@ const ROT=(()=>{const key=st=>"zm_rot_"+((typeof ACCT!=="undefined"&&ACCT.cur&&(
   const r=(d.r||0)+1;const idx=shuffle(st.qs.map((_,i)=>i)).sort((x,y)=>(d.s[x]||0)-(d.s[y]||0));const ch=idx.slice(0,Math.min(N,L));
   ch.forEach(i=>d.s[i]=r);d.r=r;try{localStorage.setItem(key(st),JSON.stringify(d))}catch(e){}return shuffle(ch.map(i=>st.qs[i]))}
  return{pick}})();
+// ================== KUN TESTI (ro'yxatdan o'tmasdan) + KIRISHLAR STATISTIKASI ==================
+const ST=(()=>{ // st/<kun>/<kalit> = son. Faqat sonlar, shaxsiy ma'lumot yo'q
+  const day=()=>new Date(Date.now()+5*3600e3).toISOString().slice(0,10); // Toshkent vaqti
+  const hit=k=>{try{if(DBA.inc)DBA.inc("st/"+day()+"/"+k).catch(()=>{})}catch(e){}};
+  function visit(){
+    try{if(sessionStorage.getItem("zm_vs"))return;sessionStorage.setItem("zm_vs","1")}catch(e){}
+    const d=day();let first=false;try{if(localStorage.getItem("zm_vd")!==d){localStorage.setItem("zm_vd",d);first=true}}catch(e){}
+    const q=location.search+"&"+(window.TG_START||""),ref=document.referrer||"";
+    const src=/[?&](s|utm_source)=(ig|instagram)/i.test(q)||/instagram/i.test(ref)||/^ig/.test(window.TG_START||"")?"ig":window.IN_TG?"tg":"web";
+    hit("v");if(first){hit("u");hit("s_"+src)}
+  }
+  return{day,hit,visit};
+})();
+const KUN=(()=>{
+  const day=()=>ST.day(),dd=()=>{const[y,m,d]=day().split("-");return d+"."+m};
+  const rnd=seed=>()=>{seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296};
+  let cache=null;
+  function make(){
+    if(cache&&cache.day===day())return cache.st;
+    const r=rnd(+day().replace(/-/g,"")*7+3),pool=SETS.filter(x=>x.qs&&!x.ms&&x.qs.length>=10);
+    const used=new Set(),qs=[];let guard=0;
+    while(qs.length<10&&guard++<500){const st=pool[Math.floor(r()*pool.length)],q=st.qs[Math.floor(r()*st.qs.length)];
+      if(!q||!q.q||!q.o||q.o.length!==4||used.has(q.q))continue;used.add(q.q);qs.push({...q,t:q.t||st.title,m:st.title})}
+    const st={id:"kun",kun:1,n:"📅",title:"Kun testi · "+dd(),g:"Kun testi",subj:"Tarix",qs};
+    cache={day:day(),st};return st;
+  }
+  const doneKey=()=>"zm_kun_"+day(),done=()=>{try{return localStorage.getItem(doneKey())}catch(e){return null}};
+  function go(){set=make();start()}
+  function started(){ST.hit("kun_s")}
+  const link=()=>"https://zulpanov.github.io/Zulpanov-tarix/#kun";
+  function result(st,ok,tot){
+    const box=$("kunRes");if(!box)return;box.innerHTML="";if(!st||!st.kun)return;
+    try{localStorage.setItem(doneKey(),ok+"/"+tot)}catch(e){}
+    ST.hit(ACCT.cur?"kun_f":"kun_g");
+    const txt=`📅 Bugungi tarix testidan ${ok}/${tot} topdim. Sen-chi? 10 ta savol, ro'yxatdan o'tish shart emas:`;
+    const share=`https://t.me/share/url?url=${encodeURIComponent(link())}&text=${encodeURIComponent(txt)}`;
+    box.innerHTML=`<div class="card" style="margin:0 0 14px;text-align:left;background:rgba(124,58,237,.12)">
+      <b>📅 Ertaga yangi 10 ta savol!</b><div class="st-s" style="margin:4px 0 10px">Do'stlaringizni ham sinab ko'ring — kim ko'proq topadi?</div>
+      <a class="btn" href="${share}" target="_blank" rel="noopener" style="display:block;text-align:center;text-decoration:none">✈️ Do'stlarimga yuborish</a>
+      ${ACCT.cur?"":`<div class="st-s" style="margin:12px 0 8px">Natijangiz saqlanishi, XP to'plash, 5 700+ test va reytingga chiqish uchun kiring:</div>
+      ${window.IN_TG?`<button class="btn ghost" id="kunIn" style="width:100%">✈️ Telegram orqali kirish (+50 XP)</button>`:`<a class="btn ghost" href="https://t.me/${window.TG_BOT}?startapp=kun" style="display:block;text-align:center;text-decoration:none">✈️ Telegram orqali kirish (+50 XP)</a>`}`}</div>`;
+    if($("kunIn"))$("kunIn").onclick=()=>goHome();
+  }
+  function card(){ // auth va bosh sahifadagi tugma
+    const d=done();
+    return `<button class="kunbtn" id="kunGo"><span class="kun-i">📅</span><span class="kun-t"><b>Kun testi · ${dd()}</b><small>${d?`Bugun: ${d} ✓ · yana ishlash`:"10 ta savol · ro'yxatdan o'tish shart emas"}</small></span><span class="kun-a">›</span></button>`;
+  }
+  function bind(){const b=$("kunGo");if(b)b.onclick=go}
+  return{make,go,started,result,card,bind};
+})();
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
 function start(){
   FROM_T=false;TEAMWIN="";HWCUR=HWNEXT;HWNEXT=null;
   if(set.ms&&!HWCUR&&!MSACC.can(set)&&!MSACC.saved(set)){FX.toast("🔒 Bu variant hali yopiq. Ustoz ruxsat berganda ochiladi.");return}
   if(set.ms){const ac=ACCT.cur;if(!ac)return;FN=ac.f;LN=ac.l;name=FN+" "+LN;return MS.start()}
-  const ac=ACCT.cur;if(!ac)return;FN=ac.f;LN=ac.l;name=FN+" "+LN;
-  if(!set.qs){Q=shuffle(SETS.filter(s=>s.qs&&!s.ms&&s.g===set.g).flatMap(s=>s.qs)).slice(0,20)}else if(!HWCUR){Q=ROT.pick(set,25)}else{Q=set.qs}
+  const ac=ACCT.cur;
+  if(set.kun){FN=ac?ac.f:"Mehmon";LN=ac?ac.l:"";name=ac?FN+" "+LN:"Mehmon";Q=set.qs.slice();KUN.started()}else{
+  if(!ac)return;FN=ac.f;LN=ac.l;name=FN+" "+LN;
+  if(!set.qs){Q=shuffle(SETS.filter(s=>s.qs&&!s.ms&&s.g===set.g).flatMap(s=>s.qs)).slice(0,20)}else if(!HWCUR){Q=ROT.pick(set,25)}else{Q=set.qs}}
   order=Q.map((q,i)=>({i,idx:shuffle([0,1,2,3])}));
   ans=Array(Q.length).fill(null);cur=0;t0=Date.now();
   clearInterval(tick);$("tm").textContent="00:00";
@@ -3256,7 +3313,7 @@ function render(){
 $("qnav").onclick=()=>$("qsheet").classList.toggle("hide");
 $("qsheet").onclick=e=>{if(e.target.id==="qsheet")$("qsheet").classList.add("hide")};
 let qxAt=0;$("qx").onclick=()=>{if(Date.now()-qxAt>3000){qxAt=Date.now();FX.toast("Testdan chiqish uchun ✕ ni yana bir marta bosing. Natija saqlanmaydi.");return}
-  qxAt=0;clearInterval(tick);$("qsheet").classList.add("hide");if(HWCUR){HWCUR=null;goHome();return}renderTopics();show("start");window.scrollTo(0,0)};
+  qxAt=0;clearInterval(tick);$("qsheet").classList.add("hide");if(HWCUR||(set&&set.kun)){HWCUR=null;goHome();return}renderTopics();show("start");window.scrollTo(0,0)};
 $("prev").onclick=()=>{if(cur>0){cur--;render();window.scrollTo(0,0)}};
 $("next").onclick=()=>{
   if(cur<Q.length-1){cur++;render();window.scrollTo(0,0);return}
@@ -3278,7 +3335,7 @@ function finish(){
   $("sOk").textContent=ok;$("sBad").textContent=Q.length-ok;$("sT").textContent=time;
   const lv=level(pts);
   $("gr").textContent=lv?lv+" sertifikati":"Sertifikat uchun kamida 45 ball kerak";$("gr").style.background=lv?(pts>=65?"var(--ok)":pts>=55?"var(--ac2)":"var(--ac)"):"var(--bad)";
-  const showC=(lv||(FROM_T&&TEAMWIN))&&set.id!=="err";$("certBox").style.display=showC?"":"none";
+  const showC=(lv||(FROM_T&&TEAMWIN))&&set.id!=="err"&&!set.kun;$("certBox").style.display=showC?"":"none";
   if(!lv&&showC)$("gr").textContent="🏆 G‘olib jamoa sertifikati";
   if(showC)drawCert(lv||"G‘olib jamoa a’zosi",pts,ok,time,by);
   const m=$("mast");m.innerHTML="";
@@ -3302,6 +3359,8 @@ function finish(){
   });
   setFilter("all");show("res");
   if(lv){setTimeout(()=>{FX.rain(pts>=70?220:120);FX.S.win()},900)}
+  KUN.result(set,ok,Q.length);
+  if(set.kun&&!ACCT.cur)return;
   if(!FROM_T){const R={n:name,set:set.id,ttl:set.title,mode:"test",ok,tot:Q.length,pts,lv:lv||"",dur:Date.now()-t0,sec:by};if(HWCUR)R.hw=HWCUR.id;saveResult(R)}
 }
 function level(p){return p>=70?"A+":p>=65?"A":p>=60?"B+":p>=55?"B":p>=50?"C+":p>=45?"C":null}
@@ -4328,11 +4387,23 @@ const STAT = (() => {
     const now = Date.now(), lim = per === "day" ? 86400e3 : per === "week" ? 7 * 86400e3 : per === "month" ? 30 * 86400e3 : Infinity;
     return list().filter(r => (!q || norm(r.n + " " + (r.u || "")).includes(norm(q))) && (!fset || r.set === fset) && (now - r.at <= lim));
   }
+  async function visits() {
+    let v = null; try { v = await DBA.get("st"); } catch (e) {}
+    const el = $("stVis"); if (!el) return;
+    const days = []; for (let i = 13; i >= 0; i--) days.push(new Date(Date.now() + 5 * 3600e3 - i * 86400e3).toISOString().slice(0, 10));
+    const g = (d, k) => ((v || {})[d] || {})[k] || 0, sum = k => days.reduce((a, d) => a + g(d, k), 0);
+    const mx = Math.max(1, ...days.map(d => g(d, "u")));
+    const tot = [["u", "👤 Kirgan odam"], ["s_tg", "✈️ Telegramdan"], ["s_web", "🌐 Brauzerdan"], ["s_ig", "📸 Instagramdan"], ["new", "🆕 Yangi hisob"], ["kun_s", "📅 Kun testi boshlandi"], ["kun_f", "✅ Tugatdi (kirganlar)"], ["kun_g", "✅ Tugatdi (mehmonlar)"]];
+    el.innerHTML = `<h3 style="margin:0 0 4px">🌐 Saytga kirishlar · oxirgi 14 kun</h3><div class="sub" style="margin:0 0 10px">Har kuni har bir qurilma bir marta sanaladi. Hisoblash 13.11.2026 dan boshlangan.</div>
+      <div class="chart" style="height:120px">${days.map(d => `<div class="cb" title="${d}: ${g(d, "u")} kishi, ${g(d, "v")} marta kirish"><small>${g(d, "u") || ""}</small><i style="height:${Math.max(3, g(d, "u") / mx * 100)}%;background:var(--ac)"></i></div>`).join("")}</div>
+      <div class="st-s" style="display:flex;justify-content:space-between;margin:4px 0 12px"><span>${days[0].slice(8)}.${days[0].slice(5, 7)}</span><span>bugun</span></div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px">${tot.map(([k, l]) => `<div class="strow" style="cursor:default;margin:0"><div class="st-m"><div class="st-s">${l}</div><b style="font-size:18px">${sum(k)}</b>${k === "u" ? ` <span class="st-s">· bugun ${g(days[13], "u")}</span>` : ""}</div></div>`).join("")}</div>`;
+  }
   const lvColor = lv => !lv ? "var(--bad)" : /A/.test(lv) ? "var(--ok)" : /B/.test(lv) ? "var(--ac2)" : "var(--ac)";
   function open() {
     if (!isAdmin()) return T.openHost();
     if (typeof T !== "undefined") T.leave(); if (typeof ACC !== "undefined") ACC.leave();
-    show("tz");
+    show("tz"); setTimeout(visits, 0);
     $("tz").innerHTML = `${adminNav("stat")}<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
       <h1 style="margin:0">📊 Statistika</h1><div class="row" style="flex:0 0 auto"><button class="btn ghost sm" id="stCsv">⬇ Excel (CSV)</button></div></div>
       <div class="sub" id="stNote" style="margin:6px 0 14px">Yuklanmoqda…</div>
@@ -4342,6 +4413,7 @@ const STAT = (() => {
         <select id="stSet" style="flex:2;min-width:140px;margin:0"><option value="">Barcha testlar</option>${SETS.map(s => `<option value="${s.id}">${esc((s.n === "∑" ? "" : s.n + " · ") + s.title)}</option>`).join("")}</select>
         <select id="stPer" style="flex:1;min-width:110px;margin:0"><option value="all">Hammasi</option><option value="day">Bugun</option><option value="week">7 kun</option><option value="month">30 kun</option></select>
       </div></div>
+      <div class="card" id="stVis" style="margin-top:12px"><h3 style="margin:0 0 6px">🌐 Saytga kirishlar</h3><div class="sub" style="margin:0">Yuklanmoqda…</div></div>
       <div class="sttabs" id="stTabs">${[["res", "🕒 Oxirgi natijalar"], ["stu", "👥 O'quvchilar"], ["tst", "📚 Testlar"], ["tur", "🏆 Turnirlar"]].map(([k, l]) => `<button data-t="${k}" class="${k === tab ? "on" : ""}">${l}</button>`).join("")}</div>
       <div id="stBody"></div>
       <div style="text-align:center;margin-top:18px"><button class="btn ghost sm" id="stClr" style="color:var(--bad)">Barcha natijalarni o'chirish</button></div>`;
@@ -4773,7 +4845,7 @@ const ACCT = (() => {
       try { await DBA.set("logins/" + a.login, uid); } catch (e) {}
       r = { f, l, g: "", login: a.login, tg: 1, bx: 50, c: DBA.now(), last: DBA.now() };
       await DBA.set("users/" + uid, r);
-      try { await DBA.set("pw/" + uid, "Telegram orqali"); } catch (e) {}
+      try { await DBA.set("pw/" + uid, "Telegram orqali"); } catch (e) {} ST.hit("new");
       r.isNew = true;
     }
     if (r.b) { await AUTH.signOut(); throw { uz: "Hisobingiz ustoz tomonidan bloklangan." }; }
@@ -4847,12 +4919,13 @@ const ACCT = (() => {
         <h2>Kirish uchun +50 XP sovg'a</h2>
         <p>Har bir to'g'ri javob — ball. Ball to'plang, darajangizni oshiring, haftalik reytingga chiqing.</p>
         <div class="xpchips"><span>Kun ketma-ketligi</span><span>Nishonlar</span><span>Reyting</span></div>
+        ${KUN.card()}
         ${inTg ? `<button class="tgbtn" id="aTg">${tgIc}<span>Telegram orqali kirib, XP olish</span></button>`
                : `<a class="tgbtn" id="aTgL" href="https://t.me/alimqul_tarix_testbot?startapp${HW.pend() ? "=g-" + HW.pend() : ""}">${tgIc}<span>Telegram orqali kirib, XP olish</span></a><p class="sub" style="text-align:center;margin:10px 0 0">Telegram ilovasi ochiladi · login va parol kerak emas</p>`}
         <div class="accerr" id="aE" style="text-align:center"></div>
         ${inTg ? `<button class="xpmv" id="aMvL">Avval login bilan ro'yxatdan o'tganmisiz? <u>Hisobni ko'chirish</u></button><div id="aMove"></div>` : ""}
       </div>`;
-    if ($("aTg")) $("aTg").onclick = tgGo;
+    if ($("aTg")) $("aTg").onclick = tgGo; KUN.bind();
     if ($("aMvL")) $("aMvL").onclick = () => { $("aMvL").remove(); moveForm(); };
     if (msg) $("aE").textContent = msg;
   }
@@ -4953,7 +5026,7 @@ const ACCT = (() => {
     $("wlAv").innerHTML = AV.html(cur.uid, cur.f + " " + cur.l, "fill"); $("wlAv").onclick = () => PRF.open(); $("wlAv").style.cursor = "pointer";
     if (!$("wlPf")) $("wlX").insertAdjacentHTML("beforebegin", `<button class="btn ghost sm" id="wlPf" style="margin-right:6px" title="Profil sozlamalari">⚙️</button>`); $("wlPf").onclick = () => PRF.open(); $("wlN").textContent = cur.f + " " + cur.l;
     $("wlG").textContent = "@" + cur.login + (cur.g ? " · " + cur.g : ""); $("wlHi").textContent = greet();
-    PWA.render();
+    PWA.render(); try { $("homeKun").innerHTML = KUN.card(); KUN.bind(); } catch (e) {}
     $("wlX").onclick = () => { if (TGB.on()) TGB.call("unlink").catch(() => {}); logout(); };
     watchH();
     const fill = () => {
@@ -5903,6 +5976,7 @@ const DBA = (() => {
       async get(p) { const d = await wake(); return (await d.ref(p).get()).val(); },
       async set(p, v) { const d = await wake(); return d.ref(p).set(v); },
       async update(p, v) { const d = await wake(); return d.ref(p).update(v); },
+      async inc(p) { const d = await init(); return d.ref(p).set(firebase.database.ServerValue.increment(1)); },
       on(p, cb) {
         let r, fn, stop = false; live.set(p, (live.get(p) || 0) + 1);
         wake().then(d => { if (stop) return; r = d.ref(p); fn = s => cb(s.val()); r.on("value", fn, () => cb(null)); });
@@ -6564,6 +6638,8 @@ const T = (() => {
     if (AUTH.FB) { show("auth"); await AUTH.ready().catch(() => {}); }
     if (window.IN_TG) await ACCT.restore().catch(() => {}); else ACCT.restore();
     if (window.IN_TG) { try { const w = Telegram.WebApp; w.ready(); w.expand(); w.disableVerticalSwipes && w.disableVerticalSwipes(); w.setHeaderColor && w.setHeaderColor("#0A0720"); w.setBackgroundColor && w.setBackgroundColor("#0A0720"); } catch (e) {} }
+    try { ST.visit(); } catch (e) {}
+    if ((window.IN_TG ? window.TG_START === "kun" : location.hash === "#kun")) { try { if (!window.IN_TG) history.replaceState(null, "", location.pathname + location.search); } catch (e) {} KUN.go(); return; }
     const gm = (window.IN_TG ? "#" + (window.TG_START || "") : location.hash).match(/^#g-([A-Za-z0-9]{6,8})$/);
     if (gm) { try { if (!window.IN_TG) history.replaceState(null, "", location.pathname + location.search); } catch (e) {} if (ACCT.cur) HW.join(gm[1]).catch(e => FX.toast("⚠️ " + (e && e.message || e))); else try { localStorage.setItem("zm_gj", gm[1].toUpperCase()); } catch (e) {} }
     const h = window.IN_TG ? (/^(turnir(-\d{4})?|duel-[A-Za-z0-9_]+)$/.test(window.TG_START || "") ? "#" + window.TG_START : "") : location.hash;
