@@ -16,7 +16,7 @@ var CONTACT = '@ZULPANOV_METHODS';
 
 // ---------------- Yordamchilar ----------------
 var P = PropertiesService.getScriptProperties();
-function token_() { var t = P.getProperty('BOT_TOKEN'); if (!t) throw new Error('BOT_TOKEN topilmadi: Script properties ga qo‘shing'); return t.trim(); }
+function token_() { var t = P.getProperty('BOT_TOKEN'); if (!t) throw new Error('BOT_TOKEN topilmadi: Script properties ga qo‘shing'); var m = t.match(/\d{5,}:[A-Za-z0-9_-]{30,}/); return m ? m[0] : t.trim(); }
 function esc_(s) { return String(s == null ? '' : s).replace(/[&<>]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]; }); }
 function isAdminTg_(u) { return !!(u && u.username && ADMIN_TG.indexOf(String(u.username).toLowerCase()) >= 0); }
 

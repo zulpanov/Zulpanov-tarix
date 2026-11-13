@@ -4670,7 +4670,7 @@ const MSADM = (() => {
 const TGB = (() => {
   const w = () => window.Telegram && Telegram.WebApp;
   // Bot server: Google Apps Script web app (yoki Telegram Serverless, agar yoqilgan bo'lsa)
-  const GAS = "";
+  const GAS = "https://script.google.com/macros/s/AKfycbyLNtb3bcSm7YvE1ZzxtyaJbv8MwDLlXiwPvJD4apMwZfDafB1UyvR4LisDw7ZpQe1TYg/exec";
   const sls = () => { try { return !!(w() && w().Serverless && typeof w().Serverless.call === "function"); } catch (e) { return false; } };
   const on = () => { try { return !!(window.IN_TG && w() && ((GAS && w().initData) || sls())); } catch (e) { return false; } };
   const call = (name, input = {}) => new Promise((res, rej) => {
