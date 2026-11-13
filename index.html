@@ -571,8 +571,8 @@ body.dlm #bkb{display:none!important}
       <button class="tile t3" onclick="ACCT.history()"><div class="ti">📊</div><div><b>Statistika</b><span>Natijalar va o'sish</span></div></button>
     </div>
     <div class="hsec-t">O'yinlar</div>
-    <div class="gm-row"><button class="card dl-home" onclick="DUEL.open()"><span class="dl-hx">⚔️</span><span class="dl-hm"><b>Duel</b><small>1 ga 1 bellashuv</small></span></button><button class="card dl-home bz-home" onclick="BLITZ.open()"><span class="dl-hx">⚡</span><span class="dl-hm"><b>Blits</b><small>60 soniyalik poyga</small></span></button></div>
-    <button class="card dl-home hy-home" onclick="HAYOQ.open()"><span class="dl-hx">✅</span><span class="dl-hm"><b>Ha yoki Yo‘q</b><small>60 soniya · to‘g‘ri +3 s · xato −3 s · o‘zing tanla!</small></span><span class="dl-go">›</span></button>
+    <div class="gm-row"><button class="card dl-home" onclick="DUEL.open()"><span class="dl-hx">⚔️</span><span class="dl-hm"><b>Duel</b><small>1 ga 1 bellashuv</small></span></button><button class="card dl-home bz-home" onclick="BLITZ.open()"><span class="dl-hx">⚡</span><span class="dl-hm"><b>Blits</b><small>2 daqiqalik poyga</small></span></button></div>
+    <button class="card dl-home hy-home" onclick="HAYOQ.open()"><span class="dl-hx">✅</span><span class="dl-hm"><b>Ha yoki Yo‘q</b><small>2 daqiqa · to‘g‘ri +3 s · xato −3 s · o‘zing tanla!</small></span><span class="dl-go">›</span></button>
     <button class="card dl-home zn-home" onclick="LADDER.open()"><span class="dl-hx">🪜</span><span class="dl-hm"><b>Bilimlar zinapoyasi</b><small>15 pog'ona · 3 yordam · cho'qqiga chiq!</small></span><span class="dl-go">›</span></button>
     <button class="card dl-home bs-home" onclick="T.openJoin()"><span class="dl-hx">🏰</span><span class="dl-hm"><b>Boss jangi</b><small>Sinf birgalikda qal'ani yiqitadi · ustoz bergan kod bilan kiring</small></span><span class="dl-go">›</span></button>
     <div class="tiles2"><button class="tile2" id="errT" onclick="GAME.startErrors()"><div class="ti2">🔁</div><b>Xatolarim</b><span id="errN">—</span></button><button class="tile2" onclick="GAME.board()"><div class="ti2">🏅</div><b>Haftalik reyting</b><span>Top o'quvchilar</span></button></div>
@@ -3317,7 +3317,7 @@ function renderTopics(){
       b.innerHTML=`<div class="clsn">🌍</div><b>🗺️ Xarita o‘yini</b><span>6 qit’a · davlatni xaritadan top, poytaxti yordam beradi</span>`;
       b.onclick=()=>{location.href="xarita.html"};grid.appendChild(b)}
     {const b=document.createElement("button");b.className="clsc hy-cls";b.style.animationDelay="360ms";b.style.gridColumn="1 / -1";
-      b.innerHTML=`<div class="clsn">✅</div><b>Ha yoki Yo‘q</b><span>60 soniya · to‘g‘ri +3 s · xato −3 s · mavzuni o‘zing tanla</span>`;
+      b.innerHTML=`<div class="clsn">✅</div><b>Ha yoki Yo‘q</b><span>2 daqiqa · to‘g‘ri +3 s · xato −3 s · mavzuni o‘zing tanla</span>`;
       b.onclick=()=>HAYOQ.open();grid.appendChild(b)}
     return;
   }
@@ -3856,7 +3856,7 @@ const DUEL = (() => {
 
 // ================== BLITS — 60 SONIYA ==================
 const BLITZ = (() => {
-  const DUR = 60000, PEN = 3000;
+  const DUR = 120000, PEN = 3000;
   const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const me = () => ACCT.cur, full = c => (c.f + " " + (c.l || "")).trim();
   const ck = c => String(parseInt(c) || c).replace(/[^0-9a-z]/gi, "");
@@ -3867,10 +3867,10 @@ const BLITZ = (() => {
   const CNTS = [10, 20, 30, 40];
   const kOf = () => ck(cls) + "_" + cnt;
   const chosen = () => { const g = groups()[cls] || [], ids = sel[cls]; return ids && ids.length ? g.filter(x => ids.includes(x.id)) : g; };
-  function head(t, sub) { document.body.classList.add("dlm"); return `<div class="dl-h"><button class="adh-b" onclick="goHome()" title="Bosh sahifa">‹</button><div class="adh-t"><small>${esc(sub || "60 soniyalik poyga")}</small><b>${t}</b></div><button class="adh-b" onclick="goHome()" title="Bosh sahifa">🏠</button></div>`; }
+  function head(t, sub) { document.body.classList.add("dlm"); return `<div class="dl-h"><button class="adh-b" onclick="goHome()" title="Bosh sahifa">‹</button><div class="adh-t"><small>${esc(sub || "2 daqiqalik poyga")}</small><b>${t}</b></div><button class="adh-b" onclick="goHome()" title="Bosh sahifa">🏠</button></div>`; }
   async function board(c) {
     let w = {}, a = null; const k = kOf(), u = me();
-    try { [w, a] = await Promise.all([DBA.get("lb/bz" + GAME.wk()), u ? DBA.get("lb/bzall/" + u.uid + "/" + k) : null]); } catch (e) {}
+    try { [w, a] = await Promise.all([DBA.get("lb/bz2" + GAME.wk()), u ? DBA.get("lb/bz2all/" + u.uid + "/" + k) : null]); } catch (e) {}
     const list = Object.entries(w || {}).map(([uid, v]) => v && v[k] ? { uid, ...v[k] } : null).filter(Boolean).sort((x, y) => y.s - x.s || (x.t || 6e4) - (y.t || 6e4) || x.at - y.at);
     return { list, best: a && a.s || 0 };
   }
@@ -3885,7 +3885,7 @@ const BLITZ = (() => {
     const g = groups(), cl = Object.keys(g).sort((a, b) => parseInt(a) - parseInt(b));
     if (!cls || !g[cls]) cls = cl.find(c => String(u.g || "").startsWith(String(parseInt(c)))) || cl[0];
     $("tz").innerHTML = head("⚡ Blits") + `<div class="dl-cls">${cl.map(c => `<button class="${c === cls ? "on" : ""}" data-c="${esc(c)}">${esc(c)}</button>`).join("")}</div>
-      <div class="card bz-hero"><div class="bz-clock"><span>60</span><small>soniya</small></div><b>Qancha ko'p topsang — shuncha zo'r!</b>
+      <div class="card bz-hero"><div class="bz-clock"><span>2:00</span><small>daqiqa</small></div><b>Qancha ko'p topsang — shuncha zo'r!</b>
       <div class="bz-rules"><span>✅ To'g'ri = +1</span><span>❌ Xato = −3 soniya</span></div>
       <div class="bz-opt"><small>Savollar soni</small><div class="bz-cnt" id="bzC">${CNTS.map(n => `<button class="${n === cnt ? "on" : ""}" data-n="${n}">${n}</button>`).join("")}</div></div>
       <details class="bz-tp" id="bzTp"><summary><span>📚 Mavzular</span><b id="bzTs"></b><i>▾</i></summary><div class="bz-tl"><label class="bz-all"><input type="checkbox" id="bzAll"> <b>Hammasini tanlash</b></label>${(g[cls] || []).map(x => `<label><input type="checkbox" value="${x.id}"> <span><b>${esc(x.n || "")}</b> ${esc(/mavzular?$/i.test(x.title || "") ? String(x.sub || "").split(" · ")[0] : x.title)}</span><small>${x.qs.length}</small></label>`).join("")}</div></details>
@@ -3914,14 +3914,14 @@ const BLITZ = (() => {
     for (let i = pool.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [pool[i], pool[j]] = [pool[j], pool[i]]; }
     pool = pool.slice(0, cnt);
     G = { pool, i: 0, s: 0, w: 0, streak: 0, t0: Date.now(), end: Date.now() + DUR, lock: false };
-    $("tz").innerHTML = `<div class="bz-top"><div class="bz-ring" id="bzRing"><span id="bzT">60</span></div><div class="bz-sc"><small>Ball</small><b id="bzS">0</b></div><div class="bz-sc"><small>Savol</small><b id="bzP">1/${pool.length}</b></div><div class="bz-sc"><small>Seriya</small><b id="bzK">🔥 0</b></div></div><div class="bz-pb"><i id="bzPb"></i></div><div id="bzQ"></div>`;
+    $("tz").innerHTML = `<div class="bz-top"><div class="bz-ring" id="bzRing"><span id="bzT">2:00</span></div><div class="bz-sc"><small>Ball</small><b id="bzS">0</b></div><div class="bz-sc"><small>Savol</small><b id="bzP">1/${pool.length}</b></div><div class="bz-sc"><small>Seriya</small><b id="bzK">🔥 0</b></div></div><div class="bz-pb"><i id="bzPb"></i></div><div id="bzQ"></div>`;
     try { FX.toast("⚡ Boshladik!", "up"); } catch (e) {}
     G.tk = setInterval(tick, 100); tick(); q();
   }
   function tick() {
     if (!G) return; if (!$("bzT")) return stop();
     const left = Math.max(0, G.end - Date.now());
-    $("bzT").textContent = Math.ceil(left / 1000); $("bzRing").style.setProperty("--p", left / DUR * 100); $("bzRing").classList.toggle("low", left < 10000);
+    $("bzT").textContent = TMS(left); $("bzRing").style.setProperty("--p", left / DUR * 100); $("bzRing").classList.toggle("low", left < 10000);
     if (left <= 0) finish();
   }
   function q() {
@@ -3957,10 +3957,10 @@ const BLITZ = (() => {
     if (!G) return; const g = G; stop();
     const used = Math.min(DUR, (g.tEnd || Date.now()) - g.t0 + g.w * PEN), u = me(), k = kOf(), wk = GAME.wk();
     $("tz").innerHTML = head("⚡ Blits natijasi", cls) + `<div class="sub" style="text-align:center;margin:30px 0">Hisoblanmoqda…</div>`;
-    let wOld = null, aOld = null; try { [wOld, aOld] = await Promise.all([DBA.get(`lb/bz${wk}/${u.uid}/${k}`), DBA.get(`lb/bzall/${u.uid}/${k}`)]); } catch (e) {}
+    let wOld = null, aOld = null; try { [wOld, aOld] = await Promise.all([DBA.get(`lb/bz2${wk}/${u.uid}/${k}`), DBA.get(`lb/bz2all/${u.uid}/${k}`)]); } catch (e) {}
     const better = o => !o || g.s > (o.s || 0) || (g.s === o.s && used < (o.t || DUR));
     const rec = { n: full(u), s: g.s, t: used, at: DBA.now() }, isRec = better(aOld) && g.s > 0;
-    try { if (better(wOld)) await DBA.set(`lb/bz${wk}/${u.uid}/${k}`, rec); if (better(aOld)) await DBA.set(`lb/bzall/${u.uid}/${k}`, rec); } catch (e) {}
+    try { if (better(wOld)) await DBA.set(`lb/bz2${wk}/${u.uid}/${k}`, rec); if (better(aOld)) await DBA.set(`lb/bz2all/${u.uid}/${k}`, rec); } catch (e) {}
     const { list } = await board(cls), pos = list.findIndex(x => x.uid === u.uid);
     const acc = g.s + g.w ? Math.round(g.s / (g.s + g.w) * 100) : 0;
     const msg = g.s >= 15 ? "Chaqmoqdek tez! ⚡" : g.s >= 10 ? "Zo'r natija! 🔥" : g.s >= 5 ? "Yaxshi! Yana urinib ko'r 💪" : "Boshlanishi yomon emas! 🙂";
@@ -3976,9 +3976,10 @@ const BLITZ = (() => {
 })();
 
 
+const TMS = ms => { const t = Math.ceil(ms / 1000); return t >= 60 ? Math.floor(t / 60) + ":" + String(t % 60).padStart(2, "0") : String(t); };
 // ================== HA YOKI YO'Q ==================
 const HAYOQ = (() => {
-  const DUR = 60000, BON = 3000, PEN = 3000, MINQ = 10;
+  const DUR = 120000, BON = 3000, PEN = 3000, MINQ = 10;
   const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const me = () => ACCT.cur, full = c => (c.f + " " + (c.l || "")).trim();
   const ck = c => String(parseInt(c) || c).replace(/[^0-9a-z]/gi, "");
@@ -4000,10 +4001,10 @@ const HAYOQ = (() => {
   const kOf = () => ck(cls);
   const chosen = () => { const g = groups()[cls] || [], ids = sel[cls]; return ids && ids.length ? g.filter(x => ids.includes(x.id)) : g; };
   const avail = () => chosen().reduce((a, x) => a + elig(x).length, 0);
-  function head(t, sub) { document.body.classList.add("dlm"); return `<div class="dl-h"><button class="adh-b" onclick="goHome()" title="Bosh sahifa">‹</button><div class="adh-t"><small>${esc(sub || "60 soniya · to‘g‘ri +3 s · xato −3 s")}</small><b>${t}</b></div><button class="adh-b" onclick="goHome()" title="Bosh sahifa">🏠</button></div>`; }
+  function head(t, sub) { document.body.classList.add("dlm"); return `<div class="dl-h"><button class="adh-b" onclick="goHome()" title="Bosh sahifa">‹</button><div class="adh-t"><small>${esc(sub || "2 daqiqa · to‘g‘ri +3 s · xato −3 s")}</small><b>${t}</b></div><button class="adh-b" onclick="goHome()" title="Bosh sahifa">🏠</button></div>`; }
   async function board() {
     let w = {}, a = null; const k = kOf(), u = me();
-    try { [w, a] = await Promise.all([DBA.get("lb/hy" + GAME.wk()), u ? DBA.get("lb/hyall/" + u.uid + "/" + k) : null]); } catch (e) {}
+    try { [w, a] = await Promise.all([DBA.get("lb/hy2" + GAME.wk()), u ? DBA.get("lb/hy2all/" + u.uid + "/" + k) : null]); } catch (e) {}
     const list = Object.entries(w || {}).map(([uid, v]) => v && v[k] ? { uid, ...v[k] } : null).filter(Boolean).sort((x, y) => y.s - x.s || (y.c || 0) - (x.c || 0) || x.at - y.at);
     return { list, best: a && a.s || 0 };
   }
@@ -4021,7 +4022,7 @@ const HAYOQ = (() => {
     const fans = []; g[cls].forEach(x => { const f = fanOf(x.g); if (!fans.includes(f)) fans.push(f); });
     $("tz").innerHTML = head("✅ Ha yoki Yo‘q") + `<div class="dl-cls">${cl.map(c => `<button class="${c === cls ? "on" : ""}" data-c="${esc(c)}">${esc(c)}</button>`).join("")}</div>
       <div class="card bz-hero hy-hero"><div class="hy-logo"><span class="y">HA</span><span class="n">YO‘Q</span></div><b>Tarixiy ma’lumot to‘g‘rimi yoki yo‘q? Tez o‘yla!</b>
-      <div class="bz-rules"><span>⏱ 60 soniya</span><span>✅ To‘g‘ri = +3 s</span><span>❌ Xato = −3 s</span><span>🔥 5 ketma-ket = ×2 ball</span></div>
+      <div class="bz-rules"><span>⏱ 2 daqiqa</span><span>✅ To‘g‘ri = +3 s</span><span>❌ Xato = −3 s</span><span>🔥 5 ketma-ket = ×2 ball</span></div>
       <details class="bz-tp" id="hyTp"><summary><span>📚 Mavzular</span><b id="hyTs"></b><i>▾</i></summary><div class="bz-tl"><label class="bz-all"><input type="checkbox" id="hyAll"> <b>Hammasini tanlash</b></label>${fans.map(f => `${fans.length > 1 ? `<div class="hy-fan">${esc(f)}</div>` : ""}${g[cls].filter(x => fanOf(x.g) === f).map(x => `<label><input type="checkbox" value="${x.id}"> <span><b>${esc(x.n || "")}</b> ${esc(tSub(x))} <small class="hy-nq">${elig(x).length}</small></span></label>`).join("")}`).join("")}</div></details>
       <div class="hy-cnt"><div class="hy-ch"><small>Savollar soni</small><b id="hyN">${cnt}</b></div><input type="range" id="hyR" min="${MINQ}" step="5"><div class="hy-pre" id="hyP"></div><small class="hy-lim" id="hyL"></small></div>
       <div class="bz-best" id="hyBest">Shaxsiy rekord: …</div><button class="btn" id="hyGo">▶ Boshlash</button></div>
@@ -4061,7 +4062,7 @@ const HAYOQ = (() => {
     pool = pool.slice(0, cnt).map(q => { const tr = Math.random() < .5, ds = [0, 1, 2, 3].filter(k => k !== q.a); return { q, tr, sh: q.o[tr ? q.a : ds[Math.floor(Math.random() * 3)]] }; });
     G = { pool, i: 0, s: 0, c: 0, w: 0, streak: 0, wst: 0, best: 0, mis: [], t0: Date.now(), end: Date.now() + DUR, lock: false, pz: 0 };
     document.body.classList.add("hym");
-    $("tz").innerHTML = `<div class="bz-top"><div class="bz-ring" id="hyRing"><span id="hyT">60</span></div><div class="bz-sc"><small>Ball</small><b id="hyS">0</b></div><div class="bz-sc"><small>Savol</small><b id="hyPq">1/${pool.length}</b></div><div class="bz-sc"><small>Seriya</small><b id="hyK">🔥 0</b></div></div><div class="bz-pb"><i id="hyPb"></i></div><div id="hyQ"></div>
+    $("tz").innerHTML = `<div class="bz-top"><div class="bz-ring" id="hyRing"><span id="hyT">2:00</span></div><div class="bz-sc"><small>Ball</small><b id="hyS">0</b></div><div class="bz-sc"><small>Savol</small><b id="hyPq">1/${pool.length}</b></div><div class="bz-sc"><small>Seriya</small><b id="hyK">🔥 0</b></div></div><div class="bz-pb"><i id="hyPb"></i></div><div id="hyQ"></div>
       <div class="hy-btns"><button class="hy-b hy-no" id="hyNo">❌ YO‘Q</button><button class="hy-b hy-yes" id="hyYes">✅ HA</button></div>`;
     $("hyNo").onclick = () => ans(false); $("hyYes").onclick = () => ans(true);
     document.addEventListener("keydown", key);
@@ -4073,7 +4074,7 @@ const HAYOQ = (() => {
     if (!G) return; if (!$("hyT")) return stop();
     if (G.pz) return;
     const left = Math.max(0, G.end - Date.now());
-    $("hyT").textContent = Math.ceil(left / 1000); $("hyRing").style.setProperty("--p", Math.min(100, left / DUR * 100)); $("hyRing").classList.toggle("low", left < 10000);
+    $("hyT").textContent = TMS(left); $("hyRing").style.setProperty("--p", Math.min(100, left / DUR * 100)); $("hyRing").classList.toggle("low", left < 10000);
     if (left <= 0) finish();
   }
   function q() {
@@ -4125,10 +4126,10 @@ const HAYOQ = (() => {
     if (!G) return; const g = G; stop();
     const u = me(), k = kOf(), wk = GAME.wk();
     $("tz").innerHTML = head("✅ Ha yoki Yo‘q · natija", cls) + `<div class="sub" style="text-align:center;margin:30px 0">Hisoblanmoqda…</div>`;
-    let wOld = null, aOld = null; try { [wOld, aOld] = await Promise.all([DBA.get(`lb/hy${wk}/${u.uid}/${k}`), DBA.get(`lb/hyall/${u.uid}/${k}`)]); } catch (e) {}
+    let wOld = null, aOld = null; try { [wOld, aOld] = await Promise.all([DBA.get(`lb/hy2${wk}/${u.uid}/${k}`), DBA.get(`lb/hy2all/${u.uid}/${k}`)]); } catch (e) {}
     const better = o => !o || g.s > (o.s || 0);
     const rec = { n: full(u), s: g.s, c: g.c, w: g.w, at: DBA.now() }, isRec = better(aOld) && g.s > 0;
-    try { if (better(wOld)) await DBA.set(`lb/hy${wk}/${u.uid}/${k}`, rec); if (isRec) await DBA.set(`lb/hyall/${u.uid}/${k}`, rec); } catch (e) {}
+    try { if (better(wOld)) await DBA.set(`lb/hy2${wk}/${u.uid}/${k}`, rec); if (isRec) await DBA.set(`lb/hy2all/${u.uid}/${k}`, rec); } catch (e) {}
     const { list } = await board(), pos = list.findIndex(x => x.uid === u.uid);
     const tot = g.c + g.w, acc = tot ? Math.round(g.c / tot * 100) : 0, all = g.tEnd && g.i >= g.pool.length;
     const msg = g.s >= 40 ? "Misoli olovsan! 🔥" : g.s >= 25 ? "Sen balosan! ⚡" : g.s >= 12 ? "Kuchayding! 💪" : g.s >= 5 ? "Yomon emas, yana urinib ko‘r!" : "O‘qib kelib, yana bir urinib ko‘r 🙂";
