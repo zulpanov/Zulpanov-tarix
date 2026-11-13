@@ -2,31 +2,26 @@
   "rules": {
     ".read": false,
     ".write": false,
-
     "admins": {
       "$uid": {
         ".read": "auth != null && (auth.uid === $uid || root.child('admins').child(auth.uid).val() === true)",
         ".write": "auth != null && (root.child('admins').child(auth.uid).val() === true || (auth.uid === $uid && auth.token.email === 'zulpanov@zulpanovtarix.uz'))"
       }
     },
-
     "c": {
       ".read": true,
       ".write": "auth != null && root.child('admins').child(auth.uid).val() === true"
     },
-
     "grp": {
       ".read": true,
       ".write": "auth != null && root.child('admins').child(auth.uid).val() === true"
     },
-
     "logins": {
       "$login": {
         ".read": true,
-        ".write": "auth != null && (root.child('admins').child(auth.uid).val() === true || (!data.exists() && newData.val() === auth.uid))"
+        ".write": "auth != null && (root.child('admins').child(auth.uid).val() === true || (!data.exists() && newData.val() === auth.uid && (!$login.matches(/^(tg[0-9]+|bot)$/) || auth.token.email.beginsWith($login + '.'))))"
       }
     },
-
     "users": {
       ".read": "auth != null && root.child('admins').child(auth.uid).val() === true",
       "$uid": {
@@ -34,35 +29,30 @@
         ".write": "auth != null && (root.child('admins').child(auth.uid).val() === true || (auth.uid === $uid && newData.exists() && newData.child('b').val() === data.child('b').val()))"
       }
     },
-
     "pw": {
       ".read": "auth != null && root.child('admins').child(auth.uid).val() === true",
       "$uid": {
         ".write": "auth != null && (root.child('admins').child(auth.uid).val() === true || (auth.uid === $uid && !data.exists()))"
       }
     },
-
     "r": {
       ".read": "auth != null && root.child('admins').child(auth.uid).val() === true",
       "$id": {
         ".write": "auth != null && (root.child('admins').child(auth.uid).val() === true || (!data.exists() && newData.exists()))"
       }
     },
-
     "h": {
       "$uid": {
         ".read": "auth != null && (auth.uid === $uid || root.child('admins').child(auth.uid).val() === true)",
         ".write": "auth != null && (auth.uid === $uid || root.child('admins').child(auth.uid).val() === true)"
       }
     },
-
     "mx": {
       "$uid": {
         ".read": "auth != null && auth.uid === $uid",
         ".write": "auth != null && auth.uid === $uid"
       }
     },
-
     "lb": {
       "$week": {
         ".read": "auth != null",
@@ -71,17 +61,14 @@
         }
       }
     },
-
     "cq": {
       ".read": true,
       ".write": "auth != null && root.child('admins').child(auth.uid).val() === true"
     },
-
     "hw": {
       ".read": "auth != null",
       ".write": "auth != null && root.child('admins').child(auth.uid).val() === true"
     },
-
     "hwr": {
       ".read": "auth != null && root.child('admins').child(auth.uid).val() === true",
       ".write": "auth != null && root.child('admins').child(auth.uid).val() === true",
@@ -92,12 +79,10 @@
         }
       }
     },
-
     "a": {
       ".read": true,
       ".write": "auth != null && root.child('admins').child(auth.uid).val() === true"
     },
-
     "t": {
       "$code": {
         ".read": "auth != null",
@@ -107,6 +92,15 @@
             ".write": "auth != null && auth.uid === $pid"
           }
         }
+      }
+    },
+    "tg": {
+      ".read": "auth != null && root.child('admins').child(auth.uid).val() === true",
+      ".write": "auth != null && root.child('admins').child(auth.uid).val() === true",
+      "u": {
+        ".indexOn": [
+          "login"
+        ]
       }
     }
   }
