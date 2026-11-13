@@ -65,7 +65,7 @@ async function fbAuth(env) {
   const pw = (await hmacHex(token(env), "botpw")).slice(0, 32);
   const call = (ep, body) => fetch(`https://identitytoolkit.googleapis.com/v1/accounts:${ep}?key=${FB.apiKey}`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) }).then(r => r.json());
   let j = await call("signInWithPassword", { email: BOT_EMAIL, password: pw, returnSecureToken: true });
-  if (!j.idToken && /EMAIL_NOT_FOUND/.test(JSON.stringify(j.error || ""))) j = await call("signUp", { email: BOT_EMAIL, password: pw, returnSecureToken: true });
+  if (!j.idToken && /EMAIL_NOT_FOUND|INVALID_LOGIN_CREDENTIALS/.test(JSON.stringify(j.error || ""))) j = await call("signUp", { email: BOT_EMAIL, password: pw, returnSecureToken: true });
   if (!j.idToken) throw new Error("Firebase: " + JSON.stringify(j.error || j));
   auth = { id: j.idToken, uid: j.localId, exp: Date.now() + (Number(j.expiresIn || 3600) - 300) * 1000 };
   return auth;

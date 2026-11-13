@@ -4669,15 +4669,22 @@ const MSADM = (() => {
 // ================== TELEGRAM BOT (Serverless) bilan bog'lanish ==================
 const TGB = (() => {
   const w = () => window.Telegram && Telegram.WebApp;
-  // Bot server: Google Apps Script web app (yoki Telegram Serverless, agar yoqilgan bo'lsa)
-  const GAS = "https://script.google.com/macros/s/AKfycbyLNtb3bcSm7YvE1ZzxtyaJbv8MwDLlXiwPvJD4apMwZfDafB1UyvR4LisDw7ZpQe1TYg/exec";
-  const sls = () => { try { return !!(w() && w().Serverless && typeof w().Serverless.call === "function"); } catch (e) { return false; } };
-  const on = () => { try { return !!(window.IN_TG && w() && ((GAS && w().initData) || sls())); } catch (e) { return false; } };
-  const call = (name, input = {}) => new Promise((res, rej) => {
-    if (!on()) return rej(new Error("off"));
-    if (GAS && w().initData) return fetch(GAS, { method: "POST", body: JSON.stringify({ fn: name, input, initData: w().initData }) }).then(r => r.json()).then(j => j && j.ok ? res(j.r) : rej(new Error((j && j.err) || "Xatolik"))).catch(rej);
-    try { w().Serverless.call(name, input, (err, r) => err ? rej(err) : res(r)); } catch (e) { rej(e); }
-  });
+  // Bot server: Cloudflare Worker (tezkor; Google Apps Script endi ishlatilmaydi)
+  const API = "https://zulpanov-tarix-bot.zulponovalimqul.workers.dev/api";
+  const on = () => { try { return !!(window.IN_TG && w() && w().initData); } catch (e) { return false; } };
+  const once = (name, input) => fetch(API, { method: "POST", headers: { "content-type": "text/plain" }, body: JSON.stringify({ fn: name, input, initData: w().initData }) })
+    .then(r => r.json()).then(j => { if (j && j.ok) return j.r; throw new Error((j && j.err) || "Xatolik"); });
+  // Ko'p xabar bo'lib yuboriladi: server «next» qaytarsa, navbatdagi qismini so'raymiz
+  async function call(name, input = {}) {
+    if (!on()) throw new Error("off");
+    let r = await once(name, input), sent = 0, failed = 0;
+    while (r && typeof r === "object" && "next" in r) {
+      sent += r.sent || 0; failed += r.failed || 0;
+      if (r.next == null) return { ...r, sent, failed };
+      r = await once(name, { ...input, from: r.next });
+    }
+    return r;
+  }
   function link(login, pw, admin) { if (!on()) return; const c = typeof ACCT !== "undefined" && ACCT.cur; call("link", { login, admin: !!admin, name: !admin && c ? c.f + " " + c.l : "", grp: !admin && c ? c.g || "" : "" }).catch(() => {}); }
   const groups = async () => { try { const v = await DBA.get("grp"); return Object.values(v || {}).filter(x => x && x.n).map(x => x.n).sort((a, b) => a.localeCompare(b)); } catch (e) { return []; } };
   const msg = e => (e && (e.message || e.description)) || "Xatolik";
@@ -4703,7 +4710,9 @@ const BOTP = (() => {
         <label>Xabar matni</label><textarea id="bpM" rows="4" placeholder="Masalan: Ertaga soat 15:00 da dars bo'ladi." style="width:100%"></textarea>
         <button class="btn" id="bpB">✉️ Yuborish</button><div class="accerr" id="bpBe"></div></div>`;
     if (!TGB.on()) { ["bpR", "bpB"].forEach(id => $(id).disabled = true); return; }
-    TGB.call("stats").then(s => { $("bpS").innerHTML = `Botga ulangan o'quvchilar: <b>${s.students}</b> · ota-onalar: <b>${s.parents}</b> (${s.kids} ta o'quvchining)` + (Object.keys(s.groups || {}).length ? "<br>" + Object.entries(s.groups).map(([g, n]) => `${esc(g)}: ${n}`).join(" · ") : ""); }).catch(e => { $("bpS").textContent = "Bot bilan bog'lanib bo'lmadi: " + TGB.msg(e) + ". Admin panelga bot ichidan qayta kiring."; });
+    TGB.call("stats").then(s => { const d2 = n => String(n).padStart(2, "0"), dt = ms => { const d = new Date(ms); return `${d2(d.getDate())}.${d2(d.getMonth() + 1)} ${d2(d.getHours())}:${d2(d.getMinutes())}`; };
+      $("bpS").innerHTML = `Botga ulangan o'quvchilar: <b>${s.students}</b> · ota-onalar: <b>${s.parents}</b> (${s.kids} ta o'quvchining)` + (Object.keys(s.groups || {}).length ? "<br>" + Object.entries(s.groups).map(([g, n]) => `${esc(g)}: ${n}`).join(" · ") : "")
+        + ((s.arizalar || []).length ? `<div style="margin-top:10px"><b>🎓 Oxirgi arizalar</b>${s.arizalar.map(a => `<div style="margin-top:4px">${esc(a.name)}${a.user ? " (@" + esc(a.user) + ")" : ""} — <a href="tel:${esc(a.phone)}">${esc(a.phone)}</a> · ${dt(a.at)}</div>`).join("")}</div>` : ""); }).catch(e => { $("bpS").textContent = "Bot bilan bog'lanib bo'lmadi: " + TGB.msg(e) + ". Admin panelga bot ichidan qayta kiring."; });
     $("bpR").onclick = report; $("bpB").onclick = broadcast;
   }
   async function report() {
@@ -4903,7 +4912,9 @@ const ACCT = (() => {
       let s = null; try { s = JSON.parse(L.get("zm_user") || "null"); } catch (e) {}
       if (s && s.u && s.uid) { cur = { uid: s.uid, login: s.u, f: s.f, l: s.l, g: s.g || "" }; apply(); }
       await AUTH.ready();
-      const uid = AUTH.uid;
+      let uid = AUTH.uid;
+      // Telegram ichida: avval shu Telegram hisobi bilan kirilgan bo'lsa — jimgina qayta kiramiz
+      if (!uid && TGB.on()) { try { await tgLogin(false); return; } catch (e) {} uid = AUTH.uid; }
       if (!uid) { if (cur) logout("Hisobingizga qayta kiring."); ready = true; renderBox(); return; }
       let r = null; try { r = await DBA.get("users/" + uid); } catch (e) {}
       if (!r || r.moved) { cur = null; L.del("zm_user"); ready = true; renderBox(); return; } // admin, o'chirilgan yoki ko'chirilgan hisob
@@ -4925,11 +4936,48 @@ const ACCT = (() => {
     }
     ready = true; renderBox();
   }
+  // Telegram orqali kirish: login va parol kerak emas. create=false — faqat mavjud hisobga kirish
+  async function tgLogin(create) {
+    const a = await TGB.call("auth");
+    const f = cap(a.f || "O'quvchi"), l = a.l ? cap(a.l) : "";
+    let uid;
+    try { uid = await AUTH.signInEmail(a.email, a.pw); }
+    catch (e) {
+      if (!create) throw e;
+      const cfg = await DBA.get("c/main");
+      if (cfg && cfg.regOff) throw { uz: "Ro'yxatdan o'tish hozir yopiq. Ustozingizga murojaat qiling." };
+      uid = await AUTH.signUpEmail(a.email, a.pw);
+    }
+    let r = await DBA.get("users/" + uid);
+    if (!r) {
+      try { await DBA.set("logins/" + a.login, uid); } catch (e) {}
+      r = { f, l, g: "", login: a.login, tg: 1, c: DBA.now(), last: DBA.now() };
+      await DBA.set("users/" + uid, r);
+      try { await DBA.set("pw/" + uid, "Telegram orqali"); } catch (e) {}
+      r.isNew = true;
+    }
+    if (r.b) { await AUTH.signOut(); throw { uz: "Hisobingiz ustoz tomonidan bloklangan." }; }
+    cur = { uid, login: r.login, f: r.f, l: r.l, g: r.g || "" };
+    L.set("zm_user", JSON.stringify({ uid, u: r.login, f: r.f, l: r.l, g: r.g || "" }));
+    DBA.update("users/" + uid, { last: DBA.now() }).catch(() => {});
+    ready = true; apply(true);
+    if (create) { FX.toast(r.isNew ? "🎉 Xush kelibsiz! Hisobingiz ochildi" : `👋 Xush kelibsiz, ${esc(r.f)}!`, "up"); if (r.isNew) FX.burst(innerWidth / 2, 160, 50, 7); }
+    TGB.link(r.login);
+    return uid;
+  }
+  async function tgGo() {
+    const b = $("aTg"), E = m => { const x = $("aE"); if (x) x.textContent = m; };
+    if (b) { b.disabled = true; b.textContent = "Kirilmoqda…"; }
+    try { await tgLogin(true); }
+    catch (e) { if (b) { b.disabled = false; b.textContent = "✈️ Telegram orqali kirish"; } E((e && e.uz) || AUTH.msg(e)); }
+  }
   function logout(msg) { if (AUTH.FB && AUTH.uid && !AUTH.isAdmin) AUTH.signOut(); cur = null; L.del("zm_user"); L.del("zm_active"); if (hUn) { hUn(); hUn = null; } renderBox(msg); if (typeof chk === "function") chk(); show("auth"); }
   function renderBox(msg) {
     const box = $("acc"); if (!box) return;
     if (cur) { box.innerHTML = ""; return; }
-    box.innerHTML = `<div class="acctabs"><button data-m="in" class="on">Kirish</button><button data-m="up">Ro'yxatdan o'tish</button></div><div id="accF"></div>`;
+    const tgB = AUTH.FB && TGB.on() ? `<button class="btn" id="aTg" style="width:100%;margin:0 0 6px">✈️ Telegram orqali kirish</button><p class="sub" style="text-align:center;margin:0 0 14px">Bir bosishda — login va parol shart emas</p><p class="sub" style="text-align:center;margin:0 0 10px;font-size:12px;opacity:.8">Avval login va parol bilan ro'yxatdan o'tganmisiz? Pastdan kiring 👇</p>` : "";
+    box.innerHTML = `${tgB}<div class="acctabs"><button data-m="in" class="on">Kirish</button><button data-m="up">Ro'yxatdan o'tish</button></div><div id="accF"></div>`;
+    if ($("aTg")) $("aTg").onclick = tgGo;
     const tabs = box.querySelector(".acctabs");
     tabs.onclick = e => { const b = e.target.closest("button"); if (!b) return; [...tabs.children].forEach(x => x.classList.toggle("on", x === b)); form(b.dataset.m); };
     form("in", msg);
@@ -4985,7 +5033,7 @@ const ACCT = (() => {
     const f = cap($("rF").value), l = cap($("rLn").value), g = "", u = normLogin($("rL").value), p = $("rP").value, p2 = $("rP2").value, E = m => $("aE").textContent = m;
     if (f.length < 2 || l.length < 2) return E("Ism va familiyani to'liq yozing.");
     if (!/^[a-z0-9_]{3,20}$/.test(u)) return E("Login 3–20 ta lotin harfi, raqam yoki _ belgisidan iborat bo'lsin (bo'sh joysiz).");
-    if (["zulpanov", "admin", "ustoz", "administrator"].includes(u)) return E("Bu login band. Boshqa login tanlang.");
+    if (["zulpanov", "admin", "ustoz", "administrator", "bot"].includes(u) || /^tg\d+$/.test(u)) return E("Bu login band. Boshqa login tanlang.");
     if (p.length < 6) return E("Parol kamida 6 belgidan iborat bo'lsin.");
     if (p !== p2) return E("Parollar bir xil emas.");
     $("rGo").disabled = true; E("");
@@ -5918,14 +5966,41 @@ const DBA = (() => {
       if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
       const d = firebase.database();
       d.ref(".info/serverTimeOffset").on("value", s => off = s.val() || 0);
+      d.ref(".info/connected").on("value", s => { conn = !!s.val(); if (conn) { const q = waiters.splice(0); q.forEach(f => f()); } });
       return d;
     })());
+    // Bepul rejada bir vaqtda faqat 100 ta ulanish bor. Shuning uchun foydalanuvchi sahifani yopib qo'ysa
+    // yoki uzoq vaqt hech narsa qilmasa, bazadan uziladi; harakat qilishi bilan qayta ulanadi.
+    // Turnir (t/...) davomida ulanish uzilmaydi.
+    let online = true, conn = false, lastAct = Date.now(), hidAt = 0;
+    const live = new Map(), waiters = [];
+    const crit = () => [...live.keys()].some(p => /^t\//.test(p));
+    const waitConn = ms => conn ? Promise.resolve() : new Promise(r => { waiters.push(r); setTimeout(r, ms); });
+    async function wake() {
+      lastAct = Date.now();
+      const d = await init();
+      if (!online) { online = true; d.goOnline(); await waitConn(6000); }
+      return d;
+    }
+    const nudge = () => { lastAct = Date.now(); if (!online && ready) wake(); };
+    ["pointerdown", "keydown", "touchstart", "scroll"].forEach(ev => addEventListener(ev, nudge, { passive: true, capture: true }));
+    document.addEventListener("visibilitychange", () => { if (document.hidden) hidAt = Date.now(); else nudge(); });
+    setInterval(() => {
+      if (!online || !ready || crit()) return;
+      const now = Date.now();
+      if ((document.hidden && now - hidAt > 20000) || now - lastAct > 3 * 60000) { online = false; init().then(d => d.goOffline()); }
+    }, 10000);
     return {
       kind: "fb", init,
-      async get(p) { const d = await init(); return (await d.ref(p).get()).val(); },
-      async set(p, v) { const d = await init(); return d.ref(p).set(v); },
-      async update(p, v) { const d = await init(); return d.ref(p).update(v); },
-      on(p, cb) { let r, fn, stop = false; init().then(d => { if (stop) return; r = d.ref(p); fn = s => cb(s.val()); r.on("value", fn, () => cb(null)); }); return () => { stop = true; r && fn && r.off("value", fn); }; },
+      get online() { return online; },
+      async get(p) { const d = await wake(); return (await d.ref(p).get()).val(); },
+      async set(p, v) { const d = await wake(); return d.ref(p).set(v); },
+      async update(p, v) { const d = await wake(); return d.ref(p).update(v); },
+      on(p, cb) {
+        let r, fn, stop = false; live.set(p, (live.get(p) || 0) + 1);
+        wake().then(d => { if (stop) return; r = d.ref(p); fn = s => cb(s.val()); r.on("value", fn, () => cb(null)); });
+        return () => { if (stop) return; stop = true; const n = (live.get(p) || 1) - 1; if (n > 0) live.set(p, n); else live.delete(p); r && fn && r.off("value", fn); };
+      },
       now() { return Date.now() + off; }
     };
   }
@@ -6009,6 +6084,8 @@ const AUTH = (() => {
       AV.drop(old); ACCT.relogin({ uid: nu, login: nl }, pw);
     },
     async signIn(login, pw) { const f = await fb(); const c = await f.auth().signInWithEmailAndPassword(email(login), pw); user = c.user; admin = !!(await DBA.get("admins/" + user.uid).catch(() => null)); return user.uid; },
+    async signInEmail(em, pw) { const f = await fb(); const c = await f.auth().signInWithEmailAndPassword(em, pw); user = c.user; admin = !!(await DBA.get("admins/" + user.uid).catch(() => null)); return user.uid; },
+    async signUpEmail(em, pw) { const f = await fb(); const c = await f.auth().createUserWithEmailAndPassword(em, pw); user = c.user; admin = false; return user.uid; },
     async signUp(login, pw) { const f = await fb(); const c = await f.auth().createUserWithEmailAndPassword(email(login), pw); user = c.user; admin = false; return user.uid; },
     async signOut() { if (!FB) return; const f = await fb(); user = null; admin = false; await f.auth().signOut(); },
     async claimAdmin() { if (!user) throw new Error("no user"); await DBA.set("admins/" + user.uid, true); admin = true; },
@@ -6575,7 +6652,7 @@ const T = (() => {
   async function boot() {
     CQ.watch();
     if (AUTH.FB) { show("auth"); await AUTH.ready().catch(() => {}); }
-    ACCT.restore();
+    if (window.IN_TG) await ACCT.restore().catch(() => {}); else ACCT.restore();
     if (window.IN_TG) { try { const w = Telegram.WebApp; w.ready(); w.expand(); w.disableVerticalSwipes && w.disableVerticalSwipes(); w.setHeaderColor && w.setHeaderColor("#0A0720"); w.setBackgroundColor && w.setBackgroundColor("#0A0720"); } catch (e) {} }
     const h = window.IN_TG ? (/^(turnir(-\d{4})?|duel-[A-Za-z0-9_]+)$/.test(window.TG_START || "") ? "#" + window.TG_START : "") : location.hash;
     if (h.startsWith("#duel-")) { const dc = h.slice(6); try { history.replaceState(null, "", location.pathname + location.search); } catch (e) {} if (ACCT.cur) return DUEL.openLink(dc); try { ls.set("zm_duel", dc); } catch (e) {} }
