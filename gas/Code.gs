@@ -21,6 +21,8 @@ var KURS_TEXT = '🎓 <b>Tarixni yodlamang — tushunib o‘rganing!</b>\n\n' +
   '✅ Yangi darslik asosida yozilgan mualliflik Milliy sertifikat kitoblari\n' +
   '✅ Har mavzudan keyin test va reyting: natijangizni o‘zingiz ko‘rib borasiz\n\n' +
   'Darslarni <b>Alimqul Zulpanov</b> qiziqarli va tushunarli tarzda olib boradi.\n\n' +
+  '📍 <b>Manzil:</b> Bulung‘ur tumani, 39-kollej ro‘parasida — <b>BRO ACADEMY</b> o‘quv markazi\n' +
+  '🗓 <b>Dars kunlari:</b> dushanba, chorshanba va juma, soat <b>14:00</b> dan\n\n' +
   '🎯 Milliy sertifikat yoki attestatsiyaga kuchliroq tayyorlanmoqchi bo‘lsangiz, marhamat, sizni kutamiz! 👇';   // HTML
 
 // ---------------- Yordamchilar ----------------
