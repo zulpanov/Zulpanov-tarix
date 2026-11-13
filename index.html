@@ -593,7 +593,7 @@ body.dlm #bkb{display:none!important}
     <div class="tiles">
       <button class="tile t1" onclick="goTests()"><div class="ti">📚</div><div><b>Testlar</b><span>6–11-sinf mavzulari</span></div></button>
       <button class="tile t4" onclick="goMS()"><div class="ti">🎓</div><div><b>Sertifikat</b><span>45 savollik variantlar</span></div></button>
-      <button class="tile t2" onclick="T.openJoin()"><div class="ti">🏆</div><div><b>Turnir</b><span>Kod bilan jonli bellashuv</span></div><span class="badge hide" id="tBadge">JONLI</span></button>
+      <button class="tile t2" onclick="T.openJoin()"><div class="ti">🏆</div><div><b>Turnir</b><span>Kod bilan kirish yoki o'zingiz ochish</span></div><span class="badge hide" id="tBadge">JONLI</span></button>
       <button class="tile t3" onclick="ACCT.history()"><div class="ti">📊</div><div><b>Statistika</b><span>Natijalar va o'sish</span></div></button>
     </div>
     <div class="hsec-t">O'yinlar</div>
@@ -6186,7 +6186,8 @@ const T = (() => {
       <label>Turnir kodi</label><input id="tjc" inputmode="numeric" maxlength="5" placeholder="0000" style="font-size:28px;letter-spacing:.3em;text-align:center">
       <div id="tjerr" style="color:var(--bad);font-size:14px;margin:-6px 0 12px"></div>
       <button class="btn" id="tjgo">Qo'shilish</button>
-      ${isAdmin() ? "" : `<button class="btn ghost" id="tjmy" style="margin-top:10px">➕ O'zim o'yin ochaman (do'stlar bilan)</button>`}
+      <div class="sub" style="text-align:center;margin:14px 0 6px">yoki</div>
+      <button class="btn ghost" id="tjmy">🎮 O'zim o'yin ochaman (do'stlar bilan)</button>
       </div>`;
     $("tjn").textContent = ACCT.cur.f + " " + ACCT.cur.l + " (@" + ACCT.cur.login + ")";
     $("tjc").value = code;
