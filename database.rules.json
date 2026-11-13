@@ -26,7 +26,7 @@
       ".read": "auth != null && root.child('admins').child(auth.uid).val() === true",
       "$uid": {
         ".read": "auth != null && auth.uid === $uid",
-        ".write": "auth != null && (root.child('admins').child(auth.uid).val() === true || (auth.uid === $uid && newData.exists() && newData.child('b').val() === data.child('b').val() && (!data.exists() || newData.child('bx').val() === data.child('bx').val()) && (data.exists() || !newData.child('bx').exists() || newData.child('bx').val() === 50)))"
+        ".write": "auth != null && (root.child('admins').child(auth.uid).val() === true || (auth.uid === $uid && newData.exists() && newData.child('b').val() === data.child('b').val() && (newData.child('g').val() === data.child('g').val() || !newData.child('g').exists() || newData.child('g').val() === '' || (newData.child('gk').isString() && root.child('grpk').child(newData.child('gk').val()).val() === newData.child('g').val())) && (!data.exists() || newData.child('bx').val() === data.child('bx').val()) && (data.exists() || !newData.child('bx').exists() || newData.child('bx').val() === 50)))"
       }
     },
     "pw": {
@@ -101,6 +101,13 @@
         ".indexOn": [
           "login"
         ]
+      }
+    },
+    "grpk": {
+      ".read": "auth != null && root.child('admins').child(auth.uid).val() === true",
+      ".write": "auth != null && root.child('admins').child(auth.uid).val() === true",
+      "$k": {
+        ".read": true
       }
     }
   }
