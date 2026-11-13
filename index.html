@@ -3213,6 +3213,24 @@ const ROT=(()=>{const key=st=>"zm_rot_"+((typeof ACCT!=="undefined"&&ACCT.cur&&(
   ch.forEach(i=>d.s[i]=r);d.r=r;try{localStorage.setItem(key(st),JSON.stringify(d))}catch(e){}return shuffle(ch.map(i=>st.qs[i]))}
  return{pick}})();
 // ================== KUN TESTI (ro'yxatdan o'tmasdan) + KIRISHLAR STATISTIKASI ==================
+// Xatolar jurnali: o'quvchilarda chiqqan xatolar err/<kun>/<id> ga yoziladi (sessiyada ko'pi bilan 5 ta)
+const ERRLOG=(()=>{
+  const seen=new Set();let n=0;
+  function put(msg,src){
+    try{
+      msg=String(msg||"").slice(0,280);if(!msg||/^(Script error\.?|Event|ResizeObserver)/i.test(msg)||seen.has(msg)||n>=5)return;
+      seen.add(msg);n++;
+      const day=new Date(Date.now()+5*3600e3).toISOString().slice(0,10),id=Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+      const c=typeof ACCT!=="undefined"&&ACCT.cur;
+      const rec={m:msg,s:String(src||"").slice(0,160),at:Date.now(),w:(window.IN_TG?"tg ":"web ")+(navigator.userAgent.match(/(Android [\d.]+|iPhone OS [\d_]+|Windows NT [\d.]+|Mac OS X [\d_]+)/)||[""])[0],p:location.hash.slice(0,30)};
+      if(c&&c.f)rec.u=(c.f+" "+c.l).slice(0,60);
+      setTimeout(()=>{try{DBA.set("err/"+day+"/"+id,rec).catch(()=>{})}catch(e){}},500);
+    }catch(e){}
+  }
+  addEventListener("error",e=>put(e.message||(e.error&&e.error.message),(e.filename||"").split("/").pop()+":"+(e.lineno||"")+":"+(e.colno||"")));
+  addEventListener("unhandledrejection",e=>{const r=e.reason;put("Promise: "+((r&&(r.message||r.code))||String(r)),r&&r.stack?String(r.stack).split("\n")[1]:"")});
+  return{put};
+})();
 const ST=(()=>{ // st/<kun>/<kalit> = son. Faqat sonlar, shaxsiy ma'lumot yo'q
   const day=()=>new Date(Date.now()+5*3600e3).toISOString().slice(0,10); // Toshkent vaqti
   const hit=k=>{try{if(DBA.inc)DBA.inc("st/"+day()+"/"+k).catch(()=>{})}catch(e){}};
@@ -4444,6 +4462,17 @@ const STAT = (() => {
     const now = Date.now(), lim = per === "day" ? 86400e3 : per === "week" ? 7 * 86400e3 : per === "month" ? 30 * 86400e3 : Infinity;
     return list().filter(r => (!q || norm(r.n + " " + (r.u || "")).includes(norm(q))) && (!fset || r.set === fset) && (now - r.at <= lim));
   }
+  async function errs() {
+    let v = null; try { v = await DBA.get("err"); } catch (e) {}
+    const el = $("stErr"); if (!el) return;
+    const all = []; Object.entries(v || {}).forEach(([d, o]) => Object.values(o || {}).forEach(x => x && all.push(x)));
+    const from = Date.now() - 7 * 864e5, rec = all.filter(x => x.at >= from), by = {};
+    rec.forEach(x => { const o = by[x.m] = by[x.m] || { m: x.m, s: x.s, n: 0, last: 0, w: new Set(), u: new Set() }; o.n++; o.last = Math.max(o.last, x.at); if (x.w) o.w.add(x.w); if (x.u) o.u.add(x.u); });
+    const list = Object.values(by).sort((a, b) => b.n - a.n), dt = ms => { const d = new Date(ms); return `${String(d.getDate()).padStart(2, "0")}.${String(d.getMonth() + 1).padStart(2, "0")} ${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`; };
+    el.innerHTML = `<h3 style="margin:0 0 4px">⚠️ Saytdagi xatolar · oxirgi 7 kun</h3>` + (list.length ? `<div class="sub" style="margin:0 0 8px">${rec.length} ta xato, ${list.length} xil. Ro'yxatni nusxalab menga yuboring — tuzatib beraman.</div>${list.slice(0, 15).map(x => `<div class="strow" style="cursor:default;align-items:flex-start"><div class="st-ic">${x.n}×</div><div class="st-m"><b style="font-size:13px;word-break:break-word">${esc(x.m)}</b><div class="st-s">${esc(x.s || "")} · oxirgisi ${dt(x.last)} · ${esc([...x.w].slice(0, 2).join(", "))}${x.u.size ? " · " + esc([...x.u].slice(0, 3).join(", ")) : ""}</div></div></div>`).join("")}<div class="row" style="margin-top:8px"><button class="btn ghost sm" id="erCp">📋 Nusxalash</button><button class="btn ghost sm" id="erX" style="color:var(--bad)">🗑 Tozalash</button></div>` : `<div class="sub" style="margin:0">✅ Oxirgi 7 kunda xato qayd etilmadi.</div>`);
+    if ($("erCp")) $("erCp").onclick = async () => { const t = list.map(x => `${x.n}× ${x.m} [${x.s || ""}] ${[...x.w].join(", ")}`).join("\n"); try { await navigator.clipboard.writeText(t); FX.toast("✅ Nusxalandi", "up"); } catch (e) { prompt("Nusxalang:", t); } };
+    if ($("erX")) $("erX").onclick = async () => { if (!confirm("Xatolar ro'yxati tozalansinmi?")) return; await DBA.set("err", null).catch(() => {}); errs(); };
+  }
   // Saytga kirishlar: kunlik grafik, voronka, kanallar (havola belgilari) va havola yasash
   const SRCN = { dost: "🤝 Do'st yuborgan", ig: "📸 Instagram", kanal: "📣 Telegram kanal", kitob: "📕 Kitob (QR)", turnir: "🏟 Turnir e'loni", ustoz: "👩‍🏫 Ustozlar", ota: "👨‍👩‍👦 Ota-onalar", rek1: "💰 Reklama 1", rek2: "💰 Reklama 2", tg: "✈️ Telegram (belgisiz)", web: "🌐 Brauzer (belgisiz)" };
   async function visits() {
@@ -4480,7 +4509,7 @@ const STAT = (() => {
   function open() {
     if (!isAdmin()) return T.openHost();
     if (typeof T !== "undefined") T.leave(); if (typeof ACC !== "undefined") ACC.leave();
-    show("tz"); setTimeout(visits, 0);
+    show("tz"); setTimeout(visits, 0); setTimeout(errs, 0);
     $("tz").innerHTML = `${adminNav("stat")}<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
       <h1 style="margin:0">📊 Statistika</h1><div class="row" style="flex:0 0 auto"><button class="btn ghost sm" id="stCsv">⬇ Excel (CSV)</button></div></div>
       <div class="sub" id="stNote" style="margin:6px 0 14px">Yuklanmoqda…</div>
@@ -4490,6 +4519,7 @@ const STAT = (() => {
         <select id="stSet" style="flex:2;min-width:140px;margin:0"><option value="">Barcha testlar</option>${SETS.map(s => `<option value="${s.id}">${esc((s.n === "∑" ? "" : s.n + " · ") + s.title)}</option>`).join("")}</select>
         <select id="stPer" style="flex:1;min-width:110px;margin:0"><option value="all">Hammasi</option><option value="day">Bugun</option><option value="week">7 kun</option><option value="month">30 kun</option></select>
       </div></div>
+      <div class="card" id="stErr" style="margin-top:12px"><h3 style="margin:0">⚠️ Saytdagi xatolar</h3><div class="sub" style="margin:4px 0 0">Yuklanmoqda…</div></div>
       <div class="card" id="stVis" style="margin-top:12px"><h3 style="margin:0 0 6px">🌐 Saytga kirishlar</h3><div class="sub" style="margin:0">Yuklanmoqda…</div></div>
       <div class="sttabs" id="stTabs">${[["res", "🕒 Oxirgi natijalar"], ["stu", "👥 O'quvchilar"], ["tst", "📚 Testlar"], ["tur", "🏆 Turnirlar"]].map(([k, l]) => `<button data-t="${k}" class="${k === tab ? "on" : ""}">${l}</button>`).join("")}</div>
       <div id="stBody"></div>
@@ -4680,6 +4710,8 @@ const BOTP = (() => {
       <div class="card" style="margin-top:12px"><h1>📊 Ota-onalarga hisobot</h1><div class="sub">Har bir ota-onaga farzandining shu davrdagi natijalari yuboriladi. Ota-ona botga farzandining «Statistika» sahifasidagi havola orqali ulanadi.</div>
         <div class="row"><div style="flex:1"><label>Davr</label><select id="bpP"><option value="7">Oxirgi 7 kun</option><option value="14">Oxirgi 14 kun</option><option value="30">Oxirgi 30 kun</option></select></div><div style="flex:1"><label>Guruh</label><select id="bpG">${gopt}</select></div></div>
         <button class="btn" id="bpR">📊 Hisobotlarni yuborish</button><div class="accerr" id="bpRe"></div></div>
+      <div class="card" style="margin-top:12px"><h1>📦 Zaxira</h1><div class="sub">Butun baza (o'quvchilar, natijalar, XP, sozlamalar) JSON fayl qilib sizning Telegramingizga yuboriladi. Har yakshanba kechqurun o'zi ham yuboriladi.</div>
+        <button class="btn ghost" id="bpBk">📦 Zaxirani hozir yuborish</button><div class="accerr" id="bpBke"></div></div>
       <div class="card" style="margin-top:12px"><h1>✉️ Xabar yuborish</h1>
         <div class="row"><div style="flex:1"><label>Kimga</label><select id="bpT"><option value="stu">O'quvchilarga</option><option value="par">Ota-onalarga</option><option value="all">Hammaga</option></select></div><div style="flex:1"><label>Guruh</label><select id="bpG2">${gopt}</select></div></div>
         <label>Shablon</label><select id="bpTpl"><option value="">— tanlang yoki o'zingiz yozing —</option><option>❗ Bugungi dars bekor qilindi. Keyingi dars: [kun], soat [vaqt].</option><option>⏰ Eslatma: ertaga soat [vaqt] da dars bor. Kechikmang!</option><option>📝 Yangi uy vazifasi berildi. Muddat: [sana]. Platformada «Vazifalar» bo'limini oching.</option><option>🎓 Milliy sertifikat imtihoniga [N] kun qoldi! Har kuni kamida 1 ta variant ishlang.</option><option>🆕 Platformaga yangi testlar qo'shildi: [mavzu]. Sinab ko'ring!</option><option>🏆 [sana] kuni soat [vaqt] da «Tarix chempionati» bo'lib o'tadi. G'oliblarga sovg'alar bor!</option><option>📚 Tarix kursiga qabul ochildi! BRO ACADEMY, Bulung'ur tumani, 39-kollej ro'parasida. Dushanba, chorshanba, juma — soat 14:00. Yozilish: @ZULPANOV_METHODS</option><option>📅 Bugungi Kun testi tayyor — 10 ta savol. Do'stlaringiz bilan natijani solishtiring!</option></select>
@@ -4690,6 +4722,7 @@ const BOTP = (() => {
       $("bpS").innerHTML = `Botga ulangan o'quvchilar: <b>${s.students}</b> · ota-onalar: <b>${s.parents}</b> (${s.kids} ta o'quvchining)` + (Object.keys(s.groups || {}).length ? "<br>" + Object.entries(s.groups).map(([g, n]) => `${esc(g)}: ${n}`).join(" · ") : "")
         + ((s.arizalar || []).length ? `<div style="margin-top:10px"><b>🎓 Oxirgi arizalar</b>${s.arizalar.map(a => `<div style="margin-top:4px">${esc(a.name)}${a.user ? " (@" + esc(a.user) + ")" : ""} — <a href="tel:${esc(a.phone)}">${esc(a.phone)}</a> · ${dt(a.at)}</div>`).join("")}</div>` : ""); }).catch(e => { $("bpS").textContent = "Bot bilan bog'lanib bo'lmadi: " + TGB.msg(e) + ". Admin panelga bot ichidan qayta kiring."; });
     $("bpR").onclick = report; $("bpB").onclick = broadcast;
+    $("bpBk").onclick = async () => { const b = $("bpBk"), E = m => $("bpBke").textContent = m; b.disabled = true; E("Tayyorlanmoqda…"); try { const r = await TGB.call("backup"); E(r.sent ? `✅ Yuborildi: ${r.kb} KB · ${r.users} foydalanuvchi · ${r.res} natija` : "⚠️ Yuborilmadi — botda admin chat topilmadi."); } catch (e) { E("Xatolik: " + TGB.msg(e)); } b.disabled = false; };
     $("bpTpl").onchange = () => { const v = $("bpTpl").value; if (v) { $("bpM").value = v; $("bpM").focus(); const i = v.indexOf("["); if (i >= 0) { const j = v.indexOf("]", i); try { $("bpM").setSelectionRange(i, j + 1); } catch (e) {} } } };
   }
   async function report() {

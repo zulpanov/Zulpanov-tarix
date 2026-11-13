@@ -175,6 +175,7 @@ const FN = {
     if (r && r.isAdmin && !input.admin) return { ok: true };
     await db(env, "DELETE", "tg/u/" + u.id); return { ok: true };
   },
+  async backup(env, input, u) { requireAdmin(u); return backup(env); },
   async stats(env, input, u) {
     requireAdmin(u);
     const us = await students(env), ps = await parentsList(env), grp = {}, kids = new Set();
@@ -250,6 +251,23 @@ async function adminChats(env) {
   if (a) ids.add(String(a));
   vals(await db(env, "GET", "tg/u").catch(() => null)).forEach(r => { if (r.isAdmin) ids.add(String(r.tgId)); });
   return [...ids];
+}
+// Zaxira: butun bazani JSON fayl qilib ustozning Telegramiga yuborish (har yakshanba va admin paneldan)
+async function backup(env) {
+  const data = await db(env, "GET", "");
+  const day = new Date(Date.now() + 5 * 3600e3).toISOString().slice(0, 10);
+  const json = JSON.stringify(data), kb = Math.round(json.length / 1024);
+  const users = Object.keys((data && data.users) || {}).length, res = Object.keys((data && data.r) || {}).length;
+  const chats = await adminChats(env); let sent = 0;
+  for (const chat of chats) {
+    const fd = new FormData();
+    fd.append("chat_id", chat);
+    fd.append("caption", `📦 Zaxira · ${day}\n👥 Foydalanuvchilar: ${users}\n📝 Natijalar: ${res}\n💾 ${kb} KB\n\nBu faylni saqlab qo'ying. Kerak bo'lsa, u orqali barcha ma'lumotni tiklash mumkin.`);
+    fd.append("document", new Blob([json], { type: "application/json" }), `zulpanov-tarix-zaxira-${day}.json`);
+    const r = await fetch(`https://api.telegram.org/bot${token(env)}/sendDocument`, { method: "POST", body: fd }).then(x => x.json()).catch(() => ({}));
+    if (r.ok) sent++;
+  }
+  return { sent, kb, users, res };
 }
 async function kursDone(env, chat, from, phone) {
   await db(env, "DELETE", "tg/st/" + from.id);
@@ -441,6 +459,7 @@ const CORS = { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Methods
 const json = (o, st = 200) => new Response(JSON.stringify(o), { status: st, headers: { "content-type": "application/json; charset=utf-8", ...CORS } });
 
 export default {
+  async scheduled(event, env, ctx) { ctx.waitUntil(backup(env).catch(e => console.error("backup", e && e.stack || e))); },
   async fetch(req, env, ctx) {
     const url = new URL(req.url);
     if (req.method === "OPTIONS") return new Response(null, { headers: CORS });
