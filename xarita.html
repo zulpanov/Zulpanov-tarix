@@ -60,6 +60,7 @@ svg path{stroke:#0d2a4a;stroke-width:.7;vector-effect:non-scaling-stroke}
 .fb.bad{background:#f43f5e1c;border:1px solid #f43f5e66}
 .fb .ph{font:800 18px Poppins,sans-serif}
 .fb .ex{color:var(--tx);font-size:14px;margin-top:2px}
+.xf{margin-top:10px;padding:10px 12px;border-radius:12px;background:rgba(255,255,255,.07);font-size:13.5px;line-height:1.45}.xf b{color:#fbbf24;display:block;margin-bottom:3px;font-size:12.5px;letter-spacing:.3px}
 .next{width:100%;margin-top:10px;padding:13px;font-size:15px;display:none}
 .pop{position:fixed;left:50%;top:30%;width:92vw;max-width:520px;text-align:center;transform:translate(-50%,-50%) scale(.6);font:800 28px/1.2 Poppins,sans-serif;pointer-events:none;opacity:0;text-shadow:0 3px 14px #000,0 0 2px #000;z-index:9}
 .pop.go{animation:pop 1.1s ease-out}
@@ -142,12 +143,14 @@ document.querySelectorAll("#cnt button").forEach(b=>b.onclick=()=>{document.quer
 (()=>{const s=LS.get("zm_xmap_n",10);const b=document.querySelector(`#cnt button[data-n="${s}"]`);if(b)b.click()})();
 
 function renderMenu(){if(typeof XMAP==="undefined")return;const g=$("conts");g.innerHTML="";
-  ORDER.forEach((k,ix)=>{const c=XMAP[k],best=LS.get("zm_xmap_best_"+k,null);
+  ORDER.filter(k=>OK(k).length>=4).forEach((k,ix)=>{const c=XMAP[k],best=LS.get("zm_xmap_best_"+k,null);
     const b=document.createElement("button");b.className="cc";b.style.animationDelay=ix*60+"ms";
-    b.innerHTML=`${best!=null?`<span class="best">🏆 ${best}%</span>`:""}<div class="em">${EMO[k]}</div><b>${E(c.n)}</b><span>${c.q.length} ta davlat</span>`;
+    b.innerHTML=`${best!=null?`<span class="best">🏆 ${best}%</span>`:""}<div class="em">${EMO[k]}</div><b>${E(c.n)}</b><span>${OK(k).length} ta davlat</span>`;
     b.onclick=()=>start(k);g.appendChild(b)})}
 
-function start(k,only){K=k;const all=XMAP[k].q.map((q,ix)=>ix);
+// Faqat mavzulashgan testlarda uchraydigan davlatlar (XNOTE) so‘raladi
+const OK=k=>XMAP[k].q.map((q,ix)=>ix).filter(ix=>typeof XNOTE==="undefined"||XMAP[k].q[ix].n in XNOTE);
+function start(k,only){K=k;const all=OK(k);
   list=only&&only.length?shuf(only):shuf(all).slice(0,N||all.length);
   i=0;score=0;streak=0;bestStreak=0;right=0;mist=[];show("game");drawBase();ask()}
 
@@ -161,9 +164,9 @@ function colorize(){const P=[...document.querySelectorAll("#map path.l1")],B=P.m
   ord.forEach(i=>{const used=new Set();ord.forEach(j=>{if(C[j]!=null&&near(B[i],B[j]))used.add(C[j])});let c=0;while(used.has(c)&&c<5)c++;C[i]=c;P[i].dataset.c=c;P[i].setAttribute("class","l1 c"+c)})}
 
 function nearOpts(t){const c=XMAP[K].q,T=c[t];
-  const d=c.map((q,ix)=>[ix,Math.hypot(q.x-T.x,q.y-T.y)]).filter(([ix])=>ix!==t&&c[ix].n!==T.n).sort((a,b)=>a[1]-b[1]);
+  const d=c.map((q,ix)=>[ix,Math.hypot(q.x-T.x,q.y-T.y)]).filter(([ix])=>ix!==t&&c[ix].n!==T.n&&(typeof XNOTE==="undefined"||c[ix].n in XNOTE)).sort((a,b)=>a[1]-b[1]);
   const near=shuf(d.slice(0,7).map(x=>x[0])).slice(0,2),rest=shuf(d.slice(7).map(x=>x[0])).filter(x=>!near.includes(x));
-  return shuf([t,...near,rest[0]??d[2][0]])}
+  return shuf([t,...near,rest[0]??d.map(x=>x[0]).find(x=>!near.includes(x))])}
 
 let VB=[0,0,1000,760],TVB=VB,anim=null;
 function setVB(to,ms=450){TVB=to;const fr=VB.slice(),t0=performance.now();cancelAnimationFrame(anim);
@@ -196,7 +199,8 @@ function answer(ix,btn){if(answered)return;answered=true;const t=list[i],c=XMAP[
     ph=pick(PRAISE);if(streak>=3)ph+=` 🔥${streak}`;popup(ph,"#4ade80");$("fbP").textContent="✅ "+ph+` +${pts}`}
   else{streak=0;mist.push(t);ph=pick(FAIL);popup(ph,"#fb7185");$("fbP").textContent="❌ "+ph}
   const cap=HINT[q.n]?HINT[q.n].replace("Yirik shaharlari","yirik shaharlari"):`poytaxti — ${q.c}`;
-  $("fbE").innerHTML=`Bu — <b>${E(q.n)}</b>, ${E(cap)}.`;
+  const nt=typeof XNOTE!=="undefined"&&XNOTE[q.n];
+  $("fbE").innerHTML=`Bu — <b>${E(q.n)}</b>, ${E(cap)}.`+(nt?`<div class="xf"><b>📖 Tarixdan</b>${E(nt)}</div>`:"");
   $("fb").className="fb show "+(ok?"ok":"bad");beep(ok);
   $("hS").textContent="⭐ "+score;$("hK").textContent="🔥 "+streak;
   $("next").textContent=i+1<list.length?"Keyingisi →":"Natijani ko‘rish 🏁";$("next").style.display="block"}
@@ -215,7 +219,7 @@ function finish(){const pc=Math.round(right/list.length*100),c=XMAP[K];
   $("hB").style.width="100%";show("res");if(pc>=70)beep(true)}
 $("again").onclick=()=>start(K);$("fix").onclick=()=>start(K,mist.slice());$("toMenu").onclick=()=>show("menu");
 
-const s=document.createElement("script");s.src="xmap-data.js?v=1";s.onload=renderMenu;s.onerror=()=>{$("conts").innerHTML='<div class="loading">Xaritani yuklab bo‘lmadi. Internetni tekshiring.</div>'};document.body.appendChild(s);
+const xn=document.createElement("script");xn.src="xnote.js?v=1";xn.onload=xn.onerror=()=>{const s=document.createElement("script");s.src="xmap-data.js?v=1";s.onload=renderMenu;s.onerror=()=>{$("conts").innerHTML='<div class="loading">Xaritani yuklab bo‘lmadi. Internetni tekshiring.</div>'};document.body.appendChild(s);};document.body.appendChild(xn);
 </script>
 </body>
 </html>
