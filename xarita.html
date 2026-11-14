@@ -37,7 +37,7 @@ h1{font:800 20px Poppins,sans-serif;letter-spacing:.02em}
 .mapbox{position:relative;border:1px solid var(--line);border-radius:20px;overflow:hidden;background:#0d2a4a}
 svg{display:block;width:100%;height:auto;touch-action:manipulation}
 svg path{stroke:#0d2a4a;stroke-width:.7;vector-effect:non-scaling-stroke}
-.l0{fill:#2b2f52}.l1{fill:#3d4479}
+.l0{fill:#2b2f52;stroke:#94a3b8!important;stroke-width:.8!important}.l1{fill:#3d4479;stroke:#e2e8f0!important;stroke-width:1!important}.l1.c0{fill:#3b4a8f}.l1.c1{fill:#2f6f7a}.l1.c2{fill:#5b3f8f}.l1.c3{fill:#2f6b4f}.l1.c4{fill:#6b4a7a}.l1.c5{fill:#40608f}
 .tg{fill:var(--gold);filter:drop-shadow(0 0 6px #fbbf24aa)}
 .tg.okc{fill:var(--ok);filter:drop-shadow(0 0 6px #22c55eaa)}
 .tg.badc{fill:var(--bad);filter:drop-shadow(0 0 6px #f43f5eaa)}
@@ -153,7 +153,12 @@ function start(k,only){K=k;const all=XMAP[k].q.map((q,ix)=>ix);
 
 function drawBase(){const c=XMAP[K];let h="";
   c.s.forEach(([d,q],ix)=>{h+=`<path id="p${ix}" class="${q===undefined?"l0":"l1"}" d="${d}"${q!==undefined?` data-q="${q}"`:""}/>`});
-  h+=`<g id="ov"></g>`;$("map").innerHTML=h;$("map").setAttribute("viewBox","0 0 1000 760")}
+  h+=`<g id="ov"></g>`;$("map").innerHTML=h;$("map").setAttribute("viewBox","0 0 1000 760");colorize()}
+// Siyosiy xarita: qo'shni davlatlar har xil rangda (chegara qutilari kesishganlar — qo'shni)
+function colorize(){const P=[...document.querySelectorAll("#map path.l1")],B=P.map(p=>{try{return p.getBBox()}catch(e){return null}}),m=1.5,C=[];
+  const near=(a,b)=>a&&b&&a.x<b.x+b.width+m&&b.x<a.x+a.width+m&&a.y<b.y+b.height+m&&b.y<a.y+a.height+m;
+  const ord=P.map((p,i)=>i).sort((a,b)=>((B[b]||{}).width*(B[b]||{}).height||0)-((B[a]||{}).width*(B[a]||{}).height||0));
+  ord.forEach(i=>{const used=new Set();ord.forEach(j=>{if(C[j]!=null&&near(B[i],B[j]))used.add(C[j])});let c=0;while(used.has(c)&&c<5)c++;C[i]=c;P[i].dataset.c=c;P[i].setAttribute("class","l1 c"+c)})}
 
 function nearOpts(t){const c=XMAP[K].q,T=c[t];
   const d=c.map((q,ix)=>[ix,Math.hypot(q.x-T.x,q.y-T.y)]).filter(([ix])=>ix!==t&&c[ix].n!==T.n).sort((a,b)=>a[1]-b[1]);
@@ -169,7 +174,7 @@ function zoomTo(q){let [x0,y0,x1,y1]=q.b;let w=Math.max(x1-x0,70)*3,h=Math.max(y
 
 function ask(){answered=false;usedHint=false;zoomed=false;const t=list[i],c=XMAP[K],q=c.q[t];
   $("hN").textContent=`${i+1}/${list.length}`;$("hB").style.width=(i/list.length*100)+"%";$("hS").textContent="⭐ "+score;$("hK").textContent="🔥 "+streak;
-  document.querySelectorAll("#map path.tg").forEach(p=>p.setAttribute("class","l1"));
+  document.querySelectorAll("#map path.tg").forEach(p=>p.setAttribute("class","l1"+(p.dataset.c!=null?" c"+p.dataset.c:"")));
   document.querySelectorAll(`#map path[data-q="${t}"]`).forEach(p=>{p.setAttribute("class","tg");p.parentNode.insertBefore(p,$("ov"))});
   const small=Math.max(q.b[2]-q.b[0],q.b[3]-q.b[1])<36;
   $("ov").innerHTML=small?`<circle class="ring" cx="${q.x}" cy="${q.y}" r="22"/>`:"";
