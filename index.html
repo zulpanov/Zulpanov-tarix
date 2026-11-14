@@ -351,6 +351,8 @@ input,select,textarea,button{font-family:inherit}
 .kunbtn .kun-i{font-size:28px}.kunbtn .kun-t{flex:1;display:flex;flex-direction:column;gap:2px}.kunbtn .kun-t b{font-size:15px}.kunbtn .kun-t small{font-size:12px;color:var(--mu)}.kunbtn .kun-a{font-size:22px;color:var(--mu)}
 #homeKun .kunbtn{margin:0}
 #homePM .kunbtn{margin:10px 0 0}.kunbtn.pm-home{border-color:rgba(168,85,247,.5);background:linear-gradient(135deg,rgba(168,85,247,.18),rgba(59,130,246,.12))}.kunbtn.pm-home.low{border-color:rgba(244,63,94,.55);background:linear-gradient(135deg,rgba(244,63,94,.16),rgba(249,115,22,.12))}.kunbtn .kun-go{font-size:22px;color:var(--mu)}
+.pm-lk{opacity:.62}.pm-lk .pm-g{font-style:normal}.pm-note{margin-top:8px;padding:9px 12px;border-radius:12px;border:1px dashed rgba(168,85,247,.6);background:rgba(168,85,247,.1);font-size:13px;cursor:pointer;text-align:center}.pm-note b{color:#c084fc}
+.pm-ask{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(3px)}.pm-ask-c{max-width:340px;width:100%;text-align:center;margin:0}.pm-ask-c .btn{width:100%;margin-top:10px}.pm-ask-c .sub{margin:4px 0 6px}
 .pm-hero{text-align:center}.pm-gem{font-size:46px;filter:drop-shadow(0 6px 18px rgba(168,85,247,.55))}.pm-st{margin-top:12px;padding:10px 12px;border-radius:12px;background:var(--card2);border:1px solid var(--line);font-size:14px}.pm-st.on{border-color:rgba(168,85,247,.55);background:rgba(168,85,247,.12)}.pm-st.low{border-color:rgba(244,63,94,.6);background:rgba(244,63,94,.12)}.pm-st small{color:var(--mu)}
 .pm-l{margin:6px 0 0;padding-left:20px;line-height:1.7;font-size:14px}.pm-ts{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}.pm-t{display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;margin:0}.pm-t b{font-size:16px}.pm-t .pm-p{font-size:18px;font-weight:800;color:var(--ac2)}.pm-t small{color:var(--mu)}.pm-t .btn{margin-top:6px;width:100%}.pm-b{font-size:.85em}
 .pm-sum{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center}.pm-sum div{padding:10px 4px;border-radius:12px;background:var(--card2);border:1px solid var(--line)}.pm-sum b{display:block;font-size:20px}.pm-sum span{font-size:11px;color:var(--mu)}
@@ -3218,6 +3220,25 @@ const PM = (() => {
   const badge = s => (!is() && lockSet(s) ? " 💎" : "");
   function gate(k, fn) { watch(); if (is() || !f(k)) return fn(); wall(); }
   function wall() { FX.toast("💎 Bu bo‘lim Premium foydalanuvchilar uchun"); open(); }
+  // O'yinlarda premium mavzu tanlanganda chiqadigan oyna
+  function ask() {
+    const o0 = document.querySelector(".pm-ask"); if (o0) o0.remove();
+    const o = document.createElement("div"); o.className = "pm-ask";
+    o.innerHTML = `<div class="card pm-ask-c"><div class="pm-gem">💎</div><h1>Bu mavzu Premium</h1><div class="sub">Premium bilan barcha mavzular o‘yinlarda ham ochiladi.</div><button class="btn" data-x="buy">💎 Premium olish</button><button class="btn ghost" data-x="no">Yopish</button></div>`;
+    o.onclick = e => { const b = e.target.closest("[data-x]"); if (e.target === o || b) { o.remove(); if (b && b.dataset.x === "buy") open(); } };
+    document.body.appendChild(o);
+  }
+  const setOf = id => (typeof SETS !== "undefined" ? SETS.find(x => x.id === id) : null);
+  // Tanlash ro'yxatidagi premium mavzularni belgilash (checkbox yoki [data-s] qatorlar)
+  function markBoxes(root) {
+    watch(); if (!root || is()) return; let n = 0;
+    root.querySelectorAll('input[type=checkbox][value]').forEach(i => { const st = setOf(i.value); if (!st || !lockSet(st)) return; n++; i.checked = false; i.dataset.pm = "1"; const l = i.closest("label"); if (l) { l.classList.add("pm-lk"); const sp = l.querySelector("span"); if (sp && !sp.querySelector(".pm-g")) sp.insertAdjacentHTML("beforeend", ' <i class="pm-g">💎</i>'); } });
+    root.querySelectorAll("[data-s]").forEach(r => { const st = setOf(r.dataset.s); if (!st || !lockSet(st)) return; n++; r.classList.add("pm-lk"); const b = r.querySelector("b"); if (b && !b.querySelector(".pm-g")) b.insertAdjacentHTML("beforeend", ' <i class="pm-g">💎</i>'); });
+    if (n && !root.querySelector(".pm-note")) { const tl = root.querySelector(".bz-tl") || root; tl.insertAdjacentHTML("beforeend", `<div class="pm-note" onclick="PM.open()">💎 ${n} ta mavzu Premium · <b>Premium olish ›</b></div>`); }
+  }
+  // Ro'yxatdan faqat ochiq mavzularni qoldirish; bo'sh qolsa — oyna
+  const free = L => (is() ? L : (L || []).filter(x => x && !lockSet(x)));
+  try { document.addEventListener("click", e => { const t = e.target && e.target.closest && e.target.closest(".pm-lk"); if (t && !is()) { e.preventDefault(); e.stopPropagation(); ask(); } }, true); } catch (e) {}
   const anyLock = () => Object.values(cfg.f || {}).some(Boolean) || Object.values(cfg.g || {}).some(Boolean) || Object.values(cfg.s || {}).some(Boolean);
   const tars = () => (Array.isArray(cfg.tar) ? cfg.tar : Object.values(cfg.tar || {})).filter(t => t && t.n);
   const dt = ms => { const d = new Date(ms), z = n => String(n).padStart(2, "0"); return `${z(d.getDate())}.${z(d.getMonth() + 1)}.${d.getFullYear()}`; };
@@ -3292,7 +3313,7 @@ const PM = (() => {
     watch();
   }
   function reset() { try { if (unC) unC(); if (unM) unM(); } catch (e) {} unC = unM = null; mUid = null; me = null; watch(); }
-  return { watch, reset, preview, is, lockSet, okSet, badge, gate, wall, open, homeBox, install, gk, FEAT, DAY, get cfg() { return cfg; }, get me() { return me; } };
+  return { watch, reset, preview, ask, markBoxes, free, is, lockSet, okSet, badge, gate, wall, open, homeBox, install, gk, FEAT, DAY, get cfg() { return cfg; }, get me() { return me; } };
 })();
 // Ustoz paneli: 💎 Premium
 const PMADM = (() => {
@@ -4057,6 +4078,7 @@ const DUEL = (() => {
       $("tz").innerHTML = head("Mavzuni tanlang", "Yangi duel") + `<div class="dl-cls">${cl.map(c => `<button class="${c === cls ? "on" : ""}" data-c="${esc(c)}">${esc(c)}</button>`).join("")}</div>
       <div class="card" style="padding:4px 12px"><div class="dl-row" data-s="*"><div class="dl-ic">🎲</div><div class="dl-m"><b>Aralash</b><small>${esc(cls)} — barcha mavzulardan</small></div><span class="dl-go">›</span></div>${groups[cls].map(x => `<div class="dl-row" data-s="${x.id}"><div class="dl-ic dl-n">${esc(x.n || "•")}</div><div class="dl-m"><b>${esc(/mavzular?$/i.test(x.title || "") ? x.n + "-mavzular" : x.title)}</b><small>${esc(String(x.sub || "").split(" · ")[0])}</small></div><span class="dl-go">›</span></div>`).join("")}</div>`;
       $("tz").querySelector(".dl-cls").onclick = e => { const b = e.target.closest("[data-c]"); if (b) { cls = b.dataset.c; draw(); } };
+      PM.markBoxes($("tz").querySelector(".card"));
       $("tz").querySelector(".card").onclick = e => { const r = e.target.closest("[data-s]"); if (r) create(r.dataset.s === "*" ? groups[cls] : [setById(r.dataset.s)]); };
       window.scrollTo(0, 0);
     };
@@ -4064,6 +4086,7 @@ const DUEL = (() => {
   }
   async function create(src) {
     const c = me(); if (!c) return;
+    src = PM.free(src); if (!src.length) return PM.ask();
     const pool = []; src.forEach(x => x.qs.forEach((q, i) => pool.push([x.id, i])));
     for (let i = pool.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [pool[i], pool[j]] = [pool[j], pool[i]]; }
     const id = Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
@@ -4073,6 +4096,7 @@ const DUEL = (() => {
   }
   function qsOf(d) { return (d.q || []).map(k => { const [sid, i] = String(k).split(":"); const x = setById(sid); return x && x.qs[+i]; }).filter(Boolean); }
   function play(hostUid, id, host, rec, mineRec) {
+    if (!PM.is() && [...new Set((host.q || []).map(k => String(k).split(":")[0]))].some(sid => PM.lockSet(setById(sid)))) return PM.ask();
     const Q = qsOf(host); if (!Q.length) { FX.toast("Savollar topilmadi."); return open(); }
     const R = rngF(host.seed || 1), perms = Q.map(() => { const a = [0, 1, 2, 3]; for (let i = 3; i > 0; i--) { const j = Math.floor(R() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; });
     G = { hostUid, id, host, Q, perms, cur: 0, ok: 0, streak: 0, wst: 0, t0: Date.now(), lock: false, own: hostUid === me().uid };
@@ -4178,7 +4202,7 @@ const BLITZ = (() => {
   const save = () => { try { localStorage.setItem("zm_bz", JSON.stringify({ cnt, sel })); } catch (e) {} };
   const CNTS = [10, 20, 30, 40];
   const kOf = () => ck(cls) + "_" + cnt;
-  const chosen = () => { const g = groups()[cls] || [], ids = sel[cls]; return ids && ids.length ? g.filter(x => ids.includes(x.id)) : g; };
+  const chosen = () => { const g = PM.free(groups()[cls] || []), ids = sel[cls]; return ids && ids.length ? g.filter(x => ids.includes(x.id)) : g; };
   function head(t, sub) { document.body.classList.add("dlm"); return `<div class="dl-h"><button class="adh-b" onclick="goHome()" title="Bosh sahifa">‹</button><div class="adh-t"><small>${esc(sub || "2 daqiqalik poyga")}</small><b>${t}</b></div><button class="adh-b" onclick="goHome()" title="Bosh sahifa">🏠</button></div>`; }
   async function board(c) {
     let w = {}, a = null; const k = kOf(), u = me();
@@ -4205,7 +4229,8 @@ const BLITZ = (() => {
       <div class="ah">🏆 Haftaning chempionlari · ${esc(cls)} · ${cnt} savol</div><div class="card" style="padding:6px 12px" id="bzL"><div class="sub" style="text-align:center;margin:12px 0">Yuklanmoqda…</div></div>`;
     $("tz").querySelector(".dl-cls").onclick = e => { const b = e.target.closest("[data-c]"); if (b) { cls = b.dataset.c; open(); } };
     $("bzGo").onclick = () => countdown();
-    const boxes = () => [...$("bzTp").querySelectorAll(".bz-tl label:not(.bz-all) input")];
+    PM.markBoxes($("bzTp"));
+    const boxes = () => [...$("bzTp").querySelectorAll(".bz-tl label:not(.bz-all) input:not([data-pm])")];
     const ids0 = sel[cls] && sel[cls].length ? sel[cls] : (g[cls] || []).map(x => x.id); boxes().forEach(b => b.checked = ids0.includes(b.value));
     const sum = () => { const on = boxes().filter(b => b.checked), all = on.length === boxes().length; $("bzAll").checked = all; const nq = chosen().reduce((a, x) => a + x.qs.length, 0); $("bzTs").textContent = (all ? "Hammasi" : on.length + " ta mavzu") + " · " + nq + " savol"; $("bzGo").disabled = !on.length; $("bzGo").textContent = on.length ? `▶ Boshlash · ${Math.min(cnt, nq)} savol` : "Kamida 1 ta mavzu tanlang"; };
     $("bzTp").onchange = e => { if (e.target.id === "bzAll") boxes().forEach(b => b.checked = e.target.checked); const on = boxes().filter(b => b.checked).map(b => b.value); sel[cls] = on.length === boxes().length ? [] : (on.length ? on : ["-"]); save(); sum(); };
@@ -4311,7 +4336,7 @@ const HAYOQ = (() => {
   try { const o = JSON.parse(localStorage.getItem("zm_hy") || "{}"); cnt = o.cnt || 30; sel = o.sel || {}; } catch (e) {}
   const save = () => { try { localStorage.setItem("zm_hy", JSON.stringify({ cnt, sel })); } catch (e) {} };
   const kOf = () => ck(cls);
-  const chosen = () => { const g = groups()[cls] || [], ids = sel[cls]; return ids && ids.length ? g.filter(x => ids.includes(x.id)) : g; };
+  const chosen = () => { const g = PM.free(groups()[cls] || []), ids = sel[cls]; return ids && ids.length ? g.filter(x => ids.includes(x.id)) : g; };
   const avail = () => chosen().reduce((a, x) => a + elig(x).length, 0);
   function head(t, sub) { document.body.classList.add("dlm"); return `<div class="dl-h"><button class="adh-b" onclick="goHome()" title="Bosh sahifa">‹</button><div class="adh-t"><small>${esc(sub || "2 daqiqa · to‘g‘ri +3 s · xato −3 s")}</small><b>${t}</b></div><button class="adh-b" onclick="goHome()" title="Bosh sahifa">🏠</button></div>`; }
   async function board() {
@@ -4342,7 +4367,8 @@ const HAYOQ = (() => {
       <div class="sub hy-how">💡 Kartani o‘ngga surish — <b>HA</b>, chapga surish — <b>YO‘Q</b>. Kompyuterda → va ← tugmalari.</div>`;
     $("tz").querySelector(".dl-cls").onclick = e => { const b = e.target.closest("[data-c]"); if (b) { cls = b.dataset.c; open(); } };
     $("hyGo").onclick = () => countdown();
-    const boxes = () => [...$("hyTp").querySelectorAll(".bz-tl label:not(.bz-all) input")];
+    PM.markBoxes($("hyTp"));
+    const boxes = () => [...$("hyTp").querySelectorAll(".bz-tl label:not(.bz-all) input:not([data-pm])")];
     const ids0 = sel[cls] && sel[cls].length ? sel[cls] : g[cls].map(x => x.id); boxes().forEach(b => b.checked = ids0.includes(b.value));
     const R = $("hyR");
     const setN = n => { const mx = avail(); cnt = Math.max(Math.min(n, mx), Math.min(MINQ, mx)); R.value = cnt; $("hyN").textContent = cnt; $("hyP").querySelectorAll("button").forEach(b => b.classList.toggle("on", (+b.dataset.n || mx) === cnt)); save(); };
@@ -4657,7 +4683,7 @@ const LADDER = (() => {
   let cls = null, sel = {}, G = null;
   try { const o = JSON.parse(localStorage.getItem("zm_zn") || "{}"); sel = o.sel || {}; } catch (e) {}
   const save = () => { try { localStorage.setItem("zm_zn", JSON.stringify({ sel })); } catch (e) {} };
-  const chosen = () => { const g = groups()[cls] || [], ids = sel[cls]; return ids && ids.length ? g.filter(x => ids.includes(x.id)) : g; };
+  const chosen = () => { const g = PM.free(groups()[cls] || []), ids = sel[cls]; return ids && ids.length ? g.filter(x => ids.includes(x.id)) : g; };
   function head(t, sub) { document.body.classList.add("dlm"); return `<div class="dl-h"><button class="adh-b" onclick="goHome()">‹</button><div class="adh-t"><small>${esc(sub || "15 pog'ona · 3 yordam")}</small><b>${t}</b></div><button class="adh-b" onclick="goHome()">🏠</button></div>`; }
   function stop() { if (G) clearInterval(G.tk); G = null; }
   async function board() {
@@ -4680,7 +4706,8 @@ const LADDER = (() => {
       <div class="bz-best" id="znBest">…</div><button class="btn" id="znGo">▶ O'yinni boshlash</button></div>
       <div class="ah">🏆 Haftaning eng yuqori cho'qqilari · ${esc(cls)}</div><div class="card" style="padding:6px 12px" id="znL"><div class="sub" style="text-align:center;margin:12px 0">Yuklanmoqda…</div></div>`;
     $("tz").querySelector(".dl-cls").onclick = e => { const b = e.target.closest("[data-c]"); if (b) { cls = b.dataset.c; open(); } };
-    const boxes = () => [...$("znTp").querySelectorAll(".bz-tl label:not(.bz-all) input")];
+    PM.markBoxes($("znTp"));
+    const boxes = () => [...$("znTp").querySelectorAll(".bz-tl label:not(.bz-all) input:not([data-pm])")];
     const ids0 = sel[cls] && sel[cls].length ? sel[cls] : (g[cls] || []).map(x => x.id); boxes().forEach(b => b.checked = ids0.includes(b.value));
     const sum = () => { const on = boxes().filter(b => b.checked), all = on.length === boxes().length, nq = chosen().reduce((a, x) => a + x.qs.length, 0); $("znAll").checked = all; $("znTs").textContent = (all ? "Hammasi" : on.length + " ta mavzu") + " · " + nq + " savol"; $("znGo").disabled = nq < 15; $("znGo").textContent = !on.length ? "Kamida 1 ta mavzu tanlang" : nq < 15 ? "Kamida 15 ta savol kerak" : "▶ O'yinni boshlash"; };
     $("znTp").onchange = e => { if (e.target.id === "znAll") boxes().forEach(b => b.checked = e.target.checked); const on = boxes().filter(b => b.checked).map(b => b.value); sel[cls] = on.length === boxes().length ? [] : (on.length ? on : ["-"]); save(); sum(); };
@@ -7124,10 +7151,11 @@ const T = (() => {
       <div class="row"><div style="flex:1"><label>Savollar soni</label><select id="myn"><option>10</option><option>15</option><option>20</option></select></div><div style="flex:1"><label>Vaqt</label><select id="myd"><option value="5">5 daqiqa</option><option value="10" selected>10 daqiqa</option><option value="15">15 daqiqa</option><option value="20">20 daqiqa</option></select></div></div>
       <div class="accerr" id="myE"></div><button class="btn" id="myC">🚀 O'yinni ochish</button></div>`;
     if (live) { $("myCont").onclick = () => { openJoin(oc); join(); }; $("myEnd").onclick = async () => { await DBA.update(`t/${oc}/meta`, { phase: "end" }).catch(() => {}); DBA.set(`a/${oc}`, null).catch(() => {}); ls.del("zm_mygame"); myOpen(); }; }
+    PM.markBoxes($("mys"));
     $("mys").onchange = () => $("mys").querySelectorAll(".tpk").forEach(d => d.querySelector(".tpk-n").textContent = d.querySelectorAll("input:checked").length + "/" + d.querySelectorAll("input").length);
     $("mym").onclick = e => { const b = e.target.closest("[data-m]"); if (!b) return; [...$("mym").children].forEach(x => x.classList.toggle("on", x === b)); $("myteam").classList.toggle("hide", b.dataset.m !== "team"); };
     $("myC").onclick = async () => {
-      const ids = [...$("mys").querySelectorAll("input:checked")].map(i => i.value), E = t => $("myE").textContent = t;
+      const ids = PM.free([...$("mys").querySelectorAll("input:checked")].map(i => setById(i.value))).map(x => x.id), E = t => $("myE").textContent = t;
       if (!ids.length) return E("Kamida bitta mavzuni belgilang.");
       $("myC").disabled = true; E("");
       try {
