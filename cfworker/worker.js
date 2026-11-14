@@ -283,6 +283,20 @@ async function adminChats(env) {
   vals(await db(env, "GET", "tg/u").catch(() => null)).forEach(r => { if (r.isAdmin) ids.add(String(r.tgId)); });
   return [...ids];
 }
+// ⏰ Uy vazifasi eslatmasi: muddatga 24 soatdan kam qolganda, bajarmaganlarga (har 10 daqiqada, bepul reja cheklovi doirasida qismlab)
+async function hwRemind(env) {
+  const hw = await db(env, "GET", "hw") || {}, now = Date.now();
+  const e = Object.entries(hw).find(([id, x]) => x && x.g && x.g !== "*" && !x.rm && x.due > now && x.due - now <= 24 * 3600e3);
+  if (!e) return; const [id, x] = e;
+  const [users, sub, tgs] = await Promise.all([db(env, "GET", "users"), db(env, "GET", "hwr/" + id), students(env)]);
+  const byL = {}; tgs.forEach(r => byL[low(r.login)] = r.tgId);
+  const seen = new Set(), list = [];
+  Object.entries(users || {}).forEach(([uid, u]) => { if (!u || low(u.g) !== low(x.g) || (sub || {})[uid]) return; const t = loginsOf({ uid, ...u }).map(l => byL[l]).find(Boolean); if (t && !seen.has(t)) { seen.add(t); list.push({ tgId: t }); } });
+  list.sort((a, b) => a.tgId - b.tgId);
+  const text = "⏰ <b>Eslatma: uy vazifasi</b>\n\n📚 " + esc(x.ttl || "") + "\n⏳ Muddat: <b>" + tashDt(x.due) + "</b> — bir kundan kam qoldi.\n\nHali bajarmadingiz — hozir ishlang 👇";
+  const r = await sendBatch(env, list, x.rmi || 0, () => ({ text, parse_mode: "HTML", reply_markup: { inline_keyboard: [[{ text: "📝 Vazifani bajarish", url: appLink() }]] } }));
+  if (r.next == null) await db(env, "PUT", `hw/${id}/rm`, true); else await db(env, "PUT", `hw/${id}/rmi`, r.next);
+}
 // Zaxira: butun bazani JSON fayl qilib ustozning Telegramiga yuborish (har yakshanba va admin paneldan)
 async function backup(env) {
   const data = await db(env, "GET", "");
@@ -470,7 +484,47 @@ async function saveRes(env, uid, user, g, info) {
   const x = await syncLb(env, uid, user).catch(() => null);
   return { id, ok: g.ok, tot: g.tot, pts, lv, ...(x || {}) };
 }
+// ---------------- 👨‍🏫 Ustozlar: o'z o'quvchilari ----------------
+const low = x => String(x || "").trim().toLowerCase();
+const loginsOf = x => [x.login || x.uid].concat(Array.isArray(x.al) ? x.al : []).map(low).filter(Boolean);
+const tashDt = ms => { const d = new Date(ms + 5 * 3600e3), z = n => String(n).padStart(2, "0"); return `${z(d.getUTCDate())}.${z(d.getUTCMonth() + 1)} ${z(d.getUTCHours())}:${z(d.getUTCMinutes())}`; };
+// Ustozni tekshirish va uning o'quvchilari (guruhlari bo'yicha) — kam so'rov bilan (Cloudflare bepul rejasi cheklovi)
+async function teacherCtx(env, uid) {
+  const t = await db(env, "GET", "tch/" + uid); if (!t || t.ok !== true) throw new Error("Faqat tasdiqlangan ustoz uchun");
+  const [grp, tst, users] = await Promise.all([db(env, "GET", "grp"), db(env, "GET", "tst/" + uid), db(env, "GET", "users")]);
+  const names = new Set(vals(grp).filter(g => g.t === uid && g.n).map(g => low(g.n)));
+  const us = Object.keys(tst || {}).map(id => (users || {})[id] ? { uid: id, ...users[id] } : null).filter(x => x && x.f && names.has(low(x.g)));
+  return { t, names, us };
+}
+async function tgOfLogins(env, logins, to) {
+  const L = new Set(logins), seen = new Set(), list = [], add = id => { if (id && !seen.has(id)) { seen.add(id); list.push({ tgId: id }); } };
+  if (to !== "par") (await students(env)).forEach(r => { if (L.has(low(r.login))) add(r.tgId); });
+  if (to !== "stu") (await parentsList(env)).forEach(p => { if (L.has(low(p.login))) add(p.tgId); });
+  return list;
+}
 const VFN = {
+  // Ustoz vazifa berdi — guruh o'quvchilariga bot xabari
+  async tHw(env, uid, i) {
+    const c = await teacherCtx(env, uid), id = String(i.id || "").replace(/[^A-Za-z0-9_-]/g, "").slice(0, 40);
+    const hw = await db(env, "GET", "hw/" + id); if (!hw || hw.t !== uid) throw new Error("Vazifa topilmadi");
+    const list = await tgOfLogins(env, c.us.filter(x => low(x.g) === low(hw.g)).flatMap(loginsOf), "stu");
+    const text = "📝 <b>Yangi uy vazifasi!</b>\n👨‍🏫 Ustoz: " + esc(c.t.n || "") + "\n\n📚 " + esc(hw.ttl || "") + "\n⏰ Muddat: <b>" + tashDt(hw.due) + "</b>" + (hw.note ? "\n💬 " + esc(hw.note) : "") + "\n\nBajarish uchun tugmani bosing 👇";
+    return sendBatch(env, list, i.from, () => ({ text, parse_mode: "HTML", reply_markup: { inline_keyboard: [[{ text: "📝 Vazifani bajarish", url: appLink() }]] } }));
+  },
+  // Ustoz xabari — faqat o'z o'quvchilari (va ota-onalari)
+  async tMsg(env, uid, i) {
+    const c = await teacherCtx(env, uid), msg = String(i.text || "").trim().slice(0, 3500); if (!msg) return { sent: 0, failed: 0, next: null };
+    const allow = new Set(c.us.flatMap(loginsOf)), want = Array.isArray(i.logins) ? i.logins.map(low).filter(l => allow.has(l)) : [...allow];
+    const to = ["stu", "par", "all"].includes(i.to) ? i.to : "stu", list = await tgOfLogins(env, want, to);
+    return sendBatch(env, list, i.from, () => ({ text: "📢 <b>Ustoz xabari</b> — " + esc(c.t.n || "") + "\n\n" + esc(msg), parse_mode: "HTML", reply_markup: { inline_keyboard: [[{ text: "📚 Platformani ochish", url: appLink() }]] } }));
+  },
+  // Ota-onalarga hisobot: matnni sayt tayyorlaydi (ustoz natijalarni o'qiy oladi), server faqat o'z o'quvchilariga ruxsat beradi
+  async tRep(env, uid, i) {
+    const c = await teacherCtx(env, uid), allow = new Set(c.us.flatMap(loginsOf)), by = {}, list = [];
+    (await parentsList(env)).forEach(p => (by[low(p.login)] = by[low(p.login)] || []).push(p.tgId));
+    (Array.isArray(i.items) ? i.items.slice(0, 1000) : []).forEach(it => { const l = low(it && it.u); if (allow.has(l)) (by[l] || []).forEach(tgId => list.push({ tgId, text: String(it.text || "").slice(0, 3500) })); });
+    const r = await sendBatch(env, list, i.from, to => ({ text: to.text, parse_mode: "HTML" })); r.parents = list.length; return r;
+  },
   async res(env, uid, i) {
     const g = await grade(env, i);
     const dur = Math.max(0, Number(i.dur) || 0);
@@ -505,7 +559,10 @@ const CORS = { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Methods
 const json = (o, st = 200) => new Response(JSON.stringify(o), { status: st, headers: { "content-type": "application/json; charset=utf-8", ...CORS } });
 
 export default {
-  async scheduled(event, env, ctx) { ctx.waitUntil(backup(env).catch(e => console.error("backup", e && e.stack || e))); },
+  async scheduled(event, env, ctx) {
+    if (event.cron === "0 4 * * SUN") ctx.waitUntil(backup(env).catch(e => console.error("backup", e && e.stack || e)));
+    else ctx.waitUntil(hwRemind(env).catch(e => console.error("hwRemind", e && e.stack || e)));
+  },
   async fetch(req, env, ctx) {
     const url = new URL(req.url);
     if (req.method === "OPTIONS") return new Response(null, { headers: CORS });

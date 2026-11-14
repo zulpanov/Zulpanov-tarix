@@ -358,6 +358,7 @@ input,select,textarea,button{font-family:inherit}
 .tch-s,.tch-r{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}.tch-s{cursor:pointer}.tch-s:last-child,.tch-r:last-child{border-bottom:0}.tch-sn,.tch-r>div:first-child{flex:1;display:flex;flex-direction:column;gap:1px;min-width:0}.tch-sn small,.tch-r small{color:var(--mu);font-size:12px}
 .tch-sp{min-width:44px;text-align:center;font-weight:800;font-size:16px;display:flex;flex-direction:column}.tch-sp small{font-size:10px;font-weight:600}.tch-sp.ok{color:var(--ok)}.tch-sp.mid{color:var(--ac2)}.tch-sp.bad{color:var(--bad)}
 .tch-bar{height:8px;border-radius:6px;background:var(--card2);margin-top:8px;overflow:hidden}.tch-bar i{display:block;height:100%;background:var(--gr)}
+.tch-tabs{grid-template-columns:repeat(5,1fr)!important;gap:4px}.tch-tabs button{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;padding:8px 2px}.tch-tabs button i{font-style:normal;font-size:18px}.tch-w{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}.tch-w:last-child{border-bottom:0}.tch-wt{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}.tch-wt small{color:var(--mu);font-size:12px}
 .pm-lk{opacity:.62}.pm-lk .pm-g{font-style:normal}.pm-note{margin-top:8px;padding:9px 12px;border-radius:12px;border:1px dashed rgba(168,85,247,.6);background:rgba(168,85,247,.1);font-size:13px;cursor:pointer;text-align:center}.pm-note b{color:#c084fc}
 .pm-ask{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(3px)}.pm-ask-c{max-width:340px;width:100%;text-align:center;margin:0}.pm-ask-c .btn{width:100%;margin-top:10px}.pm-ask-c .sub{margin:4px 0 6px}
 .pm-hero{text-align:center}.pm-gem{font-size:46px;filter:drop-shadow(0 6px 18px rgba(168,85,247,.55))}.pm-st{margin-top:12px;padding:10px 12px;border-radius:12px;background:var(--card2);border:1px solid var(--line);font-size:14px}.pm-st.on{border-color:rgba(168,85,247,.55);background:rgba(168,85,247,.12)}.pm-st.low{border-color:rgba(244,63,94,.6);background:rgba(244,63,94,.12)}.pm-st small{color:var(--mu)}
@@ -3214,7 +3215,7 @@ const PM = (() => {
   }
   const left = () => (me && me.e ? me.e - now() : 0);
   const days = () => Math.max(0, Math.ceil(left() / DAY));
-  const is = () => adm() || left() > 0;
+  const is = () => adm() || left() > 0 || (() => { try { return TCH.is(); } catch (e) { return false; } })();
   const f = k => !!(cfg.f && cfg.f[k]);
   function lockSet(s) {
     if (!s) return false;
@@ -3535,6 +3536,18 @@ const TCH = (() => {
       } catch (e) { $("taB").disabled = false; E("⚠️ Yuborib bo'lmadi: " + ((e && e.message) || e)); }
     };
   }
+  // Server (bot) chaqiruvi — Firebase sessiyasi bilan; ko'p xabar bo'lsa qismlab yuboradi
+  async function vcall(fn, input) {
+    const URL_V = "https://zulpanov-tarix-bot.zulponovalimqul.workers.dev/v", tot = { sent: 0, failed: 0 }; let from = 0;
+    for (let k = 0; k < 200; k++) {
+      const idToken = await AUTH.idToken(false);
+      const r = await fetch(URL_V, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ fn, idToken, input: { ...input, from } }) }).then(x => x.json());
+      if (!r.ok) throw new Error(r.err || "Server xatosi");
+      tot.sent += r.r.sent || 0; tot.failed += r.r.failed || 0; if (r.r.parents != null) tot.parents = (tot.parents || 0) + (k ? 0 : r.r.parents);
+      if (r.r.next == null) break; from = r.r.next;
+    }
+    return tot;
+  }
   // ---------- ustoz paneli ----------
   async function load() {
     const u = cur().uid;
@@ -3557,9 +3570,9 @@ const TCH = (() => {
     const M = meV();
     W.innerHTML = `${prev ? `<div class="tnote" style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px"><span>👁 <b>Ustoz paneli — ko'rish rejimi.</b> Ustozlar shu ko'rinishni ko'radi.</span><button class="btn sm ghost" onclick="TCH.exitPrev()">Chiqish</button></div>` : ""}
       <div class="card tch-hd"><b>👨‍🏫 ${esc(M.n || "Ustoz paneli")}</b><small>${esc(M.org || "")} · ${G.length} guruh · ${S.length} o'quvchi</small></div>
-      <div class="seg tch-tabs" id="tcT">${[["grp", "👥 Guruhlar"], ["stu", "🎓 O'quvchilar"], ["hw", "📝 Vazifa"]].map(([k, l]) => `<button data-t="${k}" class="${tab === k ? "on" : ""}">${l}</button>`).join("")}</div><div id="tcB"></div>`;
+      <div class="seg tch-tabs" id="tcT">${[["grp", "👥", "Guruhlar"], ["stu", "🎓", "O'quvchilar"], ["hw", "📝", "Vazifa"], ["msg", "✉️", "Xabar"], ["game", "🏆", "O'yin"]].map(([k, i, l]) => `<button data-t="${k}" class="${tab === k ? "on" : ""}"><i>${i}</i>${l}</button>`).join("")}</div><div id="tcB"></div>`;
     $("tcT").onclick = e => { const b = e.target.closest("[data-t]"); if (!b) return; tab = b.dataset.t; sel = null; draw(); };
-    ({ grp: drawGrp, stu: drawStu, hw: drawHw })[tab]();
+    ({ grp: drawGrp, stu: drawStu, hw: drawHw, msg: drawMsg, game: drawGame })[tab]();
   }
   // ----- guruhlar -----
   function drawGrp() {
@@ -3596,14 +3609,27 @@ const TCH = (() => {
   // ----- o'quvchilar -----
   function drawStu() {
     const B = $("tcB");
-    if (sel) return drawOne();
+    if (sel && sel !== "#weak") return drawOne();
     const L = S.filter(s => !fG || nk(s.g) === nk(fG));
-    B.innerHTML = `${G.length > 1 ? `<div class="dl-cls" id="tsF"><button class="${fG ? "" : "on"}" data-g="">Hammasi</button>${G.map(g => `<button class="${nk(fG) === nk(g.n) ? "on" : ""}" data-g="${esc(g.n)}">${esc(g.n)}</button>`).join("")}</div>` : ""}
+    if (sel === "#weak") return drawWeak(L);
+    B.innerHTML = `${S.length ? `<button class="btn ghost" id="tsW" style="margin-bottom:10px">📉 Zaif mavzular${fG ? " · " + esc(fG) : ""}</button>` : ""}${G.length > 1 ? `<div class="dl-cls" id="tsF"><button class="${fG ? "" : "on"}" data-g="">Hammasi</button>${G.map(g => `<button class="${nk(fG) === nk(g.n) ? "on" : ""}" data-g="${esc(g.n)}">${esc(g.n)}</button>`).join("")}</div>` : ""}
       <div class="card" style="padding:4px 12px">${L.length ? L.map(s => { const rs = s.rs || {}, avg = rs.n ? Math.round(rs.s / rs.n) : null;
         return `<div class="tch-s" data-s="${esc(s.k)}"><div class="tch-sn"><b>${esc(s.f + " " + (s.l || ""))}</b><small>${esc(s.g)} · ${rs.n || 0} ta test · oxirgi: ${rs.last ? dt(rs.last) : "—"}</small></div><div class="tch-sp ${avg == null ? "" : avg >= 70 ? "ok" : avg >= 50 ? "mid" : "bad"}">${avg == null ? "—" : avg}</div></div>`; }).join("")
       : `<div class="sub" style="text-align:center;margin:14px 0">${G.length ? "Hali o'quvchi qo'shilmagan. «Guruhlar» bo'limidan havolani yuboring." : "Avval guruh yarating."}</div>`}</div>`;
     if ($("tsF")) $("tsF").onclick = e => { const b = e.target.closest("[data-g]"); if (b) { fG = b.dataset.g; drawStu(); } };
     B.querySelectorAll("[data-s]").forEach(r => r.onclick = () => { sel = r.dataset.s; drawStu(); });
+    if ($("tsW")) $("tsW").onclick = () => { sel = "#weak"; drawStu(); };
+  }
+  // Zaif mavzular: o'quvchilar natijalari test (mavzu) bo'yicha — eng past o'rtacha ball yuqorida
+  async function drawWeak(L) {
+    const B = $("tcB");
+    B.innerHTML = `<button class="lnk" id="twBk" style="margin-bottom:8px">‹ O'quvchilar</button><div class="card"><h1>📉 Zaif mavzular${fG ? " · " + esc(fG) : ""}</h1><div class="sub" style="margin:0 0 8px">Oxirgi 60 kundagi natijalar bo'yicha: o'quvchilaringiz qaysi testlarda past ball olyapti.</div><div id="twL"><div class="sub" style="margin:0">Hisoblanmoqda…</div></div></div>`;
+    $("twBk").onclick = () => { sel = null; drawStu(); };
+    const from = DBA.now() - 60 * 864e5, agg = {};
+    await Promise.all(L.map(async s => { let h = {}; try { h = (await DBA.get("h/" + s.k)) || {}; } catch (e) {} const best = {}; Object.values(h).forEach(r => { if (r && r.at >= from && r.ttl && r.mode !== "game") { const k = r.ttl; if (!best[k] || r.at > best[k].at) best[k] = r; } }); Object.entries(best).forEach(([k, r]) => { const a = agg[k] = agg[k] || { n: 0, s: 0, lo: 0 }; a.n++; a.s += r.pts || 0; if ((r.pts || 0) < 50) a.lo++; }); }));
+    const R = Object.entries(agg).map(([t, a]) => ({ t, n: a.n, avg: Math.round(a.s / a.n), lo: a.lo })).sort((a, b) => a.avg - b.avg).slice(0, 25), el = $("twL"); if (!el) return;
+    el.innerHTML = R.length ? R.map(r => `<div class="tch-w"><div class="tch-wt"><b>${esc(r.t)}</b><small>${r.n} o'quvchi ishlagan${r.lo ? ` · ${r.lo} tasi 50 dan past` : ""}</small><div class="tch-bar"><i style="width:${r.avg}%;background:${r.avg >= 70 ? "var(--ok)" : r.avg >= 50 ? "var(--ac2)" : "var(--bad)"}"></i></div></div><div class="tch-sp ${r.avg >= 70 ? "ok" : r.avg >= 50 ? "mid" : "bad"}">${r.avg}</div></div>`).join("")
+      : `<div class="sub" style="margin:0">Hali yetarli natija yo'q. O'quvchilar test ishlagach, shu yerda ko'rinadi.</div>`;
   }
   async function drawOne() {
     const B = $("tcB"), s = S.find(x => x.k === sel); if (!s) { sel = null; return drawStu(); }
@@ -3635,7 +3661,10 @@ const TCH = (() => {
       if (!due || isNaN(due)) return E("Muddatni tanlang."); if (due < Date.now()) return E("Muddat o'tib ketgan vaqtga qo'yilgan."); if (!s) return E("Testni tanlang.");
       const rec = { set: s.id, ttl: s.title, g: $("thG").value, due, c: DBA.now(), t: cur().uid }, note = $("thN").value.trim(); if (note) rec.note = note.slice(0, 120);
       $("thB").disabled = true; E("");
-      try { const id = "w" + Date.now().toString(36); await DBA.set("hw/" + id, rec); H[id] = rec; FX.toast("✅ Vazifa berildi", "up"); drawHw(); } catch (e) { $("thB").disabled = false; E("⚠️ " + ((e && e.message) || e)); }
+      try {
+        const id = "w" + Date.now().toString(36); await DBA.set("hw/" + id, rec); H[id] = rec; FX.toast("✅ Vazifa berildi", "up"); drawHw();
+        vcall("tHw", { id }).then(r => FX.toast(`📨 Botda ${r.sent} ta o'quvchiga xabar ketdi`, "up")).catch(() => {});
+      } catch (e) { $("thB").disabled = false; E("⚠️ " + ((e && e.message) || e)); }
     };
     L.forEach(async x => {
       let r = {}; try { r = (await DBA.get("hwr/" + x.id)) || {}; } catch (e) {}
@@ -3648,6 +3677,53 @@ const TCH = (() => {
       div.querySelector(".lnk").onclick = async () => { if (!confirm("Vazifa o'chirilsinmi?")) return; try { await DBA.set("hw/" + x.id, null); delete H[x.id]; div.remove(); } catch (e) { FX.toast("⚠️ " + ((e && e.message) || e)); } };
       el.appendChild(div);
     });
+  }
+  // ----- xabar va hisobot -----
+  function drawMsg() {
+    const B = $("tcB");
+    if (!G.length) { B.innerHTML = `<div class="card" style="text-align:center"><div class="sub" style="margin:0">Avval guruh yarating.</div></div>`; return; }
+    const cnt = n => S.filter(s => nk(s.g) === nk(n)).length;
+    const gch = id => `<div class="bp-chk">${G.map(g => `<label><input type="checkbox" value="${esc(g.n)}" checked> <span>${esc(g.n)} <small>(${cnt(g.n)})</small></span></label>`).join("")}</div>`;
+    B.innerHTML = `<div class="card"><h1>✉️ Xabar yuborish</h1><div class="sub" style="margin:0">Faqat sizning o'quvchilaringiz va ularning ota-onalariga bot orqali boradi.</div>
+      <label>Kimga</label><div class="seg bp-seg" id="tmT" style="grid-template-columns:repeat(3,1fr)"><button data-v="stu" class="on">👨‍🎓 O'quvchi</button><button data-v="par">👨‍👩‍👧 Ota-ona</button><button data-v="all">Ikkalasi</button></div>
+      <label>Guruhlar</label><div id="tmG">${gch()}</div>
+      <label>Xabar matni</label><textarea id="tmM" rows="4" style="width:100%" placeholder="Masalan: Ertaga soat 15:00 da dars bo'ladi."></textarea>
+      <div class="accerr" id="tmE"></div><button class="btn" id="tmB">✉️ Yuborish</button></div>
+      <div class="card" style="margin-top:12px"><h1>📊 Ota-onalarga hisobot</h1><div class="sub" style="margin:0">Har bir ota-onaga farzandining shu davrdagi natijalari yuboriladi. Ota-ona botga farzandining «Statistika» sahifasidagi havola orqali ulanadi.</div>
+      <div class="row"><div style="flex:1"><label>Davr</label><select id="trP"><option value="7">Oxirgi 7 kun</option><option value="14">Oxirgi 14 kun</option><option value="30">Oxirgi 30 kun</option></select></div><div style="flex:1"><label>Guruh</label><select id="trG"><option value="">Barcha guruhlar</option>${G.map(g => `<option>${esc(g.n)}</option>`).join("")}</select></div></div>
+      <div class="accerr" id="trE"></div><button class="btn" id="trB">📊 Hisobotlarni yuborish</button></div>`;
+    let to = "stu"; $("tmT").onclick = e => { const b = e.target.closest("[data-v]"); if (!b) return; to = b.dataset.v; [...$("tmT").children].forEach(x => x.classList.toggle("on", x === b)); };
+    $("tmB").onclick = async () => {
+      const E = m => $("tmE").textContent = m, text = $("tmM").value.trim(), gs = new Set([...$("tmG").querySelectorAll("input:checked")].map(i => nk(i.value)));
+      if (!text) return E("Xabar matnini yozing."); if (!gs.size) return E("Kamida bitta guruhni belgilang.");
+      const L = S.filter(s => gs.has(nk(s.g))); if (!L.length) return E("Bu guruhlarda hali o'quvchi yo'q.");
+      if (!confirm(`✉️ Xabar ${L.length} ta o'quvchi${to === "stu" ? "ga" : to === "par" ? "ning ota-onasiga" : " va ota-onasiga"} yuborilsinmi?`)) return;
+      $("tmB").disabled = true; E("Yuborilmoqda…");
+      try { const r = await vcall("tMsg", { to, text, logins: [...new Set(L.flatMap(s => [s.login || s.k].concat(s.al || []).map(nk)))] }); E(`✅ Yuborildi: ${r.sent}${r.failed ? ` · yetib bormadi: ${r.failed}` : ""}${r.sent < L.length && to === "stu" ? ". Botga ulanmagan o'quvchilarga xabar bormaydi." : ""}`); if (r.sent) $("tmM").value = ""; }
+      catch (e) { E("⚠️ " + ((e && e.message) || e)); }
+      $("tmB").disabled = false;
+    };
+    $("trB").onclick = async () => {
+      const E = m => $("trE").textContent = m, days = +$("trP").value, g = $("trG").value, from = DBA.now() - days * 864e5, L = S.filter(s => !g || nk(s.g) === nk(g));
+      if (!L.length) return E("O'quvchi yo'q."); $("trB").disabled = true; E("Tayyorlanmoqda…");
+      try {
+        const items = await Promise.all(L.map(async u => {
+          let h = {}; try { h = (await DBA.get("h/" + u.k)) || {}; } catch (e) {}
+          const rs = Object.values(h).filter(r => r && r.at >= from).sort((a, b) => b.at - a.at), n = rs.length, avg = n ? Math.round(rs.reduce((a, r) => a + (r.pts || 0), 0) / n) : 0, best = n ? Math.max(...rs.map(r => r.pts || 0)) : 0;
+          const lines = rs.slice(0, 5).map(r => `• ${esc(r.ttl || "Test")} — <b>${r.pts || 0}</b> ball${r.lv ? " (" + r.lv + ")" : ""}`).join("\n");
+          const text = `📊 <b>Hisobot</b> — ${esc(u.f + " " + (u.l || ""))}\n👨‍🏫 Ustoz: ${esc(meV().n || "")} · ${esc(u.g)}\n<i>Oxirgi ${days} kun</i>\n\n` + (n ? `✅ Ishlangan testlar: <b>${n}</b>\n📈 O'rtacha ball: <b>${avg}</b>\n🏅 Eng yuqori: <b>${best}</b>\n\n${lines}` : "⚠️ Bu davrda birorta test ishlanmagan.");
+          return { u: nk(u.login || u.k), text };
+        }));
+        const r = await vcall("tRep", { items }); E(r.parents ? `✅ ${r.sent} ta ota-onaga yuborildi${r.failed ? ` · yetib bormadi: ${r.failed}` : ""}` : "Hali birorta ota-ona botga ulanmagan.");
+      } catch (e) { E("⚠️ " + ((e && e.message) || e)); }
+      $("trB").disabled = false;
+    };
+  }
+  // ----- o'yinlar -----
+  function drawGame() {
+    $("tcB").innerHTML = `<div class="card"><h1>🏆 Turnir</h1><div class="sub" style="margin:0 0 10px">O'yin ochasiz, kodni o'quvchilaringizga aytasiz — ular telefonidan qo'shilib bellashadi. Yakka yoki jamoaviy.</div><button class="btn" id="tgT">🏆 Turnir ochish</button></div>
+      <div class="card" style="margin-top:12px"><h1>🏰 Boss jangi</h1><div class="sub" style="margin:0 0 10px">Butun guruh birgalikda qal'ani yiqitadi: o'quvchilar mavzuga ovoz beradi, har to'g'ri javob qal'aga zarba.</div><button class="btn" id="tgB">🏰 Boss jangini ochish</button></div>`;
+    $("tgT").onclick = () => T.myOpen(); $("tgB").onclick = () => BOSS.setup();
   }
   function preview() { prev = true; open("grp"); }
   function exitPrev() { prev = false; TCHADM.open(); }
@@ -4710,12 +4786,12 @@ const BOSS = (() => {
   // ---------- USTOZ ----------
   let hc = null, hsel = [], hn = 15, hdur = 5, hhp = 0;
   function setup() {
-    if (!isAdmin()) return T.openHost();
+    if (!isAdmin() && !TCH.is()) return T.openHost();
     leave(); try { T.leave(); } catch (e) {} show("tz");
     const g = {}; SETS.filter(x => x.qs && !x.ms && x.qs.length >= 8).forEach(x => { const c = clsOf(x.g); (g[c] = g[c] || []).push(x); });
     const cl = Object.keys(g).sort((a, b) => parseInt(a) - parseInt(b)); if (!hc || !g[hc]) hc = cl[0];
     hsel = hsel.filter(id => g[hc].some(x => x.id === id));
-    $("tz").innerHTML = `${adminNav("boss")}<div class="card bs-intro"><div class="bs-ic0">🏰</div><b>Butun sinf birgalikda qal'ani yiqitadi</b><p class="sub" style="margin:4px 0 0">O'quvchilar kod bilan qo'shiladi va mavzuga ovoz beradi. Ko'p ovoz olgan mavzudan savollar tushadi. Har to'g'ri javob qal'aga zarba beradi.</p></div>
+    $("tz").innerHTML = `${isAdmin() ? adminNav("boss") : ""}<div class="card bs-intro"><div class="bs-ic0">🏰</div><b>Butun sinf birgalikda qal'ani yiqitadi</b><p class="sub" style="margin:4px 0 0">O'quvchilar kod bilan qo'shiladi va mavzuga ovoz beradi. Ko'p ovoz olgan mavzudan savollar tushadi. Har to'g'ri javob qal'aga zarba beradi.</p></div>
       <div class="card" style="margin-top:12px"><label>Sinf</label><div class="dl-cls" id="bhC">${cl.map(c => `<button class="${c === hc ? "on" : ""}" data-c="${esc(c)}">${esc(c)}</button>`).join("")}</div>
       <label>Ovozga qo'yiladigan mavzular (2–4 ta belgilang)</label><div class="bz-tl bs-tl" id="bhT">${g[hc].map(x => `<label><input type="checkbox" value="${x.id}"${hsel.includes(x.id) ? " checked" : ""}> <span><b>${esc(x.n || "")}</b> ${esc(tSub(x) || x.title)}</span></label>`).join("")}</div>
       <div class="row"><div style="flex:1"><label>Har o'quvchiga savol</label><select id="bhN">${[10, 15, 20].map(n => `<option${n === hn ? " selected" : ""}>${n}</option>`).join("")}</select></div><div style="flex:1"><label>Vaqt (daqiqa)</label><select id="bhD">${[3, 5, 7, 10].map(n => `<option${n === hdur ? " selected" : ""}>${n}</option>`).join("")}</select></div></div>
@@ -4729,7 +4805,7 @@ const BOSS = (() => {
     if (hsel.length < 2 || hsel.length > 4) return $("bhE").textContent = "2 tadan 4 tagacha mavzu belgilang.";
     $("bhGo").disabled = true;
     let code; for (let k = 0; k < 20; k++) { code = String(1000 + Math.floor(Math.random() * 9000)); if (!(await DBA.get(`t/${code}/meta`))) break; }
-    const meta = { boss: 1, phase: "vote", cls: hc, cand: hsel, n: hn, dur: hdur * 60000, seed: Math.floor(Math.random() * 1e9), c: DBA.now(), set: hsel[0], title: "🏰 Boss jangi" };
+    const meta = { host: (ACCT.cur || {}).uid, boss: 1, phase: "vote", cls: hc, cand: hsel, n: hn, dur: hdur * 60000, seed: Math.floor(Math.random() * 1e9), c: DBA.now(), set: hsel[0], title: "🏰 Boss jangi" };
     try { await DBA.set(`t/${code}`, { meta }); } catch (e) { $("bhGo").disabled = false; return $("bhE").textContent = "Ochib bo'lmadi. Internetni tekshiring."; }
     host(code);
   }
@@ -4743,7 +4819,7 @@ const BOSS = (() => {
   function hRender() {
     const m = B.meta; if (!m || !$("tz")) return;
     if (m.phase === "vote") {
-      $("tz").innerHTML = `${adminNav("boss")}<div class="card" style="text-align:center"><div class="sub" style="margin:0">🏰 Boss jangi · ${esc(m.cls)} · o'quvchilar ovoz bermoqda</div><div class="tcode">${B.code}</div><div class="sub" style="margin:0">Turnir bo'limida shu kodni kiritib qo'shiling</div><div class="sub" style="margin:6px 0 0;word-break:break-all;font-size:12px">${esc(link())}</div></div>${SHARE.html("bhSh")}
+      $("tz").innerHTML = `${isAdmin() ? adminNav("boss") : ""}<div class="card" style="text-align:center"><div class="sub" style="margin:0">🏰 Boss jangi · ${esc(m.cls)} · o'quvchilar ovoz bermoqda</div><div class="tcode">${B.code}</div><div class="sub" style="margin:0">Turnir bo'limida shu kodni kiritib qo'shiling</div><div class="sub" style="margin:6px 0 0;word-break:break-all;font-size:12px">${esc(link())}</div></div>${SHARE.html("bhSh")}
         <div class="card" style="margin-top:12px"><div style="display:flex;justify-content:space-between;align-items:center"><b>🗳 Ovozlar</b><span class="sub" style="margin:0">👥 <b id="bhP">0</b> ta o'quvchi</span></div><div id="bhV" style="margin-top:10px"></div>
         <div class="row" style="margin-top:12px"><div style="flex:1"><label>Qal'a joni</label><input id="bhH" type="number" min="5" max="2000" placeholder="avto"></div></div><div class="tnote" id="bhHn"></div>
         <button class="btn" id="bhStart" disabled>⚔️ Jangni boshlash</button><button class="btn ghost" style="margin-top:10px" id="bhX">✕ Bekor qilish</button></div>`;
@@ -4752,7 +4828,7 @@ const BOSS = (() => {
       $("bhH").oninput = hUpd; hUpd(); return;
     }
     if (m.phase === "run") {
-      $("tz").innerHTML = `${adminNav("boss")}<div class="bs-proj"><div class="bs-ptop"><span class="kh-c">🏰 ${esc(tName(byId(m.set)))}</span><span class="kh-sp"></span><span class="kh-c" id="bhT2">⏱ --:--</span></div><div id="bhCs"></div><div class="bs-cd" id="bhCd"></div>
+      $("tz").innerHTML = `${isAdmin() ? adminNav("boss") : ""}<div class="bs-proj"><div class="bs-ptop"><span class="kh-c">🏰 ${esc(tName(byId(m.set)))}</span><span class="kh-sp"></span><span class="kh-c" id="bhT2">⏱ --:--</span></div><div id="bhCs"></div><div class="bs-cd" id="bhCd"></div>
         <div class="card" style="margin-top:12px"><div style="display:flex;justify-content:space-between"><b>⚔️ Eng kuchli jangchilar</b><span class="sub" style="margin:0">👥 <b id="bhP">0</b></span></div><div id="bhL" style="margin-top:8px"></div></div>
         <button class="btn ghost" style="margin-top:12px" id="bhEnd">⏹ Jangni to'xtatish</button></div>`;
       $("bhEnd").onclick = () => finishHost(); hUpd(); return;
@@ -4760,7 +4836,7 @@ const BOSS = (() => {
     if (m.phase === "end") {
       const left = m.hp - dmg(), win = !!m.win;
       if (win) setTimeout(() => { try { FX.rain(240); FX.S.win(); } catch (e) {} }, 200);
-      $("tz").innerHTML = `${adminNav("boss")}<div class="card bs-end ${win ? "win" : "lose"}"><div class="bs-big">${m.cancel ? "Jang bekor qilindi" : win ? "🏆 Qal'a yiqitildi!" : "🛡 Qal'a omon qoldi"}</div>${m.cancel ? "" : castle(left, m.hp, true)}<p class="sub" style="margin:8px 0 0">${m.cancel ? "" : win ? `Sinf ${dmg()} ta zarba berdi${m.endAt && m.startAt ? ` · ${fmtS(m.endAt - m.startAt)} da` : ""}` : `Yana ${Math.max(0, left)} ta zarba yetmadi`}</p></div>
+      $("tz").innerHTML = `${isAdmin() ? adminNav("boss") : ""}<div class="card bs-end ${win ? "win" : "lose"}"><div class="bs-big">${m.cancel ? "Jang bekor qilindi" : win ? "🏆 Qal'a yiqitildi!" : "🛡 Qal'a omon qoldi"}</div>${m.cancel ? "" : castle(left, m.hp, true)}<p class="sub" style="margin:8px 0 0">${m.cancel ? "" : win ? `Sinf ${dmg()} ta zarba berdi${m.endAt && m.startAt ? ` · ${fmtS(m.endAt - m.startAt)} da` : ""}` : `Yana ${Math.max(0, left)} ta zarba yetmadi`}</p></div>
         <div class="card" style="margin-top:12px"><b>⚔️ Jangchilar</b><div id="bhL" style="margin-top:8px"></div></div><button class="btn" style="margin-top:12px" onclick="BOSS.setup()">🏰 Yangi jang</button>`;
       hUpd();
     }
