@@ -6,4 +6,4 @@ workers_dev = true
 keep_vars = true          # Cloudflare paneldagi o'zgaruvchilar va BOT_TOKEN saqlanib qoladi
 
 [triggers]
-crons = ["0 4 * * 0"]     # har yakshanba 09:00 (Toshkent) — bazani zaxiralash
+crons = ["0 4 * * SUN"]     # har yakshanba 09:00 (Toshkent) — bazani zaxiralash
