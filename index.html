@@ -3639,7 +3639,7 @@ const REF=(()=>{ // Do'stlarni taklif qilish: shaxsiy havola (bonus kunlar premi
   const url=()=>"https://zulpanov.github.io/Zulpanov-tarix/?s=dost&r="+ST.myRef()+"#kun";
   function card(){ if(!ST.myRef())return ""; return `<button class="kunbtn" id="refGo" style="margin-top:10px;border-color:rgba(52,211,153,.45);background:linear-gradient(135deg,rgba(52,211,153,.14),rgba(59,130,246,.10))"><span class="kun-i">🤝</span><span class="kun-t"><b>Do'stlarni taklif qilish</b><small>${(()=>{const b=typeof PM!=="undefined"?+PM.cfg.bonus||0:0;return b?`Do'stingiz 1 ta test ishlasa, sizga +${b} kun Premium`:"Tarixni birga o'rganing — havolani yuboring"})()}</small></span><span class="kun-a">›</span></button>`; }
   function bind(){ const b=$("refGo"); if(!b)return; b.onclick=()=>{ const u=url(), txt="📚 Tarixdan testlar, Milliy sertifikat variantlari va turnirlar. Men shu yerda tayyorlanyapman — sen ham qo'shil! Ro'yxatdan o'tmasdan Kun testini ishlab ko'r:";
-      const sh=`https://t.me/share/url?url=${encodeURIComponent(u)}&text=${encodeURIComponent(txt)}`;
+      const sh=`https://t.me/share/url?url=${encodeURIComponent(txt+"\n\n👉 "+u)}`; // havola matn ostida, rasmli ko'rinish (og.jpg) bilan
       try{ if(window.Telegram&&Telegram.WebApp&&Telegram.WebApp.openTelegramLink){Telegram.WebApp.openTelegramLink(sh);return} }catch(e){}
       window.open(sh,"_blank"); }; }
   return{card,bind,url};

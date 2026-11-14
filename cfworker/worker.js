@@ -228,15 +228,27 @@ const FN = {
 };
 
 // ---------------- Bot: xabarlar ----------------
-function shareUrl() {
-  const text = "📚 Tarixdan testlar, jonli turnirlar va o‘yinlar — ZULPANOV METHODS TARIX botiga qo‘shiling! Milliy sertifikatga birga tayyorlanamiz 👇";
-  return "https://t.me/share/url?url=" + encodeURIComponent("https://t.me/" + BOT_NAME) + "&text=" + encodeURIComponent(text);
+// Ulashish: brend rasmi + matn + havola (havola matn ostida)
+const SHARE_IMG = "https://zulpanov.github.io/Zulpanov-tarix/og.jpg";
+const SHARE_TEXT = "📚 Tarixdan testlar, jonli turnirlar va o‘yinlar — <b>ZULPANOV METHODS TARIX</b> botiga qo‘shiling! Milliy sertifikatga birga tayyorlanamiz 👇\n\n👉 https://t.me/" + BOT_NAME;
+const shareKb = () => ({ inline_keyboard: [[{ text: "📚 Botga kirish", url: "https://t.me/" + BOT_NAME + "?start=dost" }]] });
+// Bot o'zi ulashiladigan xabarni yuboradi: uni do'stga yuborish (inline) yoki forward qilish mumkin
+async function sendShare(env, chat) {
+  await tg(env, "sendPhoto", { chat_id: chat, photo: SHARE_IMG, caption: SHARE_TEXT, parse_mode: "HTML", reply_markup: shareKb() });
+  return tg(env, "sendMessage", { chat_id: chat, text: "☝️ Shu xabarni do‘stlaringizga yuboring: ustiga bosib «Forward / Переслать» ni tanlang yoki pastdagi tugmani bosing.",
+    reply_markup: { inline_keyboard: [[{ text: "📤 Do‘stga yuborish", switch_inline_query: "" }]] } });
+}
+// Inline rejim (@bot yozilganda yoki «Do'stga yuborish» bosilganda): rasmli taklif
+async function onInline(env, q) {
+  if (!q || !q.id) return;
+  return tg(env, "answerInlineQuery", { inline_query_id: q.id, cache_time: 300, is_personal: false,
+    results: [{ type: "photo", id: "share1", photo_url: SHARE_IMG, thumbnail_url: SHARE_IMG, photo_width: 1200, photo_height: 630, title: "ZULPANOV METHODS TARIX", description: "Do‘stingizni botga taklif qiling", caption: SHARE_TEXT, parse_mode: "HTML", reply_markup: shareKb() }] });
 }
 const mainKb = () => ({ inline_keyboard: [
   [{ text: "📚 Testlarni boshlash", url: appLink() }],
   [{ text: "🏆 Turnirga qo‘shilish", url: appLink("turnir") }],
   [{ text: "🎓 Darslar haqida", callback_data: "kurs" }, { text: "👨‍👩‍👧 Ota-onalar uchun", callback_data: "ota" }],
-  [{ text: "📤 Do‘stlarga ulashish", url: shareUrl() }, { text: "📞 Ustozga yozish", url: CONTACT_URL }],
+  [{ text: "📤 Do‘stlarga ulashish", callback_data: "share" }, { text: "📞 Ustozga yozish", url: CONTACT_URL }],
 ] });
 const sendStart = (env, chat, first) => tg(env, "sendMessage", { chat_id: chat, parse_mode: "HTML", reply_markup: mainKb(),
   text: "👋 Assalomu alaykum, " + first + "!\n\n<b>ZULPANOV METHODS TARIX</b> — tarixni o‘yin va testlar bilan o‘rganing.\n\nBugun nima qilamiz? 👇" });
@@ -329,6 +341,7 @@ async function onCallback(env, q) {
   if (q.data === "kurs") return sendKurs(env, chat);
   if (q.data === "yozil") return sendYozil(env, chat, q.from);
   if (q.data === "ota") return sendOta(env, chat);
+  if (q.data === "share") return sendShare(env, chat);
 }
 
 
@@ -506,7 +519,7 @@ export default {
     catch (e) { return new Response("not configured", { status: 500 }); }
     const up = await req.json().catch(() => null);
     if (up) ctx.waitUntil((async () => {
-      try { if (up.callback_query) await onCallback(env, up.callback_query); else await onMessage(env, up.message); }
+      try { if (up.callback_query) await onCallback(env, up.callback_query); else if (up.inline_query) await onInline(env, up.inline_query); else await onMessage(env, up.message); }
       catch (e) { console.error("update", up.update_id, e && e.stack || e); }
     })());
     return new Response("ok");
