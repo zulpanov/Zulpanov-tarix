@@ -3606,7 +3606,7 @@ const TCH = (() => {
   // ---------- ustoz paneli ----------
   async function load() {
     const u = cur().uid;
-    const [grp, tst, hw] = await Promise.all([DBA.get("grp").catch(() => ({})), DBA.get("tst/" + u).catch(() => ({})), DBA.get("hw").catch(() => ({}))]);
+    const [grp, tst, hw] = await Promise.all([(DBA.eq ? DBA.eq("grp", "t", u) : DBA.get("grp")).catch(() => ({})), DBA.get("tst/" + u).catch(() => ({})), (DBA.eq ? DBA.eq("hw", "t", u) : DBA.get("hw")).catch(() => ({}))]);
     G = Object.entries(grp || {}).filter(([k, x]) => x && x.t === u && x.n).map(([k, x]) => ({ id: k, ...x })).sort((a, b) => a.n.localeCompare(b.n));
     H = Object.fromEntries(Object.entries(hw || {}).filter(([k, x]) => x && x.t === u));
     const names = new Set(G.map(g => nk(g.n))), ids = Object.keys(tst || {});
@@ -5635,7 +5635,7 @@ const BOTP = (() => {
     const b = $("bpR"), E = m => $("bpRe").textContent = m; b.disabled = true; E("Tayyorlanmoqda…");
     try {
       const days = +$("bpP").value, grp = $("bpG").value, from = Date.now() - days * 86400e3;
-      const [res, us] = await Promise.all([DBA.get("r"), DBA.get(AUTH.FB ? "users" : "u")]);
+      const [res, us] = await Promise.all([DBA.since("r", "at", from), DBA.get(AUTH.FB ? "users" : "u")]);
       const ulist = Object.entries(us || {}).filter(([k, x]) => x && !x.moved).map(([k, x]) => ({ login: (x && x.login) || k, al: (x && x.al) || [], f: x && x.f, l: x && x.l, g: (x && x.g) || "" })).filter(x => x.f && (!grp || x.g === grp));
       const by = {}; Object.values(res || {}).forEach(r => { if (r && r.u && (r.at || 0) >= from) (by[r.u] = by[r.u] || []).push(r); });
       const items = ulist.map(u => {
@@ -6125,7 +6125,7 @@ const ACCT = (() => {
     };
     hListeners.add(fill); hListeners.add(HW.renderStudent); hListeners.add(GAME.homeRender); fill(); HW.renderStudent(); GAME.homeRender();
     if (!annL) { annL = () => GAME.announce(recs()); hListeners.add(annL); }
-    if (!aUn) aUn = DBA.on("a", v => { const now = DBA.now(); const live = Object.values(v || {}).some(x => x && x.ph !== "end" && now - (x.c || 0) < 6 * 3600e3); if ($("tBadge")) $("tBadge").classList.toggle("hide", !live); try { HOMEX.live(live); } catch (e) {} });
+    if (!aUn) aUn = DBA.onSince("a", "c", DBA.now() - 6 * 3600e3, v => { const now = DBA.now(); const live = Object.values(v || {}).some(x => x && x.ph !== "end" && now - (x.c || 0) < 6 * 3600e3); if ($("tBadge")) $("tBadge").classList.toggle("hide", !live); try { HOMEX.live(live); } catch (e) {} });
   }
   let aUn = null, annL = null;
   function history() {
@@ -6345,7 +6345,7 @@ const ADASH = (() => {
   }
   async function load(my) {
     let r = {}, us = {}, hw = {}, act = {}, pm = {}, ap = {};
-    try { [r, us, hw, act, pm, ap] = await Promise.all([DBA.get("r"), DBA.get(AUTH.FB ? "users" : "u"), DBA.get("hw"), DBA.get("a"), DBA.get("pm").catch(() => ({})), DBA.get("tapp").catch(() => ({}))]); } catch (e) {}
+    try { [r, us, hw, act, pm, ap] = await Promise.all([DBA.since("r", "at", DBA.now() - 8 * 864e5), DBA.get(AUTH.FB ? "users" : "u"), DBA.since("hw", "due", DBA.now() - 30 * 864e5), DBA.since("a", "c", DBA.now() - 2 * 864e5), DBA.get("pm").catch(() => ({})), DBA.get("tapp").catch(() => ({}))]); } catch (e) {}
     if (my !== alive || !$("adK")) return;
     r = r || {}; us = us || {}; hw = hw || {}; act = act || {}; pm = pm || {}; ap = ap || {};
     const now = DBA.now(), d0 = new Date(); d0.setHours(0, 0, 0, 0);
@@ -6412,7 +6412,10 @@ const HW = (() => {
   const list = () => Object.entries(hw || {}).filter(([k, x]) => x && x.set).map(([k, x]) => ({ id: k, ...x })).sort((a, b) => (b.c || 0) - (a.c || 0));
   const setOf = id => SETS.find(s => s.id === id);
   function left(ms) { const d = ms - DBA.now(); if (d <= 0) return "muddat o'tgan"; const h = Math.floor(d / 3600e3); if (h >= 48) return Math.floor(h / 24) + " kun qoldi"; if (h >= 1) return h + " soat qoldi"; return Math.max(1, Math.floor(d / 60000)) + " daqiqa qoldi"; }
-  function watch() { if (un) return; un = DBA.on("hw", v => { hw = v || {}; renderStudent(); if ($("hwL")) renderAdmin(); }); }
+  let wm = null;
+  function watch(all) { const want = all ? "all" : "p"; if (un && (wm === "all" || wm === want)) return; if (un) un(); wm = want;
+    const cb = v => { hw = v || {}; renderStudent(); if ($("hwL")) renderAdmin(); };
+    un = all ? DBA.on("hw", cb) : DBA.onSince("hw", "due", DBA.now() - 15 * 86400e3, cb); }
 
   // ---------- o'quvchi ----------
   function renderStudent() {
@@ -6465,7 +6468,7 @@ const HW = (() => {
   function leaveAdmin() { aUn.forEach(f => f()); aUn = []; }
   function open() {
     if (!isAdmin()) return T.openHost();
-    T.leave(); ACC.leave(); leaveAdmin(); watch();
+    T.leave(); ACC.leave(); leaveAdmin(); watch(true);
     show("tz");
     const t = new Date(Date.now() + 86400e3), def = `${t.getFullYear()}-${d2(t.getMonth() + 1)}-${d2(t.getDate())}T20:00`;
     let opts = "", g = null; SETS.forEach(s => { if (s.g !== g) { if (g) opts += "</optgroup>"; g = s.g; opts += `<optgroup label="${esc(g)}">`; } opts += `<option value="${s.id}">${esc((s.n === "∑" ? "" : s.n + " · ") + s.title)} (${s.ms ? 45 : s.qs ? s.qs.length : 20} savol)</option>`; }); opts += "</optgroup>";
@@ -7073,6 +7076,13 @@ const DBA = (() => {
       async inc(p) { const d = await init(); return d.ref(p).set(firebase.database.ServerValue.increment(1)); },
       hold(on) { held = !!on; if (held && online && ready) { online = false; init().then(d => d.goOffline()); } },
       async since(p, child, from) { const d = await wake(); return (await d.ref(p).orderByChild(child).startAt(from).get()).val(); },
+      async eq(p, child, v) { const d = await wake(); return (await d.ref(p).orderByChild(child).equalTo(v).get()).val(); },
+      // Faqat kerakli qismini kuzatish (butun daraxtni emas) — trafikni tejaydi
+      onSince(p, child, from, cb) {
+        let r, fn, stop = false; live.set(p, (live.get(p) || 0) + 1);
+        wake().then(d => { if (stop) return; r = d.ref(p).orderByChild(child).startAt(from); fn = s => cb(s.val()); r.on("value", fn, () => cb(null)); });
+        return () => { if (stop) return; stop = true; const n = (live.get(p) || 1) - 1; if (n > 0) live.set(p, n); else live.delete(p); r && fn && r.off("value", fn); };
+      },
       on(p, cb) {
         let r, fn, stop = false; live.set(p, (live.get(p) || 0) + 1);
         wake().then(d => { if (stop) return; r = d.ref(p); fn = s => cb(s.val()); r.on("value", fn, () => cb(null)); });
@@ -7576,7 +7586,7 @@ const T = (() => {
     const nms = () => { const k = +$("thk").value, old = [...$("thnm").querySelectorAll("input")].map(i => i.value); $("thnm").innerHTML = [...Array(k)].map((_, i) => `<div class="tmnm"><span>${TC[i][0]}</span><input maxlength="24" value="${esc(old[i] || TC[i][2])}"></div>`).join(""); };
     nms(); $("thk").onchange = nms;
     $("thm").onclick = e => { const b = e.target.closest("[data-m]"); if (!b) return; [...$("thm").children].forEach(x => x.classList.toggle("on", x === b)); $("thteam").classList.toggle("hide", b.dataset.m !== "team"); $("thbig").classList.toggle("hide", b.dataset.m !== "big"); $("thc").textContent = b.dataset.m === "team" ? "👥 Jamoaviy turnirni ochish" : b.dataset.m === "big" ? "🏟 Katta turnirni ochish" : "Turnirni ochish"; };
-    st.unsub.push(DBA.on("a", v => hActive(v || {})));
+    st.unsub.push(DBA.onSince("a", "c", DBA.now() - 2 * 86400e3, v => hActive(v || {})));
     $("tact").insertAdjacentHTML("beforeend", `<div class="row" style="margin-top:10px;align-items:center;gap:8px"><span class="sub" style="margin:0;flex:1">🎮 O'quvchilar o'zi o'yin ochishi</span><button class="btn ghost sm" id="stuTg">…</button></div>`);
     DBA.get("c/main").then(c => { const b = $("stuTg"); if (!b) return; let off = !!(c && c.stuOff); const paint = () => b.textContent = off ? "🔒 O'chirilgan — yoqish" : "✅ Yoqilgan — o'chirish"; paint(); b.onclick = async () => { off = !off; paint(); await DBA.update("c/main", { stuOff: off }); FX.toast(off ? "O'quvchilar o'yin ocha olmaydi" : "O'quvchilar o'yin ocha oladi", "up"); }; }).catch(() => {});
   }

@@ -285,7 +285,9 @@ async function adminChats(env) {
 }
 // ⏰ Uy vazifasi eslatmasi: muddatga 24 soatdan kam qolganda, bajarmaganlarga (har 10 daqiqada, bepul reja cheklovi doirasida qismlab)
 async function hwRemind(env) {
-  const hw = await db(env, "GET", "hw") || {}, now = Date.now();
+  const now = Date.now();
+  // Faqat muddati keyingi 24 soatda tugaydigan vazifalar (butun ro'yxat emas)
+  const hw = await db(env, "GET", "hw", undefined, `&orderBy=%22due%22&startAt=${now}&endAt=${now + 24 * 3600e3}`) || {};
   const e = Object.entries(hw).find(([id, x]) => x && x.g && x.g !== "*" && !x.rm && x.due > now && x.due - now <= 24 * 3600e3);
   if (!e) return; const [id, x] = e;
   const [users, sub, tgs] = await Promise.all([db(env, "GET", "users"), db(env, "GET", "hwr/" + id), students(env)]);
@@ -296,6 +298,16 @@ async function hwRemind(env) {
   const text = "⏰ <b>Eslatma: uy vazifasi</b>\n\n📚 " + esc(x.ttl || "") + "\n⏳ Muddat: <b>" + tashDt(x.due) + "</b> — bir kundan kam qoldi.\n\nHali bajarmadingiz — hozir ishlang 👇";
   const r = await sendBatch(env, list, x.rmi || 0, () => ({ text, parse_mode: "HTML", reply_markup: { inline_keyboard: [[{ text: "📝 Vazifani bajarish", url: appLink() }]] } }));
   if (r.next == null) await db(env, "PUT", `hw/${id}/rm`, true); else await db(env, "PUT", `hw/${id}/rmi`, r.next);
+}
+// Tozalash: 3 kundan eski turnir xonalari (t/) va eski «faol turnir» yozuvlari (a/) — baza kichik va tez bo'lib qoladi
+async function cleanup(env) {
+  const cut = Date.now() - 3 * 864e5, up = {};
+  const t = await db(env, "GET", "t", undefined, `&orderBy=%22meta%2Fc%22&endAt=${cut}`).catch(() => ({})) || {};
+  Object.entries(t).forEach(([k, x]) => { const c = x && x.meta && x.meta.c; if (c && c < cut) up["t/" + k] = null; });
+  const a = await db(env, "GET", "a", undefined, `&orderBy=%22c%22&endAt=${cut}`).catch(() => ({})) || {};
+  Object.entries(a).forEach(([k, x]) => { if (x && x.c && x.c < cut) up["a/" + k] = null; });
+  if (Object.keys(up).length) await db(env, "PATCH", "", up);
+  return Object.keys(up).length;
 }
 // Zaxira: butun bazani JSON fayl qilib ustozning Telegramiga yuborish (har yakshanba va admin paneldan)
 async function backup(env) {
@@ -560,7 +572,7 @@ const json = (o, st = 200) => new Response(JSON.stringify(o), { status: st, head
 
 export default {
   async scheduled(event, env, ctx) {
-    if (event.cron === "0 4 * * SUN") ctx.waitUntil(backup(env).catch(e => console.error("backup", e && e.stack || e)));
+    if (event.cron === "0 4 * * SUN") ctx.waitUntil(backup(env).catch(e => console.error("backup", e && e.stack || e)).then(() => cleanup(env)).catch(e => console.error("cleanup", e && e.stack || e)));
     else ctx.waitUntil(hwRemind(env).catch(e => console.error("hwRemind", e && e.stack || e)));
   },
   async fetch(req, env, ctx) {
