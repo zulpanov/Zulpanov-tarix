@@ -3192,7 +3192,8 @@ const PM = (() => {
   let cfg = {}, me = null, unC = null, unM = null, mUid = null;
   const gk = g => String(g || "").replace(/[.#$\[\]\/]/g, "_");
   const now = () => { try { return DBA.now(); } catch (e) { return Date.now(); } };
-  const adm = () => { try { return isAdmin(); } catch (e) { return false; } };
+  const prev = () => { try { return localStorage.getItem("zm_pmprev") === "1"; } catch (e) { return false; } };
+  const adm = () => { try { return isAdmin() && !prev(); } catch (e) { return false; } };
   const cur = () => (typeof ACCT !== "undefined" && ACCT.cur) || null;
   function watch() {
     try {
@@ -3265,12 +3266,15 @@ const PM = (() => {
   function homeBox() {
     const el = $("homePM"); if (!el) return;
     const c = cur(); if (!c || adm()) { el.innerHTML = ""; return; }
+    const pv = prev() ? `<button class="kunbtn" onclick="PM.preview(false)" style="border-color:rgba(244,63,94,.6)"><span class="kun-i">👁</span><span class="kun-t"><b>O‘quvchi ko‘rinishi yoqilgan</b><small>Ustoz rejimiga qaytish uchun bosing</small></span><span class="kun-go">✖</span></button>` : "";
     const act = left() > 0, d = days();
     const n = $("wlN"); if (n) { const has = n.querySelector(".pm-b"); if (act && !has) n.insertAdjacentHTML("beforeend", ` <span class="pm-b" title="Premium">💎</span>`); else if (!act && has) has.remove(); }
     if (act) el.innerHTML = `<button class="kunbtn pm-home${d <= 3 ? " low" : ""}" onclick="PM.open()"><span class="kun-i">💎</span><span class="kun-t"><b>Premium faol · ${d} kun qoldi</b><small>${d <= 3 ? "Muddat tugayapti — uzaytirish uchun bosing" : dt(me.e) + " gacha"}</small></span><span class="kun-go">›</span></button>`;
     else if (anyLock() || tars().length) el.innerHTML = `<button class="kunbtn pm-home" onclick="PM.open()"><span class="kun-i">💎</span><span class="kun-t"><b>Premium</b><small>Barcha imkoniyatlarni oching</small></span><span class="kun-go">›</span></button>`;
     else el.innerHTML = "";
+    if (pv) el.innerHTML = pv + el.innerHTML;
   }
+  function preview(on) { try { if (on) localStorage.setItem("zm_pmprev", "1"); else localStorage.removeItem("zm_pmprev"); } catch (e) {} FX.toast(on ? "👁 Endi saytni o‘quvchi kabi ko‘rasiz (Premium’siz)" : "👑 Ustoz rejimi qaytdi", "up"); goHome(); }
   let rt = 0;
   function refresh() {
     clearTimeout(rt); rt = setTimeout(() => {
@@ -3288,7 +3292,7 @@ const PM = (() => {
     watch();
   }
   function reset() { try { if (unC) unC(); if (unM) unM(); } catch (e) {} unC = unM = null; mUid = null; me = null; watch(); }
-  return { watch, reset, is, lockSet, okSet, badge, gate, wall, open, homeBox, install, gk, FEAT, DAY, get cfg() { return cfg; }, get me() { return me; } };
+  return { watch, reset, preview, is, lockSet, okSet, badge, gate, wall, open, homeBox, install, gk, FEAT, DAY, get cfg() { return cfg; }, get me() { return me; } };
 })();
 // Ustoz paneli: 💎 Premium
 const PMADM = (() => {
@@ -3322,7 +3326,8 @@ const PMADM = (() => {
     const T = (Array.isArray(C.tar) ? C.tar : Object.values(C.tar || {})).filter(Boolean);
     W.innerHTML = `
       <div class="card"><h1>💎 Premium</h1><div class="pm-sum"><div><b>${act.length}</b><span>faol premium</span></div><div><b>${low.length}</b><span>3 kunda tugaydi</span></div><div><b>${T.length}</b><span>tarif</span></div></div>
-        <div class="sub" style="margin:8px 0 0">Siz (ustoz) hamma bo‘limni doim ko‘rasiz. Uy vazifasi qilib bergan testingiz premium bo‘lsa ham o‘quvchiga ochiladi.</div></div>
+        <button class="btn sm" style="margin-top:10px" onclick="PM.preview(true)">👁 O‘quvchi ko‘zi bilan ko‘rish</button>
+        <div class="sub" style="margin:8px 0 0">Siz (ustoz) hamma bo‘limni doim ochiq ko‘rasiz, shuning uchun qulflar sizga chiqmaydi. Tekshirish uchun yuqoridagi tugmani bosing. Uy vazifasi qilib bergan testingiz premium bo‘lsa ham o‘quvchiga ochiladi.</div></div>
       <div class="card" style="margin-top:12px"><h1>🔐 Nimalar premium bo‘ladi</h1><div class="sub" style="margin:0 0 8px">Yoqilgan bo‘lim faqat Premium o‘quvchilarga ochiladi. O‘zgarish darhol kuchga kiradi.</div><div id="pmaF"></div></div>
       <div class="card" style="margin-top:12px"><h1>🏷 Tariflar</h1><div id="pmaT"></div><div class="row" style="margin-top:8px"><button class="btn sm ghost" id="pmaTa">➕ Tarif qo‘shish</button><button class="btn sm" id="pmaTs">💾 Saqlash</button></div><div class="accerr" id="pmaTe"></div></div>
       <div class="card" style="margin-top:12px"><h1>🎁 Bonus va sozlamalar</h1>
