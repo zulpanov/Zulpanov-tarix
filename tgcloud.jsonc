@@ -1,4 +1,0 @@
-{
-  // Mini App sahifasi: GitHub Actions index.html, ms11.js va img/ ni dist/ ga yig'adi
-  "static": { "source": "dist" }
-}

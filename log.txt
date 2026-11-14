@@ -1,0 +1,35 @@
+status=failure sha=f6902b57bc59da2e267a2e8875fb78a8dca0d252 at=2026-11-14T02:39:55Z
+
+Checking changes...
+  + tgcloud/schema.js — new
+  + tgcloud/lib/common.js — new
+  + tgcloud/handlers/message.js — new
+  + tgcloud/endpoints/announce.js — new
+  + tgcloud/endpoints/broadcast.js — new
+  + tgcloud/endpoints/link.js — new
+  + tgcloud/endpoints/me.js — new
+  + tgcloud/endpoints/notifyHw.js — new
+  + tgcloud/endpoints/reports.js — new
+  + tgcloud/endpoints/stats.js — new
+  + tgcloud/endpoints/unlink.js — new
+  + dist/img/ms11/v1q17.webp — new
+  + dist/img/ms11/v1q20.webp — new
+  + dist/img/ms11/v2q17.webp — new
+  + dist/img/ms11/v2q20.webp — new
+  + dist/img/ms11/v3q17.webp — new
+  + dist/img/ms11/v3q20.webp — new
+  + dist/img/ms11/v4q17.webp — new
+  + dist/img/ms11/v4q20.webp — new
+  + dist/img/ms11/v5q17.webp — new
+  + dist/img/ms11/v5q20.webp — new
+  + dist/img/ms11/v6q17.webp — new
+  + dist/img/ms11/v6q20.webp — new
+  + dist/img/ms11/v7q17.webp — new
+  + dist/img/ms11/v7q20.webp — new
+  + dist/img/ms11/v8q17.webp — new
+  + dist/img/ms11/v8q20.webp — new
+  + dist/img/ms11/v9q17.webp — new
+  + dist/img/ms11/v9q20.webp — new
+  + dist/index.html — new
+  + dist/ms11.js — new
+Error: TGCLOUD_TOKEN has invalid format. Expected "app<id>:<secret>".
