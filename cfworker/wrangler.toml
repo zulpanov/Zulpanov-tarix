@@ -1,0 +1,9 @@
+# Bot serveri (Cloudflare Worker) — GitHub Actions orqali avtomatik joylanadi (.github/workflows/worker.yml)
+name = "zulpanov-tarix-bot"
+main = "worker.js"
+compatibility_date = "2024-11-01"
+workers_dev = true
+keep_vars = true          # Cloudflare paneldagi o'zgaruvchilar va BOT_TOKEN saqlanib qoladi
+
+[triggers]
+crons = ["0 4 * * 0"]     # har yakshanba 09:00 (Toshkent) — bazani zaxiralash

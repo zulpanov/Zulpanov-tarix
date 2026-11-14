@@ -1,0 +1,26 @@
+name: Bot serverini joylash (Cloudflare)
+on:
+  push:
+    branches: [main]
+    paths: ["cfworker/**", ".github/workflows/worker.yml"]
+  workflow_dispatch:
+concurrency: worker-deploy
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Kalitni tekshirish
+        id: chk
+        env:
+          T: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          if [ -n "$T" ]; then echo "ok=1" >> "$GITHUB_OUTPUT"; else echo "::warning::CLOUDFLARE_API_TOKEN sirri qo'shilmagan — bot joylanmadi"; fi
+      - name: Joylash
+        if: steps.chk.outputs.ok == '1'
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: cfworker
+          wranglerVersion: "3.114.0"
