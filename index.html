@@ -3529,7 +3529,7 @@ const TCH = (() => {
   const cur = () => (typeof ACCT !== "undefined" && ACCT.cur) || (prev && adm() && AUTH.uid ? { uid: AUTH.uid, f: "Ustoz", l: "" } : null);
   const is = () => !!(me && me.ok === true) || (prev && adm());
   // Tarif: bepul (cheklangan) yoki Pro (muddatli). Sozlamalar: c/tc
-  const TC = () => ({ g: 1, s: 30, pct: 25, pp: "", pd: 30, ...((typeof PM !== "undefined" && PM.tcfg) || {}) });
+  const TC = () => { const c = { g: 1, s: 30, pct: 25, pp: "", pd: 30, ...((typeof PM !== "undefined" && PM.tcfg) || {}) }; c.pp = c.pp || "69 000 so'm"; return c; };
   const pro = () => (prev && adm()) || ((me && +me.pro) || 0) > DBA.now();
   const limS = () => pro() ? Infinity : +TC().s || 30, limG = () => pro() ? Infinity : +TC().g || 1;
   const meV = () => (prev && adm() && !(me && me.ok)) ? { n: (((cur() || {}).f || "") + " " + ((cur() || {}).l || "")).trim() || "Ustoz", org: "Bosh admin" } : (me || {});
@@ -3805,7 +3805,7 @@ const TCHADM = (() => {
     $("tz").innerHTML = `${adminNav("tch")}<div id="taW"><div class="card"><div class="sub" style="margin:0">Yuklanmoqda…</div></div></div>`;
     let ap = {}, tc = {}, grp = {}, tst = {}, sale = {}, C = {};
     try { [ap, tc, grp, tst, sale, C] = await Promise.all(["tapp", "tch", "grp", "tst", "sale", "c/tc"].map(p => DBA.get(p).catch(() => ({})))); } catch (e) {}
-    ap = ap || {}; tc = tc || {}; grp = grp || {}; tst = tst || {}; sale = sale || {}; C = { g: 1, s: 30, pct: 25, pp: "", pd: 30, ...(C || {}) };
+    ap = ap || {}; tc = tc || {}; grp = grp || {}; tst = tst || {}; sale = sale || {}; C = { g: 1, s: 30, pct: 25, pp: "", pd: 30, ...(C || {}) }; C.pp = C.pp || "69 000 so'm";
     const sym = n => (+n || 0).toLocaleString("ru-RU").replace(/,/g, " ") + " so'm", sl = u => Object.entries(sale[u] || {}).filter(([, r]) => r), unpaid = u => sl(u).filter(([, r]) => !r.paid).reduce((a, [, r]) => a + (r.c || 0), 0);
     const A = Object.entries(ap).filter(([, x]) => x && x.n).sort((a, b) => (b[1].at || 0) - (a[1].at || 0));
     const T2 = Object.entries(tc).filter(([, x]) => x && x.n).sort((a, b) => a[1].n.localeCompare(b[1].n));
