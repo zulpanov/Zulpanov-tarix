@@ -2963,9 +2963,9 @@ var qrcode = function() {
 }));
 
 </script>
-<script src="ms11.js?v=3e19e4c0"></script>
-<script src="ms8.js?v=b753fc3f"></script>
-<script src="data/tests.js?v=663b862d"></script>
+<script src="ms11.js?v=dfb9f85d"></script>
+<script src="ms8.js?v=60d66f48"></script>
+<script src="data/tests.js?v=2915acac"></script>
 <script>
 const SETS=[
  {id:"q6a",n:"1–3",title:"Qadimgi dunyo tarixi: Kirish va 1–3-mavzular",sub:"Tarixni o‘rganish, tosh davri, urug‘chilik jamiyati · 47 ta savol, har safar 25 tasi",qs:Q6_A,g:"6-sinf · Qadimgi dunyo tarixi",subj:"Qadimgi dunyo tarixi (6-sinf)"},
@@ -3336,6 +3336,8 @@ const PMADM = (() => {
       <div class="card" style="margin-top:12px"><h1>👥 Guruhga premium berish</h1>
         <div class="row"><div style="flex:2"><label>Guruh</label><select id="pmaG">${gs.map(g => `<option>${esc(g)}</option>`).join("")}</select></div><div style="flex:1"><label>Necha kun</label><input id="pmaGd" type="number" min="1" value="30"></div></div>
         <button class="btn sm" id="pmaGo" ${gs.length ? "" : "disabled"}>💎 Guruhga berish</button><div class="accerr" id="pmaGe"></div></div>
+      <div class="card" style="margin-top:12px"><h1>🔐 Sertifikat variantlari kalitlari</h1><div class="sub" id="pmaK" style="margin:0">Tekshirilmoqda…</div>
+        <div class="row" style="margin-top:8px"><input id="pmaKi" placeholder="Kalitlar havolasini shu yerga qo‘ying" style="flex:1"><button class="btn sm" id="pmaKs">💾</button></div><div class="accerr" id="pmaKe"></div></div>
       <div class="card" style="margin-top:12px"><h1>📋 Faol premiumlar</h1>${TGB.on() ? `<button class="btn sm ghost" id="pmaRm" ${low.length ? "" : "disabled"}>🤖 Tugayotganlarga bot orqali eslatma</button><div class="accerr" id="pmaRme"></div>` : `<div class="tnote">Bot orqali eslatma yuborish uchun admin panelni Telegram’dagi bot ichidan oching.</div>`}<div id="pmaA"></div></div>`;
     drawCfg(); drawTar(T); drawRes(); drawAct();
     $("pmaTa").onclick = () => { const L = readTar(); L.push({ n: "", d: 30, p: "" }); drawTar(L); };
@@ -3355,6 +3357,17 @@ const PMADM = (() => {
       $("pmaGo").disabled = false; drawRes(); drawAct();
     };
     if ($("pmaRm")) $("pmaRm").onclick = () => remind(true);
+    keys();
+    $("pmaKs").onclick = async () => {
+      let v = $("pmaKi").value.trim(); const i = v.indexOf("#pk="); if (i >= 0) v = v.slice(i + 4); if (!v) return;
+      try { const o = JSON.parse(decodeURIComponent(escape(atob(decodeURIComponent(v))))); await DBA.update("pk", o); $("pmaKi").value = ""; $("pmaKe").textContent = `✅ ${Object.keys(o).length} ta kalit saqlandi`; keys(); }
+      catch (e) { $("pmaKe").textContent = "⚠️ Havola noto‘g‘ri yoki saqlab bo‘lmadi: " + ((e && e.message) || e); }
+    };
+  }
+  async function keys() {
+    const el = $("pmaK"); if (!el) return;     let have = {}; try { have = (await DBA.get("pk")) || {}; } catch (e) {}
+    const all = SETS.filter(s => s.ms), miss = all.filter(s => !have[s.id] && (s.ms.enc || s.ms._e));
+    el.innerHTML = miss.length ? `⚠️ ${miss.length} ta shifrlangan variantning kaliti bazada yo‘q — ular o‘quvchilarga ochilmaydi. Claude bergan kalitlar havolasini pastga qo‘ying.` : `✅ Barcha shifrlangan variantlarning kaliti joyida. Kalitni faqat Premium (yoki variant bepul bo‘lsa — hamma) o‘quvchi oladi.`;
   }
   function drawCfg() {
     const el = $("pmaF"); if (!el) return; const C = PM.cfg, F = C.f || {}, G = C.g || {}, S = C.s || {};
@@ -3435,6 +3448,32 @@ const PMADM = (() => {
     } catch (e) {}
   }
   return { open, cfgChanged, tick, leave: () => { alive = false; } };
+})();
+// 🔐 Milliy sertifikat variantlari shifrlangan: kalit (pk/<variant>) faqat ruxsati borga beriladi (Firebase qoidasi tekshiradi)
+const MSK = (() => {
+  const b64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+  async function open(s) {
+    const D = s && s.ms; if (!D || !D.enc) return;
+    let k = null, deny = false;
+    try { k = await DBA.get("pk/" + s.id); } catch (e) { deny = /permission|denied/i.test(String((e && (e.code || e.message)) || e)); if (!deny) throw new Error("net"); }
+    if (!k) throw new Error(deny ? "deny" : "nokey");
+    const key = await crypto.subtle.importKey("raw", b64(k), "AES-GCM", false, ["decrypt"]);
+    const pt = await crypto.subtle.decrypt({ name: "AES-GCM", iv: b64(D.iv) }, key, b64(D.enc));
+    const o = JSON.parse(new TextDecoder().decode(pt)); delete D.enc; delete D.iv; D._e = 1; Object.assign(D, o);
+  }
+  // Ustoz uchun bir martalik havola: #pk=<kalitlar> — kalitlarni bazaga yozadi
+  async function importKeys() {
+    let raw = null; const h = location.hash || "";
+    if (h.startsWith("#pk=")) { raw = h.slice(4); try { sessionStorage.setItem("zm_pk", raw); } catch (e) {} try { history.replaceState(null, "", location.pathname + location.search); } catch (e) {} }
+    else { try { raw = sessionStorage.getItem("zm_pk"); } catch (e) {} }
+    if (!raw) return;
+    for (let i = 0; i < 120; i++) { try { if (isAdmin()) break; } catch (e) {} await new Promise(r => setTimeout(r, 1000)); }
+    try { if (!isAdmin()) { FX.toast("🔑 Kalitlarni saqlash uchun ustoz sifatida kiring"); return; } } catch (e) { return; }
+    try { const o = JSON.parse(decodeURIComponent(escape(atob(decodeURIComponent(raw))))); await DBA.update("pk", o); sessionStorage.removeItem("zm_pk"); FX.toast(`🔑 ${Object.keys(o).length} ta variant kaliti saqlandi`, "up"); }
+    catch (e) { FX.toast("⚠️ Kalitlarni saqlab bo‘lmadi: " + ((e && e.message) || e)); }
+  }
+  setTimeout(importKeys, 1500);
+  return { open };
 })();
 const MSACC=(()=>{let acc={},un=null;
   const watch=()=>{if(un)return;try{DBA}catch(e){return}un=DBA.on("c/ms",v=>{acc=v||{};if(VIEW.k==="ms"||VIEW.k==="mscls")try{renderTopics()}catch(e){}if(typeof MSADM!=="undefined")MSADM.refresh()})};
@@ -3621,6 +3660,7 @@ function start(){
   FROM_T=false;TEAMWIN="";HWCUR=HWNEXT;HWNEXT=null;
   if(!HWCUR&&!PM.okSet(set)&&!(set.ms&&MSACC.saved(set))){PM.wall();return}
   if(set.ms&&!HWCUR&&!MSACC.can(set)&&!MSACC.saved(set)){FX.toast("🔒 Bu variant hali yopiq. Ustoz ruxsat berganda ochiladi.");return}
+  if(set.ms&&set.ms.enc){if(!ACCT.cur)return;const s0=set,h0=HWCUR;FX.toast("⏳ Variant yuklanmoqda…");MSK.open(s0).then(()=>{set=s0;HWNEXT=h0;start()}).catch(e=>{const m=String(e&&e.message);if(m==="deny")PM.wall();else FX.toast(m==="nokey"?"⚠️ Bu variant hali tayyorlanmoqda. Ustozga xabar bering.":"⚠️ Variantni yuklab bo‘lmadi. Internetni tekshiring.")});return}
   if(set.ms){const ac=ACCT.cur;if(!ac)return;FN=ac.f;LN=ac.l;name=FN+" "+LN;return MS.start()}
   const ac=ACCT.cur;
   if(set.kt){if(!ac)return;FN=ac.f;LN=ac.l;name=FN+" "+LN;Q=set.qs.slice()}else
@@ -5808,7 +5848,7 @@ const HW = (() => {
     if (due < Date.now()) return E("Muddat o'tib ketgan vaqtga qo'yilgan.");
     const s = setOf($("hwS").value), rec = { set: s.id, ttl: s.title, g: $("hwTo").value, due, c: DBA.now() }, note = $("hwN").value.trim();
     if (note) rec.note = note;
-    E(""); await DBA.set("hw/w" + Date.now().toString(36), rec); $("hwN").value = ""; FX.toast("✅ Vazifa berildi", "up");
+    E(""); if (s.ms) DBA.set("c/pmhw/" + s.id, true).catch(() => {}); await DBA.set("hw/w" + Date.now().toString(36), rec); $("hwN").value = ""; FX.toast("✅ Vazifa berildi", "up");
     if (TGB.on()) { const d = new Date(due); TGB.call("notifyHw", { ttl: rec.ttl, grp: rec.g === "*" ? "" : rec.g, note: note || "", due: `${d2(d.getDate())}.${d2(d.getMonth() + 1)} ${d2(d.getHours())}:${d2(d.getMinutes())}` }).then(r => FX.toast(`📨 Botda ${r.sent} ta o'quvchiga xabar ketdi`, "up")).catch(() => {}); }
   }
   function renderAdmin() {

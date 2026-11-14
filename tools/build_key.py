@@ -6,7 +6,7 @@ from playwright.async_api import async_playwright
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, "data", "key")
 JS = r'''() => {
-  const out = {}, bad = [];
+  const out = {}, bad = [], enc = [];
   const sh = id => out[id] = out[id] || {};
   SETS.forEach(s => {
     if (s.qs && !s.cq) s.qs.forEach(q => {
@@ -15,9 +15,10 @@ JS = r'''() => {
       const o = sh(m[1]); o.q = o.q || []; const v = q.o && q.o[q.a];
       if (v == null) bad.push(q._k); o.q[+m[2]] = v == null ? null : String(v);
     });
+    if (s.ms && s.ms.enc) { enc.push(s.id); return; }
     if (s.ms) { MS.prep(s.ms); const D = s.ms; sh(s.id).ms = { m: D.mcq.map(q => String(q.o[q.a])), x: D.match.qs.map(q => q.a), w: D.open.map(q => [q.aa, q.ba]) }; }
   });
-  return { out, bad };
+  return { out, bad, enc };
 }'''
 async def main():
     port = 8799
@@ -35,7 +36,7 @@ async def main():
         await b.close()
     srv.shutdown()
     os.makedirs(OUT, exist_ok=True)
-    keep = set()
+    keep = set(k + ".json" for k in r.get("enc", []))  # shifrlangan variantlar: kalit fayli saqlab qolinadi
     for k, v in r["out"].items():
         fn = os.path.join(OUT, k + ".json"); keep.add(k + ".json")
         s = json.dumps(v, ensure_ascii=False, separators=(",", ":"))

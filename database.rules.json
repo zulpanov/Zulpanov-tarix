@@ -175,6 +175,12 @@
     "pmr": {
       ".read": "auth != null && root.child('admins').child(auth.uid).val() === true",
       ".write": "auth != null && root.child('admins').child(auth.uid).val() === true"
+    },
+    "pk": {
+      ".write": "auth != null && root.child('admins').child(auth.uid).val() === true",
+      "$id": {
+        ".read": "auth != null && (root.child('admins').child(auth.uid).val() === true || (root.child('c/pm/f/ms').val() !== true && root.child('c/pm/s').child($id).val() !== true) || root.child('c/pmhw').child($id).val() === true || root.child('pm').child(auth.uid).child('e').val() > now)"
+      }
     }
   }
 }
