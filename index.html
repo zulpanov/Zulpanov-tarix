@@ -3496,8 +3496,9 @@ const TCH = (() => {
   const mkCode = () => { const a = new Uint32Array(6); crypto.getRandomValues(a); return [...a].map(x => KA[x % KA.length]).join(""); };
   const joinLink = k => window.TG_BOT ? `https://t.me/${window.TG_BOT}?startapp=g-${k}` : location.href.split("#")[0].split("?")[0] + "#g-" + k;
   let me = null, app = null, un = [], mUid = null, tab = "grp", G = [], S = [], H = {}, fG = "", sel = null, prev = false;
-  const cur = () => (typeof ACCT !== "undefined" && ACCT.cur) || null;
   const adm = () => { try { return isAdmin(); } catch (e) { return false; } };
+  // Ustoz — o'quvchi akkaunti bilan; bosh admin (ko'rish rejimida) o'quvchi akkauntisiz ham bo'lishi mumkin
+  const cur = () => (typeof ACCT !== "undefined" && ACCT.cur) || (prev && adm() && AUTH.uid ? { uid: AUTH.uid, f: "Ustoz", l: "" } : null);
   const is = () => !!(me && me.ok === true) || (prev && adm());
   const meV = () => (prev && adm() && !(me && me.ok)) ? { n: (((cur() || {}).f || "") + " " + ((cur() || {}).l || "")).trim() || "Ustoz", org: "Bosh admin" } : (me || {});
   function watch() {
@@ -3723,7 +3724,7 @@ const TCH = (() => {
   function drawGame() {
     $("tcB").innerHTML = `<div class="card"><h1>🏆 Turnir</h1><div class="sub" style="margin:0 0 10px">O'yin ochasiz, kodni o'quvchilaringizga aytasiz — ular telefonidan qo'shilib bellashadi. Yakka yoki jamoaviy.</div><button class="btn" id="tgT">🏆 Turnir ochish</button></div>
       <div class="card" style="margin-top:12px"><h1>🏰 Boss jangi</h1><div class="sub" style="margin:0 0 10px">Butun guruh birgalikda qal'ani yiqitadi: o'quvchilar mavzuga ovoz beradi, har to'g'ri javob qal'aga zarba.</div><button class="btn" id="tgB">🏰 Boss jangini ochish</button></div>`;
-    $("tgT").onclick = () => T.myOpen(); $("tgB").onclick = () => BOSS.setup();
+    $("tgT").onclick = () => (adm() && !ACCT.cur) ? T.openHost() : T.myOpen(); $("tgB").onclick = () => BOSS.setup();
   }
   function preview() { prev = true; open("grp"); }
   function exitPrev() { prev = false; TCHADM.open(); }
