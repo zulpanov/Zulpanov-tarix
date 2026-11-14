@@ -211,6 +211,12 @@ const FN = {
     if (to !== "stu") { const logins = new Set(stu.map(r => r.login)); (await parentsList(env)).forEach(p => { if (!grp || logins.has(p.login)) add(p.tgId); }); }
     return sendBatch(env, list, input.from, () => ({ text: "📢 <b>Ustoz xabari</b>\n\n" + esc(msg), parse_mode: "HTML", reply_markup: { inline_keyboard: [[{ text: "📚 Platformani ochish", url: appLink() }]] } }));
   },
+  // 💎 Premium: muddati tugayotgan o'quvchilarga eslatma (har biriga o'z matni)
+  async pmNotify(env, input, u) {
+    requireAdmin(u);
+    const list = (Array.isArray(input.items) ? input.items.slice(0, 300) : []).map(it => ({ tgId: Number(it && it.tgId), text: String((it && it.text) || "").slice(0, 1500) })).filter(x => x.tgId && x.text);
+    return sendBatch(env, list, input.from, to => ({ text: to.text, parse_mode: "HTML", reply_markup: { inline_keyboard: [[{ text: "💎 Platformani ochish", url: appLink() }]] } }));
+  },
   async reports(env, input, u) {
     requireAdmin(u);
     const items = Array.isArray(input.items) ? input.items.slice(0, 2000) : [], by = {}, list = [];

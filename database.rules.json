@@ -164,6 +164,17 @@
           ".write": "!data.exists() && $day.matches(/^20[0-9]{2}-[0-9]{2}-[0-9]{2}$/) && newData.child('m').isString() && newData.child('m').val().length <= 300 && newData.child('at').isNumber()"
         }
       }
+    },
+    "pm": {
+      ".read": "auth != null && root.child('admins').child(auth.uid).val() === true",
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid",
+        ".write": "auth != null && (root.child('admins').child(auth.uid).val() === true || (auth.uid === $uid && !data.exists() && newData.child('src').val() === 'trial' && newData.child('e').isNumber() && root.child('c/pm/trial').isNumber() && root.child('c/pm/trial').val() > 0 && newData.child('e').val() <= now + root.child('c/pm/trial').val() * 86400000))"
+      }
+    },
+    "pmr": {
+      ".read": "auth != null && root.child('admins').child(auth.uid).val() === true",
+      ".write": "auth != null && root.child('admins').child(auth.uid).val() === true"
     }
   }
 }
