@@ -351,6 +351,7 @@ input,select,textarea,button{font-family:inherit}
 .kunbtn .kun-i{font-size:28px}.kunbtn .kun-t{flex:1;display:flex;flex-direction:column;gap:2px}.kunbtn .kun-t b{font-size:15px}.kunbtn .kun-t small{font-size:12px;color:var(--mu)}.kunbtn .kun-a{font-size:22px;color:var(--mu)}
 #homeKun .kunbtn{margin:0}
 #homePM .kunbtn{margin:10px 0 0}.kunbtn.pm-home{border-color:rgba(168,85,247,.5);background:linear-gradient(135deg,rgba(168,85,247,.18),rgba(59,130,246,.12))}.kunbtn.pm-home.low{border-color:rgba(244,63,94,.55);background:linear-gradient(135deg,rgba(244,63,94,.16),rgba(249,115,22,.12))}.kunbtn .kun-go{font-size:22px;color:var(--mu)}
+.bp-seg{grid-template-columns:1fr 1fr;margin-bottom:4px}#bpT{grid-template-columns:repeat(3,1fr)}.bp-seg button{white-space:nowrap}.bp-chk{display:flex;flex-direction:column;gap:2px;margin-top:8px;max-height:300px;overflow:auto;border:1px solid var(--line);border-radius:12px;padding:6px 10px;background:var(--card2)}.bp-chk label{display:flex;gap:8px;align-items:center;padding:6px 0;font-size:14px;border-bottom:1px solid var(--line)}.bp-chk label:last-child{border-bottom:0}.bp-chk small{color:var(--mu)}
 .pm-lk{opacity:.62}.pm-lk .pm-g{font-style:normal}.pm-note{margin-top:8px;padding:9px 12px;border-radius:12px;border:1px dashed rgba(168,85,247,.6);background:rgba(168,85,247,.1);font-size:13px;cursor:pointer;text-align:center}.pm-note b{color:#c084fc}
 .pm-ask{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(3px)}.pm-ask-c{max-width:340px;width:100%;text-align:center;margin:0}.pm-ask-c .btn{width:100%;margin-top:10px}.pm-ask-c .sub{margin:4px 0 6px}
 .pm-hero{text-align:center}.pm-gem{font-size:46px;filter:drop-shadow(0 6px 18px rgba(168,85,247,.55))}.pm-st{margin-top:12px;padding:10px 12px;border-radius:12px;background:var(--card2);border:1px solid var(--line);font-size:14px}.pm-st.on{border-color:rgba(168,85,247,.55);background:rgba(168,85,247,.12)}.pm-st.low{border-color:rgba(244,63,94,.6);background:rgba(244,63,94,.12)}.pm-st small{color:var(--mu)}
@@ -5068,7 +5069,13 @@ const TGB = (() => {
     return r;
   }
   function link(login, pw, admin) { if (!on()) return; const c = typeof ACCT !== "undefined" && ACCT.cur; call("link", { login, admin: !!admin, name: !admin && c ? c.f + " " + c.l : "", grp: !admin && c ? c.g || "" : "" }).catch(() => {}); }
-  const groups = async () => { try { const v = await DBA.get("grp"); return Object.values(v || {}).filter(x => x && x.n).map(x => x.n).sort((a, b) => a.localeCompare(b)); } catch (e) { return []; } };
+  // Guruhlar: yaratilgan guruhlar (grp) + o'quvchilar profilidagi guruhlar (masalan, kod bilan qo'shilganlar)
+  const groups = async () => {
+    const m = new Map(), add = n => { n = String(n || "").trim(); if (n && !m.has(n.toLowerCase())) m.set(n.toLowerCase(), n); };
+    try { Object.values((await DBA.get("grp")) || {}).forEach(x => x && add(x.n)); } catch (e) {}
+    try { if (isAdmin()) Object.values((await DBA.get(AUTH.FB ? "users" : "u")) || {}).forEach(x => x && !x.moved && add(x.g)); } catch (e) {}
+    return [...m.values()].sort((a, b) => a.localeCompare(b));
+  };
   const msg = e => (e && (e.message || e.description)) || "Xatolik";
   // Avval kirgan o'quvchini ham (har sessiyada bir marta) botga bog'lash
   setTimeout(() => { try { const c = typeof ACCT !== "undefined" && ACCT.cur; if (on() && c && c.login && !sessionStorage.getItem("zm_tgl")) { sessionStorage.setItem("zm_tgl", "1"); link(c.login); } } catch (e) {} }, 4000);
@@ -5087,13 +5094,16 @@ const BOTP = (() => {
       <div class="card" style="margin-top:12px"><h1>📊 Ota-onalarga hisobot</h1><div class="sub">Har bir ota-onaga farzandining shu davrdagi natijalari yuboriladi. Ota-ona botga farzandining «Statistika» sahifasidagi havola orqali ulanadi.</div>
         <div class="row"><div style="flex:1"><label>Davr</label><select id="bpP"><option value="7">Oxirgi 7 kun</option><option value="14">Oxirgi 14 kun</option><option value="30">Oxirgi 30 kun</option></select></div><div style="flex:1"><label>Guruh</label><select id="bpG">${gopt}</select></div></div>
         <button class="btn" id="bpR">📊 Hisobotlarni yuborish</button><div class="accerr" id="bpRe"></div></div>
-      <div class="card" style="margin-top:12px"><h1>📦 Zaxira</h1><div class="sub">Butun baza (o'quvchilar, natijalar, XP, sozlamalar) JSON fayl qilib sizning Telegramingizga yuboriladi. Har yakshanba kechqurun o'zi ham yuboriladi.</div>
+      <div class="card" style="margin-top:12px"><h1>📦 Zaxira</h1><div class="sub">Butun baza (o'quvchilar, natijalar, XP, sozlamalar) JSON fayl qilib sizning Telegramingizga yuboriladi. Har yakshanba ertalab (09:00) o'zi ham yuboriladi.</div>
         <button class="btn ghost" id="bpBk">📦 Zaxirani hozir yuborish</button><div class="accerr" id="bpBke"></div></div>
       <div class="card" style="margin-top:12px"><h1>✉️ Xabar yuborish</h1>
-        <div class="row"><div style="flex:1"><label>Kimga</label><select id="bpT"><option value="stu">O'quvchilarga</option><option value="par">Ota-onalarga</option><option value="all">Hammaga</option></select></div><div style="flex:1"><label>Guruh</label><select id="bpG2">${gopt}</select></div></div>
+        <label>Kimga</label><div class="seg bp-seg" id="bpT"><button data-v="stu" class="on">👨‍🎓 O'quvchi</button><button data-v="par">👨‍👩‍👧 Ota-ona</button><button data-v="all">Ikkalasi</button></div>
+        <label>Kimlarga</label><div class="seg bp-seg" id="bpQ"><button data-v="all" class="on">📣 Hammaga</button><button data-v="center">🏫 O'quv markazi</button><button data-v="grp">👥 Guruhlar</button><button data-v="sel">✅ Tanlanganlar</button></div>
+        <div id="bpX"></div><div class="tnote" id="bpCnt" style="margin-top:10px">Hisoblanmoqda…</div>
         <label>Shablon</label><select id="bpTpl"><option value="">— tanlang yoki o'zingiz yozing —</option><option>❗ Bugungi dars bekor qilindi. Keyingi dars: [kun], soat [vaqt].</option><option>⏰ Eslatma: ertaga soat [vaqt] da dars bor. Kechikmang!</option><option>📝 Yangi uy vazifasi berildi. Muddat: [sana]. Platformada «Vazifalar» bo'limini oching.</option><option>🎓 Milliy sertifikat imtihoniga [N] kun qoldi! Har kuni kamida 1 ta variant ishlang.</option><option>🆕 Platformaga yangi testlar qo'shildi: [mavzu]. Sinab ko'ring!</option><option>🏆 [sana] kuni soat [vaqt] da «Tarix chempionati» bo'lib o'tadi. G'oliblarga sovg'alar bor!</option><option>📚 Tarix kursiga qabul ochildi! BRO ACADEMY, Bulung'ur tumani, 39-kollej ro'parasida. Dushanba, chorshanba, juma — soat 14:00. Yozilish: @ZULPANOV_METHODS</option><option>📅 Bugungi Kun testi tayyor — 10 ta savol. Do'stlaringiz bilan natijani solishtiring!</option></select>
         <label>Xabar matni</label><textarea id="bpM" rows="4" placeholder="Masalan: Ertaga soat 15:00 da dars bo'ladi." style="width:100%"></textarea>
         <button class="btn" id="bpB">✉️ Yuborish</button><div class="accerr" id="bpBe"></div></div>`;
+    bcInit(gs);
     if (!TGB.on()) { ["bpR", "bpB"].forEach(id => $(id).disabled = true); return; }
     TGB.call("stats").then(s => { const d2 = n => String(n).padStart(2, "0"), dt = ms => { const d = new Date(ms); return `${d2(d.getDate())}.${d2(d.getMonth() + 1)} ${d2(d.getHours())}:${d2(d.getMinutes())}`; };
       $("bpS").innerHTML = `Botga ulangan o'quvchilar: <b>${s.students}</b> · ota-onalar: <b>${s.parents}</b> (${s.kids} ta o'quvchining)` + (Object.keys(s.groups || {}).length ? "<br>" + Object.entries(s.groups).map(([g, n]) => `${esc(g)}: ${n}`).join(" · ") : "")
@@ -5121,12 +5131,61 @@ const BOTP = (() => {
     } catch (e) { E("Xatolik: " + TGB.msg(e)); }
     b.disabled = false;
   }
+  // ---------- Xabar yuborish: kimga (o'quvchi/ota-ona) va kimlarga (hamma / o'quv markazi / guruhlar / tanlanganlar) ----------
+  const BC = { to: "stu", q: "all", grps: new Set(), sel: new Set(), find: "", us: [], tgl: new Set(), par: {} };
+  const nk = x => String(x || "").trim().toLowerCase();
+  async function bcInit(gs) {
+    BC.grps = new Set(); BC.sel = new Set(); BC.find = ""; BC.gs = gs;
+    const segs = (id, k) => $(id).onclick = e => { const b = e.target.closest("[data-v]"); if (!b) return; BC[k] = b.dataset.v; [...$(id).children].forEach(x => x.classList.toggle("on", x === b)); bcDraw(); };
+    segs("bpT", "to"); segs("bpQ", "q");
+    try {
+      const [us, tu, tp] = await Promise.all([DBA.get(AUTH.FB ? "users" : "u").catch(() => ({})), DBA.get("tg/u").catch(() => ({})), DBA.get("tg/p").catch(() => ({}))]);
+      BC.us = Object.entries(us || {}).filter(([k, x]) => x && x.f && !x.moved).map(([k, x]) => ({ k, f: x.f, l: x.l || "", g: String(x.g || "").trim(), lg: [x.login || k].concat(x.al || []).map(nk) })).sort((a, b) => (a.f + a.l).localeCompare(b.f + b.l));
+      BC.tgl = new Set(Object.values(tu || {}).filter(r => r && !r.isAdmin).map(r => nk(r.login)));
+      BC.par = {}; Object.values(tp || {}).forEach(kids => Object.keys(kids || {}).forEach(l => BC.par[nk(l)] = (BC.par[nk(l)] || 0) + 1));
+    } catch (e) {}
+    bcDraw();
+  }
+  function bcList() {
+    const U = BC.us;
+    if (BC.q === "center") return U.filter(u => u.g);
+    if (BC.q === "grp") return U.filter(u => BC.grps.has(nk(u.g)));
+    if (BC.q === "sel") return U.filter(u => BC.sel.has(u.k));
+    return U;
+  }
+  function bcDraw() {
+    const X = $("bpX"); if (!X) return;
+    const cnt = {}; BC.us.forEach(u => { if (u.g) cnt[nk(u.g)] = (cnt[nk(u.g)] || 0) + 1; });
+    const conn = u => u.lg.some(l => BC.tgl.has(l)), pars = u => u.lg.reduce((a, l) => a + (BC.par[l] || 0), 0);
+    if (BC.q === "grp") X.innerHTML = `<div class="bp-chk">${(BC.gs || []).map(g => `<label><input type="checkbox" value="${esc(nk(g))}"${BC.grps.has(nk(g)) ? " checked" : ""}> <span>${esc(g)} <small>(${cnt[nk(g)] || 0})</small></span></label>`).join("") || `<div class="sub" style="margin:0">Hali guruh yo'q. Vazifa → 👥 Guruhlar bo'limida yarating.</div>`}</div>`;
+    else if (BC.q === "sel") {
+      const f = nk(BC.find), L = BC.us.filter(u => !f || nk(u.f + " " + u.l + " " + u.g + " " + u.lg.join(" ")).includes(f)).slice(0, 80);
+      X.innerHTML = `<input id="bpF" placeholder="🔎 Ism yoki guruh bo'yicha qidiring" value="${esc(BC.find)}" style="margin-top:8px"><div class="bp-chk bp-u">${L.map(u => `<label><input type="checkbox" value="${esc(u.k)}"${BC.sel.has(u.k) ? " checked" : ""}> <span>${esc(u.f + " " + u.l)} <small>${esc(u.g || "guruhsiz")}${conn(u) ? "" : " · botda yo'q"}</small></span></label>`).join("") || `<div class="sub" style="margin:0">Topilmadi</div>`}</div>${BC.sel.size ? `<button class="lnk" id="bpClr" style="margin-top:6px">Tanlovni tozalash (${BC.sel.size})</button>` : ""}`;
+      const F = $("bpF"); F.oninput = () => { BC.find = F.value; const p = F.selectionStart; bcDraw(); const G = $("bpF"); G.focus(); try { G.setSelectionRange(p, p); } catch (e) {} };
+      if ($("bpClr")) $("bpClr").onclick = () => { BC.sel.clear(); bcDraw(); };
+    } else X.innerHTML = "";
+    X.querySelectorAll(".bp-chk input").forEach(i => i.onchange = () => { const S = BC.q === "grp" ? BC.grps : BC.sel; i.checked ? S.add(i.value) : S.delete(i.value); bcCount(); if (BC.q === "sel") { const c = $("bpClr"); if (!c && BC.sel.size) bcDraw(); else if (c) c.textContent = `Tanlovni tozalash (${BC.sel.size})`; } });
+    bcCount();
+  }
+  function bcCount() {
+    const el = $("bpCnt"); if (!el) return; const L = bcList(), conn = u => u.lg.some(l => BC.tgl.has(l));
+    const sc = L.filter(conn).length, pc = L.reduce((a, u) => a + u.lg.reduce((b, l) => b + (BC.par[l] || 0), 0), 0), off = L.filter(u => !conn(u));
+    if (!L.length) { el.innerHTML = BC.q === "grp" ? "Kamida bitta guruhni belgilang." : BC.q === "sel" ? "O'quvchilarni belgilang." : "O'quvchi topilmadi."; return; }
+    el.innerHTML = `👥 <b>${L.length}</b> ta o'quvchi` + (BC.to !== "par" ? ` · botga ulangan: <b>${sc}</b>` : "") + (BC.to !== "stu" ? ` · ota-onalar: <b>${pc}</b>` : "")
+      + (BC.to !== "par" && off.length ? `<details style="margin-top:6px"><summary>Botga ulanmagan ${off.length} ta o'quvchi (xabar ularga bormaydi)</summary><div style="margin-top:4px;font-size:13px">${off.slice(0, 200).map(u => esc(u.f + " " + u.l) + (u.g ? ` <small>(${esc(u.g)})</small>` : "")).join(", ")}</div></details>` : "");
+  }
   async function broadcast() {
     const b = $("bpB"), text = $("bpM").value.trim(), E = m => $("bpBe").textContent = m;
     if (!text) return E("Xabar matnini yozing.");
+    const L = bcList(); if (BC.q !== "all" && !L.length) return E(BC.q === "grp" ? "Kamida bitta guruhni belgilang." : "O'quvchilarni belgilang.");
+    const toL = { stu: "o'quvchilarga", par: "ota-onalarga", all: "o'quvchi va ota-onalarga" }[BC.to];
+    const qL = BC.q === "all" ? "botdagi hamma" : BC.q === "center" ? `o'quv markazi (${L.length} o'quvchi)` : BC.q === "grp" ? `${[...BC.grps].length} ta guruh (${L.length} o'quvchi)` : `tanlangan ${L.length} ta o'quvchi`;
+    if (!confirm(`✉️ Xabar yuborilsinmi?\n\nKimga: ${toL}\nKimlarga: ${qL}`)) return;
     b.disabled = true; E("Yuborilmoqda…");
-    try { const r = await TGB.call("broadcast", { to: $("bpT").value, grp: $("bpG2").value, text }); E(`Yuborildi: ${r.sent}${r.failed ? ` · yetib bormadi: ${r.failed}` : ""}`); if (r.sent) { $("bpM").value = ""; FX.toast("✉️ Xabar yuborildi", "up"); } }
-    catch (e) { E("Xatolik: " + TGB.msg(e)); }
+    try {
+      const inp = { to: BC.to, text }; if (BC.q !== "all") inp.logins = [...new Set(L.flatMap(u => u.lg))];
+      const r = await TGB.call("broadcast", inp); E(`Yuborildi: ${r.sent}${r.failed ? ` · yetib bormadi: ${r.failed}` : ""}`); if (r.sent) { $("bpM").value = ""; FX.toast("✉️ Xabar yuborildi", "up"); }
+    } catch (e) { E("Xatolik: " + TGB.msg(e)); }
     b.disabled = false;
   }
   return { open };

@@ -205,10 +205,13 @@ const FN = {
     requireAdmin(u);
     const to = String(input.to || "stu"), grp = String(input.grp || ""), msg = String(input.text || "").trim().slice(0, 3500);
     if (!msg) return { sent: 0, failed: 0, next: null };
-    const stu = await students(env, grp), seen = new Set(), list = [];
+    // logins — aniq o'quvchilar ro'yxati (sayt hozirgi guruh bo'yicha hisoblaydi); bo'lmasa — grp bo'yicha
+    const lg = Array.isArray(input.logins) ? new Set(input.logins.slice(0, 5000).map(x => String(x).toLowerCase())) : null;
+    let stu = await students(env, lg ? "" : grp); if (lg) stu = stu.filter(r => lg.has(String(r.login || "").toLowerCase()));
+    const seen = new Set(), list = [];
     const add = id => { if (!seen.has(id)) { seen.add(id); list.push({ tgId: id }); } };
     if (to !== "par") stu.forEach(r => add(r.tgId));
-    if (to !== "stu") { const logins = new Set(stu.map(r => r.login)); (await parentsList(env)).forEach(p => { if (!grp || logins.has(p.login)) add(p.tgId); }); }
+    if (to !== "stu") { const logins = new Set(stu.map(r => String(r.login || "").toLowerCase())); (await parentsList(env)).forEach(p => { const l = String(p.login || "").toLowerCase(); if (lg ? lg.has(l) : (!grp || logins.has(l))) add(p.tgId); }); }
     return sendBatch(env, list, input.from, () => ({ text: "📢 <b>Ustoz xabari</b>\n\n" + esc(msg), parse_mode: "HTML", reply_markup: { inline_keyboard: [[{ text: "📚 Platformani ochish", url: appLink() }]] } }));
   },
   // 💎 Premium: muddati tugayotgan o'quvchilarga eslatma (har biriga o'z matni)
