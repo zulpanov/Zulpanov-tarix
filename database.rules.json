@@ -14,7 +14,10 @@
     },
     "grp": {
       ".read": true,
-      ".write": "auth != null && root.child('admins').child(auth.uid).val() === true"
+      ".write": "auth != null && root.child('admins').child(auth.uid).val() === true",
+      "$id": {
+        ".write": "auth != null && root.child('tch').child(auth.uid).child('ok').val() === true && (data.exists() ? data.child('t').val() === auth.uid : newData.child('t').val() === auth.uid) && (!newData.exists() || newData.child('t').val() === auth.uid)"
+      }
     },
     "logins": {
       "$login": {
@@ -25,8 +28,11 @@
     "users": {
       ".read": "auth != null && root.child('admins').child(auth.uid).val() === true",
       "$uid": {
-        ".read": "auth != null && auth.uid === $uid",
-        ".write": "auth != null && (root.child('admins').child(auth.uid).val() === true || (auth.uid === $uid && newData.exists() && newData.child('b').val() === data.child('b').val() && newData.child('rs/n').val() === data.child('rs/n').val() && newData.child('rs/s').val() === data.child('rs/s').val() && (newData.child('g').val() === data.child('g').val() || !newData.child('g').exists() || newData.child('g').val() === '' || (newData.child('gk').isString() && root.child('grpk').child(newData.child('gk').val()).val() === newData.child('g').val())) && (!data.exists() || newData.child('bx').val() === data.child('bx').val()) && (data.exists() || !newData.child('bx').exists() || newData.child('bx').val() === 50)))"
+        ".read": "auth != null && (auth.uid === $uid || root.child('tst').child(auth.uid).child($uid).exists())",
+        ".write": "auth != null && (root.child('admins').child(auth.uid).val() === true || (auth.uid === $uid && newData.exists() && newData.child('b').val() === data.child('b').val() && newData.child('rs/n').val() === data.child('rs/n').val() && newData.child('rs/s').val() === data.child('rs/s').val() && (newData.child('g').val() === data.child('g').val() || !newData.child('g').exists() || newData.child('g').val() === '' || (newData.child('gk').isString() && root.child('grpk').child(newData.child('gk').val()).val() === newData.child('g').val())) && (!data.exists() || newData.child('bx').val() === data.child('bx').val()) && (data.exists() || !newData.child('bx').exists() || newData.child('bx').val() === 50)))",
+        "g": {
+          ".write": "auth != null && root.child('tch').child(auth.uid).child('ok').val() === true && root.child('tst').child(auth.uid).child($uid).exists() && newData.val() === ''"
+        }
       }
     },
     "pw": {
@@ -44,7 +50,7 @@
     },
     "h": {
       "$uid": {
-        ".read": "auth != null && (auth.uid === $uid || root.child('admins').child(auth.uid).val() === true)",
+        ".read": "auth != null && (auth.uid === $uid || root.child('admins').child(auth.uid).val() === true || root.child('tst').child(auth.uid).child($uid).exists())",
         ".write": "auth != null && root.child('admins').child(auth.uid).val() === true"
       }
     },
@@ -68,7 +74,10 @@
     },
     "hw": {
       ".read": "auth != null",
-      ".write": "auth != null && root.child('admins').child(auth.uid).val() === true"
+      ".write": "auth != null && root.child('admins').child(auth.uid).val() === true",
+      "$id": {
+        ".write": "auth != null && root.child('tch').child(auth.uid).child('ok').val() === true && (!data.exists() || data.child('t').val() === auth.uid) && (!newData.exists() || (newData.child('t').val() === auth.uid && newData.child('g').val() !== '*' && newData.child('set').isString()))"
+      }
     },
     "hwr": {
       ".read": "auth != null && root.child('admins').child(auth.uid).val() === true",
@@ -77,7 +86,8 @@
         "$uid": {
           ".read": "auth != null && auth.uid === $uid",
           ".write": "auth != null && auth.uid === $uid"
-        }
+        },
+        ".read": "auth != null && root.child('hw').child($hw).child('t').val() === auth.uid"
       }
     },
     "a": {
@@ -114,7 +124,8 @@
       ".read": "auth != null && root.child('admins').child(auth.uid).val() === true",
       ".write": "auth != null && root.child('admins').child(auth.uid).val() === true",
       "$k": {
-        ".read": true
+        ".read": true,
+        ".write": "auth != null && root.child('tch').child(auth.uid).child('ok').val() === true && root.child('grpt').child($k).val() === auth.uid && (newData.exists() ? (!data.exists() && newData.isString() && newData.val().length <= 30) : true)"
       }
     },
     "st": {
@@ -180,6 +191,35 @@
       ".write": "auth != null && root.child('admins').child(auth.uid).val() === true",
       "$id": {
         ".read": "auth != null && (root.child('admins').child(auth.uid).val() === true || (root.child('c/pm/f/ms').val() !== true && root.child('c/pm/s').child($id).val() !== true) || root.child('c/pmhw').child($id).val() === true || root.child('pm').child(auth.uid).child('e').val() > now)"
+      }
+    },
+    "tapp": {
+      ".read": "auth != null && root.child('admins').child(auth.uid).val() === true",
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid",
+        ".write": "auth != null && (root.child('admins').child(auth.uid).val() === true || (auth.uid === $uid && (!newData.exists() || (newData.child('n').isString() && newData.child('n').val().length <= 80 && newData.child('ph').isString() && newData.child('ph').val().length <= 20))))"
+      }
+    },
+    "tch": {
+      ".read": "auth != null",
+      ".write": "auth != null && root.child('admins').child(auth.uid).val() === true"
+    },
+    "grpt": {
+      ".read": "auth != null && root.child('admins').child(auth.uid).val() === true",
+      ".write": "auth != null && root.child('admins').child(auth.uid).val() === true",
+      "$k": {
+        ".read": true,
+        ".write": "auth != null && root.child('tch').child(auth.uid).child('ok').val() === true && ((!data.exists() && newData.val() === auth.uid) || (data.val() === auth.uid && !newData.exists()))"
+      }
+    },
+    "tst": {
+      ".read": "auth != null && root.child('admins').child(auth.uid).val() === true",
+      ".write": "auth != null && root.child('admins').child(auth.uid).val() === true",
+      "$t": {
+        ".read": "auth != null && auth.uid === $t",
+        "$s": {
+          ".write": "auth != null && ((auth.uid === $s && (!newData.exists() || root.child('grpt').child(newData.val()).val() === $t)) || (auth.uid === $t && !newData.exists()))"
+        }
       }
     }
   }

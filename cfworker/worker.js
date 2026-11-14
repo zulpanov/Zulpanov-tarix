@@ -195,6 +195,16 @@ const FN = {
       (input.n ? "\n❓ " + (+input.n) + " ta savol" : "") + (input.dur ? " · ⏱ " + (+input.dur) + " daqiqa" : "") + "\n\nQo‘shilish uchun tugmani bosing 👇";
     return sendBatch(env, list, input.from, () => ({ text, parse_mode: "HTML", reply_markup: { inline_keyboard: [[{ text: "🚀 Kirish", url: appLink((kt ? "kt-" : "turnir-") + code) }]] } }));
   },
+  // 👨‍🏫 Ustozlik arizasi: bosh admin Telegramiga tasdiqlash tugmalari bilan
+  async tchApply(env, input, u) {
+    need(u); const uid = String(input.uid || "").replace(/[^A-Za-z0-9]/g, "").slice(0, 40); if (!uid) throw new Error("uid yo‘q");
+    const ap = await db(env, "GET", "tapp/" + uid); if (!ap || !ap.n) throw new Error("Ariza topilmadi");
+    const adm = await db(env, "GET", "tg/adm").catch(() => null); if (!adm) return { sent: 0 };
+    await tg(env, "sendMessage", { chat_id: adm, parse_mode: "HTML",
+      text: `👨‍🏫 <b>Yangi ustozlik arizasi</b>\n\n👤 ${esc(ap.n)}\n🏫 ${esc(ap.org || "")}\n📞 ${esc(ap.ph || "")}` + (u.username ? `\n✈️ @${esc(u.username)}` : ""),
+      reply_markup: { inline_keyboard: [[{ text: "✅ Tasdiqlash", callback_data: `tok:${uid}:${u.id}` }, { text: "❌ Rad etish", callback_data: `tno:${uid}:${u.id}` }]] } });
+    return { sent: 1 };
+  },
   async notifyHw(env, input, u) {
     requireAdmin(u);
     const list = await students(env, String(input.grp || ""));
@@ -345,6 +355,20 @@ async function onCallback(env, q) {
   if (q.data === "yozil") return sendYozil(env, chat, q.from);
   if (q.data === "ota") return sendOta(env, chat);
   if (q.data === "share") return sendShare(env, chat);
+  const mt = /^(tok|tno):([A-Za-z0-9]{1,40}):(\d{1,15})$/.exec(q.data || "");
+  if (mt && isAdminTg(q.from)) {
+    const [, act, uid, tid] = mt, ap = await db(env, "GET", "tapp/" + uid).catch(() => null), mid = q.message && q.message.message_id;
+    const done = t => tg(env, "editMessageReplyMarkup", { chat_id: chat, message_id: mid, reply_markup: { inline_keyboard: [[{ text: t, callback_data: "x" }]] } }).catch(() => {});
+    if (!ap) return done("Ariza allaqachon ko‘rib chiqilgan");
+    if (act === "tok") {
+      await db(env, "PUT", "tch/" + uid, { n: String(ap.n || "").slice(0, 60), org: String(ap.org || "").slice(0, 80), ok: true, at: Date.now() });
+      await db(env, "DELETE", "tapp/" + uid); await done("✅ Tasdiqlandi");
+      await tg(env, "sendMessage", { chat_id: Number(tid), parse_mode: "HTML", text: "🎉 <b>Tabriklaymiz!</b> Ustozlik arizangiz tasdiqlandi.\n\nPlatformani oching — bosh sahifada «👨‍🏫 Ustoz paneli» paydo bo‘ldi. U yerda guruh yaratib, havolani o‘quvchilaringizga yuboring.", reply_markup: { inline_keyboard: [[{ text: "👨‍🏫 Ustoz panelini ochish", url: appLink() }]] } }).catch(() => {});
+    } else {
+      await db(env, "DELETE", "tapp/" + uid); await done("❌ Rad etildi");
+      await tg(env, "sendMessage", { chat_id: Number(tid), text: "Ustozlik arizangiz hozircha tasdiqlanmadi. Savollar bo‘lsa: " + CONTACT }).catch(() => {});
+    }
+  }
 }
 
 
