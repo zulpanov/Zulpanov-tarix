@@ -21,8 +21,8 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Tarix Arena">
-<link rel="apple-touch-icon" href="icons/apple-180.png">
-<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-180.png?v=2">
+<link rel="icon" type="image/png" href="icons/icon-192.png?v=2">
 <script>
 // ===== Telegram Mini App: faqat Telegram ichida ochilganda yuklanadi =====
 window.TG_BOT = "tarix_arena_bot";   // bot username (@ belgisisiz), masalan: zulpanov_tarix_bot
@@ -680,7 +680,7 @@ html[data-th="tong"] .clsc,html[data-th="vodiy"] .clsc{background:var(--card);bo
 </head>
 <body>
 <div class="wrap">
-  <header class="brand"><div class="logo blogo"><img src="img/brand/logo-mini.svg" alt="TA"></div><div><b>TARIX ARENA</b><small>by Alimqul Zulpanov</small></div><button class="hdrav hide" id="hdrAv" onclick="PRF.open()" title="Profil sozlamalari"></button><button class="sndbtn" id="snd" title="Ovoz" onclick="this.textContent=FX.toggleSound()?'🔊':'🔇'">🔊</button></header>
+  <header class="brand"><div class="logo blogo"><img src="img/brand/logo-mini.svg?v=2" alt="TA"></div><div><b>TARIX ARENA</b><small>by Alimqul Zulpanov</small></div><button class="hdrav hide" id="hdrAv" onclick="PRF.open()" title="Profil sozlamalari"></button><button class="sndbtn" id="snd" title="Ovoz" onclick="this.textContent=FX.toggleSound()?'🔊':'🔇'">🔊</button></header>
 
   <div class="backbar hide" id="bkb"><button id="bkB">← Orqaga</button><button id="bkH">🏠 Bosh menyu</button></div>
 
@@ -5823,7 +5823,7 @@ const PWA = (() => {
   function render() {
     const b = $("pwaBox"); if (!b) return;
     const m = mode(); if (!m || hidden()) { b.innerHTML = ""; return; }
-    b.innerHTML = `<div class="card pwab"><img src="icons/icon-192.png" alt=""><div style="flex:1;min-width:0"><b>📲 Ilovani o'rnating</b><span>${m === "tg" ? "Telegram'siz, bosh ekrandan bir bosishda oching" : "Bosh ekrandan bir bosishda oching — tezroq va qulayroq"}</span></div><button class="btn" id="pwaGo">O'rnatish</button><button class="x" id="pwaX" title="Yopish">✕</button></div>`;
+    b.innerHTML = `<div class="card pwab"><img src="icons/icon-192.png?v=2" alt=""><div style="flex:1;min-width:0"><b>📲 Ilovani o'rnating</b><span>${m === "tg" ? "Telegram'siz, bosh ekrandan bir bosishda oching" : "Bosh ekrandan bir bosishda oching — tezroq va qulayroq"}</span></div><button class="btn" id="pwaGo">O'rnatish</button><button class="x" id="pwaX" title="Yopish">✕</button></div>`;
     $("pwaGo").onclick = install;
     $("pwaX").onclick = () => { try { localStorage.setItem("zm_pwa_x", Date.now() + 7 * 864e5); } catch (e) {} b.innerHTML = ""; };
   }
@@ -5839,7 +5839,7 @@ const PWA = (() => {
     const steps = inApp ? `<ol><li>Yuqoridagi <kbd>⋯</kbd> menyuni bosing</li><li><b>${ios ? "Safari'da ochish" : "Brauzerda ochish"}</b> ni tanlang</li><li>So'ng shu yerdagi «O'rnatish» tugmasini qayta bosing</li></ol>`
       : m === "ios" ? `<ol><li>Pastdagi <b>«Ulashish»</b> ${share} tugmasini bosing</li><li><b>«Добавить на экран „Домой“»</b> / <b>«Add to Home Screen»</b> ni tanlang</li><li>O'ng yuqoridagi <b>«Qo'shish»</b> (Add) ni bosing</li></ol><div class="sub" style="margin:0 0 12px">Faqat <b>Safari</b> brauzerida ishlaydi.</div>`
       : `<ol><li>Brauzerning yuqori o'ng burchagidagi <kbd>⋮</kbd> menyuni bosing</li><li><b>«Установить приложение»</b> / <b>«Install app»</b> yoki <b>«Добавить на главный экран»</b> ni tanlang</li><li><b>«Установить»</b> (Install) ni bosing</li></ol>`;
-    d.innerHTML = `<div class="card"><h1 style="display:flex;align-items:center;gap:10px"><img src="icons/icon-192.png" style="width:40px;height:40px;border-radius:10px" alt="">Ilovani o'rnatish</h1>${steps}<button class="btn" id="pwaOk">Tushunarli</button></div>`;
+    d.innerHTML = `<div class="card"><h1 style="display:flex;align-items:center;gap:10px"><img src="icons/icon-192.png?v=2" style="width:40px;height:40px;border-radius:10px" alt="">Ilovani o'rnatish</h1>${steps}<button class="btn" id="pwaOk">Tushunarli</button></div>`;
     document.body.appendChild(d);
     d.onclick = e => { if (e.target === d || e.target.id === "pwaOk") d.remove(); };
   }
@@ -6090,7 +6090,7 @@ const ACCT = (() => {
     const inTg = AUTH.FB && TGB.on();
     const tgIc = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 4L3 11l6 2 2 6 3-4 5 4z"></path><path d="M9 13l12-9"></path></svg>`;
     box.innerHTML = `<div class="xpin arg">
-        <img class="arg-lg" src="img/brand/emblem-400.jpg" alt="TARIX ARENA" width="200" height="200">
+        <img class="arg-lg" src="img/brand/emblem-400.jpg?v=2" alt="TARIX ARENA" width="200" height="200">
         <h2>Tarixni o‘yin bilan o‘rgan!</h2>
         <p>Test, turnir va xarita janglari — bir joyda</p>
         <div class="arg-ch"><span>📚 5 700+ test</span><span>🎓 Sertifikat</span><span>🗺 Xarita jangi</span></div>
@@ -6433,7 +6433,7 @@ const ADASH = (() => {
     if (!isAdmin()) return T.openHost();
     try { T.leave(); } catch (e) {} try { ACC.leave(); } catch (e) {}
     show("tz"); BK(null); setTimeout(() => { try { PMADM.tick(); } catch (e) {} }, 1500);
-    $("tz").innerHTML = `${adminNav("dash")}<div class="adh adh0"><div class="logo blogo" style="width:42px;height:42px;border-radius:13px"><img src="img/brand/logo-mini.svg" alt="TA"></div><div class="adh-t"><b>Boshqaruv</b><small>${hr()}, ustoz</small></div><button class="adh-b abell" aria-label="Bugungi ishlar" onclick="document.getElementById('adT').scrollIntoView({behavior:'smooth'})">${ADI("bell")}<span class="hide" id="adBd"></span></button></div>
+    $("tz").innerHTML = `${adminNav("dash")}<div class="adh adh0"><div class="logo blogo" style="width:42px;height:42px;border-radius:13px"><img src="img/brand/logo-mini.svg?v=2" alt="TA"></div><div class="adh-t"><b>Boshqaruv</b><small>${hr()}, ustoz</small></div><button class="adh-b abell" aria-label="Bugungi ishlar" onclick="document.getElementById('adT').scrollIntoView({behavior:'smooth'})">${ADI("bell")}<span class="hide" id="adBd"></span></button></div>
       <div class="ak2s" id="adK">${kpi("O'quvchilar", "…", "#67E8F9")}${kpi("Bugun faol", "…", "#F472B6")}${kpi("O'rtacha ball", "…", "#A78BFA")}${kpi("Premium", "…", "#FBBF24")}</div>
       <div class="ah" id="adT">Bugun e'tibor bering</div>
       <div class="atds" id="adTd"><div class="sub" style="margin:4px 2px">Yuklanmoqda…</div></div>
