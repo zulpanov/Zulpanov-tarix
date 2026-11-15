@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="manifest" href="manifest.webmanifest">
-<meta name="theme-color" content="#0f1720">
+<meta name="theme-color" content="#0A1830">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -31,18 +31,22 @@ window.TG_APP = "";   // BotFather /newapp da berilgan qisqa nom, masalan: app
   var m=(h+"&"+q).match(/tgWebAppStartParam=([^&]+)/);window.TG_START=m?decodeURIComponent(m[1]):"";window.TG_SRC="";(function(){var t=window.TG_START,i=t.indexOf("__");if(i>=0){window.TG_SRC=t.slice(i+2);t=t.slice(0,i)}if(/^s-/.test(t)){window.TG_SRC=t.slice(2);t=""}if(/^r-/.test(t)){window.TG_REF=t.slice(2);if(!window.TG_SRC)window.TG_SRC="dost";t=""}window.TG_START=t})();
   document.write('<script src="https://telegram.org/js/telegram-web-app.js"><\/script>');})();
 </script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&family=PT+Serif:wght@400;700&display=swap" rel="stylesheet">
-<script>(function(){var t="vodiy";try{t=localStorage.getItem("zm_theme")||"vodiy"}catch(e){}if(["tun","tong","vodiy"].indexOf(t)<0)t="vodiy";document.documentElement.setAttribute("data-th",t)})();
-// Mavzu (tema): tun — qorong'i, tong — oq, vodiy — yashil (asosiy)
-window.THEME={L:[["vodiy","🌿 Yashil vodiy","Yumshoq yalpiz rangi — tinch, diqqatni jamlaydi","#EEF7F1","#16A34A","#0EA5A4"],["tong","☀️ Oq tong","Toza oq fon, ko‘k urg‘u — kunduzi qulay","#F5F7FB","#4F46E5","#06B6D4"],["tun","🌙 Tun","Qorong‘i binafsha — kechqurun ko‘zni charchatmaydi","#0A0720","#8B5CF6","#22D3EE"]],
- get:function(){return document.documentElement.getAttribute("data-th")||"vodiy"},
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&family=PT+Serif:wght@400;700&family=Cinzel:wght@700&display=swap" rel="stylesheet">
+<script>(function(){var t="arena";try{t=localStorage.getItem("zm_th2")||"arena"}catch(e){}if(["arena","tun","tong","vodiy"].indexOf(t)<0)t="arena";document.documentElement.setAttribute("data-th",t)})();
+// Mavzu (tema): arena — lojuvard-oltin (asosiy), tun — qorong'i, tong — oq, vodiy — yashil (asosiy)
+window.THEME={L:[["arena","🏛 Arena tun","To‘q lojuvard va oltin — TARIX ARENA uslubi","#0A1830","#D4A63A","#F3D27A"],["vodiy","🌿 Yashil vodiy","Yumshoq yalpiz rangi — tinch, diqqatni jamlaydi","#EEF7F1","#16A34A","#0EA5A4"],["tong","☀️ Oq tong","Toza oq fon, ko‘k urg‘u — kunduzi qulay","#F5F7FB","#4F46E5","#06B6D4"],["tun","🌙 Tun","Qorong‘i binafsha — kechqurun ko‘zni charchatmaydi","#0A0720","#8B5CF6","#22D3EE"]],
+ get:function(){return document.documentElement.getAttribute("data-th")||"arena"},
  bg:function(){var t=this.L.find(function(x){return x[0]===THEME.get()});return t?t[3]:"#0A0720"},
  tg:function(){try{var w=Telegram.WebApp,c=this.bg();w.setHeaderColor&&w.setHeaderColor(c);w.setBackgroundColor&&w.setBackgroundColor(c)}catch(e){}try{var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute("content",this.bg())}catch(e){}},
- set:function(t){document.documentElement.setAttribute("data-th",t);try{localStorage.setItem("zm_theme",t)}catch(e){}this.tg()},
+ set:function(t){document.documentElement.setAttribute("data-th",t);try{localStorage.setItem("zm_th2",t)}catch(e){}this.tg()},
  open:function(){var self=this,d=document.createElement("div");d.className="amore";d.innerHTML='<div class="amore-s"><div class="amore-h"></div><b style="font-size:17px;display:block;margin:4px 2px 12px">🎨 Mavzu (tema)</b>'+self.L.map(function(x){return '<button class="thpk'+(x[0]===self.get()?' on':'')+'" data-t="'+x[0]+'"><i style="background:'+x[3]+'"><u style="background:linear-gradient(135deg,'+x[4]+','+x[5]+')"></u></i><span><b>'+x[1]+'</b><small>'+x[2]+'</small></span><em>✓</em></button>'}).join("")+'</div>';
   d.onclick=function(e){var b=e.target.closest("[data-t]");if(b){self.set(b.dataset.t);d.querySelectorAll(".thpk").forEach(function(x){x.classList.toggle("on",x===b)});setTimeout(function(){d.remove()},250);return}if(e.target===d)d.remove()};document.body.appendChild(d)}};</script>
 <style>
 :root{--bg:#0A0720;--card:#141033;--card2:#1c1745;--line:#2e2768;--tx:#EDEBFF;--mu:#A7A3D6;--ac:#8B5CF6;--ac2:#22D3EE;--ok:#22C55E;--bad:#F43F5E;--gr:linear-gradient(135deg,#7C3AED,#06B6D4);--w:255,255,255;--sel:#2a1f5c;--acr:139,92,246;--ac2r:34,211,238;--bgr:10,7,32;--cardr:20,16,51;--okr:34,197,94;--k:0,0,0;--ka:1}
+html[data-th="arena"]{--bg:#0A1830;--card:#12264A;--card2:#1A3366;--line:#27427A;--tx:#F5F1E4;--mu:#AEB9D3;--ac:#E2B54C;--ac2:#F3D27A;--ok:#22C55E;--bad:#F43F5E;--gr:linear-gradient(135deg,#C99A2E,#E2B54C);--w:255,255,255;--sel:#1F3B6E;--acr:226,181,76;--ac2r:243,210,122;--bgr:10,24,48;--cardr:18,38,74;--okr:34,197,94;--k:0,0,0;--ka:1}
+html[data-th="arena"] body{background:radial-gradient(900px 520px at 110% -10%,rgba(33,64,122,.75),transparent 65%),radial-gradient(700px 500px at -20% 35%,rgba(212,166,58,.08),transparent 65%),#0A1830!important}
+html[data-th="arena"] .wl-stats b,html[data-th="arena"] .stc b{color:#F3D27A;text-shadow:0 0 12px rgba(243,210,122,.3)}
+html[data-th="arena"] .brand b{font-family:Cinzel,Georgia,serif;letter-spacing:.5px;color:#F3E6C0}
 html[data-th="tong"]{--bg:#F5F7FB;--card:#FFFFFF;--card2:#EEF2FF;--line:#E1E6F2;--tx:#1E2340;--mu:#646B8A;--ac:#4F46E5;--ac2:#0891B2;--ok:#16A34A;--bad:#E11D48;--gr:linear-gradient(135deg,#4F46E5,#06B6D4);--w:30,35,70;--k:30,40,80;--ka:.25;--acr:79,70,229;--ac2r:8,145,178;--bgr:245,247,251;--cardr:255,255,255;--okr:22,163,74;color-scheme:light}
 html[data-th="vodiy"]{--bg:#EEF7F1;--card:#FFFFFF;--card2:#E3F3EA;--line:#D3E8DC;--tx:#173326;--mu:#587565;--ac:#16A34A;--ac2:#0D9488;--ok:#16A34A;--bad:#E11D48;--gr:linear-gradient(135deg,#16A34A,#0EA5A4);--w:23,60,40;--k:20,80,50;--ka:.25;--acr:22,163,74;--ac2r:13,148,136;--bgr:238,247,241;--cardr:255,255,255;--okr:22,163,74;color-scheme:light}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -619,6 +623,15 @@ body.dlm #bkb{display:none!important}
 .xpchips{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}.xpchips span{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:7px 12px;font-size:13px;font-weight:600}
 .tgbtn{width:100%;min-height:60px;border:0;border-radius:20px;background:#2AABEE;color:#fff;font:700 17px Inter,sans-serif;display:flex;align-items:center;justify-content:center;gap:12px;cursor:pointer;text-decoration:none;margin-top:10px;box-sizing:border-box;padding:0 14px}
 .tgbtn:disabled{opacity:.7}
+.arg{background:radial-gradient(ellipse at 50% 18%,#21407A,#091629 78%)!important;color:#F5F1E4!important;border-radius:26px;padding:26px 18px 16px!important;box-shadow:0 14px 40px rgba(9,22,41,.35)}
+.arg .arg-lg{width:200px;height:200px;border-radius:50%;display:block;margin:0 auto 6px;box-shadow:0 0 50px rgba(212,166,58,.3)}
+.arg h2{color:#fff!important;margin:14px 0 4px!important}.arg>p{color:#B9C2DD!important}
+.arg-ch{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin:12px 0 14px}.arg-ch span{background:rgba(255,255,255,.09);border:1px solid rgba(243,210,122,.25);color:#F3E6C0;border-radius:12px;padding:7px 10px;font:600 12px Inter,sans-serif}
+.authcard.argw{background:transparent!important;border:0!important;box-shadow:none!important;padding:0!important}.authcard.argw>.grab{display:none}
+.arg .kunbtn{background:rgba(255,255,255,.06)!important;border-color:rgba(243,210,122,.35)!important}.arg .kunbtn b{color:#fff!important}.arg .kunbtn small{color:#B9C2DD!important}
+.arg-ch{flex-wrap:nowrap!important;gap:6px!important}.arg-ch span{padding:6px 8px!important;font-size:11.5px!important;white-space:nowrap}
+.arg .tgbtn{font-size:16px;gap:10px;white-space:nowrap;padding:0 14px}.arg-xp{font-style:normal;background:linear-gradient(135deg,#F3D27A,#D4A63A);color:#0A1830;border-radius:10px;padding:3px 8px;font:800 12px Inter,sans-serif}
+.xpmv{color:#9fb0d0}.arg .xpmv u{color:#F3D27A}.arg .sub{color:#9fb0d0!important}
 .xpmv{background:none;border:0;color:var(--mu);font:500 13px Inter,sans-serif;cursor:pointer;padding:10px}
 .tgmv{width:100%;text-align:left;border-top:1px solid var(--line);padding-top:14px}
 .hwc{padding:14px 14px 8px}.hwh{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}.hwh b{font-size:16px}
@@ -6023,7 +6036,7 @@ const ACCT = (() => {
     const b = $("aTg"), E = m => { const x = $("aE"); if (x) x.textContent = m; };
     if (b) { b.disabled = true; b.textContent = "Kirilmoqda…"; }
     try { await tgLogin(true); }
-    catch (e) { if (b) { b.disabled = false; b.textContent = "Telegram orqali kirib, XP olish"; } E((e && e.uz) || AUTH.msg(e)); }
+    catch (e) { if (b) { b.disabled = false; b.textContent = "Telegram bilan kirish"; } E((e && e.uz) || AUTH.msg(e)); }
   }
   // «Ustoz uchun: Admin panel» tugmasi faqat ustozga ko'rinadi (admin huquqi, oldin kirgan yoki havolada #ustoz)
   function admLink() {
@@ -6072,17 +6085,18 @@ const ACCT = (() => {
   function renderBox(msg) {
     admLink();
     const box = $("acc"); if (!box) return;
+    if (box.parentElement) box.parentElement.classList.toggle("argw", !cur);
     if (cur) { box.innerHTML = ""; return; }
     const inTg = AUTH.FB && TGB.on();
     const tgIc = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 4L3 11l6 2 2 6 3-4 5 4z"></path><path d="M9 13l12-9"></path></svg>`;
-    box.innerHTML = `<div class="xpin">
-        <div class="xpring"><div><small>Daraja</small><b>1</b><em>Boshlovchi</em></div></div>
-        <h2>Kirish uchun +50 XP sovg'a</h2>
-        <p>Har bir to'g'ri javob — ball. Ball to'plang, darajangizni oshiring, haftalik reytingga chiqing.</p>
-        <div class="xpchips"><span>Kun ketma-ketligi</span><span>Nishonlar</span><span>Reyting</span></div>
+    box.innerHTML = `<div class="xpin arg">
+        <img class="arg-lg" src="img/brand/emblem-400.jpg" alt="TARIX ARENA" width="200" height="200">
+        <h2>Tarixni o‘yin bilan o‘rgan!</h2>
+        <p>Test, turnir va xarita janglari — bir joyda</p>
+        <div class="arg-ch"><span>📚 5 700+ test</span><span>🎓 Sertifikat</span><span>🗺 Xarita jangi</span></div>
         ${KUN.card()}
-        ${inTg ? `<button class="tgbtn" id="aTg">${tgIc}<span>Telegram orqali kirib, XP olish</span></button>`
-               : `<a class="tgbtn" id="aTgL" href="https://t.me/${window.TG_BOT}?startapp${(x => x ? "=" + x : "")(ST.tg(HW.pend() ? "g-" + HW.pend() : ""))}">${tgIc}<span>Telegram orqali kirib, XP olish</span></a><p class="sub" style="text-align:center;margin:10px 0 0">Telegram ilovasi ochiladi · login va parol kerak emas</p>`}
+        ${inTg ? `<button class="tgbtn" id="aTg">${tgIc}<span>Telegram bilan kirish</span><em class="arg-xp">+50 XP</em></button>`
+               : `<a class="tgbtn" id="aTgL" href="https://t.me/${window.TG_BOT}?startapp${(x => x ? "=" + x : "")(ST.tg(HW.pend() ? "g-" + HW.pend() : ""))}">${tgIc}<span>Telegram bilan kirish</span><em class="arg-xp">+50 XP</em></a><p class="sub" style="text-align:center;margin:10px 0 0">Telegram ilovasi ochiladi · login va parol kerak emas</p>`}
         <div class="accerr" id="aE" style="text-align:center"></div>
         ${inTg ? `<button class="xpmv" id="aMvL">Avval login bilan ro'yxatdan o'tganmisiz? <u>Hisobni ko'chirish</u></button><div id="aMove"></div>` : ""}
       </div>`;
