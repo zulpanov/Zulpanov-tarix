@@ -3898,7 +3898,7 @@ const TCH = (() => {
   }
   // ----- o'yinlar -----
   function drawGame() {
-    $("tcB").innerHTML = `<div class="card"><h1>🏆 Turnir</h1><div class="sub" style="margin:0 0 10px">O'yin ochasiz, kodni o'quvchilaringizga aytasiz — ular telefonidan qo'shilib bellashadi. Yakka yoki jamoaviy.</div><button class="btn" id="tgT">🏆 Turnir ochish</button></div>
+    $("tcB").innerHTML = `<div class="card"><h1>🏆 Turnir</h1><div class="sub" style="margin:0 0 10px">O'yin ochasiz, kodni o'quvchilaringizga aytasiz — ular telefonidan qo'shilib bellashadi. Yakka yoki jamoaviy.</div><button class="btn ghost" style="margin-bottom:8px" onclick="T.mapBattle()">🗺 Xarita jangi (jamoaviy)</button><button class="btn" id="tgT">🏆 Turnir ochish</button></div>
       <div class="card" style="margin-top:12px"><h1>🏰 Boss jangi</h1><div class="sub" style="margin:0 0 10px">Butun guruh birgalikda qal'ani yiqitadi: o'quvchilar mavzuga ovoz beradi, har to'g'ri javob qal'aga zarba.</div><button class="btn" id="tgB">🏰 Boss jangini ochish</button></div>`;
     $("tgT").onclick = () => (adm() && !ACCT.cur) ? T.openHost() : T.myOpen(); $("tgB").onclick = () => BOSS.setup();
   }
@@ -4216,7 +4216,7 @@ const HOMEX=(()=>{
   function games(){
     if(!ACCT.cur){show("auth");return}
     show("tz");setNav("games");BK(null);
-    const G=[["duel","Duel","Do'stingni chaqir","1 ga 1","DUEL.open()"],["blits","Blits","2 daqiqalik poyga","Yakka","BLITZ.open()"],["hayoq","Ha yoki Yo‘q","Tez javob ber","Yakka","HAYOQ.open()"],["zina","Bilimlar zinapoyasi","15 pog'ona · 3 yordam","Yakka","LADDER.open()"],["boss","Boss jangi","Butun sinf birgalikda","Guruh bilan","T.openJoin()"],["xarita","Xarita o'yini","Joylarni xaritada top","Yakka","PM.gate('xarita',()=>{location.href='xarita.html'})"]];
+    const G=[["duel","Duel","Do'stingni chaqir","1 ga 1","DUEL.open()"],["blits","Blits","2 daqiqalik poyga","Yakka","BLITZ.open()"],["hayoq","Ha yoki Yo‘q","Tez javob ber","Yakka","HAYOQ.open()"],["zina","Bilimlar zinapoyasi","15 pog'ona · 3 yordam","Yakka","LADDER.open()"],["boss","Boss jangi","Butun sinf birgalikda","Guruh bilan","T.openJoin()"],["xarita","Xarita o'yini","Joylarni xaritada top","Yakka","PM.gate('xarita',()=>{location.href='xarita.html'})"],["xarita","Xarita jangi","Kim tez topadi? Jamoa bilan","👥 Jamoaviy · 👑","T.mapBattle()"]];
     $("tz").innerHTML=`<div class="adh"><div class="adh-t"><small>Bilimingizni o'yin bilan sinang</small><b>O'yinlar</b></div></div>
       <button class="gm-hero" onclick="T.openJoin()">${glogo("turnir",54).replace("gm-lg","gm-lg gm-lgw")}<span class="gm-ht">${isLive?'<em>JONLI TURNIR BOR</em>':""}<b>Turnir</b><small>Kod bilan kiring yoki o'zingiz oching</small></span><span class="gm-hb">Kirish</span></button>
       <div class="gm-grid">${G.map(([k,n,s,ch,fn])=>{const a=GL[k][0];return `<button class="gm-c" style="background:linear-gradient(160deg,${a}30,var(--card) 70%);border-color:${a}55" onclick="${fn}">${glogo(k)}<b>${n}</b><small>${s}</small><em>${ch}</em></button>`}).join("")}</div>`;
@@ -7856,6 +7856,7 @@ const T = (() => {
     if (window.IN_TG && /^#turnir-\d{4}$/.test(h) && ACCT.cur) { openJoin(h.split("-")[1]); join(true); return; }
     if (h.startsWith("#turnir")) openJoin((h.split("-")[1] || "").slice(0, 4));
     else if (h === "#ustoz") openHost();
+    else if (h === "#xjang") { try { history.replaceState(null, "", location.pathname + location.search); } catch (e) {} mapBattle(); }
     else if (h === "#statistika") { if (isAdmin()) STAT.open(); else openHost(); }
     else { let a = null; try { a = JSON.parse(ls.get("zm_active") || "null"); } catch (e) {} if (a && a.code && ACCT.cur && a.u === ACCT.cur.login) { openJoin(a.code); $("tjerr").textContent = "Turniringizga qayta ulanmoqda…"; join(true); } else goHome(); }
   }
@@ -7931,7 +7932,14 @@ const T = (() => {
       } catch (e) { $("myC").disabled = false; E("⚠️ O'yin ochilmadi: " + (e.message || e)); }
     };
   }
-  return { openJoin, openHost, boot, st, leave: clear, myOpen };
+  // «Xarita jangi»ga tez kirish: ustoz/admin — turnir ochish, Premium — do'stlar o'yini, boshqalar — Premium
+  async function mapBattle() {
+    if (isAdmin() && !ACCT.cur) { openHost(); const b = $("thsrc"); if (b) { b.querySelector('[data-s="m"]').click(); const t = $("thm") && $("thm").querySelector('[data-m="team"]'); if (t) t.click(); b.scrollIntoView({ block: "center" }); } return; }
+    if (!ACCT.cur) { show("auth"); return; }
+    if (!PM.is()) { FX.toast("👑 Xarita jangini Premium obunachilar ochadi. Do'stingiz bergan kod bilan esa bepul qo'shilasiz."); return openJoin(); }
+    await myOpen(); const b = $("mysrc"); if (b) { b.querySelector('[data-s="m"]').click(); const t = $("mym") && $("mym").querySelector('[data-m="team"]'); if (t) t.click(); }
+  }
+  return { openJoin, openHost, boot, st, leave: clear, myOpen, mapBattle };
 })();
 // ================== O'YIN KODINI ULASHISH (turnir, jamoaviy, katta turnir, boss) ==================
 const SHARE = (() => {
