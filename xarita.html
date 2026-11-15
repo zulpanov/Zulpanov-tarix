@@ -148,6 +148,11 @@ function renderMenu(){if(typeof XMAP==="undefined")return;const g=$("conts");g.i
     b.innerHTML=`${best!=null?`<span class="best">🏆 ${best}%</span>`:""}<div class="em">${EMO[k]}</div><b>${E(c.n)}</b><span>${OK(k).length} ta davlat</span>`;
     b.onclick=()=>start(k);g.appendChild(b)})}
 
+// Har safar davlat haqida boshqa fakt: navbat bilan aylanadi (oxirgi ko‘rsatilgani eslab qolinadi)
+function noteOf(n){if(typeof XNOTE==="undefined")return "";let L=XNOTE[n];if(!L)return "";if(typeof L==="string")return L;if(!L.length)return "";
+  let m={};try{m=JSON.parse(localStorage.getItem("zm_xn")||"{}")}catch(e){}
+  const i=((m[n]??Math.floor(Math.random()*L.length)-1)+1)%L.length;m[n]=i;try{localStorage.setItem("zm_xn",JSON.stringify(m))}catch(e){}
+  return L[i]}
 // Faqat mavzulashgan testlarda uchraydigan davlatlar (XNOTE) so‘raladi
 const OK=k=>XMAP[k].q.map((q,ix)=>ix).filter(ix=>typeof XNOTE==="undefined"||XMAP[k].q[ix].n in XNOTE);
 function start(k,only){K=k;const all=OK(k);
@@ -199,7 +204,7 @@ function answer(ix,btn){if(answered)return;answered=true;const t=list[i],c=XMAP[
     ph=pick(PRAISE);if(streak>=3)ph+=` 🔥${streak}`;popup(ph,"#4ade80");$("fbP").textContent="✅ "+ph+` +${pts}`}
   else{streak=0;mist.push(t);ph=pick(FAIL);popup(ph,"#fb7185");$("fbP").textContent="❌ "+ph}
   const cap=HINT[q.n]?HINT[q.n].replace("Yirik shaharlari","yirik shaharlari"):`poytaxti — ${q.c}`;
-  const nt=typeof XNOTE!=="undefined"&&XNOTE[q.n];
+  const nt=noteOf(q.n);
   $("fbE").innerHTML=`Bu — <b>${E(q.n)}</b>, ${E(cap)}.`+(nt?`<div class="xf"><b>📖 Tarixdan</b>${E(nt)}</div>`:"");
   $("fb").className="fb show "+(ok?"ok":"bad");beep(ok);
   $("hS").textContent="⭐ "+score;$("hK").textContent="🔥 "+streak;
@@ -219,7 +224,7 @@ function finish(){const pc=Math.round(right/list.length*100),c=XMAP[K];
   $("hB").style.width="100%";show("res");if(pc>=70)beep(true)}
 $("again").onclick=()=>start(K);$("fix").onclick=()=>start(K,mist.slice());$("toMenu").onclick=()=>show("menu");
 
-const xn=document.createElement("script");xn.src="xnote.js?v=1";xn.onload=xn.onerror=()=>{const s=document.createElement("script");s.src="xmap-data.js?v=1";s.onload=renderMenu;s.onerror=()=>{$("conts").innerHTML='<div class="loading">Xaritani yuklab bo‘lmadi. Internetni tekshiring.</div>'};document.body.appendChild(s);};document.body.appendChild(xn);
+const xn=document.createElement("script");xn.src="xnote.js?v=2";xn.onload=xn.onerror=()=>{const s=document.createElement("script");s.src="xmap-data.js?v=1";s.onload=renderMenu;s.onerror=()=>{$("conts").innerHTML='<div class="loading">Xaritani yuklab bo‘lmadi. Internetni tekshiring.</div>'};document.body.appendChild(s);};document.body.appendChild(xn);
 </script>
 </body>
 </html>
