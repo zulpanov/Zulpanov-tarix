@@ -1,4 +1,4 @@
-// ZULPANOV METHODS TARIX — Telegram bot serveri (Cloudflare Worker)
+// TARIX ARENA — Telegram bot serveri (Cloudflare Worker)
 //
 // Hammasi shu yerda ishlaydi (Google Apps Script endi kerak emas):
 //  • Telegram webhook: /start, menyu tugmalari, darslarga yozilish, ota-ona ulanishi, turnir kodi
@@ -23,7 +23,7 @@ const CONTACT = "@ZULPANOV_METHODS";
 const CONTACT_URL = "https://t.me/ZULPANOV_METHODS";
 const MAP_URL = "https://maps.app.goo.gl/dxLox5nZ6H4HQn6y5";
 const BOT_ABOUT = "Tarixdan 5 700+ test, Milliy sertifikat variantlari, turnir va duellar. Bir bosishda kirish. Muallif: Alimqul Zulpanov";
-const BOT_DESC = `📚 ZULPANOV METHODS TARIX — tarixni test orqali o‘rganing!
+const BOT_DESC = `🏛 TARIX ARENA — tarixni o‘yin va testlar bilan o‘rganing!
 
 ✅ 5 700+ mavzulashgan test (5–11-sinf)
 🎓 Milliy sertifikat namunasidagi variantlar
@@ -31,7 +31,9 @@ const BOT_DESC = `📚 ZULPANOV METHODS TARIX — tarixni test orqali o‘rganin
 🏆 Turnirlar, duellar, XP va reyting
 👨‍👩‍👦 Ota-onalar natijani bot orqali kuzatadi
 
-Login va parol kerak emas — «START» ni bosing va boshlang!`;
+Login va parol kerak emas — «START» ni bosing va boshlang!
+
+Muallif: Alimqul Zulpanov`;
 const BATCH = 35;                                 // bitta so'rovda nechta xabar (Cloudflare bepul rejasi: 50 ta tashqi so'rov)
 const KURS_TEXT = "🎓 <b>Tarixni yodlamang — tushunib o‘rganing!</b>\n\n" +
   "Sanalar chalkashib ketyaptimi? Testda bilgan savolingizdan ham adashyapsizmi? Bizning darslarda bunday bo‘lmaydi.\n\n" +
@@ -262,7 +264,7 @@ async function oldBotReply(env, up) {
 // ---------------- Bot: xabarlar ----------------
 // Ulashish: brend rasmi + matn + havola (havola matn ostida)
 const SHARE_IMG = "https://zulpanov.github.io/Zulpanov-tarix/og.jpg";
-const SHARE_TEXT = "📚 Tarixdan testlar, jonli turnirlar va o‘yinlar — <b>ZULPANOV METHODS TARIX</b> botiga qo‘shiling! Milliy sertifikatga birga tayyorlanamiz 👇\n\n👉 https://t.me/" + BOT_NAME;
+const SHARE_TEXT = "📚 Tarixdan testlar, jonli turnirlar va o‘yinlar — <b>TARIX ARENA</b> botiga qo‘shiling! Milliy sertifikatga birga tayyorlanamiz 👇\n\n👉 https://t.me/" + BOT_NAME;
 const shareKb = () => ({ inline_keyboard: [[{ text: "📚 Botga kirish", url: "https://t.me/" + BOT_NAME + "?start=dost" }]] });
 // Bot o'zi ulashiladigan xabarni yuboradi: uni do'stga yuborish (inline) yoki forward qilish mumkin
 async function sendShare(env, chat) {
@@ -274,7 +276,7 @@ async function sendShare(env, chat) {
 async function onInline(env, q) {
   if (!q || !q.id) return;
   return tg(env, "answerInlineQuery", { inline_query_id: q.id, cache_time: 300, is_personal: false,
-    results: [{ type: "photo", id: "share1", photo_url: SHARE_IMG, thumbnail_url: SHARE_IMG, photo_width: 1200, photo_height: 630, title: "ZULPANOV METHODS TARIX", description: "Do‘stingizni botga taklif qiling", caption: SHARE_TEXT, parse_mode: "HTML", reply_markup: shareKb() }] });
+    results: [{ type: "photo", id: "share1", photo_url: SHARE_IMG, thumbnail_url: SHARE_IMG, photo_width: 1200, photo_height: 630, title: "TARIX ARENA", description: "Do‘stingizni botga taklif qiling", caption: SHARE_TEXT, parse_mode: "HTML", reply_markup: shareKb() }] });
 }
 const mainKb = () => ({ inline_keyboard: [
   [{ text: "📚 Testlarni boshlash", url: appLink() }],
@@ -283,7 +285,7 @@ const mainKb = () => ({ inline_keyboard: [
   [{ text: "📤 Do‘stlarga ulashish", callback_data: "share" }, { text: "📞 Ustozga yozish", url: CONTACT_URL }],
 ] });
 const sendStart = (env, chat, first) => tg(env, "sendMessage", { chat_id: chat, parse_mode: "HTML", reply_markup: mainKb(),
-  text: "👋 Assalomu alaykum, " + first + "!\n\n<b>ZULPANOV METHODS TARIX</b> — tarixni o‘yin va testlar bilan o‘rganing.\n\nBugun nima qilamiz? 👇" });
+  text: "👋 Assalomu alaykum, " + first + "!\n\n<b>TARIX ARENA</b> — tarixni o‘yin va testlar bilan o‘rganing.\n<i>by Alimqul Zulpanov</i>\n\nBugun nima qilamiz? 👇" });
 const sendKurs = (env, chat) => tg(env, "sendMessage", { chat_id: chat, parse_mode: "HTML", text: KURS_TEXT,
   reply_markup: { inline_keyboard: [[{ text: "✍️ Darslarga yozilish", callback_data: "yozil" }], [{ text: "📍 Xaritada ko‘rish", url: MAP_URL }, { text: "📞 Savol berish", url: CONTACT_URL }]] } });
 async function sendYozil(env, chat, from) {
@@ -599,7 +601,7 @@ export default {
     if (req.method === "OPTIONS") return new Response(null, { headers: CORS });
 
     if (url.pathname === "/api") {
-      if (req.method !== "POST") return json({ ok: true, bot: "ZULPANOV METHODS TARIX" });
+      if (req.method !== "POST") return json({ ok: true, bot: "TARIX ARENA" });
       try {
         const b = await req.json();
         if (!FN[b.fn]) return json({ ok: false, err: "Noma’lum amal" });

@@ -32,7 +32,7 @@ export default async function (message, ctx) {
     }
 
     await api.sendMessage({ chat_id: chat, parse_mode: 'HTML',
-      text: `👋 Assalomu alaykum, ${first}!\n\n<b>ZULPANOV METHODS TARIX</b> — tarix fanidan o'quv platformasi:\n\n📚 Mavzulashgan testlar\n🎓 Milliy sertifikat variantlari\n🏆 Jonli va jamoaviy turnirlar\n📊 Shaxsiy statistika va sertifikatlar\n\nBoshlash uchun pastdagi tugmani bosing 👇`,
+      text: `👋 Assalomu alaykum, ${first}!\n\n<b>TARIX ARENA</b> — tarix fanidan o'quv platformasi:\n\n📚 Mavzulashgan testlar\n🎓 Milliy sertifikat variantlari\n🏆 Jonli va jamoaviy turnirlar\n📊 Shaxsiy statistika va sertifikatlar\n\nBoshlash uchun pastdagi tugmani bosing 👇`,
       reply_markup: { inline_keyboard: [[{ text: '📚 Testlarni ochish', url: await appLink() }]] } });
     return;
   }
