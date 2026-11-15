@@ -609,6 +609,13 @@ body.dlm #bkb{display:none!important}
 .tgbtn:disabled{opacity:.7}
 .xpmv{background:none;border:0;color:var(--mu);font:500 13px Inter,sans-serif;cursor:pointer;padding:10px}
 .tgmv{width:100%;text-align:left;border-top:1px solid var(--line);padding-top:14px}
+.hwc{padding:14px 14px 8px}.hwh{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}.hwh b{font-size:16px}
+.hwr{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid rgba(255,255,255,.07)}.hwh+.hwr{border-top:0}
+.hwi{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;font-size:17px;flex:none}.hwi.r{background:rgba(244,63,94,.18)}.hwi.g{background:rgba(34,197,94,.16)}.hwi.y{background:rgba(251,191,36,.18)}.hwi.b{background:rgba(99,102,241,.2)}
+.hwt{flex:1;min-width:0}.hwt b{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;font-size:13.5px;line-height:1.3;overflow:hidden}.hwt small{font-size:11.5px;color:var(--mu)}
+.hwgo{flex:none;padding:7px 13px!important;font-size:12.5px!important;width:auto!important;margin:0!important}
+.hwsc{flex:none;background:rgba(34,197,94,.12);border:0;color:var(--ok);font:700 14px inherit;font-family:inherit;padding:6px 10px;border-radius:11px;cursor:pointer}.hwsc i{font-style:normal;font-weight:400;font-size:12px;margin-left:4px;opacity:.8}
+.hwmore{display:block;width:100%;background:none;border:0;border-top:1px solid rgba(255,255,255,.07);color:#a78bfa;font:600 12.5px inherit;font-family:inherit;padding:10px 0 4px;cursor:pointer}
 </style>
 </head>
 <body>
@@ -6449,6 +6456,7 @@ const HW = (() => {
     un = all ? DBA.on("hw", cb) : DBA.onSince("hw", "due", DBA.now() - 15 * 86400e3, cb); }
 
   // ---------- o'quvchi ----------
+  let hwOpen = false;
   function renderStudent() {
     const box = $("homeHW"); if (!box) return; const cur = ACCT.cur; if (!cur) { box.innerHTML = ""; return; }
     watch();
@@ -6457,11 +6465,14 @@ const HW = (() => {
     if (!cur.g) { joinCard(box); return; }
     const mine = list().filter(x => (x.g === "*" || nk(x.g) === nk(cur.g)) && setOf(x.set) && now - x.due < (done[x.id] ? 3 : 14) * 86400e3).sort((a, b) => a.due - b.due);
     if (!mine.length) { box.innerHTML = ""; return; }
-    const todo = mine.filter(x => !done[x.id]).length;
-    box.innerHTML = `<div class="card${todo ? " hwcard" : ""}" style="margin-top:12px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><b style="font-size:16px">📝 Uyga vazifalar</b>${todo ? `<span class="st-lv" style="background:var(--ac)">${todo} ta bajarilmagan</span>` : `<span class="st-lv" style="background:var(--ok)">hammasi bajarilgan</span>`}</div>
-      ${mine.map(x => { const d = done[x.id], over = now > x.due, s = setOf(x.set);
-        return `<div class="strow" style="cursor:default"><div class="st-ic">${d ? "✅" : over ? "⏰" : "📌"}</div><div class="st-m"><b>${esc(s.title)}</b><div class="st-s">${s.ms ? 45 : s.qs ? s.qs.length : 20} savol · muddat: ${dt(x.due)} · <span style="color:${over && !d ? "var(--bad)" : "inherit"}">${d ? "bajarildi" : left(x.due)}</span></div>${x.note ? `<div class="st-s">💬 ${esc(x.note)}</div>` : ""}</div>
-        <div class="st-r">${d ? `<div class="st-p">${d.pts}</div><button class="lnk" data-hw="${esc(x.id)}">qayta ishlash</button>` : `<button class="btn sm" data-hw="${esc(x.id)}">${over ? "Kech bo'lsa ham ishlash" : "Boshlash"}</button>`}</div></div>`; }).join("")}</div>`;
+    const todo = mine.filter(x => !done[x.id]), fin = mine.filter(x => done[x.id]);
+    const cnt = s => s.ms ? 45 : s.qs ? s.qs.length : 20;
+    const row = x => { const d = done[x.id], over = now > x.due, s = setOf(x.set), h = (x.due - now) / 3600e3;
+      const st = d ? `<span style="color:var(--ok)">bajarildi</span>` : over ? `<span style="color:var(--bad)">muddat o‘tgan</span>` : h < 24 ? `<span style="color:#fbbf24">${h < 1 ? "1 soatdan kam qoldi" : Math.round(h) + " soat qoldi"}</span>` : `${dt(x.due)} gacha`;
+      return `<div class="hwr"><div class="hwi ${d ? "g" : over ? "r" : h < 24 ? "y" : "b"}">${d ? "✅" : over ? "⏰" : "📘"}</div><div class="hwt"><b>${esc(s.title)}</b><small>${cnt(s)} savol · ${st}</small></div>${d ? `<button class="hwsc" data-hw="${esc(x.id)}" title="Qayta ishlash">${d.pts}<i>↻</i></button>` : `<button class="btn sm hwgo" data-hw="${esc(x.id)}">Ishlash</button>`}</div>`; };
+    box.innerHTML = `<div class="card hwc${todo.length ? " hwcard" : ""}" style="margin-top:12px"><div class="hwh"><b>📝 Uyga vazifalar</b>${todo.length ? `<span class="st-lv" style="background:var(--ac)">${todo.length} ta qoldi</span>` : `<span class="st-lv" style="background:var(--ok)">hammasi bajarildi</span>`}</div>
+      ${todo.map(row).join("")}${fin.length ? `<button class="hwmore" id="hwMore">✅ Bajarilganlar (${fin.length}) ${hwOpen ? "▴" : "›"}</button>${hwOpen ? fin.map(row).join("") : ""}` : ""}</div>`;
+    const mb = $("hwMore"); if (mb) mb.onclick = () => { hwOpen = !hwOpen; renderStudent(); };
     box.querySelectorAll("[data-hw]").forEach(b => b.onclick = () => startHW(b.dataset.hw));
   }
   // ---------- guruhga kod bilan qo'shilish (o'quv markazi o'quvchilari) ----------
