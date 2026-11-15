@@ -15,7 +15,9 @@ const FB = {
 };
 const DOMAIN = "zulpanovtarix.uz";
 const BOT_EMAIL = "bot@" + DOMAIN;
-const BOT_NAME = "alimqul_tarix_testbot";
+const BOT_NAME = "tarix_arena_bot";
+const OLD_BOT_NAME = "alimqul_tarix_testbot";      // eski bot: OLD_BOT_TOKEN qo'yilsa, foydalanuvchilarni yangi botga yo'naltiradi
+const SITE = "https://zulpanov.github.io/Zulpanov-tarix/";
 const ADMIN_TG = ["zulpanov_methods"];            // ustozning Telegram username'i (kichik harflarda)
 const CONTACT = "@ZULPANOV_METHODS";
 const CONTACT_URL = "https://t.me/ZULPANOV_METHODS";
@@ -53,9 +55,13 @@ const esc = s => String(s == null ? "" : s).replace(/[&<>]/g, c => ({ "&": "&amp
 const isAdminTg = u => !!(u && u.username && ADMIN_TG.includes(String(u.username).toLowerCase()));
 const fullName = u => [u.first_name, u.last_name].filter(Boolean).join(" ");
 const appLink = p => `https://t.me/${BOT_NAME}?startapp` + (p ? "=" + encodeURIComponent(p) : "");
-const token = env => { const t = String(env.BOT_TOKEN || "").trim(); const m = t.match(/\d{5,}:[A-Za-z0-9_-]{30,}/); if (!m) throw new Error("BOT_TOKEN sozlanmagan"); return m[0]; };
-const whSecret = async env => (await hmacHex(token(env), "wh")).slice(0, 32);        // avvalgi bilan bir xil
-const psig = async (env, login) => (await hmacHex(token(env), "p:" + login)).slice(0, 10); // avvalgi bilan bir xil
+const tokOf = v => { const m = String(v || "").trim().match(/\d{5,}:[A-Za-z0-9_-]{30,}/); return m ? m[0] : null; };
+const token = env => { const t = tokOf(env.BOT_TOKEN); if (!t) throw new Error("BOT_TOKEN sozlanmagan"); return t; };
+const oldToken = env => { const t = tokOf(env.OLD_BOT_TOKEN); return t && t !== tokOf(env.BOT_TOKEN) ? t : null; };
+const whSecretOf = async t => (await hmacHex(t, "wh")).slice(0, 32);
+const whSecret = async env => whSecretOf(token(env));
+// Imzolar (ota-ona havolalari) eski token bilan qoladi — bot almashganda eski havolalar buzilmasin
+const psig = async (env, login) => (await hmacHex(oldToken(env) || token(env), "p:" + login)).slice(0, 10);
 
 async function tg(env, method, payload) {
   for (let i = 0; i < 2; i++) {
@@ -95,8 +101,9 @@ async function verifyInit(env, initData) {
   if (!initData) throw new Error("Telegram ma’lumoti yo‘q");
   const p = new URLSearchParams(initData), hash = p.get("hash"); p.delete("hash");
   const dcs = [...p.entries()].sort(([a], [b]) => a < b ? -1 : a > b ? 1 : 0).map(([k, v]) => `${k}=${v}`).join("\n");
-  const secret = await hmac(enc.encode("WebAppData"), token(env));
-  if (hex(await hmac(new Uint8Array(secret), dcs)) !== hash) throw new Error("Telegram imzosi noto‘g‘ri");
+  let okSig = false;
+  for (const t of [token(env), oldToken(env)].filter(Boolean)) { const secret = await hmac(enc.encode("WebAppData"), t); if (hex(await hmac(new Uint8Array(secret), dcs)) === hash) { okSig = true; break; } }
+  if (!okSig) throw new Error("Telegram imzosi noto‘g‘ri");
   if (Date.now() / 1000 - Number(p.get("auth_date") || 0) > 7 * 86400) throw new Error("Sessiya eskirgan — botni qayta oching");
   return p.get("user") ? JSON.parse(p.get("user")) : null;
 }
@@ -222,7 +229,8 @@ const FN = {
     const add = id => { if (!seen.has(id)) { seen.add(id); list.push({ tgId: id }); } };
     if (to !== "par") stu.forEach(r => add(r.tgId));
     if (to !== "stu") { const logins = new Set(stu.map(r => String(r.login || "").toLowerCase())); (await parentsList(env)).forEach(p => { const l = String(p.login || "").toLowerCase(); if (lg ? lg.has(l) : (!grp || logins.has(l))) add(p.tgId); }); }
-    return sendBatch(env, list, input.from, () => ({ text: "📢 <b>Ustoz xabari</b>\n\n" + esc(msg), parse_mode: "HTML", reply_markup: { inline_keyboard: [[{ text: "📚 Platformani ochish", url: appLink() }]] } }));
+    const envS = input.old && oldToken(env) ? { ...env, BOT_TOKEN: oldToken(env) } : env;
+    return sendBatch(envS, list, input.from, () => ({ text: "📢 <b>Ustoz xabari</b>\n\n" + esc(msg), parse_mode: "HTML", reply_markup: { inline_keyboard: [[{ text: "📚 Platformani ochish", url: appLink() }]] } }));
   },
   // 💎 Premium: muddati tugayotgan o'quvchilarga eslatma (har biriga o'z matni)
   async pmNotify(env, input, u) {
@@ -239,6 +247,15 @@ const FN = {
     r.parents = list.length; return r;
   },
 };
+
+// ---------------- Eski bot: «yangi botga o'ting» ----------------
+async function oldBotReply(env, up) {
+  const m = up.message || (up.callback_query && up.callback_query.message), chat = m && m.chat && m.chat.id; if (!chat) return;
+  const st = up.message && /^\/start\s+(\S+)/.exec(up.message.text || ""), p = st ? st[1] : "";
+  const call = (method, body) => fetch(`https://api.telegram.org/bot${oldToken(env)}/${method}`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) });
+  if (up.callback_query) await call("answerCallbackQuery", { callback_query_id: up.callback_query.id });
+  await call("sendMessage", { chat_id: chat, parse_mode: "HTML", text: "🔔 <b>Bot yangilandi!</b>\n\nPlatformamiz endi yangi botda: <b>@" + BOT_NAME + "</b>\n\nPastdagi tugmani bosing va <b>START</b> ni bosing — akkauntingiz, ballaringiz va Premium o‘z joyida qoladi ✅", reply_markup: { inline_keyboard: [[{ text: "🚀 Yangi botga o‘tish", url: "https://t.me/" + BOT_NAME + (p ? "?start=" + encodeURIComponent(p) : "") }]] } });
+}
 
 // ---------------- Bot: xabarlar ----------------
 // Ulashish: brend rasmi + matn + havola (havola matn ostida)
@@ -600,8 +617,15 @@ export default {
       } catch (e) { return json({ ok: false, err: String((e && e.message) || e) }); }
     }
 
-    if (req.method === "GET" && url.searchParams.get("setup") === "1") { // bot tavsifi (About va Description)
-      try { await tg(env, "setMyShortDescription", { short_description: BOT_ABOUT }); await tg(env, "setMyDescription", { description: BOT_DESC }); return new Response("✅ Bot tavsifi yangilandi", { headers: { "content-type": "text/plain; charset=utf-8" } }); }
+    if (req.method === "GET" && url.searchParams.get("setup") === "1") { // bot sozlash: webhook, menyu tugmasi, buyruqlar, tavsif
+      try {
+        const me = await tg(env, "getMe", {});
+        await tg(env, "setWebhook", { url: url.origin + "/", secret_token: await whSecret(env), allowed_updates: ["message", "callback_query", "inline_query"], drop_pending_updates: false });
+        await tg(env, "setChatMenuButton", { menu_button: { type: "web_app", text: "📚 Ochish", web_app: { url: SITE } } }).catch(() => {});
+        await tg(env, "setMyShortDescription", { short_description: BOT_ABOUT }); await tg(env, "setMyDescription", { description: BOT_DESC });
+        let old = "";
+        if (oldToken(env)) { const r = await fetch(`https://api.telegram.org/bot${oldToken(env)}/setWebhook`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ url: url.origin + "/", secret_token: await whSecretOf(oldToken(env)), allowed_updates: ["message", "callback_query"] }) }).then(r => r.json()).catch(() => ({})); old = r.ok ? "\n✅ Eski bot @" + OLD_BOT_NAME + " endi foydalanuvchilarni yangi botga yo‘naltiradi" : "\n⚠️ Eski bot sozlanmadi: " + (r.description || ""); }
+        return new Response(`✅ @${me.username} sozlandi: webhook, menyu tugmasi va tavsif${old}${me.username !== BOT_NAME ? `\n⚠️ Diqqat: kodda bot nomi @${BOT_NAME}, token esa @${me.username} niki` : ""}`, { headers: { "content-type": "text/plain; charset=utf-8" } }); }
       catch (e) { return new Response("⚠️ " + ((e && e.message) || e), { headers: { "content-type": "text/plain; charset=utf-8" } }); }
     }
     if (req.method !== "POST") {
@@ -611,8 +635,14 @@ export default {
       return new Response("ZULPANOV TARIX bot " + st, { headers: { "content-type": "text/plain; charset=utf-8" } });
     }
     // Telegram webhook
-    try { if ((req.headers.get("X-Telegram-Bot-Api-Secret-Token") || "") !== await whSecret(env)) return new Response("forbidden", { status: 403 }); }
-    catch (e) { return new Response("not configured", { status: 500 }); }
+    const hs = req.headers.get("X-Telegram-Bot-Api-Secret-Token") || "";
+    try {
+      if (hs !== await whSecret(env)) {
+        // Eski botga yozganlarni yangi botga yo'naltirish
+        if (oldToken(env) && hs === await whSecretOf(oldToken(env))) { const up = await req.json().catch(() => null); if (up) ctx.waitUntil(oldBotReply(env, up).catch(() => {})); return new Response("ok"); }
+        return new Response("forbidden", { status: 403 });
+      }
+    } catch (e) { return new Response("not configured", { status: 500 }); }
     const up = await req.json().catch(() => null);
     if (up) ctx.waitUntil((async () => {
       try { if (up.callback_query) await onCallback(env, up.callback_query); else if (up.inline_query) await onInline(env, up.inline_query); else await onMessage(env, up.message); }

@@ -25,7 +25,7 @@
 <link rel="icon" type="image/png" href="icons/icon-192.png">
 <script>
 // ===== Telegram Mini App: faqat Telegram ichida ochilganda yuklanadi =====
-window.TG_BOT = "alimqul_tarix_testbot";   // bot username (@ belgisisiz), masalan: zulpanov_tarix_bot
+window.TG_BOT = "tarix_arena_bot";   // bot username (@ belgisisiz), masalan: zulpanov_tarix_bot
 window.TG_APP = "";   // BotFather /newapp da berilgan qisqa nom, masalan: app
 (function(){var h=location.hash||"",q=location.search||"";if(!/tgWebApp/.test(h+q))return;window.IN_TG=true;
   var m=(h+"&"+q).match(/tgWebAppStartParam=([^&]+)/);window.TG_START=m?decodeURIComponent(m[1]):"";window.TG_SRC="";(function(){var t=window.TG_START,i=t.indexOf("__");if(i>=0){window.TG_SRC=t.slice(i+2);t=t.slice(0,i)}if(/^s-/.test(t)){window.TG_SRC=t.slice(2);t=""}if(/^r-/.test(t)){window.TG_REF=t.slice(2);if(!window.TG_SRC)window.TG_SRC="dost";t=""}window.TG_START=t})();
@@ -5705,6 +5705,7 @@ const BOTP = (() => {
         <div id="bpX"></div><div class="tnote" id="bpCnt" style="margin-top:10px">Hisoblanmoqda…</div>
         <label>Shablon</label><select id="bpTpl"><option value="">— tanlang yoki o'zingiz yozing —</option><option>❗ Bugungi dars bekor qilindi. Keyingi dars: [kun], soat [vaqt].</option><option>⏰ Eslatma: ertaga soat [vaqt] da dars bor. Kechikmang!</option><option>📝 Yangi uy vazifasi berildi. Muddat: [sana]. Platformada «Vazifalar» bo'limini oching.</option><option>🎓 Milliy sertifikat imtihoniga [N] kun qoldi! Har kuni kamida 1 ta variant ishlang.</option><option>🆕 Platformaga yangi testlar qo'shildi: [mavzu]. Sinab ko'ring!</option><option>🏆 [sana] kuni soat [vaqt] da «Tarix chempionati» bo'lib o'tadi. G'oliblarga sovg'alar bor!</option><option>📚 Tarix kursiga qabul ochildi! BRO ACADEMY, Bulung'ur tumani, 39-kollej ro'parasida. Dushanba, chorshanba, juma — soat 14:00. Yozilish: @ZULPANOV_METHODS</option><option>📅 Bugungi Kun testi tayyor — 10 ta savol. Do'stlaringiz bilan natijani solishtiring!</option></select>
         <label>Xabar matni</label><textarea id="bpM" rows="4" placeholder="Masalan: Ertaga soat 15:00 da dars bo'ladi." style="width:100%"></textarea>
+        <label style="display:flex;gap:8px;align-items:flex-start;font-size:13px;margin:8px 0;color:var(--mu)"><input type="checkbox" id="bpOld" style="margin-top:3px"> <span>Eski bot (@alimqul_tarix_testbot) orqali yuborish — yangi botga o‘tish e’loni uchun</span></label>
         <button class="btn" id="bpB">✉️ Yuborish</button><div class="accerr" id="bpBe"></div></div>`;
     bcInit(gs);
     if (!TGB.on()) { ["bpR", "bpB"].forEach(id => $(id).disabled = true); return; }
@@ -5786,7 +5787,7 @@ const BOTP = (() => {
     if (!confirm(`✉️ Xabar yuborilsinmi?\n\nKimga: ${toL}\nKimlarga: ${qL}`)) return;
     b.disabled = true; E("Yuborilmoqda…");
     try {
-      const inp = { to: BC.to, text }; if (BC.q !== "all") inp.logins = [...new Set(L.flatMap(u => u.lg))];
+      const inp = { to: BC.to, text }; if ($("bpOld") && $("bpOld").checked) inp.old = 1; if (BC.q !== "all") inp.logins = [...new Set(L.flatMap(u => u.lg))];
       const r = await TGB.call("broadcast", inp); E(`Yuborildi: ${r.sent}${r.failed ? ` · yetib bormadi: ${r.failed}` : ""}`); if (r.sent) { $("bpM").value = ""; FX.toast("✉️ Xabar yuborildi", "up"); }
     } catch (e) { E("Xatolik: " + TGB.msg(e)); }
     b.disabled = false;
@@ -6080,7 +6081,7 @@ const ACCT = (() => {
         <div class="xpchips"><span>Kun ketma-ketligi</span><span>Nishonlar</span><span>Reyting</span></div>
         ${KUN.card()}
         ${inTg ? `<button class="tgbtn" id="aTg">${tgIc}<span>Telegram orqali kirib, XP olish</span></button>`
-               : `<a class="tgbtn" id="aTgL" href="https://t.me/alimqul_tarix_testbot?startapp${(x => x ? "=" + x : "")(ST.tg(HW.pend() ? "g-" + HW.pend() : ""))}">${tgIc}<span>Telegram orqali kirib, XP olish</span></a><p class="sub" style="text-align:center;margin:10px 0 0">Telegram ilovasi ochiladi · login va parol kerak emas</p>`}
+               : `<a class="tgbtn" id="aTgL" href="https://t.me/${window.TG_BOT}?startapp${(x => x ? "=" + x : "")(ST.tg(HW.pend() ? "g-" + HW.pend() : ""))}">${tgIc}<span>Telegram orqali kirib, XP olish</span></a><p class="sub" style="text-align:center;margin:10px 0 0">Telegram ilovasi ochiladi · login va parol kerak emas</p>`}
         <div class="accerr" id="aE" style="text-align:center"></div>
         ${inTg ? `<button class="xpmv" id="aMvL">Avval login bilan ro'yxatdan o'tganmisiz? <u>Hisobni ko'chirish</u></button><div id="aMove"></div>` : ""}
       </div>`;
