@@ -263,7 +263,7 @@ async function oldBotReply(env, up) {
 
 // ---------------- Bot: xabarlar ----------------
 // Ulashish: brend rasmi + matn + havola (havola matn ostida)
-const SHARE_IMG = "https://zulpanov.github.io/Zulpanov-tarix/og.jpg";
+const SHARE_IMG = "https://zulpanov.github.io/Zulpanov-tarix/og.jpg?v=2";
 const SHARE_TEXT = "📚 Tarixdan testlar, jonli turnirlar va o‘yinlar — <b>TARIX ARENA</b> botiga qo‘shiling! Milliy sertifikatga birga tayyorlanamiz 👇\n\n👉 https://t.me/" + BOT_NAME;
 const shareKb = () => ({ inline_keyboard: [[{ text: "📚 Botga kirish", url: "https://t.me/" + BOT_NAME + "?start=dost" }]] });
 // Bot o'zi ulashiladigan xabarni yuboradi: uni do'stga yuborish (inline) yoki forward qilish mumkin
