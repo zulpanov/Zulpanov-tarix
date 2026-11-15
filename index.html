@@ -616,6 +616,10 @@ body.dlm #bkb{display:none!important}
 .hwgo{flex:none;padding:7px 13px!important;font-size:12.5px!important;width:auto!important;margin:0!important}
 .hwsc{flex:none;background:rgba(34,197,94,.12);border:0;color:var(--ok);font:700 14px inherit;font-family:inherit;padding:6px 10px;border-radius:11px;cursor:pointer}.hwsc i{font-style:normal;font-weight:400;font-size:12px;margin-left:4px;opacity:.8}
 .hwmore{display:block;width:100%;background:none;border:0;border-top:1px solid rgba(255,255,255,.07);color:#a78bfa;font:600 12.5px inherit;font-family:inherit;padding:10px 0 4px;cursor:pointer}
+.tmap{border-radius:16px;overflow:hidden;background:#0e2a47;margin-bottom:10px;border:1px solid var(--line)}.tmap svg{display:block;width:100%;height:auto}
+.tmap path{stroke:#0d2a4a;stroke-width:.7;vector-effect:non-scaling-stroke}.tmap .l0{fill:#2b2f52;stroke:#94a3b8;stroke-width:.8}.tmap .l1{fill:#3d4479;stroke:#e2e8f0;stroke-width:1}.tmap .c0{fill:#3b4a8f}.tmap .c1{fill:#2f6f7a}.tmap .c2{fill:#5b3f8f}.tmap .c3{fill:#2f6b4f}.tmap .c4{fill:#6b4a7a}.tmap .c5{fill:#40608f}
+.tmap .tg{fill:#fbbf24;stroke:#fff;stroke-width:1.2;filter:drop-shadow(0 0 6px #fbbf24aa)}.tmap .tg.okc{fill:#22c55e}.tmap .tg.badc{fill:#f43f5e}.tmap .ring{fill:none;stroke:#fbbf24;stroke-width:2.5;vector-effect:non-scaling-stroke;animation:tmpulse 1.2s infinite}@keyframes tmpulse{50%{opacity:.25}}
+.tmfb{margin-top:10px;padding:12px 14px;border-radius:16px;font-size:14.5px;line-height:1.45}.tmfb.ok{background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.35)}.tmfb.bad{background:rgba(244,63,94,.1);border:1px solid rgba(244,63,94,.35)}.tmf{margin-top:8px;font-size:13.5px;color:var(--mu)}.tmf b{display:block;color:#fbbf24;font-size:12.5px;margin-bottom:2px}.tmfb .btn{margin-top:10px;width:100%}
 </style>
 </head>
 <body>
@@ -7213,6 +7217,34 @@ const AUTH = (() => {
   };
 })();
 
+// ================== XARITA JANGI (turnir uchun xarita savollari) ==================
+const MAPQ = (() => {
+  let P = null;
+  const CN = { E: "Yevropa", A: "Osiyo", F: "Afrika", N: "Shimoliy Amerika", S: "Janubiy Amerika" };
+  const ready = () => typeof XMAP !== "undefined" && typeof XNOTE !== "undefined";
+  const add = src => new Promise((ok, no) => { const sc = document.createElement("script"); sc.src = src; sc.onload = ok; sc.onerror = () => no(new Error("Xarita yuklanmadi. Internetni tekshiring.")); document.head.appendChild(sc); });
+  const load = () => ready() ? Promise.resolve() : (P = P || add("xnote.js?v=2").then(() => add("xmap-data.js?v=1")).catch(e => { P = null; throw e; }));
+  const shuf = (a, r) => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  function build(meta, r) {
+    const keys = meta.map.k === "mix" ? Object.keys(CN) : [meta.map.k], pool = [], seen = new Set();
+    keys.forEach(k => XMAP[k].q.forEach((q, i) => { if (q.n in XNOTE && !seen.has(q.n)) { seen.add(q.n); pool.push({ k, i }); } }));
+    return shuf(pool, r).slice(0, meta.n).map(({ k, i }) => {
+      const c = XMAP[k].q, T = c[i];
+      const d = c.map((q, ix) => [q.n, Math.hypot(q.x - T.x, q.y - T.y)]).filter(([n]) => n !== T.n && n in XNOTE).sort((a, b) => a[1] - b[1]).map(x => x[0]).filter((n, j, A) => A.indexOf(n) === j);
+      const near = shuf(d.slice(0, 7), r).slice(0, 2), far = shuf(d.slice(7), r).filter(n => !near.includes(n));
+      const o = [T.n, ...near, far[0] || d.find(n => !near.includes(n))];
+      const L = XNOTE[T.n], fl = typeof L === "string" ? [L] : (L || []);
+      return { t: "🗺 " + CN[k], q: "Xaritada belgilangan davlat qaysi?", o, a: 0, e: fl.length ? fl[Math.floor(r() * fl.length)] : "", cap: T.c, map: { k, i } };
+    });
+  }
+  function svg(k, i) {
+    const c = XMAP[k], T = c.q[i]; let h = "", tg = "";
+    c.s.forEach(([d, q], ix) => { const p = `<path class="${q === undefined ? "l0" : q === i ? "tg" : "l1 c" + (ix % 6)}" d="${d}"/>`; if (q === i) tg += p; else h += p; });
+    const small = Math.max(T.b[2] - T.b[0], T.b[3] - T.b[1]) < 36;
+    return `<svg viewBox="0 0 1000 760" preserveAspectRatio="xMidYMid meet">${h}${tg}${small ? `<circle class="ring" cx="${T.x}" cy="${T.y}" r="22"/>` : ""}</svg>`;
+  }
+  return { load, ready, build, svg, CN };
+})();
 const T = (() => {
   const st = { role: null, code: null, meta: null, players: {}, pid: null, Q: [], perms: [], ans: [], cur: 0, lock: false, unsub: [], timer: null, ended: false };
   const ss = { get(k) { try { return sessionStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { sessionStorage.setItem(k, v); } catch (e) {} } };
@@ -7223,9 +7255,10 @@ const T = (() => {
   const shuf = (a, r) => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
   const setById = id => SETS.find(s => s.id === id);
   const mTitle = m => (m && m.ttl) || ((setById(m && m.set) || {}).title) || "Turnir";
-  const mSet = m => { if (m.sets) { const ss = m.sets.map(setById).filter(Boolean); return { id: "turnir", n: "🏆", title: mTitle(m), qs: null, g: (ss[0] || {}).g || "", subj: (ss[0] || {}).subj || "Tarix" }; } return setById(m.set); };
+  const mSet = m => { if (m.map) return { id: "turnir", n: "🗺", title: mTitle(m), qs: null, g: "Xarita", subj: "Tarix" }; if (m.sets) { const ss = m.sets.map(setById).filter(Boolean); return { id: "turnir", n: "🏆", title: mTitle(m), qs: null, g: (ss[0] || {}).g || "", subj: (ss[0] || {}).subj || "Tarix" }; } return setById(m.set); };
   function buildQ(meta, pid) {
     const r = rng(meta.seed);
+    if (meta.map) { const Q = MAPQ.build(meta, r), pr = meta.team && pid ? rng(meta.seed ^ hs(pid)) : r; return { Q, perms: Q.map(() => shuf([0, 1, 2, 3], pr)) }; }
     if (meta.sets) { const pool = meta.sets.map(setById).filter(s => s && s.qs).flatMap(s => s.qs.map(q => ({ ...q, m: s.title }))); const Q = shuf(pool, r).slice(0, meta.n), pr = meta.team && pid ? rng(meta.seed ^ hs(pid)) : r; return { Q, perms: Q.map(() => shuf([0, 1, 2, 3], pr)) }; }
     const s = setById(meta.set);
     let Q = s.qs ? s.qs.slice() : shuf(SETS.filter(x => x.qs && x.g === s.g).flatMap(x => x.qs), r).slice(0, 20);
@@ -7302,6 +7335,7 @@ const T = (() => {
     const giveUp = m => { $("tjgo").disabled = false; if (auto) { ls.del("zm_active"); goHome(); return; } return err(m); };
     if (!meta) return giveUp("Bunday kodli turnir topilmadi.");
     if (meta.boss) { if (meta.phase === "end") return giveUp("Bu boss jangi allaqachon tugagan."); if (meta.phase === "run" && !(await DBA.get(`t/${code}/players/${ac.uid}`))) return giveUp("Jang allaqachon boshlangan — endi qo'shilib bo'lmaydi."); $("tjgo").disabled = false; return BOSS.play(code); }
+    if (meta.map) { try { await MAPQ.load(); } catch (e) { return giveUp(e.message); } }
     FN = ac.f; LN = ac.l; name = FN + " " + LN;
     st.code = code; st.pid = ac.uid;
     const was = await DBA.get(`t/${code}/players/${st.pid}`);
@@ -7352,7 +7386,7 @@ const T = (() => {
     if (st.cur >= st.Q.length) return finishMine();
     const q = st.Q[st.cur], perm = st.perms[st.cur];
     $("tqn").textContent = `${st.cur + 1}/${st.Q.length}`; if ($("tsk")) $("tsk").textContent = "🔥 " + (st.streak || 0);
-    el.innerHTML = `<div class="kh-q"><span class="tag"></span><div class="q"></div></div><div class="kh-g" id="tops"></div>`;
+    el.innerHTML = `${q.map ? `<div class="tmap" id="tmap">${MAPQ.svg(q.map.k, q.map.i)}</div>` : ""}<div class="kh-q"><span class="tag"></span><div class="q"></div></div><div class="kh-g" id="tops"></div><div id="tmfb"></div>`;
     el.querySelector(".tag").textContent = q.t; el.querySelector(".q").textContent = q.q;
     perm.forEach((oi, k) => {
       const b = document.createElement("button"); b.className = "opt kh-o k" + k; b.innerHTML = `<span class="sh">${"ABCD"[k]}</span><span></span>`; b.lastChild.textContent = q.o[oi];
@@ -7362,7 +7396,7 @@ const T = (() => {
   }
   async function answer(oi, btn) {
     if (st.lock) return; st.lock = true;
-    const q = st.Q[st.cur], ok = oi === q.a; GAME.track(q, ok);
+    const q = st.Q[st.cur], ok = oi === q.a; if (!q.map) GAME.track(q, ok);
     st.ans[st.cur] = oi; ls.set("zm_ans_" + st.code + st.pid, JSON.stringify(st.ans));
     btn.classList.remove("sel"); btn.classList.add(ok ? "okk" : "bad");
     if (!ok) [...$("tops").children].forEach((b, k) => { if (st.perms[st.cur][k] === q.a) b.classList.add("okk"); });
@@ -7372,10 +7406,16 @@ const T = (() => {
     const s = st.ans.filter((a, i) => a === st.Q[i].a).length;
     st.cur++;
     DBA.update(`t/${st.code}/players/${st.pid}`, { s, a: st.cur, t: DBA.now() - st.meta.startAt, d: st.cur >= st.Q.length ? 1 : 0, sk: st.streak || 0 });
-    setTimeout(() => { if (st.meta.phase !== "run") return; if (st.cur >= st.Q.length) finishMine(); else sQ(); }, 900);
+    const nx = () => { if (st.meta.phase !== "run" || st.nxd) return; st.nxd = true; if (st.cur >= st.Q.length) finishMine(); else sQ(); };
+    st.nxd = false;
+    if (q.map) {
+      const tp = document.querySelector("#tmap .tg"); if (tp) tp.setAttribute("class", "tg " + (ok ? "okc" : "badc"));
+      const fb = $("tmfb"); if (fb) { fb.className = "tmfb " + (ok ? "ok" : "bad"); fb.innerHTML = `<div>Bu — <b></b>, poytaxti — <span></span>.</div>${q.e ? `<div class="tmf"><b>📖 Tarixdan</b><span></span></div>` : ""}<button class="btn sm" id="tmnx">Keyingisi →</button>`; fb.querySelector("div b").textContent = q.o[q.a]; fb.querySelector("div span").textContent = q.cap; if (q.e) fb.querySelector(".tmf span").textContent = q.e; $("tmnx").onclick = nx; }
+      setTimeout(nx, 6000);
+    } else setTimeout(nx, 900);
   }
   function mySubmit() {
-    const m = st.meta; if (!m || !m.host || !st.Q.length) return;
+    const m = st.meta; if (!m || !m.host || m.map || !st.Q.length) return;
     const k = "zm_tsub_" + st.code + "_" + (m.seed || 0); if (ls.get(k)) return;
     if (!st.ans.some(a => a != null)) return; ls.set(k, "1");
     const items = st.Q.map((q, i) => [q._k || "", st.ans[i] == null ? null : String(q.o[st.ans[i]])]);
@@ -7615,8 +7655,10 @@ const T = (() => {
       <div class="tnote hide" id="thbig">🏟 <b>Katta turnir</b> — 200–300 kishigacha. O'quvchilar savollarni ulanmasdan ishlaydi, natijani server tekshiradi. Sizning ekraningizda jonli top-10 chiqadi. Jonli «poyga» effekti bo'lmaydi.</div>
       <div id="thteam" class="hide"><div class="row"><div style="flex:1"><label>Jamoalar soni</label><select id="thk">${[2, 3, 4, 5, 6].map(x => `<option${x === 2 ? " selected" : ""}>${x}</option>`).join("")}</select></div><div style="flex:1"><label>Bir jamoada nechta o'quvchi</label><input id="thz" type="number" min="1" max="30" value="5"></div></div>
         <label>Jamoa nomlari (birinchi qo'shilgan o'quvchi — sardor — nomni o'zgartira oladi)</label><div id="thnm"></div></div>
-      <label>Mavzular (sinfni bosib oching)</label><div id="ths" class="tpks">${opts}</div>
-      <div class="tnote" id="thsum">Mavzu tanlanmagan</div>
+      <div class="seg" id="thsrc"><button data-s="t" class="on">📚 Mavzular</button><button data-s="m">🗺 Xarita jangi</button></div>
+      <div id="thsrcm" class="hide"><label>Qit’a</label><select id="thsrck"><option value="mix">🌍 Aralash (barcha qit’alar)</option><option value="E">Yevropa</option><option value="A">Osiyo</option><option value="F">Afrika</option><option value="N">Shimoliy Amerika</option><option value="S">Janubiy Amerika</option></select><div class="tnote">🗺 Xaritada davlat yonadi — o‘quvchilar uni topadi. Javobdan keyin poytaxt va shu davlat tarixidan bitta fakt chiqadi. Faqat darsliklarda uchraydigan davlatlar.</div></div>
+      <div id="thtp"><label>Mavzular (sinfni bosib oching)</label><div id="ths" class="tpks">${opts}</div>
+      <div class="tnote" id="thsum">Mavzu tanlanmagan</div></div>
       <div class="row"><div style="flex:1"><label>Savollar soni</label><input id="thn" type="number" min="5" max="60" value="30"></div><div style="flex:1"><label>Vaqt (daqiqa)</label><input id="thd" type="number" min="1" max="180" value="30"></div></div>
       <div class="accerr" id="thE"></div>
       <button class="btn" id="thc">🚀 Turnirni ochish</button></div>`;
@@ -7625,6 +7667,7 @@ const T = (() => {
     $("ths").onchange = sum; $("thn").oninput = sum;
     $("ths").onclick = e => { const b = e.target.closest("[data-all]"); if (!b) return; e.preventDefault(); const box = b.closest(".tpk"), ins = [...box.querySelectorAll("input")], on = !ins.every(i => i.checked); ins.forEach(i => i.checked = on); sum(); };
     $("thc").onclick = hCreate;
+    $("thsrc").onclick = e => { const b = e.target.closest("[data-s]"); if (!b) return; [...$("thsrc").children].forEach(x => x.classList.toggle("on", x === b)); const mp = b.dataset.s === "m"; $("thsrcm").classList.toggle("hide", !mp); $("thtp").classList.toggle("hide", mp); const bg = $("thm").querySelector('[data-m="big"]'); bg.classList.toggle("hide", mp); if (mp && bg.classList.contains("on")) $("thm").firstElementChild.click(); if (mp && +$("thn").value > 20) $("thn").value = 15; if (mp && +$("thd").value > 15) $("thd").value = 8; };
     const nms = () => { const k = +$("thk").value, old = [...$("thnm").querySelectorAll("input")].map(i => i.value); $("thnm").innerHTML = [...Array(k)].map((_, i) => `<div class="tmnm"><span>${TC[i][0]}</span><input maxlength="24" value="${esc(old[i] || TC[i][2])}"></div>`).join(""); };
     nms(); $("thk").onchange = nms;
     $("thm").onclick = e => { const b = e.target.closest("[data-m]"); if (!b) return; [...$("thm").children].forEach(x => x.classList.toggle("on", x === b)); $("thteam").classList.toggle("hide", b.dataset.m !== "team"); $("thbig").classList.toggle("hide", b.dataset.m !== "big"); $("thc").textContent = b.dataset.m === "team" ? "👥 Jamoaviy turnirni ochish" : b.dataset.m === "big" ? "🏟 Katta turnirni ochish" : "Turnirni ochish"; };
@@ -7649,6 +7692,18 @@ const T = (() => {
   }
   async function hCreate() {
     $("thc").disabled = true;
+    if ($("thsrc").querySelector(".on").dataset.s === "m") {
+      try {
+        await MAPQ.load(); const k = $("thsrck").value, nq = Math.max(5, Math.min(40, +$("thn").value || 15)), dur = Math.max(1, +$("thd").value || 8) * 60000;
+        let code; for (let j = 0; j < 20; j++) { code = String(1000 + Math.floor(Math.random() * 9000)); if (!(await DBA.get(`t/${code}/meta`))) break; }
+        const ttl = "🗺 Xarita jangi: " + (k === "mix" ? "aralash" : MAPQ.CN[k]);
+        const meta = { phase: "lobby", set: "xarita", map: { k }, ttl, seed: Math.floor(Math.random() * 1e9), dur, n: nq, c: DBA.now() };
+        if ($("thm").querySelector(".on").dataset.m === "team") meta.team = { k: +$("thk").value, sz: Math.max(1, Math.min(30, +$("thz").value || 5)), nm: [...$("thnm").querySelectorAll("input")].map((i, j) => i.value.trim().slice(0, 24) || TC[j][2]) };
+        await DBA.set(`t/${code}`, { meta });
+        DBA.set(`a/${code}`, { code, set: "xarita", ttl: (meta.team ? "👥 " : "") + ttl, ph: "lobby", c: meta.c }).catch(() => {});
+        return hAttach(code);
+      } catch (e) { $("thc").disabled = false; $("thE").textContent = "⚠️ " + (e.message || e); return; }
+    }
     const ids = [...$("ths").querySelectorAll("input:checked")].map(i => i.value);
     if (!ids.length) { $("thc").disabled = false; $("thE").textContent = "Kamida bitta mavzuni belgilang."; return; }
     const ss = ids.map(setById), pool = ss.reduce((a, s) => a + s.qs.length, 0), nq = Math.max(5, Math.min(pool, +$("thn").value || 30)), dur = Math.max(1, +$("thd").value || 30) * 60000;
@@ -7832,14 +7887,33 @@ const T = (() => {
       <div class="card"><h1>🎮 Do'stlar o'yini</h1><p class="sub">O'yin ochasiz, kodni do'stlaringizga yuborasiz va birga bellashasiz. Natijalar XP sifatida hisoblanadi.</p>
       <div class="seg" id="mym"><button data-m="solo" class="on">🏆 Yakka</button><button data-m="team">👥 Jamoaviy</button></div>
       <div id="myteam" class="hide"><label>Jamoalar soni</label><select id="myk"><option>2</option><option>3</option><option>4</option></select></div>
-      <label>Mavzular (sinfni bosib oching)</label><div id="mys" class="tpks">${opts}</div>
+      <div class="seg" id="mysrc"><button data-s="t" class="on">📚 Mavzular</button><button data-s="m">🗺 Xarita jangi${PM.is() ? "" : " 👑"}</button></div>
+      <div id="mysrcm" class="hide"><label>Qit’a</label><select id="mysrck"><option value="mix">🌍 Aralash (barcha qit’alar)</option><option value="E">Yevropa</option><option value="A">Osiyo</option><option value="F">Afrika</option><option value="N">Shimoliy Amerika</option><option value="S">Janubiy Amerika</option></select><div class="tnote">🗺 Xaritada davlat yonadi — kim tez topadi? Javobdan keyin poytaxt va tarixiy fakt chiqadi.</div></div>
+      <div id="mytp"><label>Mavzular (sinfni bosib oching)</label><div id="mys" class="tpks">${opts}</div></div>
       <div class="row"><div style="flex:1"><label>Savollar soni</label><select id="myn"><option>10</option><option>15</option><option>20</option></select></div><div style="flex:1"><label>Vaqt</label><select id="myd"><option value="5">5 daqiqa</option><option value="10" selected>10 daqiqa</option><option value="15">15 daqiqa</option><option value="20">20 daqiqa</option></select></div></div>
       <div class="accerr" id="myE"></div><button class="btn" id="myC">🚀 O'yinni ochish</button></div>`;
     if (live) { $("myCont").onclick = () => { openJoin(oc); join(); }; $("myEnd").onclick = async () => { await DBA.update(`t/${oc}/meta`, { phase: "end" }).catch(() => {}); DBA.set(`a/${oc}`, null).catch(() => {}); ls.del("zm_mygame"); myOpen(); }; }
     PM.markBoxes($("mys"));
     $("mys").onchange = () => $("mys").querySelectorAll(".tpk").forEach(d => d.querySelector(".tpk-n").textContent = d.querySelectorAll("input:checked").length + "/" + d.querySelectorAll("input").length);
     $("mym").onclick = e => { const b = e.target.closest("[data-m]"); if (!b) return; [...$("mym").children].forEach(x => x.classList.toggle("on", x === b)); $("myteam").classList.toggle("hide", b.dataset.m !== "team"); };
+    $("mysrc").onclick = e => { const b = e.target.closest("[data-s]"); if (!b) return; if (b.dataset.s === "m" && !PM.is()) { try { PM.wall("🗺 Xarita jangini ochish — Premium imkoniyati"); } catch (er) { FX.toast("👑 Xarita jangini faqat Premium obunachilar ochadi"); } return; } [...$("mysrc").children].forEach(x => x.classList.toggle("on", x === b)); const mp = b.dataset.s === "m"; $("mysrcm").classList.toggle("hide", !mp); $("mytp").classList.toggle("hide", mp); };
     $("myC").onclick = async () => {
+      if ($("mysrc").querySelector(".on").dataset.s === "m") {
+        const E = t => $("myE").textContent = t; if (!PM.is()) return E("👑 Xarita jangi — faqat Premium obunachilar uchun.");
+        $("myC").disabled = true; E("");
+        try {
+          await MAPQ.load();
+          if (live) { await DBA.update(`t/${oc}/meta`, { phase: "end" }).catch(() => {}); DBA.set(`a/${oc}`, null).catch(() => {}); }
+          const k = $("mysrck").value, nq = +$("myn").value, dur = Math.min(20, +$("myd").value) * 60000, ttl = "🗺 Xarita jangi: " + (k === "mix" ? "aralash" : MAPQ.CN[k]);
+          let code; for (let j = 0; j < 20; j++) { code = String(1000 + Math.floor(Math.random() * 9000)); if (!(await DBA.get(`t/${code}/meta`))) break; }
+          const meta = { phase: "lobby", set: "xarita", map: { k }, ttl, seed: Math.floor(Math.random() * 1e9), dur, n: nq, c: DBA.now(), host: ac.uid, hn: (ac.f + " " + ac.l).slice(0, 60), stu: 1 };
+          if ($("mym").querySelector(".on").dataset.m === "team") { const kk = +$("myk").value; meta.team = { k: kk, sz: Math.floor(MY_MAX / kk), nm: TC.slice(0, kk).map(t => t[2]) }; }
+          await DBA.set(`t/${code}/meta`, meta);
+          DBA.set(`a/${code}`, { code, set: "xarita", ttl: "🎮 " + (meta.team ? "👥 " : "") + ttl, ph: "lobby", c: meta.c, host: ac.uid, hn: meta.hn }).catch(() => {});
+          ls.set("zm_mygame", code); openJoin(code); join();
+        } catch (e) { $("myC").disabled = false; E("⚠️ O'yin ochilmadi: " + (e.message || e)); }
+        return;
+      }
       const ids = PM.free([...$("mys").querySelectorAll("input:checked")].map(i => setById(i.value))).map(x => x.id), E = t => $("myE").textContent = t;
       if (!ids.length) return E("Kamida bitta mavzuni belgilang.");
       $("myC").disabled = true; E("");
