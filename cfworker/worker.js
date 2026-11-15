@@ -61,7 +61,9 @@ const oldToken = env => { const t = tokOf(env.OLD_BOT_TOKEN); return t && t !== 
 const whSecretOf = async t => (await hmacHex(t, "wh")).slice(0, 32);
 const whSecret = async env => whSecretOf(token(env));
 // Imzolar (ota-ona havolalari) eski token bilan qoladi — bot almashganda eski havolalar buzilmasin
-const psig = async (env, login) => (await hmacHex(oldToken(env) || token(env), "p:" + login)).slice(0, 10);
+// Barqaror kalit: bot almashganda ham eski token bilan qoladi (bot paroli, akkaunt kalitlari, ota-ona havolalari)
+const sigTok = env => oldToken(env) || token(env);
+const psig = async (env, login) => (await hmacHex(sigTok(env), "p:" + login)).slice(0, 10);
 
 async function tg(env, method, payload) {
   for (let i = 0; i < 2; i++) {
@@ -78,7 +80,7 @@ async function tg(env, method, payload) {
 let auth = null; // { id, uid, exp }
 async function fbAuth(env) {
   if (auth && auth.exp > Date.now()) return auth;
-  const pw = (await hmacHex(token(env), "botpw")).slice(0, 32);
+  const pw = (await hmacHex(sigTok(env), "botpw")).slice(0, 32);
   const call = (ep, body) => fetch(`https://identitytoolkit.googleapis.com/v1/accounts:${ep}?key=${FB.apiKey}`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) }).then(r => r.json());
   let j = await call("signInWithPassword", { email: BOT_EMAIL, password: pw, returnSecureToken: true });
   if (!j.idToken && /EMAIL_NOT_FOUND|INVALID_LOGIN_CREDENTIALS/.test(JSON.stringify(j.error || ""))) j = await call("signUp", { email: BOT_EMAIL, password: pw, returnSecureToken: true });
@@ -113,7 +115,7 @@ async function lookup(idToken) {
   const x = j.users && j.users[0]; if (!x) throw new Error("Sessiya topilmadi — qayta urinib ko‘ring");
   return { uid: x.localId, email: x.email || "" };
 }
-const acctKey = async (env, id) => await hmacHex(token(env), "acct:" + id);
+const acctKey = async (env, id) => await hmacHex(sigTok(env), "acct:" + id);
 const need = u => { if (!u) throw new Error("Telegram foydalanuvchisi aniqlanmadi"); return u; };
 const requireAdmin = u => { need(u); if (!isAdminTg(u)) throw new Error("Faqat ustoz uchun"); };
 
