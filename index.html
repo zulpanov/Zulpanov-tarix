@@ -3328,7 +3328,7 @@ let VIEW={k:"cls"};
 const PM = (() => {
   const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const DAY = 864e5;
-  const FEAT = [["ms", "🎓", "Milliy sertifikat (barcha variantlar)"], ["kun", "📅", "Kun testi"], ["blitz", "⚡", "Blits"], ["hayoq", "✅", "Ha yoki Yo‘q"], ["duel", "⚔️", "Duel"], ["ladder", "🪜", "Bilimlar zinapoyasi"], ["turnir", "🏆", "Turnir va Boss jangiga kirish"], ["err", "🔁", "Xatolarim (xatolar ustida ishlash)"], ["board", "🏅", "Haftalik reyting"], ["stat", "📊", "Statistika"], ["xarita", "🗺️", "Xarita o‘yini"]];
+  const FEAT = [["ms", "🎓", "Milliy sertifikat (barcha variantlar)"], ["kun", "📅", "Kun testi"], ["blitz", "⚡", "Blits"], ["hayoq", "✅", "Ha yoki Yo‘q"], ["duel", "⚔️", "Duel"], ["ladder", "🪜", "Bilimlar zinapoyasi"], ["turnir", "🏆", "Turnir va Boss jangiga kirish"], ["err", "🔁", "Xatolarim (xatolar ustida ishlash)"], ["board", "🏅", "Haftalik reyting"], ["stat", "📊", "Statistika"], ["xarita", "🗺️", "Xarita o‘yini"], ["arqon", "🪢", "Arqon tortish (o‘yin ochish)"]];
   const DEF_TXT = "Premium bilan platformaning barcha imkoniyatlari ochiladi. To‘lov qilgach, ustoz premiumingizni darhol yoqib beradi.";
   let cfg = {}, me = null, unC = null, unM = null, mUid = null, tcfg = {};
   const gk = g => String(g || "").replace(/[.#$\[\]\/]/g, "_");
@@ -4282,7 +4282,7 @@ const HOMEX=(()=>{
   function games(){
     if(!ACCT.cur){show("auth");return}
     show("tz");setNav("games");BK(null);
-    const G=[["duel","Duel","Do'stingni chaqir","1 ga 1","DUEL.open()"],["blits","Blits","2 daqiqalik poyga","Yakka","BLITZ.open()"],["hayoq","Ha yoki Yo‘q","Tez javob ber","Yakka","HAYOQ.open()"],["zina","Bilimlar zinapoyasi","15 pog'ona · 3 yordam","Yakka","LADDER.open()"],["boss","Boss jangi","Butun sinf birgalikda","Guruh bilan","T.openJoin()"],["arqon","Arqon tortish","Ikki jamoa — bitta arqon","👥 Jamoaviy · 👑","T.rope()"],["xarita","Xarita o'yini","Joylarni xaritada top","Yakka","PM.gate('xarita',()=>{location.href='xarita.html'})"],["xarita","Xarita jangi","Kim tez topadi? Jamoa bilan","👥 Jamoaviy · 👑","T.mapBattle()"]];
+    const G=[["duel","Duel","Do'stingni chaqir","1 ga 1","DUEL.open()"],["blits","Blits","2 daqiqalik poyga","Yakka","BLITZ.open()"],["hayoq","Ha yoki Yo‘q","Tez javob ber","Yakka","HAYOQ.open()"],["zina","Bilimlar zinapoyasi","15 pog'ona · 3 yordam","Yakka","LADDER.open()"],["boss","Boss jangi","Butun sinf birgalikda","Guruh bilan","T.openJoin()"],["arqon","Arqon tortish","Ikki jamoa — bitta arqon","👥 Jamoaviy"+((PM.cfg.f&&PM.cfg.f.arqon)?" · 👑":""),"T.rope()"],["xarita","Xarita o'yini","Joylarni xaritada top","Yakka","PM.gate('xarita',()=>{location.href='xarita.html'})"],["xarita","Xarita jangi","Kim tez topadi? Jamoa bilan","👥 Jamoaviy · 👑","T.mapBattle()"]];
     $("tz").innerHTML=`<div class="adh"><div class="adh-t"><small>Bilimingizni o'yin bilan sinang</small><b>O'yinlar</b></div></div>
       <button class="gm-hero" onclick="T.openJoin()">${glogo("turnir",54).replace("gm-lg","gm-lg gm-lgw")}<span class="gm-ht">${isLive?'<em>JONLI TURNIR BOR</em>':""}<b>Turnir</b><small>Kod bilan kiring yoki o'zingiz oching</small></span><span class="gm-hb">Kirish</span></button>
       <div class="gm-grid">${G.map(([k,n,s,ch,fn])=>{const a=GL[k][0];return `<button class="gm-c" style="background:linear-gradient(160deg,${a}30,var(--card) 70%);border-color:${a}55" onclick="${fn}">${glogo(k)}<b>${n}</b><small>${s}</small><em>${ch}</em></button>`}).join("")}</div>`;
@@ -7764,7 +7764,10 @@ const T = (() => {
 
   // ================== ARQON TORTISH (2 jamoali jamoaviy turnir) ==================
   const isRope = () => !!(st.meta && st.meta.rope && st.meta.team);
-  const canRope = () => isAdmin() || PM.is() || (() => { try { return TCH.is(); } catch (e) { return false; } })();
+  const ropeLocked = () => { try { return !!(PM.cfg.f && PM.cfg.f.arqon); } catch (e) { return false; } };
+  const isTch = () => { try { return TCH.is(); } catch (e) { return false; } };
+  const tchPro = () => { try { return ((TCH.me && +TCH.me.pro) || 0) > DBA.now(); } catch (e) { return false; } };
+  const canRope = () => isAdmin() || !ropeLocked() || PM.is() || (isTch() && tchPro());
   const ini2 = n => String(n || "?").split(/\s+/).filter(Boolean).slice(0, 2).map(x => Array.from(x)[0] || "").join("").toUpperCase() || "?";
   function ropeState() {
     const T = teams(), a = T[0] || { avg: 0, m: [] }, b = T[1] || { avg: 0, m: [] }, w = (st.meta.rope && st.meta.rope.w) || 3, diff = b.avg - a.avg;
@@ -7842,7 +7845,7 @@ const T = (() => {
   async function rope() {
     if (isAdmin() && !ACCT.cur) { openHost(); const t = $("thm") && $("thm").querySelector('[data-m="rope"]'); if (t) { t.click(); t.scrollIntoView({ block: "center" }); } return; }
     if (!ACCT.cur) { show("auth"); return; }
-    if (!canRope()) { FX.toast("👑 Arqon tortishni Premium obunachilar ochadi. Do'stingiz bergan kod bilan esa bepul qo'shilasiz."); return openJoin(); }
+    if (!canRope()) { FX.toast(isTch() ? "👑 Arqon tortishni Pro tarifdagi ustozlar ochadi." : "👑 Arqon tortishni Premium obunachilar ochadi. Do'stingiz bergan kod bilan esa bepul qo'shilasiz."); return openJoin(); }
     await myOpen(); const t = $("mym") && $("mym").querySelector('[data-m="rope"]'); if (t) t.click();
   }
 
@@ -8139,7 +8142,7 @@ const T = (() => {
     if (!amHost() || !$("myGo")) return;
     const m = st.meta;
     SHARE.bind("mySh", { code: st.code, kind: m.team ? "team" : "turnir", ttl: mTitle(m), n: m.n, dur: Math.round(m.dur / 60000), link: link() });
-    $("myGo").onclick = async () => { const n = Object.keys(st.players || {}).length; if (n < 2 && !confirm("Hozircha faqat siz qo'shilgansiz. Baribir boshlaysizmi?")) return; $("myGo").disabled = true; await DBA.update(`t/${st.code}/meta`, { phase: "run", startAt: DBA.now() + 5000 }); DBA.update(`a/${st.code}`, { ph: "run" }).catch(() => {}); };
+    $("myGo").onclick = async () => { if (isRope() && !balanced()) { FX.toast("Ikkala jamoada kamida 1 kishi bo'lsin va jamoalar teng bo'lsin (farq 1 kishidan oshmasin)"); return; } const n = Object.keys(st.players || {}).length; if (n < 2 && !confirm("Hozircha faqat siz qo'shilgansiz. Baribir boshlaysizmi?")) return; $("myGo").disabled = true; await DBA.update(`t/${st.code}/meta`, { phase: "run", startAt: DBA.now() + 5000 }); DBA.update(`a/${st.code}`, { ph: "run" }).catch(() => {}); };
     $("myX").onclick = async () => { if (!confirm("O'yin yopilsinmi?")) return; await DBA.update(`t/${st.code}/meta`, { phase: "end" }); DBA.set(`a/${st.code}`, null).catch(() => {}); ls.del("zm_mygame"); ls.del("zm_active"); clear(); goHome(); };
   }
   async function myOpen() {
@@ -8156,7 +8159,7 @@ const T = (() => {
       <div class="card"><h1>🎮 Do'stlar o'yini</h1><p class="sub">O'yin ochasiz, kodni do'stlaringizga yuborasiz va birga bellashasiz. Natijalar XP sifatida hisoblanadi.</p>
       <div class="seg" id="mym"><button data-m="solo" class="on">🏆 Yakka</button><button data-m="team">👥 Jamoaviy</button><button data-m="rope">🪢 Arqon${canRope() ? "" : " 👑"}</button></div>
       <div id="myteam" class="hide"><label>Jamoalar soni</label><select id="myk"><option>2</option><option>3</option><option>4</option></select></div>
-      <div id="myrope" class="hide"><div class="tnote">🪢 2 jamoa arqon tortadi: har to'g'ri javob — o'z tomoningizga bir tortish. Bayroq g'alaba chizig'iga yetsa, o'yin tugaydi.</div><label>G'alaba chizig'i</label><select id="myrw"><option value="2">Yaqin — tez o'yin</option><option value="3" selected>O'rta</option><option value="5">Uzoq</option></select></div>
+      <div id="myrope" class="hide"><div class="tnote">🪢 2 jamoa arqon tortadi: har to'g'ri javob — o'z tomoningizga bir tortish. Bayroq g'alaba chizig'iga yetsa, o'yin tugaydi.</div><div class="row"><div style="flex:1"><label>G'alaba chizig'i</label><select id="myrw"><option value="2">Yaqin — tez o'yin</option><option value="3" selected>O'rta</option><option value="5">Uzoq</option></select></div><div style="flex:1"><label>Bir jamoada</label><select id="myrz">${(isTch() ? [5, 10, 15] : [3, 5, 10]).map(x => `<option value="${x}"${x === 10 ? " selected" : ""}>${x} kishigacha</option>`).join("")}</select></div></div><div class="sub" style="margin:6px 0 0">1 ga 1 ham o'ynash mumkin — jamoalar teng bo'lsa bo'ldi.</div></div>
       <div class="seg" id="mysrc"><button data-s="t" class="on">📚 Mavzular</button><button data-s="m">🗺 Xarita jangi${PM.is() ? "" : " 👑"}</button></div>
       <div id="mysrcm" class="hide"><label>Qit’a</label><select id="mysrck"><option value="mix">🌍 Aralash (barcha qit’alar)</option><option value="E">Yevropa</option><option value="A">Osiyo</option><option value="F">Afrika</option><option value="N">Shimoliy Amerika</option><option value="S">Janubiy Amerika</option></select><div class="tnote">🗺 Xaritada davlat yonadi — kim tez topadi? Javobdan keyin poytaxt va tarixiy fakt chiqadi.</div></div>
       <div id="mytp"><label>Mavzular (sinfni bosib oching)</label><div id="mys" class="tpks">${opts}</div></div>
@@ -8165,7 +8168,7 @@ const T = (() => {
     if (live) { $("myCont").onclick = () => { openJoin(oc); join(); }; $("myEnd").onclick = async () => { await DBA.update(`t/${oc}/meta`, { phase: "end" }).catch(() => {}); DBA.set(`a/${oc}`, null).catch(() => {}); ls.del("zm_mygame"); myOpen(); }; }
     PM.markBoxes($("mys"));
     $("mys").onchange = () => $("mys").querySelectorAll(".tpk").forEach(d => d.querySelector(".tpk-n").textContent = d.querySelectorAll("input:checked").length + "/" + d.querySelectorAll("input").length);
-    $("mym").onclick = e => { const b = e.target.closest("[data-m]"); if (!b) return; if (b.dataset.m === "rope" && !canRope()) { try { PM.wall("🪢 Arqon tortishni ochish — Premium imkoniyati"); } catch (er) { FX.toast("👑 Arqon tortishni faqat Premium obunachilar ochadi"); } return; } [...$("mym").children].forEach(x => x.classList.toggle("on", x === b)); $("myteam").classList.toggle("hide", b.dataset.m !== "team"); $("myrope").classList.toggle("hide", b.dataset.m !== "rope"); };
+    $("mym").onclick = e => { const b = e.target.closest("[data-m]"); if (!b) return; if (b.dataset.m === "rope" && !canRope()) { if (isTch()) { FX.toast("👑 Arqon tortishni Pro tarifdagi ustozlar ochadi"); return; } try { PM.wall("🪢 Arqon tortishni ochish — Premium imkoniyati"); } catch (er) { FX.toast("👑 Arqon tortishni faqat Premium obunachilar ochadi"); } return; } [...$("mym").children].forEach(x => x.classList.toggle("on", x === b)); $("myteam").classList.toggle("hide", b.dataset.m !== "team"); $("myrope").classList.toggle("hide", b.dataset.m !== "rope"); };
     $("mysrc").onclick = e => { const b = e.target.closest("[data-s]"); if (!b) return; if (b.dataset.s === "m" && !PM.is()) { try { PM.wall("🗺 Xarita jangini ochish — Premium imkoniyati"); } catch (er) { FX.toast("👑 Xarita jangini faqat Premium obunachilar ochadi"); } return; } [...$("mysrc").children].forEach(x => x.classList.toggle("on", x === b)); const mp = b.dataset.s === "m"; $("mysrcm").classList.toggle("hide", !mp); $("mytp").classList.toggle("hide", mp); };
     $("myC").onclick = async () => {
       if ($("mysrc").querySelector(".on").dataset.s === "m") {
@@ -8178,7 +8181,7 @@ const T = (() => {
           let code; for (let j = 0; j < 20; j++) { code = String(1000 + Math.floor(Math.random() * 9000)); if (!(await DBA.get(`t/${code}/meta`))) break; }
           const meta = { phase: "lobby", set: "xarita", map: { k }, ttl, seed: Math.floor(Math.random() * 1e9), dur, n: nq, c: DBA.now(), host: ac.uid, hn: (ac.f + " " + ac.l).slice(0, 60), stu: 1 };
           if ($("mym").querySelector(".on").dataset.m === "team") { const kk = +$("myk").value; meta.team = { k: kk, sz: Math.floor(MY_MAX / kk), nm: TC.slice(0, kk).map(t => t[2]) }; }
-          if ($("mym").querySelector(".on").dataset.m === "rope") { if (!canRope()) throw new Error("Arqon tortish — Premium imkoniyati"); meta.team = { k: 2, sz: Math.floor(MY_MAX / 2), nm: [TC[0][2], TC[1][2]] }; meta.rope = { w: +$("myrw").value || 3 }; meta.ttl = "🪢 " + meta.ttl; }
+          if ($("mym").querySelector(".on").dataset.m === "rope") { if (!canRope()) throw new Error(isTch() ? "Arqon tortish — Pro tarif imkoniyati" : "Arqon tortish — Premium imkoniyati"); meta.team = { k: 2, sz: Math.max(1, Math.min(isTch() ? 15 : 10, +$("myrz").value || 10)), nm: [TC[0][2], TC[1][2]] }; meta.rope = { w: +$("myrw").value || 3 }; meta.ttl = "🪢 " + meta.ttl; }
           await DBA.set(`t/${code}/meta`, meta);
           DBA.set(`a/${code}`, { code, set: "xarita", ttl: "🎮 " + (meta.team ? "👥 " : "") + meta.ttl, ph: "lobby", c: meta.c, host: ac.uid, hn: meta.hn }).catch(() => {});
           ls.set("zm_mygame", code); openJoin(code); join();
@@ -8195,7 +8198,7 @@ const T = (() => {
         let code; for (let k = 0; k < 20; k++) { code = String(1000 + Math.floor(Math.random() * 9000)); if (!(await DBA.get(`t/${code}/meta`))) break; }
         const meta = { phase: "lobby", set: ids[0], sets: ids, ttl, seed: Math.floor(Math.random() * 1e9), dur, n: nq, c: DBA.now(), host: ac.uid, hn: (ac.f + " " + ac.l).slice(0, 60), stu: 1 };
         if ($("mym").querySelector(".on").dataset.m === "team") { const k = +$("myk").value; meta.team = { k, sz: Math.floor(MY_MAX / k), nm: TC.slice(0, k).map(t => t[2]) }; }
-        if ($("mym").querySelector(".on").dataset.m === "rope") { if (!canRope()) throw new Error("Arqon tortish — Premium imkoniyati"); meta.team = { k: 2, sz: Math.floor(MY_MAX / 2), nm: [TC[0][2], TC[1][2]] }; meta.rope = { w: +$("myrw").value || 3 }; meta.ttl = "🪢 " + meta.ttl; }
+        if ($("mym").querySelector(".on").dataset.m === "rope") { if (!canRope()) throw new Error(isTch() ? "Arqon tortish — Pro tarif imkoniyati" : "Arqon tortish — Premium imkoniyati"); meta.team = { k: 2, sz: Math.max(1, Math.min(isTch() ? 15 : 10, +$("myrz").value || 10)), nm: [TC[0][2], TC[1][2]] }; meta.rope = { w: +$("myrw").value || 3 }; meta.ttl = "🪢 " + meta.ttl; }
         await DBA.set(`t/${code}/meta`, meta);
         DBA.set(`a/${code}`, { code, set: ids[0], ttl: "🎮 " + (meta.team ? "👥 " : "") + meta.ttl, ph: "lobby", c: meta.c, host: ac.uid, hn: meta.hn }).catch(() => {});
         ls.set("zm_mygame", code);
