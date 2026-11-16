@@ -417,6 +417,15 @@ body.tchm #bnav{display:none!important}body.tchm .wrap{padding-bottom:110px}body
 .jf-c.sel{background:color-mix(in srgb,var(--c) 22%,var(--card));box-shadow:0 0 0 4px color-mix(in srgb,var(--c) 35%,transparent);transform:scale(1.03)}
 .jf-c.ok{border-color:var(--ok);background:rgba(52,211,153,.14);opacity:.5;cursor:default}.jf-c.ok::after{content:"✓";position:absolute;top:5px;right:6px;width:18px;height:18px;border-radius:50%;background:var(--ok);color:#062A1C;font-size:11px;font-weight:800;display:grid;place-items:center}
 .jf-c.bad{border-color:var(--bad);background:rgba(251,113,133,.16);animation:jfSh .4s}@keyframes jfSh{20%,60%{transform:translateX(-5px)}40%,80%{transform:translateX(5px)}}
+.ju-pg{display:flex;align-items:center;gap:10px;margin:0 0 12px}.ju-pg i{flex:1;height:8px;border-radius:8px;background:var(--card2);overflow:hidden}.ju-pg i em{display:block;height:8px;background:var(--ok);transition:width .4s}.ju-pg b{font-size:13px;color:var(--ok)}
+.ju-w{position:relative;display:grid;grid-template-columns:38% 1fr;column-gap:52px}.ju-w svg{position:absolute;left:0;top:0;pointer-events:none;overflow:visible}.ju-hd{font-size:11px;font-weight:700;letter-spacing:1px;margin-bottom:8px}
+.ju-col{display:flex;flex-direction:column;gap:10px}.ju-it{position:relative;min-height:64px;border-radius:14px;border:1px solid var(--line);background:var(--card);color:var(--tx);font-family:inherit;text-align:left;padding:8px 12px;cursor:pointer;display:flex;align-items:center;box-sizing:border-box;transition:background .2s,border-color .2s,transform .15s}
+.ju-col.l .ju-it{font-weight:700;font-size:14px;line-height:1.25}.ju-col.r .ju-it{font-size:12.5px;line-height:1.3;padding-left:16px}
+.ju-it::after{content:"";position:absolute;top:50%;width:12px;height:12px;margin-top:-8px;border-radius:50%;background:var(--mu);border:2px solid var(--bg,#0B1630)}.ju-col.l .ju-it::after{right:-9px}.ju-col.r .ju-it::after{left:-9px}
+.ju-it.sel{border:2px solid var(--ac);background:rgba(226,181,76,.15);transform:scale(1.02)}.ju-it.sel::after{background:var(--ac)}
+.ju-it.ok{border:2px solid var(--c);background:color-mix(in srgb,var(--c) 14%,var(--card));cursor:default}.ju-it.ok::after{background:var(--c)}
+.ju-it.bad{border:2px solid var(--bad);background:rgba(251,113,133,.16);animation:jfSh .4s}.ju-it.bad::after{background:var(--bad)}
+.ju-stg{text-align:center;font-size:12px;color:var(--mu);margin:-4px 0 10px}
 .jf-n{margin-top:12px;padding:12px 14px;border-radius:14px;font-size:13px;line-height:1.45;background:rgba(52,211,153,.12);border:1px solid rgba(52,211,153,.4);min-height:20px}.jf-n.e{background:var(--card);border-color:var(--line);color:var(--mu)}
 .jf-stars{display:flex;justify-content:center;gap:6px;font-size:44px;line-height:1}.jf-stars .off{filter:grayscale(1);opacity:.3}
 .jf-res{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}.jf-res div{background:var(--card2);border-radius:14px;padding:10px;text-align:center}.jf-res b{display:block;font-size:20px}.jf-res small{font-size:11px;color:var(--mu)}
@@ -5343,7 +5352,7 @@ const BOSS = (() => {
 
 
 // ================== BILIMLAR ZINAPOYASI ==================
-// ================== JUFTINI TOP (ochiq kartochkalar: mos juftni belgilash) ==================
+// ================== JUFTINI TOP (ulash chiziqlari: chapdagini o'ngdagi mosiga ulash) ==================
 const JUFTG = (() => {
   const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const TY = { s: ["Shaxslar va ishlari", "SHAXS", "ISHI", "👤", "#E2B54C"], d: ["Sanalar va voqealar", "SANA", "VOQEA", "📅", "#22D3EE"], j: ["Davlatlar va joylar", "NOMI", "JOYI", "📍", "#F472B6"], t: ["Atamalar va ma’nolari", "ATAMA", "MA’NOSI", "📖", "#34D399"] };
@@ -5374,50 +5383,76 @@ const JUFTG = (() => {
     $("tz").innerHTML = head("🧩 Juftini top", "Moslarini toping") +
       `<div class="jf-cls">${CL.map(c => `<button data-c="${c}"${c === S.c ? ' class="on"' : ""}${HAS.includes(c) ? "" : " disabled"}>${c}-sinf${HAS.includes(c) ? "" : " · tez kunda"}</button>`).join("")}</div>
       <div class="jf-lb">JUFTLAR TURI</div><div class="jf-ty">${Object.entries(TY).map(([k, t]) => `<button data-k="${k}"${k === S.k ? ' class="on"' : ""}><i style="background:${t[4]}26;color:${t[4]}">${t[3]}</i><span style="flex:1"><b>${t[0]}</b><small>${cnt(k)} ta juft</small></span></button>`).join("")}</div>
-      <div class="jf-lb">DARAJA</div><div class="jf-lv">${LV.map((v, i) => `<button data-l="${i}"${i === S.l ? ' class="on"' : ""}>${v[1]}<small>${v[0]} juft</small></button>`).join("")}</div>
+      <div class="jf-lb">DARAJA</div><div class="jf-lv">${LV.map((v, i) => `<button data-l="${i}"${i === S.l ? ' class="on"' : ""}>${v[1]}<small>${v[0]} juft${v[0] > 6 ? " · 2 bosqich" : ""}</small></button>`).join("")}</div>
       ${b ? `<div class="tnote" style="margin-top:14px;display:flex;justify-content:space-between"><span>Eng yaxshi natijangiz</span><b>${fmt(b.t)} · ${b.m} xato · ${"⭐".repeat(b.s)}</b></div>` : ""}
       <button class="btn" id="jfGo" style="margin-top:14px"${L.length < 4 ? " disabled" : ""}>🧩 O‘ynash</button>
-      <div class="sub" style="text-align:center;margin-top:10px">Hamma kartochkalar ochiq: ${esc(TY[S.k][1].toLowerCase())}ni va unga mos ${esc(TY[S.k][2].toLowerCase())}ni bosing.</div>`;
+      <div class="sub" style="text-align:center;margin-top:10px">Daftardagidek: chapdagi ${esc(TY[S.k][1].toLowerCase())}ni o‘ngdagi mos ${esc(TY[S.k][2].toLowerCase())} bilan chiziq orqali ulang.</div>`;
     $("tz").querySelectorAll("[data-c]").forEach(b => b.onclick = async () => { S.c = b.dataset.c; save(); try { await load(S.c); } catch (e) {} menu(); });
     $("tz").querySelectorAll("[data-k]").forEach(b => b.onclick = () => { S.k = b.dataset.k; save(); menu(); });
     $("tz").querySelectorAll("[data-l]").forEach(b => b.onclick = () => { S.l = +b.dataset.l; save(); menu(); });
     $("jfGo").onclick = start;
   }
+  const PAL = ["#F59E0B", "#22D3EE", "#A78BFA", "#F472B6", "#34D399", "#FB923C"];
   function start() {
     stop();
-    const L = list(), n = Math.min(LV[S.l][0], L.length), pairs = shuf(L).slice(0, n), ty = TY[S.k];
-    const cards = shuf(pairs.flatMap((p, i) => [{ i, s: 0, t: p.a }, { i, s: 1, t: p.b }]));
-    G = { n, pairs, cards, sel: null, ok: 0, x: 0, wr: new Set(), t0: Date.now(), tk: null };
-    const cols = 3, h = n <= 6 ? 100 : n <= 8 ? 84 : 74;
-    show("tz"); setNav(null); BK(null);
-    $("tz").innerHTML = head("🧩 Juftini top", ty[0] + " · " + LV[S.l][1], "JUFTG.open()") +
-      `<div class="jf-st"><span>⏱ <em id="jfT" style="font-style:normal">00:00</em></span><span style="color:var(--bad)">✗ <em id="jfX" style="font-style:normal">0</em></span><span class="sp"></span><span class="ok">✓ <em id="jfF" style="font-style:normal">0/${n}</em></span></div>
-      <div class="jf-g" id="jfG" style="grid-template-columns:repeat(${cols},minmax(0,1fr))">${cards.map((c, k) => `<button class="jf-c" data-i="${k}" style="--h:${h}px;--c:${c.s ? B : ty[4]}"><small>${c.s ? ty[2] : ty[1]}</small><b>${esc(c.t)}</b></button>`).join("")}</div>
-      <div class="jf-n e" id="jfN">Bitta <b style="color:${ty[4]}">${esc(ty[1].toLowerCase())}</b> va unga mos <b style="color:${B}">${esc(ty[2].toLowerCase())}</b> kartochkasini bosing.</div>`;
-    $("jfG").querySelectorAll("[data-i]").forEach(b => b.onclick = () => tap(+b.dataset.i, b));
+    const L = list(), n = Math.min(LV[S.l][0], L.length), pairs = shuf(L).slice(0, n), ns = Math.ceil(n / 6), sz = Math.ceil(n / ns), stg = [];
+    for (let i = 0; i < n; i += sz) stg.push(pairs.slice(i, i + sz).map((p, j) => i + j));
+    G = { n, pairs, stg, si: 0, sel: null, ok: 0, x: 0, wr: new Set(), links: [], done: 0, t0: Date.now(), tk: null };
+    show("tz"); setNav(null); BK(null); stage();
     G.tk = setInterval(() => { if (G && $("jfT")) $("jfT").textContent = fmt(Date.now() - G.t0); }, 500);
   }
-  function tap(k, el) {
+  function stage() {
+    const ty = TY[S.k], ids = G.stg[G.si], Lc = shuf(ids), Rc = shuf(ids);
+    G.links = []; G.sel = null; G.done = 0;
+    const cap = ty[1].charAt(0) + ty[1].slice(1).toLowerCase();
+    $("tz").innerHTML = head("🧩 Juftini top", ty[0] + " · " + LV[S.l][1], "JUFTG.open()") +
+      `<div class="jf-st"><span>⏱ <em id="jfT" style="font-style:normal">${fmt(Date.now() - G.t0)}</em></span><span style="color:var(--bad)">✗ <em id="jfX" style="font-style:normal">${G.x}</em></span><span class="sp"></span>${G.stg.length > 1 ? `<span>${G.si + 1}/${G.stg.length} bosqich</span>` : ""}</div>
+      <div class="ju-pg"><i><em id="juP" style="width:${G.ok / G.n * 100}%"></em></i><b id="juPb">${G.ok}/${G.n}</b></div>
+      <div class="ju-w" id="juW"><svg id="juS" aria-hidden="true"></svg>
+        <div><div class="ju-hd" style="color:${ty[4]}">${esc(ty[1])}</div><div class="ju-col l">${Lc.map(i => `<button class="ju-it" data-s="0" data-i="${i}">${esc(G.pairs[i].a)}</button>`).join("")}</div></div>
+        <div><div class="ju-hd" style="color:${B}">${esc(ty[2])}</div><div class="ju-col r">${Rc.map(i => `<button class="ju-it" data-s="1" data-i="${i}">${esc(G.pairs[i].b)}</button>`).join("")}</div></div></div>
+      <div class="jf-n e" id="jfN">${esc(cap)}ni bosing, keyin uni o‘ngdagi mos ${esc(ty[2].toLowerCase())}ga ulang.</div>`;
+    $("juW").querySelectorAll(".ju-it").forEach(b => b.onclick = () => tap(b));
+    draw(); setTimeout(draw, 300);
+  }
+  const it = (sd, i) => $("juW") && $("juW").querySelector(`.ju-it[data-s="${sd}"][data-i="${i}"]`);
+  function line(W, a, b, c, dash) {
+    const w = W.getBoundingClientRect(), r1 = a.getBoundingClientRect(), r2 = b.getBoundingClientRect();
+    const x1 = r1.right - w.left + 3, y1 = r1.top + r1.height / 2 - w.top - 2, x2 = r2.left - w.left - 3, y2 = r2.top + r2.height / 2 - w.top - 2, d = (x2 - x1) * .5;
+    return `<path d="M${x1} ${y1} C ${x1 + d} ${y1}, ${x2 - d} ${y2}, ${x2} ${y2}" stroke="${c}" stroke-width="3" fill="none" stroke-linecap="round"${dash ? ' stroke-dasharray="6 5"' : ""}/>`;
+  }
+  function draw(extra) {
+    const W = $("juW"), sv = $("juS"); if (!W || !sv || !G) return;
+    sv.setAttribute("width", W.offsetWidth); sv.setAttribute("height", W.offsetHeight);
+    sv.innerHTML = G.links.map(([i, c]) => { const a = it(0, i), b = it(1, i); return a && b ? line(W, a, b, c) : ""; }).join("") + (extra || "");
+  }
+  function tap(el) {
     if (!G || el.classList.contains("ok")) return;
-    const els = $("jfG").children;
-    if (G.sel === k) { el.classList.remove("sel"); G.sel = null; return; }
+    const sd = +el.dataset.s, i = +el.dataset.i;
     try { FX.S.tick && FX.S.tick(); } catch (e) {}
-    if (G.sel == null || G.cards[G.sel].s === G.cards[k].s) { if (G.sel != null) els[G.sel].classList.remove("sel"); G.sel = k; el.classList.add("sel"); return; }
-    const a = G.sel, A = G.cards[a], C = G.cards[k], ea = els[a]; G.sel = null; ea.classList.remove("sel");
-    if (A.i === C.i) {
-      ea.classList.add("ok"); el.classList.add("ok"); G.ok++; $("jfF").textContent = G.ok + "/" + G.n;
-      const p = G.pairs[A.i], N = $("jfN"); N.className = "jf-n"; N.innerHTML = `<b>To‘g‘ri!</b> ${esc(p.e || (p.a + " — " + p.b))}`;
-      try { FX.correct(el, "✓"); } catch (e) {}
+    if (G.sel && G.sel.s === sd && G.sel.i === i) { el.classList.remove("sel"); G.sel = null; return; }
+    if (!G.sel || G.sel.s === sd) { if (G.sel) { const o = it(G.sel.s, G.sel.i); if (o) o.classList.remove("sel"); } G.sel = { s: sd, i }; el.classList.add("sel"); return; }
+    const o = it(G.sel.s, G.sel.i), li = sd ? G.sel.i : i, ri = sd ? i : G.sel.i, A = it(0, li), Bb = it(1, ri);
+    if (o) o.classList.remove("sel"); G.sel = null;
+    if (li === ri) {
+      const c = PAL[G.links.length % PAL.length]; G.links.push([li, c]); G.ok++; G.done++;
+      [A, Bb].forEach(x => { x.style.setProperty("--c", c); x.classList.add("ok"); });
+      $("juP").style.width = (G.ok / G.n * 100) + "%"; $("juPb").textContent = G.ok + "/" + G.n;
+      const p = G.pairs[li], N = $("jfN"); N.className = "jf-n"; N.innerHTML = `<b>To‘g‘ri!</b> ${esc(p.e || (p.a + " — " + p.b))}`;
+      draw();
+      try { FX.correct(Bb, "✓"); } catch (e) {}
       try { Telegram.WebApp.HapticFeedback.notificationOccurred("success"); } catch (e) {}
-      if (G.ok >= G.n) setTimeout(finish, 900);
+      if (G.done >= G.stg[G.si].length) setTimeout(() => { if (!G) return; if (G.si + 1 < G.stg.length) { G.si++; stage(); try { FX.toast(`✅ ${G.si}-bosqich tugadi! Davom etamiz`, "up"); } catch (e) {} } else finish(); }, 1200);
     } else {
-      G.x++; G.wr.add(A.i); G.wr.add(C.i); $("jfX").textContent = G.x;
-      ea.classList.add("bad"); el.classList.add("bad");
+      G.x++; G.wr.add(li); G.wr.add(ri); $("jfX").textContent = G.x;
+      A.classList.add("bad"); Bb.classList.add("bad");
+      draw(line($("juW"), A, Bb, "#FB7185", true));
       const N = $("jfN"); N.className = "jf-n e"; N.innerHTML = `<b style="color:var(--bad)">Mos emas.</b> Yana urinib ko‘ring.`;
       try { Telegram.WebApp.HapticFeedback.notificationOccurred("error"); } catch (e) {}
-      setTimeout(() => { ea.classList.remove("bad"); el.classList.remove("bad"); }, 600);
+      setTimeout(() => { A.classList.remove("bad"); Bb.classList.remove("bad"); draw(); }, 700);
     }
   }
+  addEventListener("resize", () => { try { draw(); } catch (e) {} });
   function finish() {
     if (!G) return; const g = G; stop();
     const t = Date.now() - g.t0, m = g.x, n = g.n, st = m <= 1 ? 3 : m <= 3 ? 2 : 1;
