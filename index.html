@@ -5173,7 +5173,7 @@ const BOSS = (() => {
     $("bhGo").disabled = true;
     let code; for (let k = 0; k < 20; k++) { code = String(1000 + Math.floor(Math.random() * 9000)); if (!(await DBA.get(`t/${code}/meta`))) break; }
     const meta = { host: (ACCT.cur || {}).uid, boss: 1, phase: "vote", cls: hc, cand: hsel, n: hn, dur: hdur * 60000, seed: Math.floor(Math.random() * 1e9), c: DBA.now(), set: hsel[0], title: "🏰 Boss jangi" };
-    try { await DBA.set(`t/${code}`, { meta }); } catch (e) { $("bhGo").disabled = false; return $("bhE").textContent = "Ochib bo'lmadi. Internetni tekshiring."; }
+    try { await DBA.set(`t/${code}`, { meta }); } catch (e) { $("bhGo").disabled = false; return $("bhE").textContent = /permission/i.test(String(e && e.message)) ? "Ruxsat yo'q — ilovani yopib, qayta kiring." : "Ochib bo'lmadi. Internetni tekshirib, qayta bosing."; }
     host(code);
   }
   function host(code) {
@@ -7188,9 +7188,12 @@ const DBA = (() => {
     async function wake() {
       lastAct = Date.now();
       const d = await init();
-      if (!online) { online = true; d.goOnline(); await waitConn(6000); }
+      if (!online) { online = true; d.goOnline(); }
+      if (!conn) await waitConn(8000); // qayta ulanish tugashini kutamiz (aks holda "Client is offline")
       return d;
     }
+    // Ulanish endigina tiklanayotgan bo'lsa, o'qish "offline" xatosini beradi — ulanishni kutib, yana urinamiz
+    const rd = async q => { try { return await q(); } catch (e) { if (!/offline/i.test(String(e && e.message))) throw e; await waitConn(10000); return await q(); } };
     let held = false;
     const nudge = () => { lastAct = Date.now(); if (!online && ready && !held) wake(); };
     ["pointerdown", "keydown", "touchstart", "scroll"].forEach(ev => addEventListener(ev, nudge, { passive: true, capture: true }));
@@ -7203,13 +7206,13 @@ const DBA = (() => {
     return {
       kind: "fb", init,
       get online() { return online; },
-      async get(p) { const d = await wake(); return (await d.ref(p).get()).val(); },
+      async get(p) { const d = await wake(); return (await rd(() => d.ref(p).get())).val(); },
       async set(p, v) { const d = await wake(); return d.ref(p).set(v); },
       async update(p, v) { const d = await wake(); return d.ref(p).update(v); },
       async inc(p) { const d = await init(); return d.ref(p).set(firebase.database.ServerValue.increment(1)); },
       hold(on) { held = !!on; if (held && online && ready) { online = false; init().then(d => d.goOffline()); } },
-      async since(p, child, from) { const d = await wake(); return (await d.ref(p).orderByChild(child).startAt(from).get()).val(); },
-      async eq(p, child, v) { const d = await wake(); return (await d.ref(p).orderByChild(child).equalTo(v).get()).val(); },
+      async since(p, child, from) { const d = await wake(); return (await rd(() => d.ref(p).orderByChild(child).startAt(from).get())).val(); },
+      async eq(p, child, v) { const d = await wake(); return (await rd(() => d.ref(p).orderByChild(child).equalTo(v).get())).val(); },
       // Faqat kerakli qismini kuzatish (butun daraxtni emas) — trafikni tejaydi
       onSince(p, child, from, cb) {
         let r, fn, stop = false; live.set(p, (live.get(p) || 0) + 1);
@@ -7478,7 +7481,7 @@ const T = (() => {
     if (/^\d{5}$/.test(code)) return KT.join(code);
     if (!/^\d{4}$/.test(code)) return err("Kod 4 yoki 5 ta raqamdan iborat bo'lishi kerak.");
     $("tjgo").disabled = true; err("");
-    let meta; try { meta = await DBA.get(`t/${code}/meta`); } catch (e) { $("tjgo").disabled = false; return err("Ulanib bo'lmadi. Internetni tekshiring."); }
+    let meta; try { meta = await DBA.get(`t/${code}/meta`); } catch (e) { $("tjgo").disabled = false; return err(/permission/i.test(String(e && e.message)) ? "Ruxsat yo'q — ilovani yopib, qayta kiring." : "Ulanib bo'lmadi. Internetni tekshirib, qayta bosing."); }
     const giveUp = m => { $("tjgo").disabled = false; if (auto) { ls.del("zm_active"); goHome(); return; } return err(m); };
     if (!meta) return giveUp("Bunday kodli turnir topilmadi.");
     if (meta.boss) { if (meta.phase === "end") return giveUp("Bu boss jangi allaqachon tugagan."); if (meta.phase === "run" && !(await DBA.get(`t/${code}/players/${ac.uid}`))) return giveUp("Jang allaqachon boshlangan — endi qo'shilib bo'lmaydi."); $("tjgo").disabled = false; return BOSS.play(code); }
