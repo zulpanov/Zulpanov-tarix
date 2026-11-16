@@ -407,6 +407,21 @@ body.tchm #bnav{display:none!important}body.tchm .wrap{padding-bottom:110px}body
 .rp.big .rp-f{height:270px;border-radius:24px}.rp.big .rp-a{width:62px;height:62px;font-size:20px;border-width:3px}.rp.big .rp-s{margin-top:-31px}.rp.big .rp-s.l .rp-a+.rp-a{margin-left:-16px}.rp.big .rp-s.r .rp-a+.rp-a{margin-right:-16px}.rp.big .rp-r{height:14px;margin-top:-7px}.rp.big .rp-k{width:46px;height:46px;margin:-23px 0 0 -23px;border-width:4px}.rp.big .rp-hd{font-size:22px}.rp.big .rp-hd b{font-size:46px}.rp.big .rp-hd small{font-size:16px}.rp.big .rp-lb{font-size:16px;bottom:10px}
 .rp-proj{display:grid;grid-template-columns:1fr 320px 1fr;gap:18px;margin-top:18px}.rp-proj>div{background:rgba(255,255,255,.06);border-radius:18px;padding:14px 18px;font-size:19px}.rp-proj>div>div{display:flex;justify-content:space-between;gap:8px;padding:3px 0}.rp-proj i{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:8px}.rp-proj small{letter-spacing:1px;opacity:.7}
 .rp-end{text-align:center}.rp-end>small{letter-spacing:2px;color:var(--mu);font-weight:600}.rp-w{font-size:34px;font-weight:800;line-height:1.1;margin:2px 0 4px}.rp-ef{margin:14px 0;text-align:left}.rp-mv{display:grid;grid-template-columns:1fr 1fr;gap:10px}.rp-mv>div{background:var(--card2);border-radius:14px;padding:10px 12px;border-top:3px solid var(--c);display:flex;flex-direction:column;gap:2px;text-align:left}.rp-mv small{font-size:11.5px;color:var(--mu)}
+.jf-cls{display:flex;gap:8px;overflow-x:auto;margin:0 0 14px;padding-bottom:2px}.jf-cls button{flex:none;height:38px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--mu);font-family:inherit;font-size:13px;font-weight:600;cursor:pointer}.jf-cls button.on{background:var(--gr);color:#fff;border-color:transparent}.jf-cls button:disabled{opacity:.45;cursor:default}
+.jf-ty{display:flex;flex-direction:column;gap:8px}.jf-ty button{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:16px;border:1px solid var(--line);background:var(--card);color:var(--tx);text-align:left;font-family:inherit;cursor:pointer}.jf-ty button.on{border:2px solid var(--ac);padding:11px 13px}.jf-ty i{width:42px;height:42px;flex:none;border-radius:12px;display:grid;place-items:center;font-style:normal;font-size:20px}.jf-ty b{display:block;font-size:14px}.jf-ty small{display:block;font-size:12px;color:var(--mu);margin-top:1px}
+.jf-lv{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.jf-lv button{min-height:56px;border-radius:14px;border:1px solid var(--line);background:var(--card);color:var(--tx);font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px}.jf-lv button small{font-size:11px;font-weight:400;color:var(--mu)}.jf-lv button.on{border:2px solid var(--ac)}
+.jf-lb{font-size:12px;letter-spacing:1px;font-weight:700;color:var(--mu);margin:16px 0 8px}
+.jf-st{display:flex;gap:8px;margin:0 0 12px}.jf-st span{height:34px;padding:0 11px;border-radius:10px;background:var(--card2);display:flex;align-items:center;gap:6px;font-weight:700;font-size:14px}.jf-st .sp{flex:1;background:none;padding:0}.jf-st .ok{color:var(--ok)}
+.jf-g{display:grid;gap:8px}.jf-c{position:relative;border:0;padding:0;background:none;perspective:700px;cursor:pointer;font-family:inherit;color:var(--tx);height:var(--h,100px)}
+.jf-i{position:absolute;inset:0;transition:transform .45s cubic-bezier(.2,.8,.2,1);transform-style:preserve-3d}.jf-c.op .jf-i,.jf-c.ok .jf-i{transform:rotateY(180deg)}
+.jf-b,.jf-f{position:absolute;inset:0;border-radius:14px;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;align-items:center;justify-content:center;box-sizing:border-box}
+.jf-b{background:var(--card2);border:1.5px solid var(--line)}.jf-b img{width:38%;max-width:44px;opacity:.9}
+.jf-f{transform:rotateY(180deg);flex-direction:column;gap:3px;padding:6px;text-align:center;background:var(--card);border:2px solid var(--c)}.jf-f small{font-size:9px;letter-spacing:.8px;font-weight:700;color:var(--c)}.jf-f b{font-size:12.5px;line-height:1.22;font-weight:600;overflow-wrap:anywhere}
+.jf-c.ok .jf-f{border-color:var(--ok);background:rgba(52,211,153,.14)}.jf-c.bad .jf-f{border-color:var(--bad);animation:jfSh .4s}@keyframes jfSh{20%,60%{transform:rotateY(180deg) translateX(-5px)}40%,80%{transform:rotateY(180deg) translateX(5px)}}
+.jf-n{margin-top:12px;padding:12px 14px;border-radius:14px;font-size:13px;line-height:1.45;background:rgba(52,211,153,.12);border:1px solid rgba(52,211,153,.4);min-height:20px}.jf-n.e{background:var(--card);border-color:var(--line);color:var(--mu)}
+.jf-stars{display:flex;justify-content:center;gap:6px;font-size:44px;line-height:1}.jf-stars .off{filter:grayscale(1);opacity:.3}
+.jf-res{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}.jf-res div{background:var(--card2);border-radius:14px;padding:10px;text-align:center}.jf-res b{display:block;font-size:20px}.jf-res small{font-size:11px;color:var(--mu)}
+.jf-lr div{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-top:1px solid var(--line);font-size:13px}.jf-lr div span{color:var(--mu);text-align:right}
 .st-seg{margin-bottom:12px}#bnav button svg{display:block;margin:0 auto 2px}.hm-pf{display:flex;align-items:center;gap:14px}.hm-pf b{font-size:17px;display:block}.hm-pf small{color:var(--mu);font-size:12.5px}
 .gm-lg{border-radius:15px;display:grid;place-items:center;flex:none}.gm-lgw{box-shadow:none!important;background:rgba(var(--w),.18)!important}
 .gm-hero{width:100%;display:flex;align-items:center;gap:14px;padding:16px;border-radius:22px;border:0;background:linear-gradient(135deg,#F59E0B,#EF4444);color:#fff;font-family:inherit;text-align:left;cursor:pointer;box-shadow:0 10px 28px rgba(239,68,68,.3)}.gm-ht{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}.gm-ht em{align-self:flex-start;font-style:normal;padding:3px 8px;border-radius:999px;background:rgba(var(--k),calc(.25 * var(--ka)));font-size:10.5px;font-weight:700}.gm-ht b{font-size:18px}.gm-ht small{font-size:12px;opacity:.9}.gm-hb{flex:none;height:42px;padding:0 16px;border-radius:12px;background:#fff;color:#B45309;font-weight:700;font-size:13px;display:grid;place-items:center}
@@ -3328,7 +3343,7 @@ let VIEW={k:"cls"};
 const PM = (() => {
   const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const DAY = 864e5;
-  const FEAT = [["ms", "🎓", "Milliy sertifikat (barcha variantlar)"], ["kun", "📅", "Kun testi"], ["blitz", "⚡", "Blits"], ["hayoq", "✅", "Ha yoki Yo‘q"], ["duel", "⚔️", "Duel"], ["ladder", "🪜", "Bilimlar zinapoyasi"], ["turnir", "🏆", "Turnir va Boss jangiga kirish"], ["err", "🔁", "Xatolarim (xatolar ustida ishlash)"], ["board", "🏅", "Haftalik reyting"], ["stat", "📊", "Statistika"], ["xarita", "🗺️", "Xarita o‘yini"], ["arqon", "🪢", "Arqon tortish (o‘yin ochish)"]];
+  const FEAT = [["ms", "🎓", "Milliy sertifikat (barcha variantlar)"], ["kun", "📅", "Kun testi"], ["blitz", "⚡", "Blits"], ["hayoq", "✅", "Ha yoki Yo‘q"], ["duel", "⚔️", "Duel"], ["ladder", "🪜", "Bilimlar zinapoyasi"], ["turnir", "🏆", "Turnir va Boss jangiga kirish"], ["err", "🔁", "Xatolarim (xatolar ustida ishlash)"], ["board", "🏅", "Haftalik reyting"], ["stat", "📊", "Statistika"], ["xarita", "🗺️", "Xarita o‘yini"], ["arqon", "🪢", "Arqon tortish (o‘yin ochish)"], ["juft", "🧩", "Juftini top"]];
   const DEF_TXT = "Premium bilan platformaning barcha imkoniyatlari ochiladi. To‘lov qilgach, ustoz premiumingizni darhol yoqib beradi.";
   let cfg = {}, me = null, unC = null, unM = null, mUid = null, tcfg = {};
   const gk = g => String(g || "").replace(/[.#$\[\]\/]/g, "_");
@@ -4276,13 +4291,14 @@ const HOMEX=(()=>{
     hayoq:["#22C55E","#0EA5E9",'<path d="M12 3a9 9 0 0 0 0 18z" fill="rgba(255,255,255,.22)"/><circle cx="12" cy="12" r="9"/><path d="M12 3v18M5.6 12.2l1.7 1.7 2.8-3.4M14.6 10l3.6 4M18.2 10l-3.6 4"/>'],
     zina:["#06B6D4","#6366F1",'<path d="M3 20h4v-4h4v-4h4V8h4V4"/><path d="M19 4v3M19 4l2.5 1-2.5 1"/><circle cx="7" cy="13" r="1.3" fill="#fff"/>'],
     boss:["#F97316","#DC2626",'<path d="M4 21V9h3V6h3v3h4V6h3v3h3v12z" fill="rgba(var(--w),.18)"/><path d="M10 21v-4a2 2 0 0 1 4 0v4M8 13h.01M16 13h.01"/><path d="M12 3v3"/><path d="M12 3l3 1-3 1"/>'],
+    juft:["#22C55E","#A855F7",'<rect x="3" y="4" width="8" height="11" rx="2" fill="rgba(255,255,255,.22)"/><rect x="13" y="9" width="8" height="11" rx="2"/><path d="M6 9.5h2M16 14.5h2"/><path d="M9 18l2 2 4-4" stroke-width="2.2"/>'],
     arqon:["#E5484D","#3E8EF7",'<path d="M2 12h20" stroke-dasharray="2.5 1.5"/><circle cx="12" cy="12" r="2.6" fill="#fff" stroke="none"/><circle cx="4.5" cy="8" r="2"/><path d="M4.5 10v5M3 18l1.5-3 1.5 3"/><circle cx="19.5" cy="8" r="2"/><path d="M19.5 10v5M18 18l1.5-3 1.5 3"/>'],
     xarita:["#A855F7","#22D3EE",'<path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2z" fill="rgba(var(--w),.15)"/><path d="M9 4v14M15 6v14"/><path d="M17.5 9.5a1.6 1.6 0 1 0 0 .01"/>']};
   const glogo=(k,z=50)=>{const[a,b,d]=GL[k];return `<span class="gm-lg" style="width:${z}px;height:${z}px;background:linear-gradient(140deg,${a},${b});box-shadow:0 8px 20px ${b}55,inset 0 1px 0 rgba(255,255,255,.35)"><svg aria-hidden="true" width="${Math.round(z*.58)}" height="${Math.round(z*.58)}" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">${d}</svg></span>`};
   function games(){
     if(!ACCT.cur){show("auth");return}
     show("tz");setNav("games");BK(null);
-    const G=[["duel","Duel","Do'stingni chaqir","1 ga 1","DUEL.open()"],["blits","Blits","2 daqiqalik poyga","Yakka","BLITZ.open()"],["hayoq","Ha yoki Yo‘q","Tez javob ber","Yakka","HAYOQ.open()"],["zina","Bilimlar zinapoyasi","15 pog'ona · 3 yordam","Yakka","LADDER.open()"],["boss","Boss jangi","Butun sinf birgalikda","Guruh bilan","T.openJoin()"],["arqon","Arqon tortish","Ikki jamoa — bitta arqon","👥 Jamoaviy"+((PM.cfg.f&&PM.cfg.f.arqon)?" · 👑":""),"T.rope()"],["xarita","Xarita o'yini","Joylarni xaritada top","Yakka","PM.gate('xarita',()=>{location.href='xarita.html'})"],["xarita","Xarita jangi","Kim tez topadi? Jamoa bilan","👥 Jamoaviy · 👑","T.mapBattle()"]];
+    const G=[["duel","Duel","Do'stingni chaqir","1 ga 1","DUEL.open()"],["blits","Blits","2 daqiqalik poyga","Yakka","BLITZ.open()"],["hayoq","Ha yoki Yo‘q","Tez javob ber","Yakka","HAYOQ.open()"],["zina","Bilimlar zinapoyasi","15 pog'ona · 3 yordam","Yakka","LADDER.open()"],["boss","Boss jangi","Butun sinf birgalikda","Guruh bilan","T.openJoin()"],["juft","Juftini top","Shaxs, sana, atama juftlari","Yakka"+((PM.cfg.f&&PM.cfg.f.juft)?" · 👑":""),"PM.gate('juft',()=>JUFTG.open())"],["arqon","Arqon tortish","Ikki jamoa — bitta arqon","👥 Jamoaviy"+((PM.cfg.f&&PM.cfg.f.arqon)?" · 👑":""),"T.rope()"],["xarita","Xarita o'yini","Joylarni xaritada top","Yakka","PM.gate('xarita',()=>{location.href='xarita.html'})"],["xarita","Xarita jangi","Kim tez topadi? Jamoa bilan","👥 Jamoaviy · 👑","T.mapBattle()"]];
     $("tz").innerHTML=`<div class="adh"><div class="adh-t"><small>Bilimingizni o'yin bilan sinang</small><b>O'yinlar</b></div></div>
       <button class="gm-hero" onclick="T.openJoin()">${glogo("turnir",54).replace("gm-lg","gm-lg gm-lgw")}<span class="gm-ht">${isLive?'<em>JONLI TURNIR BOR</em>':""}<b>Turnir</b><small>Kod bilan kiring yoki o'zingiz oching</small></span><span class="gm-hb">Kirish</span></button>
       <div class="gm-grid">${G.map(([k,n,s,ch,fn])=>{const a=GL[k][0];return `<button class="gm-c" style="background:linear-gradient(160deg,${a}30,var(--card) 70%);border-color:${a}55" onclick="${fn}">${glogo(k)}<b>${n}</b><small>${s}</small><em>${ch}</em></button>`}).join("")}</div>`;
@@ -4351,7 +4367,7 @@ function start(){
 }
 function fmt(ms){const s=Math.floor(ms/1000);return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0")}
 var BKfn;function BK(fn){BKfn=fn;const hm=["home","auth"].some(i=>$(i)&&!$(i).classList.contains("hide"));$("bkb").classList.toggle("hide",!fn||hm)}
-function show(id){try{KT.leave()}catch(e){}document.body.classList.remove("adm","dlm","tchm");if(id!=="tz"){try{BLITZ.leave()}catch(e){}try{HAYOQ.leave()}catch(e){}try{LADDER.leave()}catch(e){}try{BOSS.leave()}catch(e){}}try{$("amore").classList.add("hide")}catch(e){}["auth","home","start","quiz","res","tz"].forEach(s=>$(s).classList.toggle("hide",s!==id));BK(id==="res"?(()=>{if(FROM_T)goHome();else{renderTopics();show("start")}}):id==="start"?BKfn:null);setNav(id==="start"&&typeof VIEW!=="undefined"&&VIEW.k==="ms"?"ms":({home:"home",start:"tests",res:"tests"}[id]||null));window.scrollTo(0,0)}
+function show(id){try{KT.leave()}catch(e){}document.body.classList.remove("adm","dlm","tchm");if(id!=="tz"){try{BLITZ.leave()}catch(e){}try{HAYOQ.leave()}catch(e){}try{LADDER.leave()}catch(e){}try{JUFTG.leave()}catch(e){}try{BOSS.leave()}catch(e){}}try{$("amore").classList.add("hide")}catch(e){}["auth","home","start","quiz","res","tz"].forEach(s=>$(s).classList.toggle("hide",s!==id));BK(id==="res"?(()=>{if(FROM_T)goHome();else{renderTopics();show("start")}}):id==="start"?BKfn:null);setNav(id==="start"&&typeof VIEW!=="undefined"&&VIEW.k==="ms"?"ms":({home:"home",start:"tests",res:"tests"}[id]||null));window.scrollTo(0,0)}
 function setNav(active){active={ms:"tests",turnir:"games",stat:"prof"}[active]||active;const on=!!(active&&typeof ACCT!=="undefined"&&ACCT.cur);$("bnav").classList.toggle("hide",!on);[...$("bnav").children].forEach(b=>b.classList.toggle("on",b.dataset.g===active));const av=$("hdrAv");if(av){const c=typeof ACCT!=="undefined"&&ACCT.cur;av.classList.toggle("hide",!c);if(c){const k=c.uid+"|"+c.f+c.l;if(av.dataset.k!==k){av.dataset.k=k;av.innerHTML=AV.html(c.uid,c.f+" "+c.l,"fill")}}}}
 function goHome(){if(typeof ACCT!=="undefined"&&ACCT.cur){show("home");ACCT.renderHome()}else show("auth")}
 function goTests(){VIEW={k:"cls"};set=null;show("start");renderTopics();setNav("tests")}
@@ -5328,6 +5344,96 @@ const BOSS = (() => {
 
 
 // ================== BILIMLAR ZINAPOYASI ==================
+// ================== JUFTINI TOP (xotira o'yini: juftni ochib top) ==================
+const JUFTG = (() => {
+  const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const TY = { s: ["Shaxslar va ishlari", "SHAXS", "ISHI", "👤", "#E2B54C"], d: ["Sanalar va voqealar", "SANA", "VOQEA", "📅", "#22D3EE"], j: ["Davlatlar va joylar", "NOMI", "JOYI", "📍", "#F472B6"], t: ["Atamalar va ma’nolari", "ATAMA", "MA’NOSI", "📖", "#34D399"] };
+  const LV = [[6, "Oson"], [8, "O‘rta"], [10, "Qiyin"]], CL = ["6", "7", "8", "9", "10", "11"], HAS = ["6"];
+  const B = "#60A5FA";
+  let S = { c: "6", k: "s", l: 1 }, G = null, P = {};
+  try { Object.assign(S, JSON.parse(localStorage.getItem("zm_jf") || "{}")); } catch (e) {}
+  const save = () => { try { localStorage.setItem("zm_jf", JSON.stringify(S)); } catch (e) {} };
+  const load = c => (window.JUFT && window.JUFT[c]) ? Promise.resolve() : (P[c] = P[c] || new Promise((ok, no) => { const sc = document.createElement("script"); sc.src = "data/juft" + c + ".js?v=1"; sc.onload = ok; sc.onerror = () => { P[c] = null; no(new Error("Yuklanmadi. Internetni tekshiring.")); }; document.head.appendChild(sc); }));
+  const list = () => ((window.JUFT || {})[S.c] || []).filter(x => x.k === S.k);
+  const bkey = n => "zm_jfb_" + S.c + S.k + n;
+  const best = n => { try { return JSON.parse(localStorage.getItem(bkey(n)) || "null"); } catch (e) { return null; } };
+  const fmt = ms => { const s = Math.floor(ms / 1000); return String(Math.floor(s / 60)).padStart(2, "0") + ":" + String(s % 60).padStart(2, "0"); };
+  const shuf = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  function head(t, sub, back) { document.body.classList.add("dlm"); return `<div class="dl-h"><button class="adh-b" onclick="${back || "goHome()"}" title="Orqaga">‹</button><div class="adh-t"><small>${esc(sub)}</small><b>${t}</b></div></div>`; }
+  function stop() { if (G) clearInterval(G.tk); G = null; }
+  async function open() {
+    stop(); try { T.leave(); } catch (e) {}
+    if (!ACCT.cur) { show("auth"); return; }
+    show("tz"); setNav("games"); BK(null);
+    $("tz").innerHTML = head("🧩 Juftini top", "Xotira va bilim o‘yini") + `<div class="sub" style="text-align:center;margin:30px 0">Yuklanmoqda…</div>`;
+    if (!HAS.includes(S.c)) S.c = "6";
+    try { await load(S.c); } catch (e) { $("tz").innerHTML = head("🧩 Juftini top", "Xotira va bilim o‘yini") + `<div class="card" style="text-align:center"><p class="sub">${esc(e.message)}</p><button class="btn" onclick="JUFTG.open()">Qayta urinish</button></div>`; return; }
+    menu();
+  }
+  function menu() {
+    const n = LV[S.l][0], L = list(), b = best(n), cnt = k => ((window.JUFT || {})[S.c] || []).filter(x => x.k === k).length;
+    $("tz").innerHTML = head("🧩 Juftini top", "Xotira va bilim o‘yini") +
+      `<div class="jf-cls">${CL.map(c => `<button data-c="${c}"${c === S.c ? ' class="on"' : ""}${HAS.includes(c) ? "" : " disabled"}>${c}-sinf${HAS.includes(c) ? "" : " · tez kunda"}</button>`).join("")}</div>
+      <div class="jf-lb">JUFTLAR TURI</div><div class="jf-ty">${Object.entries(TY).map(([k, t]) => `<button data-k="${k}"${k === S.k ? ' class="on"' : ""}><i style="background:${t[4]}26;color:${t[4]}">${t[3]}</i><span style="flex:1"><b>${t[0]}</b><small>${cnt(k)} ta juft</small></span></button>`).join("")}</div>
+      <div class="jf-lb">DARAJA</div><div class="jf-lv">${LV.map((v, i) => `<button data-l="${i}"${i === S.l ? ' class="on"' : ""}>${v[1]}<small>${v[0]} juft</small></button>`).join("")}</div>
+      ${b ? `<div class="tnote" style="margin-top:14px;display:flex;justify-content:space-between"><span>Eng yaxshi natijangiz</span><b>${fmt(b.t)} · ${b.m} harakat · ${"⭐".repeat(b.s)}</b></div>` : ""}
+      <button class="btn" id="jfGo" style="margin-top:14px"${L.length < 4 ? " disabled" : ""}>🧩 O‘ynash</button>
+      <div class="sub" style="text-align:center;margin-top:10px">Ikkita kartochkani oching: ${esc(TY[S.k][1].toLowerCase())} va uning ${esc(TY[S.k][2].toLowerCase())} mos kelsa — juft topildi!</div>`;
+    $("tz").querySelectorAll("[data-c]").forEach(b => b.onclick = async () => { S.c = b.dataset.c; save(); try { await load(S.c); } catch (e) {} menu(); });
+    $("tz").querySelectorAll("[data-k]").forEach(b => b.onclick = () => { S.k = b.dataset.k; save(); menu(); });
+    $("tz").querySelectorAll("[data-l]").forEach(b => b.onclick = () => { S.l = +b.dataset.l; save(); menu(); });
+    $("jfGo").onclick = start;
+  }
+  function start() {
+    stop();
+    const L = list(), n = Math.min(LV[S.l][0], L.length), pairs = shuf(L).slice(0, n), ty = TY[S.k];
+    const cards = shuf(pairs.flatMap((p, i) => [{ i, s: 0, t: p.a }, { i, s: 1, t: p.b }]));
+    G = { n, pairs, cards, open: [], ok: 0, m: 0, t0: Date.now(), lock: false, tk: null };
+    const cols = n <= 6 ? 3 : 4, h = n <= 6 ? 104 : n <= 8 ? 96 : 84;
+    show("tz"); setNav(null); BK(null);
+    $("tz").innerHTML = head("🧩 Juftini top", ty[0] + " · " + LV[S.l][1], "JUFTG.open()") +
+      `<div class="jf-st"><span>⏱ <em id="jfT" style="font-style:normal">00:00</em></span><span>👆 <em id="jfM" style="font-style:normal">0</em></span><span class="sp"></span><span class="ok">✓ <em id="jfF" style="font-style:normal">0/${n}</em></span></div>
+      <div class="jf-g" id="jfG" style="grid-template-columns:repeat(${cols},minmax(0,1fr))">${cards.map((c, k) => `<button class="jf-c" data-i="${k}" style="--h:${h}px;--c:${c.s ? B : ty[4]}" aria-label="Kartochka ${k + 1}"><span class="jf-i"><span class="jf-b"><img src="img/brand/logo-mini.svg?v=2" alt=""></span><span class="jf-f"><small>${c.s ? ty[2] : ty[1]}</small><b>${esc(c.t)}</b></span></span></button>`).join("")}</div>
+      <div class="jf-n e" id="jfN">Ikkita kartochkani oching — mos juftni toping.</div>`;
+    $("jfG").querySelectorAll("[data-i]").forEach(b => b.onclick = () => flip(+b.dataset.i, b));
+    G.tk = setInterval(() => { if (G && $("jfT")) $("jfT").textContent = fmt(Date.now() - G.t0); }, 500);
+  }
+  function flip(k, el) {
+    if (!G || G.lock || el.classList.contains("op") || el.classList.contains("ok")) return;
+    try { FX.S.tick && FX.S.tick(); } catch (e) {}
+    el.classList.add("op"); G.open.push(k);
+    if (G.open.length < 2) return;
+    G.m++; $("jfM").textContent = G.m;
+    const [a, b] = G.open, A = G.cards[a], Bc = G.cards[b], ea = $("jfG").children[a], eb = $("jfG").children[b];
+    G.open = [];
+    if (A.i === Bc.i && A.s !== Bc.s) {
+      ea.classList.add("ok"); eb.classList.add("ok"); G.ok++; $("jfF").textContent = G.ok + "/" + G.n;
+      const p = G.pairs[A.i], N = $("jfN"); N.className = "jf-n"; N.innerHTML = `<b>To‘g‘ri!</b> ${esc(p.e || (p.a + " — " + p.b))}`;
+      try { FX.correct(eb, "✓"); } catch (e) {}
+      try { Telegram.WebApp.HapticFeedback.notificationOccurred("success"); } catch (e) {}
+      if (G.ok >= G.n) { G.lock = true; setTimeout(finish, 900); }
+    } else {
+      G.lock = true; ea.classList.add("bad"); eb.classList.add("bad");
+      try { Telegram.WebApp.HapticFeedback.notificationOccurred("error"); } catch (e) {}
+      setTimeout(() => { ea.classList.remove("op", "bad"); eb.classList.remove("op", "bad"); if (G) G.lock = false; }, 950);
+    }
+  }
+  function finish() {
+    if (!G) return; const g = G; stop();
+    const t = Date.now() - g.t0, m = g.m, n = g.n, st = m <= n + 2 ? 3 : m <= Math.round(n * 1.8) ? 2 : 1;
+    const o = best(n), rec = !o || st > o.s || (st === o.s && (m < o.m || (m === o.m && t < o.t)));
+    if (rec) try { localStorage.setItem(bkey(n), JSON.stringify({ t, m, s: st })); } catch (e) {}
+    $("tz").innerHTML = head("🧩 Natija", TY[S.k][0] + " · " + LV[S.l][1], "JUFTG.open()") +
+      `<div class="card" style="text-align:center">${rec && o ? `<div class="bz-badge">🏅 YANGI REKORD!</div>` : ""}<div class="jf-stars">${[1, 2, 3].map(i => `<span class="${i <= st ? "" : "off"}">⭐</span>`).join("")}</div>
+      <h1 style="margin:12px 0 4px">Barcha juftlar topildi!</h1><div class="sub" style="margin:0">${st === 3 ? "Ajoyib xotira va bilim! 🔥" : st === 2 ? "Zo‘r! Kamroq harakat bilan 3 yulduz olasiz." : "Yaxshi boshlanish — yana urinib ko‘ring!"}</div>
+      <div class="jf-res"><div><b>${fmt(t)}</b><small>vaqt</small></div><div><b>${m}</b><small>harakat</small></div><div><b>${n}</b><small>juft</small></div></div></div>
+      <div class="card" style="margin-top:12px"><b style="font-size:12px;letter-spacing:1px;color:var(--mu)">BUGUN O‘RGANGANLARINGIZ</b><div class="jf-lr" style="margin-top:8px">${g.pairs.map(p => `<div><b>${esc(p.a)}</b><span>${esc(p.b)}</span></div>`).join("")}</div></div>
+      <div class="row" style="gap:10px;margin-top:12px"><button class="btn ghost" style="margin:0" onclick="JUFTG.open()">Boshqa juftlar</button><button class="btn" style="margin:0" onclick="JUFTG.start()">🔁 Qayta o‘ynash</button></div>`;
+    setTimeout(() => { try { FX.rain(st === 3 ? 260 : 120); FX.S.win(); } catch (e) {} }, 250);
+  }
+  return { open, start, leave: stop };
+})();
+
 const LADDER = (() => {
   const STEPS = [100, 200, 300, 500, 1000, 2000, 4000, 8000, 16000, 32000, 64000, 125000, 250000, 500000, 1000000];
   const SAFE = [4, 9], QT = 30000;
