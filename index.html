@@ -412,12 +412,11 @@ body.tchm #bnav{display:none!important}body.tchm .wrap{padding-bottom:110px}body
 .jf-lv{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.jf-lv button{min-height:56px;border-radius:14px;border:1px solid var(--line);background:var(--card);color:var(--tx);font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px}.jf-lv button small{font-size:11px;font-weight:400;color:var(--mu)}.jf-lv button.on{border:2px solid var(--ac)}
 .jf-lb{font-size:12px;letter-spacing:1px;font-weight:700;color:var(--mu);margin:16px 0 8px}
 .jf-st{display:flex;gap:8px;margin:0 0 12px}.jf-st span{height:34px;padding:0 11px;border-radius:10px;background:var(--card2);display:flex;align-items:center;gap:6px;font-weight:700;font-size:14px}.jf-st .sp{flex:1;background:none;padding:0}.jf-st .ok{color:var(--ok)}
-.jf-g{display:grid;gap:8px}.jf-c{position:relative;border:0;padding:0;background:none;perspective:700px;cursor:pointer;font-family:inherit;color:var(--tx);height:var(--h,100px)}
-.jf-i{position:absolute;inset:0;transition:transform .45s cubic-bezier(.2,.8,.2,1);transform-style:preserve-3d}.jf-c.op .jf-i,.jf-c.ok .jf-i{transform:rotateY(180deg)}
-.jf-b,.jf-f{position:absolute;inset:0;border-radius:14px;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;align-items:center;justify-content:center;box-sizing:border-box}
-.jf-b{background:var(--card2);border:1.5px solid var(--line)}.jf-b img{width:38%;max-width:44px;opacity:.9}
-.jf-f{transform:rotateY(180deg);flex-direction:column;gap:3px;padding:6px;text-align:center;background:var(--card);border:2px solid var(--c)}.jf-f small{font-size:9px;letter-spacing:.8px;font-weight:700;color:var(--c)}.jf-f b{font-size:12.5px;line-height:1.22;font-weight:600;overflow-wrap:anywhere}
-.jf-c.ok .jf-f{border-color:var(--ok);background:rgba(52,211,153,.14)}.jf-c.bad .jf-f{border-color:var(--bad);animation:jfSh .4s}@keyframes jfSh{20%,60%{transform:rotateY(180deg) translateX(-5px)}40%,80%{transform:rotateY(180deg) translateX(5px)}}
+.jf-g{display:grid;gap:8px}.jf-c{position:relative;height:var(--h,100px);border-radius:14px;border:2px solid var(--c);background:var(--card);color:var(--tx);font-family:inherit;cursor:pointer;padding:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;text-align:center;box-sizing:border-box;transition:transform .15s,opacity .3s,background .2s}
+.jf-c small{font-size:9px;letter-spacing:.8px;font-weight:700;color:var(--c)}.jf-c b{font-size:12.5px;line-height:1.2;font-weight:600;overflow-wrap:break-word;hyphens:auto}
+.jf-c.sel{background:color-mix(in srgb,var(--c) 22%,var(--card));box-shadow:0 0 0 4px color-mix(in srgb,var(--c) 35%,transparent);transform:scale(1.03)}
+.jf-c.ok{border-color:var(--ok);background:rgba(52,211,153,.14);opacity:.5;cursor:default}.jf-c.ok::after{content:"✓";position:absolute;top:5px;right:6px;width:18px;height:18px;border-radius:50%;background:var(--ok);color:#062A1C;font-size:11px;font-weight:800;display:grid;place-items:center}
+.jf-c.bad{border-color:var(--bad);background:rgba(251,113,133,.16);animation:jfSh .4s}@keyframes jfSh{20%,60%{transform:translateX(-5px)}40%,80%{transform:translateX(5px)}}
 .jf-n{margin-top:12px;padding:12px 14px;border-radius:14px;font-size:13px;line-height:1.45;background:rgba(52,211,153,.12);border:1px solid rgba(52,211,153,.4);min-height:20px}.jf-n.e{background:var(--card);border-color:var(--line);color:var(--mu)}
 .jf-stars{display:flex;justify-content:center;gap:6px;font-size:44px;line-height:1}.jf-stars .off{filter:grayscale(1);opacity:.3}
 .jf-res{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}.jf-res div{background:var(--card2);border-radius:14px;padding:10px;text-align:center}.jf-res b{display:block;font-size:20px}.jf-res small{font-size:11px;color:var(--mu)}
@@ -5344,7 +5343,7 @@ const BOSS = (() => {
 
 
 // ================== BILIMLAR ZINAPOYASI ==================
-// ================== JUFTINI TOP (xotira o'yini: juftni ochib top) ==================
+// ================== JUFTINI TOP (ochiq kartochkalar: mos juftni belgilash) ==================
 const JUFTG = (() => {
   const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const TY = { s: ["Shaxslar va ishlari", "SHAXS", "ISHI", "👤", "#E2B54C"], d: ["Sanalar va voqealar", "SANA", "VOQEA", "📅", "#22D3EE"], j: ["Davlatlar va joylar", "NOMI", "JOYI", "📍", "#F472B6"], t: ["Atamalar va ma’nolari", "ATAMA", "MA’NOSI", "📖", "#34D399"] };
@@ -5355,7 +5354,7 @@ const JUFTG = (() => {
   const save = () => { try { localStorage.setItem("zm_jf", JSON.stringify(S)); } catch (e) {} };
   const load = c => (window.JUFT && window.JUFT[c]) ? Promise.resolve() : (P[c] = P[c] || new Promise((ok, no) => { const sc = document.createElement("script"); sc.src = "data/juft" + c + ".js?v=1"; sc.onload = ok; sc.onerror = () => { P[c] = null; no(new Error("Yuklanmadi. Internetni tekshiring.")); }; document.head.appendChild(sc); }));
   const list = () => ((window.JUFT || {})[S.c] || []).filter(x => x.k === S.k);
-  const bkey = n => "zm_jfb_" + S.c + S.k + n;
+  const bkey = n => "zm_jfo_" + S.c + S.k + n;
   const best = n => { try { return JSON.parse(localStorage.getItem(bkey(n)) || "null"); } catch (e) { return null; } };
   const fmt = ms => { const s = Math.floor(ms / 1000); return String(Math.floor(s / 60)).padStart(2, "0") + ":" + String(s % 60).padStart(2, "0"); };
   const shuf = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
@@ -5365,20 +5364,20 @@ const JUFTG = (() => {
     stop(); try { T.leave(); } catch (e) {}
     if (!ACCT.cur) { show("auth"); return; }
     show("tz"); setNav("games"); BK(null);
-    $("tz").innerHTML = head("🧩 Juftini top", "Xotira va bilim o‘yini") + `<div class="sub" style="text-align:center;margin:30px 0">Yuklanmoqda…</div>`;
+    $("tz").innerHTML = head("🧩 Juftini top", "Moslarini toping") + `<div class="sub" style="text-align:center;margin:30px 0">Yuklanmoqda…</div>`;
     if (!HAS.includes(S.c)) S.c = "6";
-    try { await load(S.c); } catch (e) { $("tz").innerHTML = head("🧩 Juftini top", "Xotira va bilim o‘yini") + `<div class="card" style="text-align:center"><p class="sub">${esc(e.message)}</p><button class="btn" onclick="JUFTG.open()">Qayta urinish</button></div>`; return; }
+    try { await load(S.c); } catch (e) { $("tz").innerHTML = head("🧩 Juftini top", "Moslarini toping") + `<div class="card" style="text-align:center"><p class="sub">${esc(e.message)}</p><button class="btn" onclick="JUFTG.open()">Qayta urinish</button></div>`; return; }
     menu();
   }
   function menu() {
     const n = LV[S.l][0], L = list(), b = best(n), cnt = k => ((window.JUFT || {})[S.c] || []).filter(x => x.k === k).length;
-    $("tz").innerHTML = head("🧩 Juftini top", "Xotira va bilim o‘yini") +
+    $("tz").innerHTML = head("🧩 Juftini top", "Moslarini toping") +
       `<div class="jf-cls">${CL.map(c => `<button data-c="${c}"${c === S.c ? ' class="on"' : ""}${HAS.includes(c) ? "" : " disabled"}>${c}-sinf${HAS.includes(c) ? "" : " · tez kunda"}</button>`).join("")}</div>
       <div class="jf-lb">JUFTLAR TURI</div><div class="jf-ty">${Object.entries(TY).map(([k, t]) => `<button data-k="${k}"${k === S.k ? ' class="on"' : ""}><i style="background:${t[4]}26;color:${t[4]}">${t[3]}</i><span style="flex:1"><b>${t[0]}</b><small>${cnt(k)} ta juft</small></span></button>`).join("")}</div>
       <div class="jf-lb">DARAJA</div><div class="jf-lv">${LV.map((v, i) => `<button data-l="${i}"${i === S.l ? ' class="on"' : ""}>${v[1]}<small>${v[0]} juft</small></button>`).join("")}</div>
-      ${b ? `<div class="tnote" style="margin-top:14px;display:flex;justify-content:space-between"><span>Eng yaxshi natijangiz</span><b>${fmt(b.t)} · ${b.m} harakat · ${"⭐".repeat(b.s)}</b></div>` : ""}
+      ${b ? `<div class="tnote" style="margin-top:14px;display:flex;justify-content:space-between"><span>Eng yaxshi natijangiz</span><b>${fmt(b.t)} · ${b.m} xato · ${"⭐".repeat(b.s)}</b></div>` : ""}
       <button class="btn" id="jfGo" style="margin-top:14px"${L.length < 4 ? " disabled" : ""}>🧩 O‘ynash</button>
-      <div class="sub" style="text-align:center;margin-top:10px">Ikkita kartochkani oching: ${esc(TY[S.k][1].toLowerCase())} va uning ${esc(TY[S.k][2].toLowerCase())} mos kelsa — juft topildi!</div>`;
+      <div class="sub" style="text-align:center;margin-top:10px">Hamma kartochkalar ochiq: ${esc(TY[S.k][1].toLowerCase())}ni va unga mos ${esc(TY[S.k][2].toLowerCase())}ni bosing.</div>`;
     $("tz").querySelectorAll("[data-c]").forEach(b => b.onclick = async () => { S.c = b.dataset.c; save(); try { await load(S.c); } catch (e) {} menu(); });
     $("tz").querySelectorAll("[data-k]").forEach(b => b.onclick = () => { S.k = b.dataset.k; save(); menu(); });
     $("tz").querySelectorAll("[data-l]").forEach(b => b.onclick = () => { S.l = +b.dataset.l; save(); menu(); });
@@ -5388,45 +5387,47 @@ const JUFTG = (() => {
     stop();
     const L = list(), n = Math.min(LV[S.l][0], L.length), pairs = shuf(L).slice(0, n), ty = TY[S.k];
     const cards = shuf(pairs.flatMap((p, i) => [{ i, s: 0, t: p.a }, { i, s: 1, t: p.b }]));
-    G = { n, pairs, cards, open: [], ok: 0, m: 0, t0: Date.now(), lock: false, tk: null };
-    const cols = n <= 6 ? 3 : 4, h = n <= 6 ? 104 : n <= 8 ? 96 : 84;
+    G = { n, pairs, cards, sel: null, ok: 0, x: 0, wr: new Set(), t0: Date.now(), tk: null };
+    const cols = 3, h = n <= 6 ? 100 : n <= 8 ? 84 : 74;
     show("tz"); setNav(null); BK(null);
     $("tz").innerHTML = head("🧩 Juftini top", ty[0] + " · " + LV[S.l][1], "JUFTG.open()") +
-      `<div class="jf-st"><span>⏱ <em id="jfT" style="font-style:normal">00:00</em></span><span>👆 <em id="jfM" style="font-style:normal">0</em></span><span class="sp"></span><span class="ok">✓ <em id="jfF" style="font-style:normal">0/${n}</em></span></div>
-      <div class="jf-g" id="jfG" style="grid-template-columns:repeat(${cols},minmax(0,1fr))">${cards.map((c, k) => `<button class="jf-c" data-i="${k}" style="--h:${h}px;--c:${c.s ? B : ty[4]}" aria-label="Kartochka ${k + 1}"><span class="jf-i"><span class="jf-b"><img src="img/brand/logo-mini.svg?v=2" alt=""></span><span class="jf-f"><small>${c.s ? ty[2] : ty[1]}</small><b>${esc(c.t)}</b></span></span></button>`).join("")}</div>
-      <div class="jf-n e" id="jfN">Ikkita kartochkani oching — mos juftni toping.</div>`;
-    $("jfG").querySelectorAll("[data-i]").forEach(b => b.onclick = () => flip(+b.dataset.i, b));
+      `<div class="jf-st"><span>⏱ <em id="jfT" style="font-style:normal">00:00</em></span><span style="color:var(--bad)">✗ <em id="jfX" style="font-style:normal">0</em></span><span class="sp"></span><span class="ok">✓ <em id="jfF" style="font-style:normal">0/${n}</em></span></div>
+      <div class="jf-g" id="jfG" style="grid-template-columns:repeat(${cols},minmax(0,1fr))">${cards.map((c, k) => `<button class="jf-c" data-i="${k}" style="--h:${h}px;--c:${c.s ? B : ty[4]}"><small>${c.s ? ty[2] : ty[1]}</small><b>${esc(c.t)}</b></button>`).join("")}</div>
+      <div class="jf-n e" id="jfN">Bitta <b style="color:${ty[4]}">${esc(ty[1].toLowerCase())}</b> va unga mos <b style="color:${B}">${esc(ty[2].toLowerCase())}</b> kartochkasini bosing.</div>`;
+    $("jfG").querySelectorAll("[data-i]").forEach(b => b.onclick = () => tap(+b.dataset.i, b));
     G.tk = setInterval(() => { if (G && $("jfT")) $("jfT").textContent = fmt(Date.now() - G.t0); }, 500);
   }
-  function flip(k, el) {
-    if (!G || G.lock || el.classList.contains("op") || el.classList.contains("ok")) return;
+  function tap(k, el) {
+    if (!G || el.classList.contains("ok")) return;
+    const els = $("jfG").children;
+    if (G.sel === k) { el.classList.remove("sel"); G.sel = null; return; }
     try { FX.S.tick && FX.S.tick(); } catch (e) {}
-    el.classList.add("op"); G.open.push(k);
-    if (G.open.length < 2) return;
-    G.m++; $("jfM").textContent = G.m;
-    const [a, b] = G.open, A = G.cards[a], Bc = G.cards[b], ea = $("jfG").children[a], eb = $("jfG").children[b];
-    G.open = [];
-    if (A.i === Bc.i && A.s !== Bc.s) {
-      ea.classList.add("ok"); eb.classList.add("ok"); G.ok++; $("jfF").textContent = G.ok + "/" + G.n;
+    if (G.sel == null || G.cards[G.sel].s === G.cards[k].s) { if (G.sel != null) els[G.sel].classList.remove("sel"); G.sel = k; el.classList.add("sel"); return; }
+    const a = G.sel, A = G.cards[a], C = G.cards[k], ea = els[a]; G.sel = null; ea.classList.remove("sel");
+    if (A.i === C.i) {
+      ea.classList.add("ok"); el.classList.add("ok"); G.ok++; $("jfF").textContent = G.ok + "/" + G.n;
       const p = G.pairs[A.i], N = $("jfN"); N.className = "jf-n"; N.innerHTML = `<b>To‘g‘ri!</b> ${esc(p.e || (p.a + " — " + p.b))}`;
-      try { FX.correct(eb, "✓"); } catch (e) {}
+      try { FX.correct(el, "✓"); } catch (e) {}
       try { Telegram.WebApp.HapticFeedback.notificationOccurred("success"); } catch (e) {}
-      if (G.ok >= G.n) { G.lock = true; setTimeout(finish, 900); }
+      if (G.ok >= G.n) setTimeout(finish, 900);
     } else {
-      G.lock = true; ea.classList.add("bad"); eb.classList.add("bad");
+      G.x++; G.wr.add(A.i); G.wr.add(C.i); $("jfX").textContent = G.x;
+      ea.classList.add("bad"); el.classList.add("bad");
+      const N = $("jfN"); N.className = "jf-n e"; N.innerHTML = `<b style="color:var(--bad)">Mos emas.</b> Yana urinib ko‘ring.`;
       try { Telegram.WebApp.HapticFeedback.notificationOccurred("error"); } catch (e) {}
-      setTimeout(() => { ea.classList.remove("op", "bad"); eb.classList.remove("op", "bad"); if (G) G.lock = false; }, 950);
+      setTimeout(() => { ea.classList.remove("bad"); el.classList.remove("bad"); }, 600);
     }
   }
   function finish() {
     if (!G) return; const g = G; stop();
-    const t = Date.now() - g.t0, m = g.m, n = g.n, st = m <= n + 2 ? 3 : m <= Math.round(n * 1.8) ? 2 : 1;
+    const t = Date.now() - g.t0, m = g.x, n = g.n, st = m <= 1 ? 3 : m <= 3 ? 2 : 1;
     const o = best(n), rec = !o || st > o.s || (st === o.s && (m < o.m || (m === o.m && t < o.t)));
     if (rec) try { localStorage.setItem(bkey(n), JSON.stringify({ t, m, s: st })); } catch (e) {}
     $("tz").innerHTML = head("🧩 Natija", TY[S.k][0] + " · " + LV[S.l][1], "JUFTG.open()") +
       `<div class="card" style="text-align:center">${rec && o ? `<div class="bz-badge">🏅 YANGI REKORD!</div>` : ""}<div class="jf-stars">${[1, 2, 3].map(i => `<span class="${i <= st ? "" : "off"}">⭐</span>`).join("")}</div>
-      <h1 style="margin:12px 0 4px">Barcha juftlar topildi!</h1><div class="sub" style="margin:0">${st === 3 ? "Ajoyib xotira va bilim! 🔥" : st === 2 ? "Zo‘r! Kamroq harakat bilan 3 yulduz olasiz." : "Yaxshi boshlanish — yana urinib ko‘ring!"}</div>
-      <div class="jf-res"><div><b>${fmt(t)}</b><small>vaqt</small></div><div><b>${m}</b><small>harakat</small></div><div><b>${n}</b><small>juft</small></div></div></div>
+      <h1 style="margin:12px 0 4px">Barcha juftlar topildi!</h1><div class="sub" style="margin:0">${st === 3 ? "Ajoyib bilim! 🔥" : st === 2 ? "Zo‘r! 1 tagacha xato bilan 3 yulduz olasiz." : "Xato qilgan juftlaringizni takrorlab, yana urinib ko‘ring!"}</div>
+      <div class="jf-res"><div><b>${fmt(t)}</b><small>vaqt</small></div><div><b>${m}</b><small>xato</small></div><div><b>${n}</b><small>juft</small></div></div></div>
+      ${g.wr.size ? `<div class="card" style="margin-top:12px;border:1px solid rgba(251,113,133,.45)"><b style="font-size:12px;letter-spacing:1px;color:var(--bad)">XATO QILGAN JUFTLARINGIZ — TAKRORLANG</b><div class="jf-lr" style="margin-top:8px">${[...g.wr].map(i => g.pairs[i]).map(p => `<div><b>${esc(p.a)}</b><span>${esc(p.b)}</span></div>`).join("")}</div></div>` : ""}
       <div class="card" style="margin-top:12px"><b style="font-size:12px;letter-spacing:1px;color:var(--mu)">BUGUN O‘RGANGANLARINGIZ</b><div class="jf-lr" style="margin-top:8px">${g.pairs.map(p => `<div><b>${esc(p.a)}</b><span>${esc(p.b)}</span></div>`).join("")}</div></div>
       <div class="row" style="gap:10px;margin-top:12px"><button class="btn ghost" style="margin:0" onclick="JUFTG.open()">Boshqa juftlar</button><button class="btn" style="margin:0" onclick="JUFTG.start()">🔁 Qayta o‘ynash</button></div>`;
     setTimeout(() => { try { FX.rain(st === 3 ? 260 : 120); FX.S.win(); } catch (e) {} }, 250);
