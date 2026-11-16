@@ -5172,8 +5172,9 @@ const BOSS = (() => {
     if (hsel.length < 2 || hsel.length > 4) return $("bhE").textContent = "2 tadan 4 tagacha mavzu belgilang.";
     $("bhGo").disabled = true;
     let code; for (let k = 0; k < 20; k++) { code = String(1000 + Math.floor(Math.random() * 9000)); if (!(await DBA.get(`t/${code}/meta`))) break; }
-    const meta = { host: (ACCT.cur || {}).uid, boss: 1, phase: "vote", cls: hc, cand: hsel, n: hn, dur: hdur * 60000, seed: Math.floor(Math.random() * 1e9), c: DBA.now(), set: hsel[0], title: "🏰 Boss jangi" };
-    try { await DBA.set(`t/${code}`, { meta }); } catch (e) { $("bhGo").disabled = false; return $("bhE").textContent = /permission/i.test(String(e && e.message)) ? "Ruxsat yo'q — ilovani yopib, qayta kiring." : "Ochib bo'lmadi. Internetni tekshirib, qayta bosing."; }
+    const hu = (typeof AUTH !== "undefined" && AUTH.uid) || (ACCT.cur || {}).uid; if (!hu) { $("bhGo").disabled = false; return $("bhE").textContent = "Avval hisobingizga kiring."; }
+    const meta = { host: hu, boss: 1, phase: "vote", cls: hc, cand: hsel, n: hn, dur: hdur * 60000, seed: Math.floor(Math.random() * 1e9), c: DBA.now(), set: hsel[0], title: "🏰 Boss jangi" };
+    try { await DBA.set(`t/${code}`, { meta }); } catch (e) { $("bhGo").disabled = false; return $("bhE").textContent = /permission/i.test(String(e && e.message)) ? "Ruxsat yo'q — ilovani yopib, qayta kiring." : "Ochib bo'lmadi: " + String((e && e.message) || e).slice(0, 120); }
     host(code);
   }
   function host(code) {
