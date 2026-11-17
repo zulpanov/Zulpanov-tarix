@@ -1,0 +1,46 @@
+name: Domen (Cloudflare DNS)
+on:
+  push:
+    branches: [main]
+    paths: [".github/workflows/domain.yml"]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  dns:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cloudflare zona va DNS yozuvlari
+        env:
+          T: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          A: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          D: tarixarena.uz
+        run: |
+          set +e
+          api(){ curl -s -X "$1" "https://api.cloudflare.com/client/v4$2" -H "Authorization: Bearer $T" -H "Content-Type: application/json" ${3:+--data "$3"}; }
+          {
+          echo "== token tekshiruvi"; api GET /user/tokens/verify | jq -c '{success,errors,status:.result.status}'
+          Z=$(api GET "/zones?name=$D" | jq -r '.result[0].id // empty')
+          if [ -z "$Z" ]; then
+            echo "== zona yaratish"; R=$(api POST /zones "{\"name\":\"$D\",\"account\":{\"id\":\"$A\"},\"type\":\"full\"}")
+            echo "$R" | jq -c '{success,errors}'; Z=$(echo "$R" | jq -r '.result.id // empty')
+          fi
+          echo "ZONE=$Z"
+          if [ -n "$Z" ]; then
+            echo "== nameserverlar"; api GET "/zones/$Z" | jq -r '.result.name_servers[]?, "status: " + (.result.status // "?")'
+            EX=$(api GET "/zones/$Z/dns_records?per_page=100" | jq -r '.result[]? | .type+" "+.name+" "+.content')
+            echo "== mavjud yozuvlar"; echo "$EX"
+            for ip in 185.199.108.153 185.199.109.153 185.199.110.153 185.199.111.153; do
+              echo "$EX" | grep -q "^A $D $ip$" || api POST "/zones/$Z/dns_records" "{\"type\":\"A\",\"name\":\"$D\",\"content\":\"$ip\",\"proxied\":false,\"ttl\":1}" | jq -c '{success,errors}'
+            done
+            echo "$EX" | grep -q "^CNAME www.$D " || api POST "/zones/$Z/dns_records" "{\"type\":\"CNAME\",\"name\":\"www\",\"content\":\"zulpanov.github.io\",\"proxied\":false,\"ttl\":1}" | jq -c '{success,errors}'
+            echo "== natija"; api GET "/zones/$Z/dns_records?per_page=100" | jq -r '.result[]? | .type+" "+.name+" "+.content+" proxied="+(.proxied|tostring)'
+          fi
+          } > dns.txt 2>&1
+          cat dns.txt
+      - name: Natijani dns-log shoxiga yozish
+        run: |
+          mkdir out && mv dns.txt out/ && cd out
+          git init -q && git checkout -q -b dns-log
+          git -c user.name=bot -c user.email=bot@x add dns.txt && git -c user.name=bot -c user.email=bot@x commit -qm log
+          git push -qf "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" dns-log
