@@ -21,6 +21,8 @@ jobs:
           {
           echo "== token tekshiruvi"; api GET /user/tokens/verify | jq -c '{success,errors,status:.result.status}'
           Z=$(api GET "/zones?name=$D" | jq -r '.result[0].id // empty')
+          echo "== hisoblar"; api GET /accounts | jq -c '[.result[]? | {id,name}], .errors'
+          A2=$(api GET /accounts | jq -r '.result[0].id // empty'); [ -n "$A2" ] && A=$A2
           if [ -z "$Z" ]; then
             echo "== zona yaratish"; R=$(api POST /zones "{\"name\":\"$D\",\"account\":{\"id\":\"$A\"},\"type\":\"full\"}")
             echo "$R" | jq -c '{success,errors}'; Z=$(echo "$R" | jq -r '.result.id // empty')
