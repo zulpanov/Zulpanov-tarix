@@ -38,6 +38,11 @@ jobs:
             echo "$EX" | grep -q "^CNAME www.$D " || api POST "/zones/$Z/dns_records" "{\"type\":\"CNAME\",\"name\":\"www\",\"content\":\"zulpanov.github.io\",\"proxied\":false,\"ttl\":1}" | jq -c '{success,errors}'
             echo "== natija"; api GET "/zones/$Z/dns_records?per_page=100" | jq -r '.result[]? | .type+" "+.name+" "+.content+" proxied="+(.proxied|tostring)'
           fi
+          echo "== zona holati"; api GET "/zones/$Z" | jq -r '.result.status // "?"'
+          echo "== jahon DNS (1.1.1.1 / 8.8.8.8)"
+          for r in 1.1.1.1 8.8.8.8; do echo "-- $r NS: $(dig +short NS $D @$r | tr '\n' ' ') | A: $(dig +short A $D @$r | tr '\n' ' ') | www: $(dig +short CNAME www.$D @$r)"; done
+          echo "-- brian (CF) A: $(dig +short A $D @brian.ns.cloudflare.com | tr '\n' ' ') | www: $(dig +short CNAME www.$D @brian.ns.cloudflare.com)"
+          echo "-- .uz registri NS: $(dig +short NS $D @ns.cctld.uz 2>/dev/null | tr '\n' ' ') $(dig +norecurse NS $D @$(dig +short NS uz | head -1) | grep -A3 AUTHORITY | tail -2 | tr '\n' ' ')"
           } > dns.txt 2>&1
           cat dns.txt
       - name: Natijani dns-log shoxiga yozish
@@ -48,3 +53,4 @@ jobs:
           git push -qf "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" dns-log
 # Tue Nov 17 11:05:29 +05 2026
 # Tue Nov 17 11:10:58 +05 2026
+# Tue Nov 17 11:30:06 +05 2026
