@@ -901,6 +901,35 @@ html[data-th="arena"] .btn:not(.ghost):not([style*="background"]),html[data-th="
 html[data-th="arena"] .bnav button.on span{color:#0A1830!important}
 .hy-pre button.on{background:linear-gradient(135deg,#15803D,#047857)!important}
 .gm-hero{background:linear-gradient(135deg,#D97706,#DC2626)!important}.gm-hero b,.gm-hero small{text-shadow:0 1px 2px rgba(0,0,0,.25)}
+
+/* ===== Savol ekrani: A «Oltin karta» ===== */
+#quiz .fq-card{position:relative;background:linear-gradient(160deg,rgba(var(--cardr),.98),rgba(var(--cardr),.82));border:1.5px solid rgba(212,166,58,.55);border-radius:22px;padding:16px 16px 18px;margin:0 0 16px;box-shadow:0 12px 30px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.07)}
+#quiz .fq-card .fq-q{margin:12px 0 0}
+#quiz .fq-card .fq-tag:empty{display:none}#quiz .fq-card .fq-tag:empty+.fq-q{margin-top:0}
+#quiz .fq-tag{background:rgba(212,166,58,.16);color:#F2C14E;font-weight:800;font-size:11px}
+#quiz .fq-tm{background:conic-gradient(#F2C14E calc(var(--p)*1%),rgba(var(--w),.12) 0)}#quiz .fq-tm span{font-size:12px;font-weight:800}
+#quiz .fq-seg i.c{background:linear-gradient(90deg,#F2C14E,#D4A63A);box-shadow:0 0 8px rgba(242,193,78,.55)}#quiz .fq-seg i.d{background:rgba(212,166,58,.55)}
+#quiz .opt{background:rgba(var(--cardr),.92);border:1.5px solid rgba(var(--w),.09);box-shadow:0 2px 8px rgba(0,0,0,.12);transition:border-color .15s,background .15s,transform .12s}
+#quiz .opt:active:not(:disabled){transform:scale(.985)}
+#quiz .opt .l{font-weight:800}
+#quiz #ops .opt:nth-child(6n+1) .l{background:rgba(59,130,246,.2);color:#7CB3FF}
+#quiz #ops .opt:nth-child(6n+2) .l{background:rgba(168,85,247,.2);color:#D8B4FE}
+#quiz #ops .opt:nth-child(6n+3) .l{background:rgba(249,115,22,.2);color:#FDBA74}
+#quiz #ops .opt:nth-child(6n+4) .l{background:rgba(236,72,153,.2);color:#F9A8D4}
+#quiz #ops .opt:nth-child(6n+5) .l{background:rgba(20,184,166,.2);color:#5EEAD4}
+#quiz #ops .opt:nth-child(6n+6) .l{background:rgba(234,179,8,.2);color:#FDE047}
+#quiz #ops .opt.sel{border-color:#D4A63A;background:rgba(212,166,58,.14);box-shadow:0 0 0 4px rgba(212,166,58,.14)}
+#quiz #ops .opt.sel .l{background:#D4A63A;color:#1b1300}#quiz .opt .ck{background:#D4A63A;color:#1b1300}
+#quiz #ops .opt.okk{border-color:#22c55e;background:rgba(34,197,94,.15);box-shadow:0 0 0 4px rgba(34,197,94,.12)}
+#quiz #ops .opt.okk .l{background:#22c55e;color:transparent;position:relative}#quiz #ops .opt.okk .l:after{content:"\2713\FE0E";font-family:Arial,sans-serif;position:absolute;inset:0;display:grid;place-items:center;color:#fff;font-size:17px}
+#quiz #ops .opt.bad{border-color:#f43f5e;background:rgba(244,63,94,.15)}
+#quiz #ops .opt.bad .l{background:#f43f5e;color:transparent;position:relative}#quiz #ops .opt.bad .l:after{content:"\2715\FE0E";font-family:Arial,sans-serif;position:absolute;inset:0;display:grid;place-items:center;color:#fff;font-size:15px}
+#quiz #ops .opt.okk .l,#quiz #ops .opt.bad .l{font-size:0!important;-webkit-text-fill-color:transparent}#quiz #ops .opt.okk .l:after,#quiz #ops .opt.bad .l:after{-webkit-text-fill-color:#fff;color:#fff!important}
+#quiz .fq-ft #next:not(.ghost):not(:disabled){background:linear-gradient(90deg,#F2C14E,#D4A63A);color:#1b1300;box-shadow:0 8px 20px rgba(212,166,58,.3)}
+html[data-th="tong"] #quiz .fq-tag,html[data-th="vodiy"] #quiz .fq-tag{color:#B45309;background:rgba(212,166,58,.18)}
+html[data-th="tong"] #quiz .fq-card,html[data-th="vodiy"] #quiz .fq-card{border-color:rgba(180,120,20,.45);box-shadow:0 10px 26px rgba(30,40,80,.10)}
+html[data-th="tong"] #quiz #ops .opt:nth-child(6n+1) .l,html[data-th="vodiy"] #quiz #ops .opt:nth-child(6n+1) .l{color:#1D4ED8}html[data-th="tong"] #quiz #ops .opt:nth-child(6n+2) .l,html[data-th="vodiy"] #quiz #ops .opt:nth-child(6n+2) .l{color:#7E22CE}html[data-th="tong"] #quiz #ops .opt:nth-child(6n+3) .l,html[data-th="vodiy"] #quiz #ops .opt:nth-child(6n+3) .l{color:#C2410C}html[data-th="tong"] #quiz #ops .opt:nth-child(6n+4) .l,html[data-th="vodiy"] #quiz #ops .opt:nth-child(6n+4) .l{color:#BE185D}html[data-th="tong"] #quiz #ops .opt:nth-child(6n+5) .l,html[data-th="vodiy"] #quiz #ops .opt:nth-child(6n+5) .l{color:#0F766E}html[data-th="tong"] #quiz #ops .opt:nth-child(6n+6) .l,html[data-th="vodiy"] #quiz #ops .opt:nth-child(6n+6) .l{color:#A16207}
+html[data-th="tong"] #quiz .opt,html[data-th="vodiy"] #quiz .opt{box-shadow:0 2px 8px rgba(30,40,80,.06)}
 </style>
 </head>
 <body>
@@ -950,8 +979,8 @@ html[data-th="arena"] .bnav button.on span{color:#0A1830!important}
     <div class="fq-top"><button class="fq-x" id="qx" title="Testdan chiqish">✕</button><div class="fq-m"><span id="cnt"></span><small id="qset"></small></div><div class="fq-tm" id="tmr"><span id="tm">00:00</span></div></div>
     <div class="fq-seg" id="pb"></div>
     <div class="fq-body">
-      <span class="tag fq-tag" id="tg"></span>
-      <div class="q fq-q" id="qt"></div>
+      <div class="fq-card"><span class="tag fq-tag" id="tg"></span>
+      <div class="q fq-q" id="qt"></div></div>
       <div id="ops"></div>
       <div id="qfb"></div>
       <div class="kbh">⌨️ <b>1–4</b> yoki <b>A–D</b> — javob · <b>Enter</b> — keyingisi · <b>← →</b> — savollar</div>
