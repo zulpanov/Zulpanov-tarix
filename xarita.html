@@ -281,7 +281,7 @@ async function exitHop(from,dx,dy){const id=++flying,ov=$("ov"),a=[from.x,from.y
 // ================= 🌍 3D GLOBUS (A variant): globus aylanadi, samolyot yer yuzi bo'ylab uchib qo'nadi =================
 const GLB=(()=>{
   let ok=false,cv,cx,W=0,H=0,DPR=1,F=[],byN={},rot=[-64,-41],sc=300,tgt=null,tst="tg",lbl="",arc=null,pl=null,run=0,cur=null,wideOn=false,need=false;
-  const PAL=["#3b4a8f","#2f6f7a","#5b3f8f","#2f6b4f","#4b4f9a","#6b3f6f"],TG={tg:"#fbbf24",okc:"#22c55e",badc:"#f43f5e"};
+  const PAL=["#1f3d72","#264a85","#1b3566","#2d5594","#22427a","#18305c"],TG={tg:"#f3d27a",okc:"#22c55e",badc:"#f43f5e"}; // «Arena oltin» uslubi
   const R0=()=>Math.min(W,H)*.44;
   function init(){
     if(ok)return true;if(typeof GL==="undefined"||typeof GLOBE==="undefined")return false;
@@ -299,24 +299,24 @@ const GLB=(()=>{
   function proj(){return GL.geoOrthographic().rotate(rot).scale(sc).translate([W/2,H/2]).clipAngle(90).precision(.4)}
   function draw(){if(!ok)return;if(!W)size();const p=proj(),g=GL.geoPath(p,cx),ctr=[-rot[0],-rot[1]];
     cx.setTransform(DPR,0,0,DPR,0,0);cx.clearRect(0,0,W,H);
-    const gr=cx.createRadialGradient(W/2-sc*.35,H/2-sc*.4,sc*.1,W/2,H/2,sc);gr.addColorStop(0,"#1e5592");gr.addColorStop(1,"#0a2241");
+    const gr=cx.createRadialGradient(W/2-sc*.35,H/2-sc*.4,sc*.1,W/2,H/2,sc);gr.addColorStop(0,"#173a6b");gr.addColorStop(1,"#0a1830");
     cx.beginPath();cx.arc(W/2,H/2,sc,0,7);cx.fillStyle=gr;cx.fill();
-    if(sc<R0()*4){cx.beginPath();g(GL.geoGraticule10());cx.strokeStyle="rgba(255,255,255,.07)";cx.lineWidth=1;cx.stroke()}
+    if(sc<R0()*4){cx.beginPath();g(GL.geoGraticule10());cx.strokeStyle="rgba(212,166,58,.12)";cx.lineWidth=1;cx.stroke()}
     const va=Math.min(Math.PI/2,Math.asin(Math.min(1,Math.hypot(W,H)/2/sc))),lo=sc<R0()*2.4,G=f=>lo&&f.lo?f.lo:f;
     const vis=F.filter(f=>GL.geoDistance(f.c,ctr)<va+f.r+.03);
     const byC=PAL.map(()=>[]);vis.forEach(f=>{if(f!==tgt)byC[f.col%PAL.length].push(f)});
     byC.forEach((L,k)=>{if(!L.length)return;cx.beginPath();L.forEach(f=>g(G(f)));cx.fillStyle=PAL[k];cx.fill()});
-    cx.beginPath();vis.forEach(f=>g(G(f)));cx.strokeStyle="rgba(226,232,240,.75)";cx.lineWidth=sc>R0()*3?1:.6;cx.stroke();
+    cx.beginPath();vis.forEach(f=>g(G(f)));cx.strokeStyle="rgba(212,166,58,.9)";cx.lineWidth=sc>R0()*3?1.1:.6;cx.stroke();
     if(tgt){cx.beginPath();g(tgt);cx.shadowColor=TG[tst];cx.shadowBlur=14;cx.fillStyle=TG[tst];cx.fill();cx.shadowBlur=0;cx.strokeStyle="#fff";cx.lineWidth=1.5;cx.stroke();
       const pc=p(tgt.c),vis2=GL.geoDistance(tgt.c,ctr)<Math.PI/2;
       if(pc&&vis2&&sc*Math.sin(tgt.r)<9){cx.beginPath();cx.arc(pc[0],pc[1],16,0,7);cx.strokeStyle=TG[tst];cx.lineWidth=3;cx.stroke()}
       if(lbl&&pc&&vis2){cx.font="800 16px Inter,sans-serif";cx.textAlign="center";cx.lineWidth=4;cx.strokeStyle="#000";cx.strokeText(lbl,pc[0],pc[1]-18);cx.fillStyle="#fff";cx.fillText(lbl,pc[0],pc[1]-18)}}
-    if(arc){cx.beginPath();g({type:"LineString",coordinates:[arc[0],arc[1]]});cx.setLineDash([7,7]);cx.strokeStyle="rgba(253,230,138,.95)";cx.lineWidth=2.5;cx.stroke();cx.setLineDash([])}
+    if(arc){cx.beginPath();g({type:"LineString",coordinates:[arc[0],arc[1]]});cx.setLineDash([7,7]);cx.strokeStyle="rgba(243,210,122,.95)";cx.lineWidth=2.5;cx.stroke();cx.setLineDash([])}
     if(pl){const a=p(pl.p),b=p(pl.n);if(a&&b&&GL.geoDistance(pl.p,ctr)<Math.PI/2){const ang=Math.atan2(b[1]-a[1],b[0]-a[0]),s=Math.max(.9,Math.min(1.5,W/420))*(1+.3*pl.alt),o=6+22*pl.alt;
       plane(a[0]+o*.45,a[1]+o,ang,s*.85,"rgba(0,0,0,.32)",null);plane(a[0],a[1],ang,s,"#e2e8f0","#475569")}}
     const sh=cx.createRadialGradient(W/2-sc*.3,H/2-sc*.35,sc*.05,W/2,H/2,sc);sh.addColorStop(0,"rgba(255,255,255,.10)");sh.addColorStop(.7,"rgba(255,255,255,0)");sh.addColorStop(1,"rgba(0,0,0,.35)");
     cx.beginPath();cx.arc(W/2,H/2,sc,0,7);cx.fillStyle=sh;cx.fill();
-    cx.beginPath();cx.arc(W/2,H/2,sc+1,0,7);cx.strokeStyle="rgba(147,197,253,.35)";cx.lineWidth=2;cx.stroke()}
+    cx.beginPath();cx.arc(W/2,H/2,sc+1,0,7);cx.strokeStyle="rgba(212,166,58,.35)";cx.lineWidth=2;cx.stroke()}
   const PP=new Path2D("M-20 -3 L18 -3 Q26 0 18 3 L-20 3Z M-2 -3 L-8 -18 L0 -18 L10 -3Z M-2 3 L-8 18 L0 18 L10 3Z M-16 -3 L-20 -10 L-15 -10 L-11 -3Z M-16 3 L-20 10 L-15 10 L-11 3Z");
   function plane(x,y,ang,s,fill,stroke){cx.save();cx.translate(x,y);cx.rotate(ang);cx.scale(s,s);cx.fillStyle=fill;cx.fill(PP);if(stroke){cx.strokeStyle=stroke;cx.lineWidth=1;cx.stroke(PP);cx.beginPath();cx.arc(12,0,2,0,7);cx.fillStyle="#38bdf8";cx.fill()}cx.restore()}
   const ease=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
