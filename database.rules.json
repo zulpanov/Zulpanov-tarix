@@ -278,6 +278,36 @@
         ".read": "auth != null && (auth.uid === $uid || root.child('admins').child(auth.uid).val() === true)",
         ".write": "auth != null && (auth.uid === $uid || root.child('admins').child(auth.uid).val() === true)"
       }
+    },
+    "vt": {
+      ".read": "auth != null && root.child('admins').child(auth.uid).val() === true",
+      "$uid": {
+        ".read": "auth != null && (auth.uid === $uid || root.child('admins').child(auth.uid).val() === true || root.child('tst').child(auth.uid).child($uid).exists())",
+        "$day": {
+          ".write": "auth != null && auth.uid === $uid && $day.matches(/^20[0-9]{6}$/)",
+          ".validate": "newData.isNumber() && newData.val() >= (data.exists() ? data.val() : 0) && newData.val() <= 86400"
+        }
+      }
+    },
+    "vw": {
+      "$week": {
+        ".read": "auth != null",
+        "$uid": {
+          ".write": "auth != null && $week.matches(/^w20[0-9]{6}$/) && (auth.uid === $uid || root.child('admins').child(auth.uid).val() === true)",
+          "s": {
+            ".validate": "newData.isNumber() && newData.val() >= (data.exists() ? data.val() : 0) && newData.val() <= 604800"
+          },
+          "n": {
+            ".validate": "newData.isString() && newData.val().length <= 60"
+          },
+          "g": {
+            ".validate": "newData.isString() && newData.val().length <= 40"
+          },
+          "$o": {
+            ".validate": false
+          }
+        }
+      }
     }
   }
 }
