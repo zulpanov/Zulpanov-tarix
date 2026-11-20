@@ -246,6 +246,15 @@ async function sendBatch(env, list, from, build) {
   const next = from + BATCH < list.length ? from + BATCH : null;
   return { sent, failed, next, total: list.length };
 }
+// 👋 Xush kelibsiz xabari (matnni admin panelda o'zgartirish mumkin: c/wel)
+const DEF_WEL = "🎉 Assalomu alaykum, {ism}!\n\nTARIX ARENA’ga xush kelibsiz! Bu yerda 5 700+ test, Kun testi, turnirlar va tarixiy o‘yinlar sizni kutmoqda.\n\n👉 Har kuni «Kun testi»ni ishlang — XP to‘plang va reytingda ko‘tariling!\n\nSavollar bo‘lsa, bemalol yozing. Omad! 🚀";
+async function sendWel(env, list, from) {
+  const c = await db(env, "GET", "c/wel").catch(() => null), tpl = String((c && c.t) || DEF_WEL);
+  const r = await sendBatch(env, list, from, to => ({ text: esc(tpl).replace(/\{ism\}/g, "<b>" + esc(String(to.name || "do‘stim").slice(0, 40)) + "</b>"), parse_mode: "HTML", reply_markup: { inline_keyboard: [[{ text: "📅 Kun testini ishlash", url: appLink() }]] } }));
+  const f = Math.max(0, Number(from) || 0), m = {}; list.slice(f, f + BATCH).forEach(t => m[t.tgId] = Date.now());
+  if (Object.keys(m).length) await db(env, "PATCH", "tg/w", m).catch(() => {});
+  return r;
+}
 const students = async (env, grp) => vals(await db(env, "GET", "tg/u")).filter(r => !r.isAdmin && (!grp || grp === "*" || r.grp === grp)).sort((a, b) => a.tgId - b.tgId);
 async function parentsList(env) {
   const out = [], all = await db(env, "GET", "tg/p") || {};
@@ -700,6 +709,27 @@ const VFN = {
     await payNotify(env, id); return { ok: true };
   },
   // Ustoz admin paneldan tasdiqlaydi yoki rad etadi
+  // Yangi o'quvchi: Telegram orqali ro'yxatdan o'tgach — bir marta xush kelibsiz xabari
+  async wel(env, uid) {
+    const user = await db(env, "GET", "users/" + uid); if (!user) return { ok: false };
+    const m = String(user.login || "").match(/^tg(\d+)$/), id = m ? +m[1] : Number(await db(env, "GET", "tg/tgu/" + uid).catch(() => 0)) || 0;
+    if (!id || !(user.c > Date.now() - 2 * 864e5)) return { ok: false };
+    if (await db(env, "GET", "tg/w/" + id).catch(() => null)) return { ok: false, dup: 1 };
+    const r = await sendWel(env, [{ tgId: id, name: user.f }], 0); return { ok: !!r.sent };
+  },
+  // Admin: tanlangan yangi a'zolarga xush kelibsiz xabari
+  async aWel(env, uid, i) {
+    if ((await db(env, "GET", "admins/" + uid)) !== true) throw new Error("Faqat ustoz uchun");
+    const list = (Array.isArray(i.items) ? i.items.slice(0, 1000) : []).map(x => ({ tgId: Number(x && x.tgId), name: String((x && x.name) || "") })).filter(x => x.tgId);
+    return sendWel(env, list, i.from);
+  },
+  // Admin: tanlangan o'quvchilarga bot orqali xabar (sayt yoki Telegram ichidan)
+  async aMsg(env, uid, i) {
+    if ((await db(env, "GET", "admins/" + uid)) !== true) throw new Error("Faqat ustoz uchun");
+    const msg = String(i.text || "").trim().slice(0, 3500); if (!msg) return { sent: 0, failed: 0, next: null };
+    const list = await tgOfLogins(env, (Array.isArray(i.logins) ? i.logins.slice(0, 2000) : []).map(low), "stu");
+    return sendBatch(env, list, i.from, () => ({ text: "📢 <b>Ustoz xabari</b>\n\n" + esc(msg), parse_mode: "HTML", reply_markup: { inline_keyboard: [[{ text: "📚 Platformani ochish", url: appLink() }]] } }));
+  },
   async payAct(env, uid, i) {
     if ((await db(env, "GET", "admins/" + uid)) !== true) throw new Error("Faqat ustoz uchun");
     return payAct(env, String(i.id || ""), !!i.ok, i.ok ? i.d : i.why, "admin panel");

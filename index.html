@@ -1070,6 +1070,15 @@ html[data-th="tong"] .km-pt b,html[data-th="vodiy"] .km-pt b,html[data-th="tong"
 .kj-rw{display:inline-block;margin-top:8px;font-weight:900;font-size:18px;background:linear-gradient(90deg,#e0b44e,#f5d27a);color:#1b1400;border-radius:14px;padding:8px 16px}
 .km-ops button.ok{background:#16a34a;color:#fff;border-color:#16a34a}
 @media (min-width:1024px){#tz:has(.kj-f),#tz:has(.kj-grid),#tz:has(.kj-open),#tz:has(.kj-res){max-width:720px;margin:0 auto}}
+/* 🆕 Yangi a'zolar */
+.nm-k{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.nm-k>div{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:10px 4px;text-align:center}.nm-k b{display:block;font-size:22px;line-height:1.1}.nm-k span{font-size:11.5px;color:var(--mu)}
+.nm-ch{margin-top:10px;padding:12px 12px 6px}.nm-ct{display:flex;justify-content:space-between;align-items:baseline;font-size:13px;margin-bottom:6px}.nm-ct small{color:var(--mu);font-size:11.5px}.nm-sv{width:100%;height:auto;display:block;color:var(--mu)}
+.nm-bulk{position:sticky;top:6px;z-index:5;display:flex;gap:6px;align-items:center;flex-wrap:wrap;background:var(--card2);border:1px solid var(--ac);border-radius:14px;padding:8px 10px;margin-top:10px}.nm-bulk span{font-weight:700;font-size:13px;flex:1}.nm-bulk button{border:0;border-radius:10px;padding:8px 10px;font-family:inherit;font-weight:700;font-size:12.5px;background:var(--ac);color:#fff;cursor:pointer}.nm-bulk button[data-b="x"]{background:transparent;color:var(--mu)}
+.nm-sum{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:12.5px;color:var(--mu);margin:0 2px 8px}.nm-sum label{white-space:nowrap;display:flex;gap:6px;align-items:center;cursor:pointer;color:var(--tx);font-weight:600}
+.nm-r{padding:12px;margin-bottom:8px}.nm-r.on{border-color:var(--ac)}.nm-h{display:flex;gap:10px;align-items:center}.nm-h input{width:18px;height:18px;accent-color:var(--ac);flex:none}.nm-m{min-width:0;flex:1}.nm-m b{display:block;font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.nm-m small{color:var(--mu);font-size:12px}
+.nm-i{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}.nm-i span{font-size:11.5px;background:var(--card2);border-radius:8px;padding:3px 7px;color:var(--mu)}.nm-i .nm-c.tg{background:rgba(56,189,248,.15);color:#38bdf8;font-weight:700}.nm-i .nm-c.no{background:rgba(244,63,94,.12);color:#fb7185}.nm-i .nm-c.ok{background:rgba(34,197,94,.14);color:#4ade80;font-weight:700}
+.nm-a{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.nm-a:empty{display:none}.nm-a button{flex:1;min-width:max-content;padding:8px 10px;border-radius:11px;border:1px solid var(--line);background:var(--card2);color:var(--tx);font-family:inherit;font-weight:700;font-size:12.5px;cursor:pointer}.nm-a button[data-a="dm"]{background:#229ED9;border-color:#229ED9;color:#fff}
+.nm-wt{margin-top:12px}.nm-wt summary{cursor:pointer;font-weight:700}.nm-wt textarea{width:100%;box-sizing:border-box;border-radius:12px;border:1px solid var(--line);background:var(--card2);color:var(--tx);padding:10px;font-family:inherit;font-size:13.5px;line-height:1.45}
 </style>
 </head>
 <body>
@@ -5169,6 +5178,7 @@ const ACCT = (() => {
     ready = true; apply(true);
     if (create) { FX.toast(r.isNew ? "🎉 Xush kelibsiz! Sizga <b>+50 XP</b> sovg'a" : `👋 Xush kelibsiz, ${esc(r.f)}!`, "up"); if (r.isNew) FX.burst(innerWidth / 2, 160, 50, 7); }
     TGB.link(r.login);
+    if (r.isNew) setTimeout(() => { try { TGW_.v("wel").catch(() => {}); } catch (e) {} }, 2500);
     return uid;
   }
   async function tgGo() {
@@ -5550,7 +5560,7 @@ const ACC = (() => {
 const ADM_SEC = { dash: ["🏠", "Boshqaruv paneli"], tur: ["🏆", "Turnirlar"], acc: ["👥", "O'quvchilar"], hw: ["📝", "Vazifalar"], cq: ["✏️", "Savollar"], ms: ["🎓", "Sertifikat"], pm: ["💎", "Premium"], tch: ["👨‍🏫", "Ustozlar"], stat: ["📊", "Statistika"], bot: ["🤖", "Telegram bot"], pw: ["🔑", "Parol"], boss: ["🏰", "Boss jangi"], vt: ["⏱", "Saytdagi vaqt"] };
 function adminGo(k) {
   $("amore").classList.add("hide");
-  const f = { dars: () => DARS.open(), dash: () => ADASH.open(), tur: () => T.openHost(), acc: () => ACC.open(), hw: () => HW.open(), cq: () => CQ.open(), ms: () => MSADM.open(), pm: () => PMADM.open(), tch: () => TCHADM.open(), stat: () => STAT.open(), bot: () => BOTP.open(), pw: () => ADMPW.open(), boss: () => BOSS.setup(), vt: () => VTADM.open(), out: () => adminLogout(), more: () => MORE.open() }[k];
+  const f = { dars: () => DARS.open(), dash: () => ADASH.open(), tur: () => T.openHost(), acc: () => ACC.open(), hw: () => HW.open(), cq: () => CQ.open(), ms: () => MSADM.open(), pm: () => PMADM.open(), tch: () => TCHADM.open(), stat: () => STAT.open(), bot: () => BOTP.open(), pw: () => ADMPW.open(), boss: () => BOSS.setup(), vt: () => VTADM.open(), nm: () => NEWM.open(), out: () => adminLogout(), more: () => MORE.open() }[k];
   if (f) f();
 }
 function adminNav(active) {
@@ -5663,6 +5673,9 @@ const ADASH = (() => { // B: «Bugungi ishlar oldinda» — ishlar shu yerning o
         ...(TGB.on() ? [["📣 Eslatma yuborish", "go", async (b, row) => { if (!confirm(`${nd.length} ta o'quvchiga Telegram orqali eslatma yuborilsinmi?`)) return; busy(row, true); try { const x = await TGB.call("broadcast", { to: "stu", text: txt, logins: [...new Set(nd.flatMap(s => [s.login].concat(s.al || []).map(nk)))] }); FX.toast(`📨 ${x.sent || 0} ta o'quvchiga yuborildi`, "up"); return "done"; } catch (e) { busy(row, false); FX.toast("⚠️ " + ((e && e.message) || e)); } }]] : []),
         ["Ro‘yxat", "no", () => adminGo("hw")]] });
     }
+    // 🆕 Bugungi yangi a'zolar
+    const nwT = U.filter(x => x.c && x.c >= d0.getTime()).length, nwW = U.filter(x => x.c && now - x.c < 7 * 864e5).length;
+    if (nwT || nwW) items.push({ id: "nw", ic: ADI("users"), c: "#F2C14E", t: nwT ? `🆕 Bugun ${nwT} ta yangi a’zo` : `🆕 Bu hafta ${nwW} ta yangi a’zo`, s: nwT ? `Bu hafta jami: ${nwW} ta · Telegramda yozish mumkin` : "Bugun hali yangi a’zo yo‘q", acts: [["Ko‘rish", "go", () => NEWM.open(nwT ? "d" : "w")]] });
     // 5) Premium tugayapti
     if (pmLow) items.push({ id: "pmlow", ic: ADI("gem"), c: "#FBBF24", t: `${pmLow} ta Premium tugayapti`, s: "3 kun ichida · bot orqali eslatish mumkin", acts: [["Ko‘rish", "go", () => adminGo("pm")]] });
     // 6) Uzoq kirmaganlar
@@ -5681,6 +5694,106 @@ const ADASH = (() => { // B: «Bugungi ishlar oldinda» — ishlar shu yerning o
 })();
 // «Yana»: barcha bo'limlar guruhlangan ro'yxatda, qidiruv bilan
 // Admin: o'quvchilarning saytdagi faol vaqti
+const NEWM = (() => { // 🆕 Yangi a'zolar (faqat admin)
+  let U = null, TG = {}, WL = {}, RC = {}, tab = "d", sel = new Set(), wt = "", alive = 0;
+  const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const DEF = "🎉 Assalomu alaykum, {ism}!\n\nTARIX ARENA’ga xush kelibsiz! Bu yerda 5 700+ test, Kun testi, turnirlar va tarixiy o‘yinlar sizni kutmoqda.\n\n👉 Har kuni «Kun testi»ni ishlang — XP to‘plang va reytingda ko‘tariling!\n\nSavollar bo‘lsa, bemalol yozing. Omad! 🚀";
+  const z = n => String(n).padStart(2, "0");
+  const d0 = () => { const d = new Date(DBA.now()); d.setHours(0, 0, 0, 0); return d.getTime(); };
+  const m0 = () => { const d = new Date(DBA.now()); d.setHours(0, 0, 0, 0); d.setDate(1); return d.getTime(); };
+  const when = ms => { if (!ms) return "—"; const d = new Date(ms), t = z(d.getHours()) + ":" + z(d.getMinutes()); if (ms >= d0()) return "bugun " + t; if (ms >= d0() - 864e5) return "kecha " + t; return z(d.getDate()) + "." + z(d.getMonth() + 1) + " " + t; };
+  const SRC = { tg: "🤖 Telegram bot", web: "🌐 Sayt", dost: "🤝 Do‘st havolasi", ig: "📸 Instagram", yt: "▶️ YouTube", fb: "📘 Facebook" };
+  const srcOf = s => SRC[s] || (s ? (/^r-/.test(s) ? "🤝 Taklif havolasi" : "🔗 " + String(s).slice(0, 16)) : "—");
+  const nk = s => String(s || "").trim().toLowerCase();
+  function tgOf(x) {
+    const lg = nk(x.login), m = lg.match(/^tg(\d+)$/);
+    const r = Object.values(TG).find(t => t && nk(t.login) === lg) || (m ? TG[m[1]] : null);
+    const id = r ? r.tgId : m ? +m[1] : null;
+    return id ? { id, un: r && r.un || "", wel: WL[id] || 0 } : null;
+  }
+  async function open(t) {
+    if (!isAdmin()) return T.openHost();
+    try { T.leave(); } catch (e) {} try { ACC.leave(); } catch (e) {}
+    if (t) tab = t;
+    show("tz"); BK(null); sel = new Set(); const my = ++alive;
+    $("tz").innerHTML = `${adminNav("more")}<div class="adh"><div class="adh-t"><small>Ro‘yxatdan o‘tganlar</small><b>🆕 Yangi a’zolar</b></div></div>
+      <div class="nm-k" id="nmK"><div><b>…</b><span>Bugun</span></div><div><b>…</b><span>7 kun</span></div><div><b>…</b><span>Shu oy</span></div><div><b>…</b><span>Jami</span></div></div>
+      <div class="card nm-ch" id="nmC"></div>
+      <div class="sttabs" id="nmT" style="margin-top:12px"><button data-t="d">Bugun</button><button data-t="w">Hafta</button><button data-t="m">Oy</button><button data-t="a">Hammasi</button></div>
+      <div class="nm-bulk hide" id="nmB"><span id="nmBn"></span><button data-b="wel">👋 Xush kelibsiz</button><button data-b="msg">🤖 Xabar</button><button data-b="x">✕</button></div>
+      <div id="nmL" style="margin-top:10px"><div class="sub" style="text-align:center;margin:20px 0">Yuklanmoqda…</div></div>
+      <details class="card nm-wt"><summary>✏️ Xush kelibsiz xabari matni</summary><p class="sub" style="margin:6px 0">Telegram orqali yangi ro‘yxatdan o‘tgan har bir o‘quvchiga bot shu xabarni avtomatik yuboradi. <b>{ism}</b> — o‘quvchi ismi bilan almashadi.</p><textarea id="nmW" rows="8"></textarea><div class="row" style="gap:8px;margin-top:8px"><button class="btn sm" id="nmWs" style="margin:0">💾 Saqlash</button><button class="btn sm ghost" id="nmWd" style="margin:0">↺ Standart matn</button></div></details>`;
+    $("nmT").onclick = e => { const b = e.target.closest("[data-t]"); if (!b) return; tab = b.dataset.t; sel.clear(); draw(); };
+    $("nmB").onclick = e => { const b = e.target.closest("[data-b]"); if (!b) return; const k = b.dataset.b; if (k === "x") { sel.clear(); draw(); } else if (k === "wel") welcome([...sel]); else message([...sel]); };
+    try {
+      const [u, t, w, r, c] = await Promise.all([DBA.get("users"), DBA.get("tg/u").catch(() => ({})), DBA.get("tg/w").catch(() => ({})), DBA.since("r", "at", DBA.now() - 40 * 864e5).catch(() => ({})), DBA.get("c/wel").catch(() => null)]);
+      if (my !== alive) return;
+      U = Object.entries(u || {}).filter(([k, x]) => x && x.f && !x.moved).map(([k, x]) => ({ ...x, k, login: x.login || k }));
+      TG = t || {}; WL = w || {}; wt = (c && c.t) || "";
+      RC = {}; Object.values(r || {}).forEach(x => { if (x && x.u && x.mode !== "turnir") RC[x.u] = (RC[x.u] || 0) + 1; });
+    } catch (e) { if ($("nmL")) $("nmL").innerHTML = `<div class="card sub">⚠️ Yuklab bo‘lmadi: ${esc((e && e.message) || e)}</div>`; return; }
+    $("nmW").value = wt || DEF;
+    $("nmWs").onclick = async () => { const v = $("nmW").value.trim(); try { await DBA.set("c/wel", v && v !== DEF ? { t: v.slice(0, 3000), at: DBA.now() } : null); wt = v === DEF ? "" : v; FX.toast("✅ Saqlandi"); } catch (e) { FX.toast("⚠️ " + ((e && e.message) || e)); } };
+    $("nmWd").onclick = () => { $("nmW").value = DEF; };
+    draw();
+  }
+  function list() {
+    const now = DBA.now(), from = tab === "d" ? d0() : tab === "w" ? now - 7 * 864e5 : tab === "m" ? m0() : 0;
+    return U.filter(x => tab === "a" || (x.c && x.c >= from)).sort((a, b) => (b.c || 0) - (a.c || 0)).slice(0, tab === "a" ? 300 : 1000);
+  }
+  function chart() {
+    const N = 30, t0 = d0() - (N - 1) * 864e5, B = Array(N).fill(0);
+    U.forEach(x => { if (x.c && x.c >= t0) { const i = Math.floor((x.c - t0) / 864e5); if (i >= 0 && i < N) B[i]++; } });
+    const mx = Math.max(1, ...B), W = 300, H = 70, bw = W / N;
+    return `<div class="nm-ct"><b>Oxirgi 30 kun</b><small>eng ko‘p: ${mx} ta / kun</small></div><svg viewBox="0 0 ${W} ${H + 14}" class="nm-sv">${B.map((v, i) => { const h = Math.max(v ? 3 : 1, v / mx * H), d = new Date(t0 + i * 864e5); return `<rect x="${i * bw + 1}" y="${H - h}" width="${bw - 2}" height="${h}" rx="2" fill="${i === N - 1 ? "#F2C14E" : v ? "var(--ac)" : "rgba(var(--w),.12)"}"><title>${z(d.getDate())}.${z(d.getMonth() + 1)}: ${v} ta</title></rect>${i % 7 === 2 || i === N - 1 ? `<text x="${i * bw + bw / 2}" y="${H + 12}" text-anchor="middle" font-size="8" fill="currentColor" opacity=".6">${z(d.getDate())}.${z(d.getMonth() + 1)}</text>` : ""}`; }).join("")}</svg>`;
+  }
+  function draw() {
+    if (!U || !$("nmL")) return;
+    const now = DBA.now(), cnt = f => U.filter(x => x.c && x.c >= f).length;
+    $("nmK").innerHTML = [[cnt(d0()), "Bugun", "#F2C14E"], [cnt(now - 7 * 864e5), "7 kun", "#67E8F9"], [cnt(m0()), "Shu oy", "#A78BFA"], [U.length, "Jami", "#4ade80"]].map(([v, l, c]) => `<div><b style="color:${c}">${v}</b><span>${l}</span></div>`).join("");
+    $("nmC").innerHTML = chart();
+    [...$("nmT").children].forEach(b => b.classList.toggle("on", b.dataset.t === tab));
+    const L = list();
+    $("nmB").classList.toggle("hide", !sel.size); $("nmBn").textContent = `Tanlandi: ${sel.size}`;
+    if (!L.length) { $("nmL").innerHTML = `<div class="card sub" style="text-align:center">${tab === "d" ? "Bugun hali hech kim ro‘yxatdan o‘tmadi" : "Bu davrda yangi a’zo yo‘q"} 🙂</div>`; return; }
+    const tgC = L.filter(x => tgOf(x)).length;
+    $("nmL").innerHTML = `<div class="nm-sum"><label><input type="checkbox" id="nmAll"${L.every(x => sel.has(x.k)) ? " checked" : ""}> Hammasini tanlash</label><span>${L.length} kishi · 🤖 ${tgC} tasi Telegram’da</span></div>` + L.map(x => {
+      const t = tgOf(x), n = RC[x.k] || 0, nm = ((x.f || "") + " " + (x.l || "")).trim();
+      const tgChip = t ? (t.un ? `<span class="nm-c tg">@${esc(t.un)}</span>` : `<span class="nm-c tg">🤖 Telegram</span>`) : `<span class="nm-c no">Telegram ulanmagan</span>`;
+      return `<div class="card nm-r${sel.has(x.k) ? " on" : ""}" data-k="${esc(x.k)}"><div class="nm-h"><input type="checkbox" data-s="${esc(x.k)}"${sel.has(x.k) ? " checked" : ""}>${AV.html(x.k, nm, "sm")}<div class="nm-m"><b>${esc(nm)}</b><small>${esc(x.login)} · ${when(x.c)}</small></div></div>
+        <div class="nm-i"><span>${srcOf(x.src)}</span><span>${x.g ? "👥 " + esc(x.g) : "👤 guruhsiz"}</span><span>📝 ${n} test</span><span>🕒 ${when(x.last)}</span>${tgChip}${t && t.wel ? `<span class="nm-c ok">👋 xush kelibsiz ✓</span>` : ""}${x.wm ? `<span class="nm-c ok">✓ yozilgan ${when(x.wm).replace(/ \d\d:\d\d$/, "")}</span>` : ""}</div>
+        <div class="nm-a">${t && t.un ? `<button data-a="dm" data-k="${esc(x.k)}">✈️ Telegramda yozish</button>` : ""}${t ? `<button data-a="msg" data-k="${esc(x.k)}">🤖 Bot orqali</button>` : ""}${t && !t.wel ? `<button data-a="wel" data-k="${esc(x.k)}">👋 Xush kelibsiz</button>` : ""}${t ? "" : `<small class="sub" style="margin:0">Bu o‘quvchi faqat login-parol bilan kirgan — Telegram orqali yozib bo‘lmaydi</small>`}</div></div>`;
+    }).join("");
+    $("nmAll").onchange = e => { L.forEach(x => e.target.checked ? sel.add(x.k) : sel.delete(x.k)); draw(); };
+    $("nmL").onclick = e => {
+      const s = e.target.closest("[data-s]"); if (s) { s.checked ? sel.add(s.dataset.s) : sel.delete(s.dataset.s); draw(); return; }
+      const b = e.target.closest("[data-a]"); if (!b) return; const k = b.dataset.k, x = U.find(y => y.k === k), t = x && tgOf(x); if (!t) return;
+      if (b.dataset.a === "dm") { mark([k]); const url = "https://t.me/" + t.un; try { if (window.IN_TG && Telegram.WebApp.openTelegramLink) Telegram.WebApp.openTelegramLink(url); else window.open(url, "_blank"); } catch (er) { window.open(url, "_blank"); } }
+      else if (b.dataset.a === "msg") message([k]); else welcome([k]);
+    };
+  }
+  async function vc(fn, input) { let r = await TGW_.v(fn, input), sent = 0, failed = 0; while (r && typeof r === "object" && "next" in r) { sent += r.sent || 0; failed += r.failed || 0; if (r.next == null) return { ...r, sent, failed }; r = await TGW_.v(fn, { ...input, from: r.next }); } return r; }
+  async function mark(ks) { const at = DBA.now(); ks.forEach(k => { const x = U.find(y => y.k === k); if (x) x.wm = at; }); try { const u = {}; ks.forEach(k => u[k + "/wm"] = at); await DBA.update("users", u); } catch (e) {} draw(); }
+  async function welcome(ks) {
+    const it = ks.map(k => U.find(y => y.k === k)).filter(Boolean).map(x => ({ x, t: tgOf(x) })).filter(o => o.t);
+    if (!it.length) return FX.toast("Tanlanganlarda Telegram ulangan o‘quvchi yo‘q");
+    if (!confirm(`${it.length} ta o‘quvchiga «Xush kelibsiz» xabari yuborilsinmi?`)) return;
+    try {
+      const r = await vc("aWel", { items: it.map(o => ({ tgId: o.t.id, name: o.x.f || "" })) });
+      it.forEach(o => WL[o.t.id] = DBA.now()); await mark(it.map(o => o.x.k)); sel.clear(); draw();
+      FX.toast(`✅ Yuborildi: ${(r && r.sent) || 0}${r && r.failed ? ` · ❌ ${r.failed} (botni bloklagan)` : ""}`);
+    } catch (e) { FX.toast("⚠️ " + ((e && e.message) || e)); }
+  }
+  async function message(ks) {
+    const it = ks.map(k => U.find(y => y.k === k)).filter(x => x && tgOf(x));
+    if (!it.length) return FX.toast("Tanlanganlarda Telegram ulangan o‘quvchi yo‘q");
+    const txt = prompt(`${it.length} ta o‘quvchiga bot orqali xabar matni:`, ""); if (!txt || !txt.trim()) return;
+    try { const r = await vc("aMsg", { text: txt.trim(), logins: it.map(x => x.login) }); await mark(it.map(x => x.k)); sel.clear(); draw(); FX.toast(`✅ Yuborildi: ${(r && r.sent) || 0}${r && r.failed ? ` · ❌ ${r.failed}` : ""}`); }
+    catch (e) { FX.toast("⚠️ " + ((e && e.message) || e)); }
+  }
+  return { open, leave() { alive++; } };
+})();
+
 const VTADM = (() => {
   let U = null, D = null, so = "w", gq = "", sel = null;
   const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -5720,7 +5833,7 @@ const VTADM = (() => {
   return { open };
 })();
 const MORE = (() => {
-  const G = [["O'quvchilar", [["acc", "users", "#22D3EE", "O'quvchilar", "Ro'yxat, natijalar, bloklash"], ["hw", "task", "#22C55E", "Guruhlar va vazifalar", "Kod, havola, uy vazifasi"], ["vt", "clock", "#38BDF8", "Saytdagi vaqt", "Kim qancha shug'ullanyapti"]]],
+  const G = [["O'quvchilar", [["acc", "users", "#22D3EE", "O'quvchilar", "Ro'yxat, natijalar, bloklash"], ["hw", "task", "#22C55E", "Guruhlar va vazifalar", "Kod, havola, uy vazifasi"], ["nm", "users", "#F2C14E", "Yangi a'zolar", "Bugun, hafta, oy · Telegramga yozish"], ["vt", "clock", "#38BDF8", "Saytdagi vaqt", "Kim qancha shug'ullanyapti"]]],
     ["O'yin va kontent", [["tur", "trophy", "#F472B6", "Turnirlar", "Jonli o'yinlar, natijalar"], ["boss", "castle", "#FB923C", "Boss jangi", "Butun sinf birgalikda"], ["cq", "edit", "#A78BFA", "Savollar", "Testlarni tahrirlash"], ["ms", "cert", "#F2C14E", "Milliy sertifikat", "Variantlar va ruxsatlar"], ["stat", "chart", "#34D399", "Statistika", "Faollik, natijalar, xatolar"]]],
     ["Daromad", [["pm", "gem", "#FBBF24", "Premium", "Tariflar, o'quvchilar, bo'limlar"], ["tch", "teach", "#22D3EE", "Ustozlar va hamkorlar", "Arizalar, Pro, to'lovlar"]]],
     ["Tizim", [["bot", "bot", "#A7A3D6", "Telegram bot va xabarlar", "Xabar, hisobot, zaxira"], ["pw", "key", "#A7A3D6", "Parol", "Admin kirishi"], ["out", "out", "#F43F5E", "Chiqish", "Admin paneldan chiqish"]]]];
