@@ -456,6 +456,7 @@ body.tchm #bnav{display:none!important}body.tchm .wrap{padding-bottom:110px}body
 .vt-h{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:10px}.vt-h b{font-size:15px}.vt-h small{font-size:11px;color:var(--mu)}
 .vt-s{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center}.vt-s div{padding:9px 4px;border-radius:12px;background:var(--card2);border:1px solid var(--line)}.vt-s b{display:block;font-size:15px;line-height:1.25}.vt-s span{font-size:11px;color:var(--mu)}
 .vt-ch{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;height:118px;margin-top:14px;align-items:end}.vt-c{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;min-width:0}.vt-c em{font-style:normal;font-size:10px;color:var(--mu);margin-bottom:3px;white-space:nowrap}.vt-c i{display:block;width:70%;max-width:30px;border-radius:6px 6px 2px 2px;background:linear-gradient(180deg,#38BDF8,#0EA5E9);min-height:0}.vt-c.t i{background:linear-gradient(180deg,#F2C14E,#D4A63A)}.vt-c span{font-size:11px;color:var(--mu);margin-top:4px;flex:0 0 auto}.vt-c.t span{color:var(--tx);font-weight:800}.vt-c.t em{color:var(--tx);font-weight:700}
+.vta-tg{display:flex;gap:10px;align-items:center;justify-content:space-between;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}.vta-tg b{display:block;font-size:13.5px}.vta-tg small{font-size:11.5px;color:var(--mu)}.vta-tg .btn{width:auto;flex:0 0 auto;margin:0;white-space:nowrap}
 .vt-n{font-size:11px;color:var(--mu);text-align:center;margin-top:8px}
 .vta-h,.vta-r{display:grid;grid-template-columns:1fr 54px 64px 64px;gap:6px;align-items:center}.vta-h{font-size:11px;color:var(--mu);padding:0 6px 6px;border-bottom:1px solid var(--line)}.vta-h span:not(:first-child),.vta-r span:not(:first-child){text-align:right}
 .vta-r{width:100%;background:none;border:0;border-bottom:1px solid var(--line);color:var(--tx);padding:9px 6px;font:inherit;font-size:13px;text-align:left;cursor:pointer}.vta-r span:first-child{min-width:0}.vta-r b{display:block;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.vta-r small{font-size:11px;color:var(--mu)}.vta-r.z{opacity:.6}.vta-d{padding:12px 4px;border-bottom:1px solid var(--line)}
@@ -7009,9 +7010,13 @@ const VTADM = (() => {
     show("tz"); BK(null); sel = null;
     $("tz").innerHTML = `${adminNav("vt")}<div class="card"><div class="sub" style="margin:0 0 10px">Faqat faol vaqt sanaladi: sayt ochiq va o'quvchi 3 daqiqa ichida biror narsa bosgan bo'lsa. Ma'lumot 20-noyabr 2026 dan yig'ila boshlagan.</div>
       <div class="sttabs" id="vaT"><button data-s="d">Bugun</button><button data-s="w">Bu hafta</button><button data-s="a">Jami</button><button data-s="lo">Eng kam</button></div>
-      <select id="vaG" style="margin-top:8px"><option value="">Barcha guruhlar</option></select></div><div class="card" id="vaL" style="margin-top:12px"><div class="sub" style="margin:0">Yuklanmoqda…</div></div>`;
+      <select id="vaG" style="margin-top:8px"><option value="">Barcha guruhlar</option></select>
+      <div class="vta-tg"><span><b>Guruhsiz o'quvchilarga ko'rsatish</b><small>Hozir «Saytdagi vaqt» faqat guruhga qo'shilgan o'quvchilarga ko'rinadi</small></span><button class="btn sm ghost" id="vaAll">…</button></div></div><div class="card" id="vaL" style="margin-top:12px"><div class="sub" style="margin:0">Yuklanmoqda…</div></div>`;
     $("vaT").onclick = e => { const b = e.target.closest("button"); if (!b) return; so = b.dataset.s; draw(); };
     $("vaG").onchange = e => { gq = e.target.value; draw(); };
+    const paintAll = () => { const b = $("vaAll"); if (b) b.textContent = VT.allOn() ? "✅ Ochiq — yopish" : "🔒 Yashirin — ochish"; };
+    VT.loadCfg().then(paintAll);
+    $("vaAll").onclick = async () => { const v = !VT.allOn(); try { await DBA.update("c/main", { vtAll: v ? 1 : null }); VT.setAll(v); paintAll(); FX.toast(v ? "✅ Barcha o'quvchilarga ochildi" : "🔒 Guruhsizlarga yashirildi"); } catch (e) { FX.toast("⚠️ " + ((e && e.message) || e)); } };
     try { [U, D] = await Promise.all([U || DBA.get("users"), DBA.get("vt")]); U = U || {}; D = D || {}; } catch (e) { if ($("vaL")) $("vaL").innerHTML = `<div class="sub" style="margin:0">⚠️ Yuklab bo'lmadi: ${esc((e && e.message) || e)}</div>`; return; }
     const gs = [...new Set(Object.values(U).filter(x => x && x.f && x.g).map(x => String(x.g).trim()))].sort((a, b) => a.localeCompare(b));
     if ($("vaG")) $("vaG").innerHTML = `<option value="">Barcha guruhlar</option>` + gs.map(g => `<option${g === gq ? " selected" : ""}>${esc(g)}</option>`).join("");
@@ -7449,15 +7454,19 @@ const VT = (() => {
       <div class="vt-n">Oxirgi 7 kun · d — daqiqa, s — soat</div>`;
   }
   function merged() { const u = uid(), D = Object.assign({}, mineU === u && mine || {}), p = u ? pend(u) : {}; Object.entries(p).forEach(([k, v]) => D[k] = (D[k] || 0) + v); return D; }
+  let allOn = null;
+  async function loadCfg() { if (allOn === null) { try { allOn = !!(await DBA.get("c/main/vtAll")); } catch (e) { allOn = false; } } return allOn; }
+  const vis = () => { const c = ACCT.cur || {}; return !!(String(c.g || "").trim() || allOn || (typeof isAdmin === "function" && isAdmin())); };
   async function mount(el) {
     if (!el) return; const u = uid(); if (!u) return;
+    if (!String((ACCT.cur || {}).g || "").trim()) { el.style.display = "none"; await loadCfg(); if (!vis()) return; el.style.display = ""; }
     el.classList.add("vt-box"); el.innerHTML = html(merged());
     if (mineU !== u) { try { mine = (await DBA.get("vt/" + u)) || {}; mineU = u; } catch (e) { return; } }
     if (el.isConnected) el.innerHTML = html(merged());
   }
   async function mountFor(el, u) { if (!el) return; el.classList.add("vt-box"); el.innerHTML = `<div class="sub" style="margin:0">⏱ Vaqt yuklanmoqda…</div>`; let D = {}; try { D = (await DBA.get("vt/" + u)) || {}; } catch (e) { el.innerHTML = `<div class="sub" style="margin:0">⏱ Vaqtni yuklab bo'lmadi.</div>`; return; } if (el.isConnected) el.innerHTML = html(D, 1); }
   const wkLabel = () => { const d = dOf(curWk().slice(1)), e = new Date(d); e.setDate(e.getDate() + 6); const f = x => String(x.getDate()).padStart(2, "0") + "." + String(x.getMonth() + 1).padStart(2, "0"); return f(d) + " – " + f(e); };
-  return { flush, mount, mountFor, html, fmt, fmtS, sums, dk, curWk, wkLabel, mineSec: () => sums(merged()) };
+  return { loadCfg, vis, allOn: () => !!allOn, setAll: v => { allOn = !!v; }, flush, mount, mountFor, html, fmt, fmtS, sums, dk, curWk, wkLabel, mineSec: () => sums(merged()) };
 })();
 
 // ================== O'YINLASHTIRISH: XP, darajalar, nishonlar, xatolar, reyting ==================
@@ -7557,10 +7566,11 @@ const GAME = (() => {
     show("tz"); setNav("rank"); BK(goHome);
     const ws = weekStart(DBA.now()), we = new Date(ws + 6 * 86400e3), d0 = new Date(ws), f = d => String(d.getDate()).padStart(2, "0") + "." + String(d.getMonth() + 1).padStart(2, "0");
     $("tz").innerHTML = `<div class="card welcome"><div class="wl-top"><div style="font-size:34px">🏅</div><div style="flex:1"><div class="wl-n">Haftalik reyting</div><div class="st-s">${f(d0)} – ${f(we)} · har dushanba yangilanadi</div></div></div></div>
-      <div class="sttabs" id="lbT">${c.g ? `<button data-t="g" class="${lbTab === "g" ? "on" : ""}">👥 Guruhim</button>` : ""}<button data-t="a" class="${lbTab === "a" ? "on" : ""}">🌍 Hammasi</button><button data-t="v" class="${lbTab === "v" ? "on" : ""}">⏱ Tirishqoqlar</button></div>
+      <div class="sttabs" id="lbT">${c.g ? `<button data-t="g" class="${lbTab === "g" ? "on" : ""}">👥 Guruhim</button>` : ""}<button data-t="a" class="${lbTab === "a" ? "on" : ""}">🌍 Hammasi</button>${VT.vis() ? `<button data-t="v" class="${lbTab === "v" ? "on" : ""}">⏱ Tirishqoqlar</button>` : ""}</div>
       <div id="lbP"></div><div class="card" id="lbL"></div>`;
     $("lbT").onclick = e => { const b = e.target.closest("button"); if (!b) return; lbTab = b.dataset.t; [...$("lbT").children].forEach(x => x.classList.toggle("on", x === b)); draw(); };
-    let data = {}, vdat = null; if (!c.g && lbTab === "g") lbTab = "a";
+    let data = {}, vdat = null; if (!c.g && lbTab === "g") lbTab = "a"; if (lbTab === "v" && !VT.vis()) lbTab = "a";
+    if (!VT.vis()) VT.loadCfg().then(() => { const t = $("lbT"); if (VT.vis() && t && !t.querySelector("[data-t=v]")) t.insertAdjacentHTML("beforeend", `<button data-t="v">⏱ Tirishqoqlar</button>`); });
     const drawV = () => {
       if (vdat === null) { $("lbP").innerHTML = ""; $("lbL").innerHTML = `<div class="sub" style="margin:0">Yuklanmoqda…</div>`; DBA.get("vw/" + VT.curWk()).then(v => { vdat = v || {}; if (lbTab === "v") draw(); }).catch(() => { vdat = {}; if (lbTab === "v") draw(); }); return; }
       const arr = Object.entries(vdat).filter(([k, v]) => v && v.n && v.s >= 60).map(([k, v]) => ({ k, ...v })).sort((a, b) => b.s - a.s), me = arr.findIndex(p => p.k === c.uid);
