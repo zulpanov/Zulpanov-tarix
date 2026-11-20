@@ -289,6 +289,25 @@ body{background:radial-gradient(1200px 600px at 110% -10%,rgba(139,92,246,.13),t
 .tmc-h{display:flex;align-items:center;gap:8px;font-weight:800}.tmc-h small{margin-left:auto;color:var(--mu);font-weight:600}
 .tmc-m{font-size:13px;color:var(--mu);margin-top:6px;line-height:1.6}.tmc-m b{color:var(--tx);font-weight:600}
 .tmc .btn{margin-top:8px}.tmrow{display:flex;align-items:center;gap:6px;font-size:13px;padding:4px 0}.tmrow select{margin:0;padding:4px 6px;width:auto;font-size:12px}.tmrow .x{margin-left:auto;background:none;border:0;color:var(--bad);font-size:18px;cursor:pointer}
+.twr{position:relative;height:210px;border-radius:18px;overflow:hidden;display:flex;align-items:stretch;justify-content:center;gap:clamp(8px,4vw,30px);padding:0 14px;background:linear-gradient(180deg,#241a5e 0%,#4b3592 62%,#7e5bc2 100%);color:#fff;isolation:isolate}
+.twr:after{content:"";position:absolute;left:0;right:0;bottom:0;height:34px;background:linear-gradient(#3f9b4f,#2c7a3a);z-index:-1;box-shadow:0 -2px 0 #58b867}
+.twr-st{position:absolute;font-size:11px;opacity:.75;animation:pulse 2.6s infinite;z-index:-1}
+.twr-c{flex:1;max-width:120px;min-width:0;display:flex;flex-direction:column}
+.twr-b{flex:1;display:flex;flex-direction:column;justify-content:flex-end;padding-top:68px}
+.twr-w{position:relative;width:100%;border-radius:4px 4px 0 0;background-color:var(--c);background-image:repeating-linear-gradient(0deg,rgba(0,0,0,.22) 0 2px,transparent 2px 16px),linear-gradient(90deg,rgba(255,255,255,.18),transparent 40%,rgba(0,0,0,.18));box-shadow:inset 0 0 0 2px rgba(0,0,0,.18);transition:height .9s cubic-bezier(.2,.8,.2,1)}
+.twr-w:before{content:"";position:absolute;left:0;right:0;top:-10px;height:10px;background:repeating-linear-gradient(90deg,var(--c) 0 14px,transparent 14px 22px)}
+.twr-w.bump{animation:twrB .6s}@keyframes twrB{30%{filter:brightness(1.6)}60%{transform:scaleX(1.05)}}
+.twr-top{position:absolute;bottom:calc(100% + 12px);left:0;right:0;text-align:center;line-height:1.1}
+.twr-fl{display:block;width:26px;height:18px;margin:0 auto 4px;position:relative}.twr-fl:before{content:"";position:absolute;left:2px;top:0;width:3px;height:22px;background:#e9e3c9;border-radius:2px}.twr-fl:after{content:"";position:absolute;left:5px;top:1px;border-left:20px solid var(--c);border-top:7px solid transparent;border-bottom:7px solid transparent;filter:brightness(1.2);animation:twrF 1.4s ease-in-out infinite alternate;transform-origin:left}
+@keyframes twrF{to{transform:scaleX(.8) skewY(6deg)}}
+.twr-cr{display:none;font-size:20px;margin-bottom:-2px}.twr-c.lead .twr-cr{display:block;animation:pulse 1.2s infinite}.twr-c.lead .twr-fl{display:none}
+.twr-p{display:block;font-size:20px;font-weight:800;color:#fff!important;text-shadow:0 2px 6px rgba(0,0,0,.45)}.twr-s{font-size:11px;color:#fff!important;opacity:.9;text-shadow:0 1px 3px rgba(0,0,0,.5)}
+.twr-n{height:34px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;line-height:1.15;min-width:0}.twr-n b{font-size:12px;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}.twr-n small{font-size:10px;color:#fff!important;opacity:.9}.twr-n b{color:#fff}
+.twr-c.mine .twr-n b{color:#FFE27A}.twr-e{align-self:center;opacity:.8}
+.twr-h{font-size:12px;color:var(--mu);text-align:center;margin-top:8px}
+.twr.big{height:300px}.twr.big .twr-b{padding-top:84px}.twr.big .twr-p{font-size:26px}.twr.big .twr-n b{font-size:14px}
+.twr.many .twr-p{font-size:16px}.twr.many .twr-s{display:none}.twr.many .twr-n b{font-size:11px}
+.twr.pj{height:min(62vh,640px);margin-top:14px;border-radius:26px;gap:4vw}.twr.pj .twr-c{max-width:220px}.twr.pj .twr-b{padding-top:140px}.twr.pj .twr-p{font-size:52px}.twr.pj .twr-s{display:block;font-size:22px}.twr.pj .twr-n{height:60px}.twr.pj .twr-n b{font-size:26px}.twr.pj .twr-n small{font-size:16px}.twr.pj:after{height:60px}.twr.pj .twr-fl{transform:scale(1.8);margin-bottom:16px}.twr.pj .twr-cr{font-size:42px}.twr.pj .twr-st{font-size:22px}
 .race{display:grid;gap:8px}.rc{display:flex;align-items:center;gap:10px}.rc-r{width:24px;text-align:center;font-weight:800}.rc-b{flex:1}.rc-n{display:flex;justify-content:space-between;gap:8px;font-size:13px;font-weight:700}.rc-n small{color:var(--mu);font-weight:600}
 .rc-t{height:12px;background:var(--bg);border-radius:8px;overflow:hidden;margin-top:4px;position:relative}.rc-t i{display:block;height:100%;border-radius:8px;background:var(--c);transition:width .6s cubic-bezier(.2,.8,.2,1)}.rc-t em{position:absolute;top:0;bottom:0;background:rgba(var(--w),.12);left:0;transition:width .6s}
 .rc.mine .rc-n{color:var(--c)}.rc.lead .rc-r{animation:pulse 1.2s infinite}
@@ -8256,13 +8275,24 @@ const T = (() => {
   const tRank = () => teams().sort((a, b) => (b.m.length ? 1 : 0) - (a.m.length ? 1 : 0) || b.avg - a.avg || a.at - b.at || a.i - b.i);
   const myTm = () => { const p = st.players[st.pid]; return p && p.tm != null ? p.tm : null; };
   const balanced = () => { const c = teams().map(T => T.m.length); return Math.min(...c) >= 1 && Math.max(...c) - Math.min(...c) <= 1; };
-  function race(el, { big = false } = {}) {
+  function race(el, { big = false } = {}) { // B: «Qal'a minoralari» — har to'g'ri javob minoraga g'isht qo'shadi
     if (!el || !st.meta) return;
-    const list = tRank(), n = st.meta.n, me = myTm(), prev = new Map();
-    el.querySelectorAll("[data-t]").forEach(r => prev.set(r.dataset.t, r.getBoundingClientRect().top));
-    el.className = "race" + (big ? " big" : "");
-    el.innerHTML = list.map((T, j) => `<div class="rc${T.i === me ? " mine" : ""}${j === 0 && T.avg > 0 ? " lead" : ""}" data-t="${T.i}" style="--c:${TC[T.i][1]}"><div class="rc-r">${j === 0 && T.avg > 0 ? "👑" : j + 1}</div><div class="rc-b"><div class="rc-n"><span>${TC[T.i][0]} ${esc(tName(T.i))}${T.i === me ? " (siz)" : ""}</span><span>${f1(T.avg)}<small> / ${n} · ${Math.round(T.avg / n * 100)}%</small></span></div><div class="rc-t"><em style="width:${Math.min(100, T.prog / n * 100)}%"></em><i style="width:${Math.min(100, T.avg / n * 100)}%"></i></div><div class="mvp">${T.m.length} kishi${big ? "" : ` · o'rtacha ${Math.round(T.prog)}-savolda`}</div></div></div>`).join("");
-    el.querySelectorAll("[data-t]").forEach(r => { const p = prev.get(r.dataset.t); if (p == null) return; const dy = p - r.getBoundingClientRect().top; if (!dy) return; r.style.transition = "none"; r.style.transform = `translateY(${dy}px)`; requestAnimationFrame(() => requestAnimationFrame(() => { r.style.transition = "transform .55s cubic-bezier(.2,.8,.2,1)"; r.style.transform = ""; })); });
+    const n = st.meta.n || 1, me = myTm(), T = teams().filter(t => t.m.length), rk = tRank(), lead = rk[0] && rk[0].avg > 0 ? rk[0].i : null;
+    const pj = !!el.closest("#tproj"), key = T.map(t => t.i).join(",") + (big ? "b" : "") + (pj ? "p" : "");
+    if (el.dataset.k !== key) {
+      el.dataset.k = key; el.className = "twr" + (big ? " big" : "") + (pj ? " pj" : "") + (T.length > 3 ? " many" : "");
+      el.innerHTML = `<span class="twr-st" style="left:8%;top:12%">✦</span><span class="twr-st" style="left:46%;top:7%">✦</span><span class="twr-st" style="left:84%;top:16%">✦</span><span class="twr-st" style="left:27%;top:30%">·</span><span class="twr-st" style="left:68%;top:26%">·</span>`
+        + (T.length ? T.map(t => `<div class="twr-c" data-t="${t.i}" style="--c:${TC[t.i][1]}"><div class="twr-b"><div class="twr-w" style="height:3%"><div class="twr-top"><b class="twr-cr">👑</b><span class="twr-fl"></span><b class="twr-p">0%</b><small class="twr-s"></small></div></div></div><div class="twr-n"></div></div>`).join("") : `<div class="twr-e">Jamoalar hali yo'q</div>`);
+    }
+    T.forEach(t => {
+      const c = el.querySelector(`[data-t="${t.i}"]`); if (!c) return;
+      const pc = Math.min(100, t.avg / n * 100), w = c.querySelector(".twr-w");
+      c.classList.toggle("lead", t.i === lead); c.classList.toggle("mine", t.i === me);
+      if (c.dataset.v != null && pc > +c.dataset.v) { w.classList.remove("bump"); void w.offsetWidth; w.classList.add("bump"); }
+      c.dataset.v = pc; w.style.height = Math.max(3, pc) + "%";
+      c.querySelector(".twr-p").textContent = Math.round(pc) + "%"; c.querySelector(".twr-s").textContent = f1(t.avg) + " / " + n;
+      c.querySelector(".twr-n").innerHTML = `<b>${TC[t.i][0]} ${esc(tName(t.i))}${t.i === me ? " (siz)" : ""}</b><small>${t.m.length} kishi</small>`;
+    });
   }
   function leadCheck() {
     if (!st.meta || st.meta.phase !== "run") return;
@@ -8316,7 +8346,7 @@ const T = (() => {
   }
   // ---------- o'quvchi: o'yin davomida ----------
   function teamCards() {
-    return `<div class="card" style="margin-bottom:12px;padding:12px 14px"><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px"><b>🏁 Jamoalar poygasi</b><span id="tmy" style="color:var(--mu)"></span></div><div id="trace"></div></div>`;
+    return `<div class="card" style="margin-bottom:12px;padding:12px 14px"><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px"><b>🏰 Kim baland quradi?</b><span id="tmy" style="color:var(--mu)"></span></div><div id="trace"></div><div class="twr-h">Har to‘g‘ri javob — minorangizga bir g‘isht 🧱</div></div>`;
   }
   function mateCard() {
     const mt = myTm();
@@ -8596,7 +8626,7 @@ const T = (() => {
       : `<div class="row" style="align-items:center"><div style="flex:1;text-align:left"><div class="sub" style="margin:0">Kod: <b>${st.code}</b> · Ishtirokchilar: <b id="tcnt">0</b> · Tugatganlar: <b id="tdn">0</b></div></div><div class="ttm" id="ttm" style="font-size:26px">--:--</div></div>
         <button class="btn" id="thend" style="margin-top:12px;background:var(--bad)">■ Turnirni yakunlash</button>`}
       ${m.team ? `<div id="thw" class="tnote" style="margin-top:12px"></div>` : ""}<button class="btn ghost" id="thpj" style="margin-top:10px">🖥 Katta ekran (proyektor)</button>
-      </div>${m.team && m.phase === "run" ? (m.rope ? `<div class="card" style="margin-top:12px"><b>🪢 Arqon</b><div id="trope" style="margin-top:12px"></div></div>` : `<div class="card" style="margin-top:12px"><b>🏁 Jamoalar poygasi</b><div id="trace" style="margin-top:12px"></div></div>`) : ""}<div class="card" style="margin-top:12px"><b>${m.phase === "lobby" ? (m.team ? "👥 Jamoalar · qo'shilganlar: <span id='tcnt'>0</span>" : "Qo'shilganlar: <span id='tcnt'>0</span>") : (m.team ? "Jamoalar a'zolari" : "🏆 Jonli reyting")}</b><div id="thb" style="margin-top:10px"></div></div>`;
+      </div>${m.team && m.phase === "run" ? (m.rope ? `<div class="card" style="margin-top:12px"><b>🪢 Arqon</b><div id="trope" style="margin-top:12px"></div></div>` : `<div class="card" style="margin-top:12px"><b>🏰 Kim baland quradi?</b><div class="twr-h" style="margin:2px 0 10px">Har to‘g‘ri javob — jamoa minorasiga bir g‘isht 🧱</div><div id="trace"></div></div>`) : ""}<div class="card" style="margin-top:12px"><b>${m.phase === "lobby" ? (m.team ? "👥 Jamoalar · qo'shilganlar: <span id='tcnt'>0</span>" : "Qo'shilganlar: <span id='tcnt'>0</span>") : (m.team ? "Jamoalar a'zolari" : "🏆 Jonli reyting")}</b><div id="thb" style="margin-top:10px"></div></div>`;
     if ($("thpj")) $("thpj").onclick = hProj;
     if (m.team && m.phase === "run" && $("thw")) $("thw").remove();
     if (st.proj) hProj();
@@ -8677,7 +8707,7 @@ const T = (() => {
   function hTeamRun() {
     if (isRope()) { ropeDraw($("trope")); ropeEndCheck(true); } else race($("trace"), { big: true }); leadCheck();
     const el = $("thb"); if (!el) return;
-    el.className = "tmg"; el.innerHTML = tRank().map(t => `<div class="tmc" style="--c:${TC[t.i][1]}"><div class="tmc-h">${TC[t.i][0]} ${esc(tName(t.i))}<small>${f1(t.avg)} / ${st.meta.n}</small></div>${t.m.slice().sort((a, b) => (b.s || 0) - (a.s || 0)).map(p => `<div class="mate"><b>${esc(p.n)}</b><span class="pr">${p.d ? "🏁" : (p.a || 0) + "/" + st.meta.n}</span><span>✅ ${p.s || 0}</span></div>`).join("")}</div>`).join("");
+    el.className = "tmg"; el.innerHTML = tRank().map(t => `<div class="tmc" style="--c:${TC[t.i][1]}"><div class="tmc-h">${TC[t.i][0]} ${esc(tName(t.i))}<small>${f1(t.avg)} / ${st.meta.n}</small></div>${t.m.slice().sort((a, b) => (b.s || 0) - (a.s || 0)).map(p => `<div class="mate"><b>${esc(p.n)}</b><span class="pr">${p.d ? "🏁" : (p.a || 0) + "/" + st.meta.n}</span><span>🧱 ${p.s || 0}</span></div>`).join("")}</div>`).join("");
     if ($("tcnt")) $("tcnt").textContent = teams().reduce((a, t) => a + t.m.length, 0);
     if ($("tdn")) $("tdn").textContent = teams().reduce((a, t) => a + t.m.filter(p => p.d).length, 0);
   }
@@ -8818,7 +8848,7 @@ const T = (() => {
     if (!PM.is()) { FX.toast("👑 Xarita jangini Premium obunachilar ochadi. Do'stingiz bergan kod bilan esa bepul qo'shilasiz."); return openJoin(); }
     await myOpen(); const b = $("mysrc"); if (b) { b.querySelector('[data-s="m"]').click(); const t = $("mym") && $("mym").querySelector('[data-m="team"]'); if (t) t.click(); }
   }
-  return { openJoin, openHost, boot, st, leave: clear, myOpen, mapBattle, rope };
+  return { openJoin, openHost, boot, st, leave: clear, myOpen, mapBattle, rope, _race: race };
 })();
 // ================== O'YIN KODINI ULASHISH (turnir, jamoaviy, katta turnir, boss) ==================
 const SHARE = (() => {
