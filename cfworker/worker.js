@@ -111,6 +111,16 @@ async function verifyInit(env, initData) {
   if (Date.now() / 1000 - Number(p.get("auth_date") || 0) > 7 * 86400) throw new Error("Sessiya eskirgan — botni qayta oching");
   return p.get("user") ? JSON.parse(p.get("user")) : null;
 }
+// Saytdagi «Telegram orqali kirish» (Login Widget) imzosi: secret = SHA256(bot token)
+async function verifyWidget(env, d) {
+  if (!d || typeof d !== "object" || !d.hash || !d.id) throw new Error("Telegram ma’lumoti yo‘q");
+  const dcs = Object.keys(d).filter(k => k !== "hash" && d[k] != null).sort().map(k => `${k}=${d[k]}`).join("\n");
+  let okSig = false;
+  for (const t of [token(env), oldToken(env)].filter(Boolean)) { const secret = await crypto.subtle.digest("SHA-256", enc.encode(t)); if (hex(await hmac(new Uint8Array(secret), dcs)) === String(d.hash)) { okSig = true; break; } }
+  if (!okSig) throw new Error("Telegram imzosi noto‘g‘ri");
+  if (Date.now() / 1000 - Number(d.auth_date || 0) > 86400) throw new Error("Kirish muddati o‘tgan — qayta urinib ko‘ring");
+  return { id: Number(d.id), first_name: d.first_name || "", last_name: d.last_name || "", username: d.username || "", photo_url: d.photo_url || "" };
+}
 // Firebase sessiyasini tekshirish (idToken → uid, email)
 async function lookup(idToken) {
   const j = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${FB.apiKey}`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ idToken: String(idToken || "") }) }).then(r => r.json());
@@ -567,6 +577,13 @@ const VFN = {
     return saveRes(env, uid, user, g, { ttl: i.ttl, hw: i.hw, set: i.set, n: i.n, dur });
   },
   async lb(env, uid) { return syncLb(env, uid); },
+  // Ota-ona havolasi (brauzerdagi sayt uchun)
+  async plink(env, uid) {
+    const r = await db(env, "GET", "users/" + uid);
+    const login = String((r && r.login) || "").toLowerCase().replace(/[^a-z0-9_]/g, "");
+    if (!login) throw new Error("Avval platformaga kiring");
+    return { url: `https://t.me/${BOT_NAME}?start=p_${login}_${await psig(env, login)}` };
+  },
   // Katta turnir: o'quvchi testni ulanmasdan ishlaydi, oxirida bitta so'rov yuboradi
   async kt(env, uid, i) {
     const code = str(i.code, 6); if (!/^\d{5}$/.test(code)) throw new Error("Kod noto‘g‘ri");
@@ -607,6 +624,14 @@ export default {
         if (!FN[b.fn]) return json({ ok: false, err: "Noma’lum amal" });
         const u = await verifyInit(env, b.initData);
         return json({ ok: true, r: await FN[b.fn](env, b.input || {}, u) });
+      } catch (e) { return json({ ok: false, err: String((e && e.message) || e) }); }
+    }
+
+    if (url.pathname === "/wl") { // brauzerdagi sayt: Telegram Login orqali kirish
+      try {
+        if (req.method !== "POST") return json({ ok: true, bot_id: Number(String(token(env)).split(":")[0]), bot: BOT_NAME });
+        const b = await req.json(), u = await verifyWidget(env, b.d);
+        return json({ ok: true, r: await FN.auth(env, {}, u) });
       } catch (e) { return json({ ok: false, err: String((e && e.message) || e) }); }
     }
 

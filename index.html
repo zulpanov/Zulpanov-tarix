@@ -29,6 +29,11 @@
 // ===== Telegram Mini App: faqat Telegram ichida ochilganda yuklanadi =====
 window.TG_BOT = "tarix_arena_bot";   // bot username (@ belgisisiz), masalan: zulpanov_tarix_bot
 window.TG_APP = "";   // BotFather /newapp da berilgan qisqa nom, masalan: app
+// Saytdagi «Telegram orqali kirish»: Telegram qaytargan natijani (#tgAuthResult=… yoki ?id=…&hash=…) darhol olib, manzildan tozalaymiz
+(function(){try{var h=location.hash||"",q=new URLSearchParams(location.search),r=null;
+  if(h.indexOf("#tgAuthResult=")===0){var b=h.slice(14).replace(/-/g,"+").replace(/_/g,"/");b+="===".slice((b.length+3)%4);r=JSON.parse(decodeURIComponent(escape(atob(b))))||false;}
+  else if(q.get("hash")&&q.get("id")&&q.get("auth_date")){r={};["id","first_name","last_name","username","photo_url","auth_date","hash"].forEach(function(k){if(q.get(k)!=null)r[k]=q.get(k);});["id","first_name","last_name","username","photo_url","auth_date","hash"].forEach(function(k){q.delete(k);});}
+  if(r!==null){window.TGW=r;var s=q.toString();history.replaceState(null,"",location.pathname+(s?"?"+s:""));}}catch(e){window.TGW=false;}})();
 (function(){var h=location.hash||"",q=location.search||"";if(!/tgWebApp/.test(h+q))return;window.IN_TG=true;
   var m=(h+"&"+q).match(/tgWebAppStartParam=([^&]+)/);window.TG_START=m?decodeURIComponent(m[1]):"";window.TG_SRC="";(function(){var t=window.TG_START,i=t.indexOf("__");if(i>=0){window.TG_SRC=t.slice(i+2);t=t.slice(0,i)}if(/^s-/.test(t)){window.TG_SRC=t.slice(2);t=""}if(/^r-/.test(t)){window.TG_REF=t.slice(2);if(!window.TG_SRC)window.TG_SRC="dost";t=""}window.TG_START=t})();
   document.write('<script src="https://telegram.org/js/telegram-web-app.js"><\/script>');})();
@@ -431,6 +436,7 @@ body.tchm #bnav{display:none!important}body.tchm .wrap{padding-bottom:110px}body
 .jf-n{margin-top:12px;padding:12px 14px;border-radius:14px;font-size:13px;line-height:1.45;background:rgba(52,211,153,.12);border:1px solid rgba(52,211,153,.4);min-height:20px}.jf-n.e{background:var(--card);border-color:var(--line);color:var(--mu)}
 .jf-stars{display:flex;justify-content:center;gap:6px;font-size:44px;line-height:1}.jf-stars .off{filter:grayscale(1);opacity:.3}
 .jf-res{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}.jf-res div{background:var(--card2);border-radius:14px;padding:10px;text-align:center}.jf-res b{display:block;font-size:20px}.jf-res small{font-size:11px;color:var(--mu)}
+.tgapp{display:block;text-align:center;margin:12px 0 0;font-size:13px;color:var(--mu);text-decoration:underline;text-underline-offset:3px}
 .jf-n.ok{animation:jfIn .35s ease}.jf-n .jf-pr{display:flex;align-items:center;gap:8px;font-weight:700;margin-bottom:6px}.jf-n .jf-pr i{width:10px;height:10px;border-radius:50%;flex:none;background:var(--c,#34D399)}.jf-n .jf-ex{color:var(--tx);opacity:.92}.jf-n .btn{margin:12px 0 0}
 @keyframes jfIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 .jf-ix{display:flex;flex-direction:column}.jf-ix>div{padding:10px 0;border-top:1px solid var(--line);font-size:13px;line-height:1.45}.jf-ix>div>b{display:block}.jf-ix>div>b em{font-style:normal;color:var(--mu);font-weight:600}.jf-ix>div>small{display:block;color:var(--mu);margin-top:3px;font-size:12.5px}.jf-ix>div.w>b:before{content:"✗ ";color:var(--bad)}.jf-ix>div.w{background:linear-gradient(90deg,rgba(251,113,133,.10),transparent);padding-left:8px;margin:0 -8px;padding-right:8px;border-radius:8px}
@@ -4263,8 +4269,9 @@ const KUN=(()=>{
       <b>📅 Ertaga yangi 10 ta savol!</b><div class="st-s" style="margin:4px 0 10px">Do'stlaringizni ham sinab ko'ring — kim ko'proq topadi?</div>
       <a class="btn" href="${share}" target="_blank" rel="noopener" style="display:block;text-align:center;text-decoration:none">✈️ Do'stlarimga yuborish</a>
       ${ACCT.cur?"":`<div class="st-s" style="margin:12px 0 8px">Natijangiz saqlanishi, XP to'plash, 5 700+ test va reytingga chiqish uchun kiring:</div>
-      ${window.IN_TG?`<button class="btn ghost" id="kunIn" style="width:100%">✈️ Telegram orqali kirish (+50 XP)</button>`:`<a class="btn ghost" href="https://t.me/${window.TG_BOT}?startapp=${ST.tg("kun")}" style="display:block;text-align:center;text-decoration:none">✈️ Telegram orqali kirish (+50 XP)</a>`}`}</div>`;
+      ${window.IN_TG?`<button class="btn ghost" id="kunIn" style="width:100%">✈️ Telegram orqali kirish (+50 XP)</button>`:`<button class="btn ghost" id="kunW" style="width:100%">✈️ Telegram orqali kirish (+50 XP)</button>`}`}</div>`;
     if($("kunIn"))$("kunIn").onclick=()=>goHome();
+    if($("kunW"))$("kunW").onclick=()=>{TGW_.go().catch(e=>FX.toast("⚠️ "+((e&&e.message)||"Xatolik")))};
   }
   function card(){ // auth va bosh sahifadagi tugma
     const d=done();
@@ -5860,6 +5867,18 @@ const MSADM = (() => {
   return { open, refresh };
 })();
 // ================== TELEGRAM BOT (Serverless) bilan bog'lanish ==================
+// Brauzerdagi sayt: Telegram Login (Telegram'ning rasmiy kirish sahifasi) — botdagi hisobning o'zi ochiladi
+const TGW_ = (() => {
+  const WL = "https://zulpanov-tarix-bot.zulponovalimqul.workers.dev/wl";
+  const post = d => fetch(WL, { method: "POST", headers: { "content-type": "text/plain" }, body: JSON.stringify({ d }) }).then(r => r.json()).then(j => { if (j && j.ok) return j.r; throw new Error((j && j.err) || "Xatolik"); });
+  async function go() {
+    let id = 0; try { id = +localStorage.getItem("zm_botid") || 0; } catch (e) {}
+    if (!id) { const j = await fetch(WL).then(r => r.json()); id = j && j.bot_id; if (!id) throw new Error("Server javob bermadi"); try { localStorage.setItem("zm_botid", id); } catch (e) {} }
+    const back = location.origin + location.pathname + location.search;
+    location.href = "https://oauth.telegram.org/auth?bot_id=" + id + "&origin=" + encodeURIComponent(location.origin) + "&request_access=write&return_to=" + encodeURIComponent(back);
+  }
+  return { go, auth: post };
+})();
 const TGB = (() => {
   const w = () => window.Telegram && Telegram.WebApp;
   // Bot server: Cloudflare Worker (tezkor; Google Apps Script endi ishlatilmaydi)
@@ -6170,6 +6189,8 @@ const ACCT = (() => {
       let s = null; try { s = JSON.parse(L.get("zm_user") || "null"); } catch (e) {}
       if (s && s.u && s.uid) { cur = { uid: s.uid, login: s.u, f: s.f, l: s.l, g: s.g || "" }; apply(); }
       await AUTH.ready();
+      if (window.TGW) { const d = window.TGW; window.TGW = null; try { await tgLogin(true, await TGW_.auth(d)); return; } catch (e) { if (AUTH.uid) { try { await AUTH.signOut(); } catch (x) {} } cur = null; L.del("zm_user"); ready = true; renderBox("⚠️ " + ((e && e.uz) || (e && e.message) || "Kirib bo‘lmadi")); return; } }
+      if (window.TGW === false) { window.TGW = null; }
       let uid = AUTH.uid;
       // Telegram ichida: avval shu Telegram hisobi bilan kirilgan bo'lsa — jimgina qayta kiramiz
       if (!uid && TGB.on()) { try { await tgLogin(false); return; } catch (e) {} uid = AUTH.uid; }
@@ -6195,8 +6216,8 @@ const ACCT = (() => {
     ready = true; renderBox();
   }
   // Telegram orqali kirish: login va parol kerak emas. create=false — faqat mavjud hisobga kirish
-  async function tgLogin(create) {
-    const a = await TGB.call("auth");
+  async function tgLogin(create, pre) {
+    const a = pre || await TGB.call("auth");
     const f = cap(a.f || "O'quvchi"), l = a.l ? cap(a.l) : "";
     let uid;
     try { uid = await AUTH.signInEmail(a.email, a.pw); }
@@ -6289,11 +6310,13 @@ const ACCT = (() => {
         <div class="arg-ch"><span>📚 5 700+ test</span><span>🎓 Sertifikat</span><span>🗺 Xarita jangi</span></div>
         ${KUN.card()}
         ${inTg ? `<button class="tgbtn" id="aTg">${tgIc}<span>Telegram bilan kirish</span><em class="arg-xp">+50 XP</em></button>`
-               : `<a class="tgbtn" id="aTgL" href="https://t.me/${window.TG_BOT}?startapp${(x => x ? "=" + x : "")(ST.tg(HW.pend() ? "g-" + HW.pend() : ""))}">${tgIc}<span>Telegram bilan kirish</span><em class="arg-xp">+50 XP</em></a><p class="sub" style="text-align:center;margin:10px 0 0">Telegram ilovasi ochiladi · login va parol kerak emas</p>`}
+               : `<button class="tgbtn" id="aTgW">${tgIc}<span>Telegram orqali kirish</span><em class="arg-xp">+50 XP</em></button><p class="sub" style="text-align:center;margin:10px 0 0">Saytda qolasiz · Telegram faqat tasdiqlash so‘raydi · login va parol kerak emas</p>
+                 <a class="tgapp" href="https://t.me/${window.TG_BOT}?startapp${(x => x ? "=" + x : "")(ST.tg(HW.pend() ? "g-" + HW.pend() : ""))}">📲 Yoki Telegram ilovasida (bot orqali) ochish</a>`}
         <div class="accerr" id="aE" style="text-align:center"></div>
         ${inTg ? `<button class="xpmv" id="aMvL">Avval login bilan ro'yxatdan o'tganmisiz? <u>Hisobni ko'chirish</u></button><div id="aMove"></div>` : ""}
       </div>`;
     if ($("aTg")) $("aTg").onclick = tgGo; KUN.bind();
+    if ($("aTgW")) $("aTgW").onclick = async () => { const b = $("aTgW"); b.disabled = true; b.querySelector("span").textContent = "Telegram ochilmoqda…"; try { await TGW_.go(); } catch (e) { b.disabled = false; b.querySelector("span").textContent = "Telegram orqali kirish"; $("aE").textContent = "⚠️ " + ((e && e.message) || "Internetni tekshiring"); } };
     if ($("aMvL")) $("aMvL").onclick = () => { $("aMvL").remove(); moveForm(); };
     if (msg) $("aE").textContent = msg;
   }
@@ -6430,7 +6453,7 @@ const ACCT = (() => {
       <div class="card hsec" style="margin-top:12px"><h3>📚 Testlar bo'yicha</h3><div id="hT"></div></div>
       <div class="card hsec" style="margin-top:12px"><h3>🕒 Barcha natijalar</h3><div id="hL"></div></div>
       ${window.TG_BOT ? `<div class="card hsec" style="margin-top:12px"><h3>👨‍👩‍👦 Ota-onamni ulash</h3><div class="sub" style="margin:0 0 10px">Ota-onangiz shu havolani bossa, Telegram bot orqali natijalaringizni ko'rib boradi.</div><button class="btn" id="hPar">✈️ Ota-onamga yuborish</button></div>` : ""}`;
-    if ($("hPar")) $("hPar").onclick = async () => { if (!(typeof TGB !== "undefined" && TGB.on())) { FX.toast("📲 Havolani olish uchun platformani Telegram botidan oching"); return; } let l = ""; try { l = (await TGB.call("plink", { login: cur.login })).url; } catch (e) { FX.toast("⚠️ " + TGB.msg(e)); return; } const u = `https://t.me/share/url?url=${encodeURIComponent(l)}&text=${encodeURIComponent("Assalomu alaykum! Tarix bo'yicha natijalarimni shu bot orqali kuzatib boring 👇")}`; try { if (window.IN_TG && Telegram.WebApp.openTelegramLink) return Telegram.WebApp.openTelegramLink(u); } catch (e) {} window.open(u, "_blank"); };
+    if ($("hPar")) $("hPar").onclick = async () => { let l = ""; try { if (TGB.on()) l = (await TGB.call("plink", { login: cur.login })).url; else { const j = await fetch("https://zulpanov-tarix-bot.zulponovalimqul.workers.dev/v", { method: "POST", headers: { "content-type": "text/plain" }, body: JSON.stringify({ fn: "plink", idToken: await AUTH.idToken(), input: {} }) }).then(r => r.json()); if (!j || !j.ok) throw new Error((j && j.err) || "Xatolik"); l = j.r.url; } } catch (e) { FX.toast("⚠️ " + TGB.msg(e)); return; } const u = `https://t.me/share/url?url=${encodeURIComponent(l)}&text=${encodeURIComponent("Assalomu alaykum! Tarix bo'yicha natijalarimni shu bot orqali kuzatib boring 👇")}`; try { if (window.IN_TG && Telegram.WebApp.openTelegramLink) return Telegram.WebApp.openTelegramLink(u); } catch (e) {} window.open(u, "_blank"); };
     watchH();
     const fill = () => {
       if (!$("hL")) { hListeners.delete(fill); return; }
