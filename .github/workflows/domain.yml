@@ -36,7 +36,15 @@ jobs:
               echo "$EX" | grep -q "^A $D $ip$" || api POST "/zones/$Z/dns_records" "{\"type\":\"A\",\"name\":\"$D\",\"content\":\"$ip\",\"proxied\":false,\"ttl\":1}" | jq -c '{success,errors}'
             done
             echo "$EX" | grep -q "^CNAME www.$D " || api POST "/zones/$Z/dns_records" "{\"type\":\"CNAME\",\"name\":\"www\",\"content\":\"zulpanov.github.io\",\"proxied\":false,\"ttl\":1}" | jq -c '{success,errors}'
+            echo "== sozlamalar (avval SSL Full, keyin proksi)"
+            SSL=$(api PATCH "/zones/$Z/settings/ssl" '{"value":"full"}' | jq -r '.success'); echo "ssl=full: $SSL"
+            for kv in 'always_use_https:"on"' 'brotli:"on"' 'http3:"on"' 'early_hints:"on"' 'min_tls_version:"1.2"' 'rocket_loader:"off"'; do k=${kv%%:*}; v=${kv#*:}; echo "$k: $(api PATCH "/zones/$Z/settings/$k" "{\"value\":$v}" | jq -c '[.success,.errors[0].message]')"; done
+            if [ "$SSL" = "true" ]; then
+              echo "== proksi (to'q sariq bulut)"
+              api GET "/zones/$Z/dns_records?per_page=100" | jq -r '.result[]? | select((.type=="A" or .type=="CNAME") and .proxied==false) | .id' | while read id; do api PATCH "/zones/$Z/dns_records/$id" '{"proxied":true}' | jq -c '{success,errors}'; done
+            else echo "SSL o'rnatilmadi — proksi yoqilmadi (token huquqi yetarli emas)"; fi
             echo "== natija"; api GET "/zones/$Z/dns_records?per_page=100" | jq -r '.result[]? | .type+" "+.name+" "+.content+" proxied="+(.proxied|tostring)'
+            echo "== ssl hozir: $(api GET "/zones/$Z/settings/ssl" | jq -r '.result.value // .errors[0].message')"
           fi
           echo "== zona holati"; api GET "/zones/$Z" | jq -r '.result.status // "?"'
           echo "== jahon DNS (1.1.1.1 / 8.8.8.8)"
@@ -58,3 +66,4 @@ jobs:
 # Tue Nov 17 11:10:58 +05 2026
 # Tue Nov 17 11:30:06 +05 2026
 # Fri Nov 20 06:35:37 +05 2026
+# Sat Nov 21 00:38:37 +05 2026
