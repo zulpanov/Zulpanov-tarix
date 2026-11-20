@@ -2,15 +2,19 @@
 <html lang="uz">
 <head>
 <meta charset="utf-8">
-<meta name="color-scheme" content="only light">
+<meta name="color-scheme" content="light dark">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <title>Xarita o‘yini · TARIX ARENA</title>
 <link rel="icon" type="image/png" href="icons/icon-192.png?v=2">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
-<script>(function(){var t="vodiy";try{t=localStorage.getItem("zm_theme")||"vodiy"}catch(e){}document.documentElement.setAttribute("data-th",t)})();</script>
+<script>(function(){var t="arena";try{t=localStorage.getItem("zm_theme")||"arena"}catch(e){}document.documentElement.setAttribute("data-th",t)})();</script>
 <style>
 :root{--bg:#0A0720;--card:#141033;--card2:#1c1745;--line:#2e2768;--tx:#EDEBFF;--mu:#A7A3D6;--ac:#8B5CF6;--ac2:#22D3EE;--ok:#22C55E;--bad:#F43F5E;--gold:#FBBF24;--gr:linear-gradient(135deg,#7C3AED,#06B6D4)}
+html[data-th="arena"]{--bg:#0A1830;--card:#12264A;--card2:#183059;--line:#2A4570;--tx:#F5F1E4;--mu:#9FB0D0;--ac:#D4A63A;--ac2:#F3D27A;--gr:linear-gradient(135deg,#C9962E,#F3D27A)}
+html[data-th="arena"] body{background:radial-gradient(1200px 600px at 110% -10%,rgba(212,166,58,.12),transparent 60%),radial-gradient(900px 500px at -20% 10%,rgba(33,64,122,.55),transparent 60%),var(--bg)}
+html[data-th="arena"] .hero,html[data-th="arena"] .cc{background:linear-gradient(145deg,#1B386A,var(--card))}
+html[data-th="arena"] .btn.pri{color:#0A1830}
 html[data-th="tong"]{--bg:#F5F7FB;--card:#FFFFFF;--card2:#EEF2FF;--line:#E1E6F2;--tx:#1E2340;--mu:#646B8A;--ac:#4F46E5;--ac2:#0891B2;--gr:linear-gradient(135deg,#4F46E5,#06B6D4)}
 html[data-th="vodiy"]{--bg:#EEF7F1;--card:#FFFFFF;--card2:#E3F3EA;--line:#D3E8DC;--tx:#173326;--mu:#587565;--ac:#16A34A;--ac2:#0D9488;--gr:linear-gradient(135deg,#16A34A,#0EA5A4)}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -88,6 +92,36 @@ html[data-th="tong"] .cc,html[data-th="vodiy"] .cc{background:var(--card);box-sh
 html[data-th="tong"] .cc .best,html[data-th="vodiy"] .cc .best{color:#b45309;background:#fef3c7}
 html[data-th="tong"] .xjang,html[data-th="vodiy"] .xjang{background:var(--card);border-color:var(--line);box-shadow:0 4px 16px rgba(20,60,40,.06)}html[data-th="tong"] .xjang i,html[data-th="vodiy"] .xjang i{color:var(--ac)}
 html[data-th="tong"] .xf,html[data-th="vodiy"] .xf{background:#F0F7F2}html[data-th="tong"] .xf b,html[data-th="vodiy"] .xf b{color:#b45309}
+
+/* Sayohat xaritasi: xarita ekranga sig'adi, natija xarita ustida, kompyuterda yonma-yon */
+.mapbox{height:clamp(260px,calc(100vh - 380px),110vw)}
+.mapbox svg{width:100%;height:100%}
+.fly{fill:none;stroke:#fde68a;stroke-width:2.2;stroke-dasharray:7 7;vector-effect:non-scaling-stroke;opacity:.9;animation:dash 1s linear infinite}
+@keyframes dash{to{stroke-dashoffset:-14}}
+.fly.out{transition:opacity .6s;opacity:0}
+.plane{font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif;pointer-events:none}
+.mapbox .fb{position:absolute;left:8px;right:8px;bottom:8px;margin:0;max-height:78%;padding:10px 12px;overflow:auto;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 10px 30px rgba(0,0,0,.35)}
+.mapbox .fb.ok{background:rgba(9,40,25,.86)}.mapbox .fb.bad{background:rgba(60,12,24,.86)}
+.mapbox .fb .ph{font-size:16px;color:#fff}.mapbox .fb .ex{color:#e5e7eb;font-size:13.5px}
+.mapbox .xf{background:rgba(255,255,255,.08)!important}.mapbox .xf b{color:#fbbf24!important}
+.fb .next{display:block;margin-top:10px;position:relative;overflow:hidden}
+.next .tm{position:absolute;left:0;bottom:0;height:3px;background:rgba(255,255,255,.75);width:0}
+.next .tm.go{animation:tmw linear forwards}@keyframes tmw{to{width:100%}}
+.q{font-size:15px;margin:2px 0 8px}.hint{min-height:0;margin:0 0 4px}.tools{margin:8px 0 4px}
+.kb{display:none;text-align:center;color:var(--mu);font-size:12.5px;margin-top:12px}.kb b{color:var(--tx);background:var(--card2);border-radius:6px;padding:1px 6px}
+@media (min-width:900px){
+  .wrap{max-width:1240px;padding:20px 28px 40px}
+  .gm{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:20px;align-items:start}
+  .mapbox{height:calc(100vh - 150px);min-height:440px}
+  .pan{position:sticky;top:20px}
+  .opts{grid-template-columns:1fr}.op{min-height:54px;font-size:15px;text-align:left;padding:13px 16px}
+  .q{font-size:18px;text-align:left}.hint{text-align:left}
+  .kb{display:block}
+  .mapbox .fb{left:auto;right:14px;bottom:14px;width:min(420px,80%)}
+  #menu,#res{max-width:640px;margin:0 auto}
+}
+.pop{top:20%}
+@media (min-width:900px){.pop{top:24%;left:calc(50% - 180px)}}
 </style>
 </head>
 <body>
@@ -106,13 +140,18 @@ html[data-th="tong"] .xf,html[data-th="vodiy"] .xf{background:#F0F7F2}html[data-
 
   <div id="game" class="hide">
     <div class="hud"><span class="pill" id="hN">1/10</span><div class="bar"><i id="hB"></i></div><span class="pill" id="hS">⭐ 0</span><span class="pill" id="hK">🔥 0</span></div>
-    <div class="mapbox"><svg id="map" viewBox="0 0 1000 760"></svg></div>
-    <div class="tools"><button class="btn" id="zoom">🔍 Yaqinlashtirish</button><button class="btn" id="hintB">💡 Poytaxti</button></div>
-    <div class="hint" id="hint"></div>
-    <div class="q">Belgilangan davlat qaysi?</div>
-    <div class="opts" id="opts"></div>
-    <div class="fb" id="fb"><div class="ph" id="fbP"></div><div class="ex" id="fbE"></div></div>
-    <button class="btn pri next" id="next">Keyingisi →</button>
+    <div class="gm">
+      <div class="mapbox" id="mapbox"><svg id="map" viewBox="0 0 1000 760"></svg>
+        <div class="fb" id="fb"><div class="ph" id="fbP"></div><div class="ex" id="fbE"></div><button class="btn pri next" id="next">Keyingisi →</button></div>
+      </div>
+      <div class="pan">
+        <div class="tools"><button class="btn" id="zoom">🌍 Kengroq ko‘rish</button><button class="btn" id="hintB">💡 Poytaxti</button></div>
+        <div class="hint" id="hint"></div>
+        <div class="q">Belgilangan davlat qaysi?</div>
+        <div class="opts" id="opts"></div>
+        <div class="kb">⌨️ <b>1–4</b> — javob · <b>Enter</b> — keyingisi</div>
+      </div>
+    </div>
   </div>
 
   <div id="res" class="hide res">
@@ -171,7 +210,7 @@ function noteOf(n){if(typeof XNOTE==="undefined")return "";let L=XNOTE[n];if(!L)
 const OK=k=>XMAP[k].q.map((q,ix)=>ix).filter(ix=>typeof XNOTE==="undefined"||XMAP[k].q[ix].n in XNOTE);
 function start(k,only){K=k;const all=OK(k);
   list=only&&only.length?shuf(only):shuf(all).slice(0,N||all.length);
-  i=0;score=0;streak=0;bestStreak=0;right=0;mist=[];show("game");drawBase();ask()}
+  i=0;score=0;streak=0;bestStreak=0;right=0;mist=[];prevQ=null;show("game");drawBase();requestAnimationFrame(()=>ask())}
 
 function drawBase(){const c=XMAP[K];let h="";
   c.s.forEach(([d,q],ix)=>{h+=`<path id="p${ix}" class="${q===undefined?"l0":"l1"}" d="${d}"${q!==undefined?` data-q="${q}"`:""}/>`});
@@ -190,6 +229,30 @@ function nearOpts(t){const c=XMAP[K].q,T=c[t];
 let VB=[0,0,1000,760],TVB=VB,anim=null;
 function setVB(to,ms=450){TVB=to;const fr=VB.slice(),t0=performance.now();cancelAnimationFrame(anim);
   const st=now=>{let p=Math.min(1,(now-t0)/ms);p=1-Math.pow(1-p,3);VB=fr.map((v,j)=>v+(to[j]-v)*p);$("map").setAttribute("viewBox",VB.map(v=>v.toFixed(1)).join(" "));if(p<1)anim=requestAnimationFrame(st)};anim=requestAnimationFrame(st)}
+function setVBp(to,ms){return new Promise(r=>{setVB(to,ms);setTimeout(r,ms+20)})}
+const ASP=()=>{const b=$("mapbox").getBoundingClientRect();return b.width&&b.height?b.width/b.height:1000/760};
+function fit(x,y,w,h){const A=ASP();if(w/h>A)h=w/A;else w=h*A;
+  const cl=(v,size,tot)=>size>=tot?(tot-size)/2:Math.max(0,Math.min(tot-size,v));return [cl(x,w,1000),cl(y,h,760),w,h]}
+function cam(q){const [x0,y0,x1,y1]=q.b,bw=Math.max(x1-x0,28),bh=Math.max(y1-y0,22),m=Math.max(bw,bh);
+  const f=m>260?1.5:m>140?2.3:m>70?3.6:m>35?5.5:7.5;let w=Math.max(bw*f,300),h=Math.max(bh*f,230);
+  let cx=(x0+x1)/2,cy=(y0+y1)/2;if(q.big<4000){cx=q.x;cy=q.y}
+  const A=ASP();if(w/h>A)h=w/A;else w=h*A;return fit(cx-w/2,cy-h/2,w,h)}
+const ctr=v=>[v[0]+v[2]/2,v[1]+v[3]/2];
+let prevQ=null,flying=0,wide=false;
+async function fly(q){const id=++flying,to=cam(q),ov=$("ov");
+  if(!prevQ){VB=[0,0,1000,760];$("map").setAttribute("viewBox",VB.join(" "));await new Promise(r=>setTimeout(r,250));if(id!==flying)return;await setVBp(to,1100);prevQ=q;return}
+  const a=[prevQ.x,prevQ.y],b=[q.x,q.y],d=Math.hypot(b[0]-a[0],b[1]-a[1]);prevQ=q;
+  if(d<8){await setVBp(to,600);return}
+  // yo'l: punktir yoy va samolyot
+  const mx=(a[0]+b[0])/2,my=(a[1]+b[1])/2,lift=Math.min(160,d*.35),cpx=mx+(b[1]-a[1])/d*lift*-.25,cpy=my-lift;
+  ov.insertAdjacentHTML("afterbegin",`<path id="flyP" class="fly" d="M${a[0].toFixed(1)} ${a[1].toFixed(1)} Q${cpx.toFixed(1)} ${cpy.toFixed(1)} ${b[0].toFixed(1)} ${b[1].toFixed(1)}"/><text id="plane" class="plane" text-anchor="middle" dominant-baseline="central">✈️</text>`);
+  const P=$("flyP"),pl=$("plane"),L=P.getTotalLength();
+  const x0=Math.min(VB[0],to[0],Math.min(a[0],b[0],cpx)-40),y0=Math.min(VB[1],to[1],cpy-30),x1=Math.max(VB[0]+VB[2],to[0]+to[2],Math.max(a[0],b[0])+40),y1=Math.max(VB[1]+VB[3],to[1]+to[3]);
+  const mid=fit(x0,y0,x1-x0,y1-y0),T1=d>250?850:650,T2=900,t0=performance.now();
+  const mv=now=>{if(id!==flying||!$("plane"))return;const p=Math.min(1,(now-t0)/(T1+T2*.75)),e=p<.5?2*p*p:1-Math.pow(-2*p+2,2)/2,l=L*e,pt=P.getPointAtLength(l),pn=P.getPointAtLength(Math.min(L,l+1)),ang=Math.atan2(pn.y-pt.y,pn.x-pt.x)*180/Math.PI;
+    const fs=VB[2]*.055;pl.setAttribute("font-size",fs.toFixed(1));pl.setAttribute("transform",`translate(${pt.x.toFixed(1)} ${pt.y.toFixed(1)}) rotate(${(ang+45).toFixed(1)})`);if(p<1)requestAnimationFrame(mv);else{pl.remove();P.classList.add("out");setTimeout(()=>P.remove(),700)}};
+  requestAnimationFrame(mv);
+  await setVBp(mid,T1);if(id!==flying)return;await setVBp(to,T2)}
 function zoomTo(q){let [x0,y0,x1,y1]=q.b;let w=Math.max(x1-x0,70)*3,h=Math.max(y1-y0,54)*3;if(w/h>1000/760)h=w*760/1000;else w=h*1000/760;
   w=Math.min(w,1000);h=Math.min(h,760);let cx=(x0+x1)/2,cy=(y0+y1)/2;if(q.big<4000){cx=q.x;cy=q.y}
   let x=Math.max(0,Math.min(1000-w,cx-w/2)),y=Math.max(0,Math.min(760-h,cy-h/2));setVB([x,y,w,h])}
@@ -200,19 +263,20 @@ function ask(){answered=false;usedHint=false;zoomed=false;const t=list[i],c=XMAP
   document.querySelectorAll(`#map path[data-q="${t}"]`).forEach(p=>{p.setAttribute("class","tg");p.parentNode.insertBefore(p,$("ov"))});
   const small=Math.max(q.b[2]-q.b[0],q.b[3]-q.b[1])<36;
   $("ov").innerHTML=small?`<circle class="ring" cx="${q.x}" cy="${q.y}" r="22"/>`:"";
-  setVB([0,0,1000,760],small?0:300);
-  $("hint").textContent="";$("hintB").classList.remove("used");$("zoom").classList.remove("used");$("zoom").textContent="🔍 Yaqinlashtirish";
-  $("fb").className="fb";$("next").style.display="none";
+  wide=false;$("zoom").textContent="🌍 Kengroq ko‘rish";fly(q);clearTimeout(autoT);
+  $("hint").textContent="";$("hintB").classList.remove("used");$("zoom").classList.remove("used");
+  $("fb").className="fb";
   const o=$("opts");o.innerHTML="";nearOpts(t).forEach(ix=>{const b=document.createElement("button");b.className="op";b.textContent=c.q[ix].n;b.onclick=()=>answer(ix,b);o.appendChild(b)})}
 
-$("zoom").onclick=()=>{const q=XMAP[K].q[list[i]];zoomed=!zoomed;if(zoomed){zoomTo(q);$("zoom").textContent="🗺 Butun xarita"}else{setVB([0,0,1000,760]);$("zoom").textContent="🔍 Yaqinlashtirish"}};
+$("zoom").onclick=()=>{const q=XMAP[K].q[list[i]];flying++;wide=!wide;if(wide){setVB(fit(0,0,1000,760),600);$("zoom").textContent="🎯 Yaqinlashtirish"}else{setVB(cam(q),600);$("zoom").textContent="🌍 Kengroq ko‘rish"}};
+let autoT=0;
 $("hintB").onclick=()=>{if(answered||usedHint)return;usedHint=true;const q=XMAP[K].q[list[i]];$("hint").textContent=HINT[q.n]||("Poytaxti: "+q.c);$("hintB").classList.add("used")};
 
 function answer(ix,btn){if(answered)return;answered=true;const t=list[i],c=XMAP[K],q=c.q[t],ok=ix===t;
   document.querySelectorAll(".op").forEach(b=>{b.disabled=true;if(b.textContent===q.n)b.classList.add("ok")});
   if(!ok)btn.classList.add("bad");
   document.querySelectorAll(`#map path[data-q="${t}"]`).forEach(p=>p.setAttribute("class","tg "+(ok?"okc":"badc")));
-  const fs=Math.max(10,TVB[2]*0.042);$("ov").innerHTML+=`<text class="lbl" x="${q.x}" y="${q.y-fs*0.6}" font-size="${fs.toFixed(1)}" stroke-width="${(fs/5).toFixed(1)}">${E(q.n)}</text>`;
+  const fs=Math.max(10,TVB[2]*0.042);$("ov").insertAdjacentHTML("beforeend",`<text class="lbl" x="${q.x}" y="${q.y-fs*0.6}" font-size="${fs.toFixed(1)}" stroke-width="${(fs/5).toFixed(1)}">${E(q.n)}</text>`);
   let ph;
   if(ok){right++;streak++;bestStreak=Math.max(bestStreak,streak);const pts=(usedHint?5:10)+(streak>=3?2:0);score+=pts;
     ph=pick(PRAISE);if(streak>=3)ph+=` 🔥${streak}`;popup(ph,"#4ade80");$("fbP").textContent="✅ "+ph+` +${pts}`}
@@ -222,12 +286,18 @@ function answer(ix,btn){if(answered)return;answered=true;const t=list[i],c=XMAP[
   $("fbE").innerHTML=`Bu — <b>${E(q.n)}</b>, ${E(cap)}.`+(nt?`<div class="xf"><b>📖 Tarixdan</b>${E(nt)}</div>`:"");
   $("fb").className="fb show "+(ok?"ok":"bad");beep(ok);
   $("hS").textContent="⭐ "+score;$("hK").textContent="🔥 "+streak;
-  $("next").textContent=i+1<list.length?"Keyingisi →":"Natijani ko‘rish 🏁";$("next").style.display="block"}
-$("next").onclick=()=>{i++;if(i<list.length)ask();else finish()};
+  const last=i+1>=list.length,wait=nt?3800:2200;
+  $("next").innerHTML=(last?"Natijani ko‘rish 🏁":"Keyingisi →")+(ok&&!last?`<i class="tm go" style="animation-duration:${wait}ms"></i>`:"");
+  clearTimeout(autoT);if(ok&&!last)autoT=setTimeout(()=>{if(answered&&!$("game").classList.contains("hide"))$("next").click()},wait)}
+$("next").onclick=()=>{clearTimeout(autoT);i++;if(i<list.length)ask();else finish()};
+$("fb").addEventListener("pointerdown",e=>{if(e.target.id!=="next"&&!e.target.closest("#next")){clearTimeout(autoT);const t=$("next").querySelector(".tm");if(t)t.remove()}});
+document.addEventListener("keydown",e=>{if($("game").classList.contains("hide")||e.ctrlKey||e.metaKey||e.altKey)return;
+  const n={"1":0,"2":1,"3":2,"4":3}[e.key];if(n!=null&&!answered){const b=$("opts").children[n];if(b){e.preventDefault();b.click()}return}
+  if(e.key==="Enter"&&answered){e.preventDefault();$("next").click()}});
 
 function popup(t,col){const p=$("pop");p.textContent=t;p.style.color=col;p.classList.remove("go");void p.offsetWidth;p.classList.add("go")}
 
-function finish(){const pc=Math.round(right/list.length*100),c=XMAP[K];
+function finish(){clearTimeout(autoT);flying++;const pc=Math.round(right/list.length*100),c=XMAP[K];
   const k="zm_xmap_best_"+K,b=LS.get(k,null);if(b==null||pc>b)LS.set(k,pc);
   $("rC").textContent=`${EMO[K]} ${c.n} · ${list.length} ta savol`;
   $("rB").textContent=`${right}/${list.length}`;
