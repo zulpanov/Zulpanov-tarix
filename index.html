@@ -5358,7 +5358,7 @@ const BOSS = (() => {
 const JUFTG = (() => {
   const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const TY = { s: ["Shaxslar va ishlari", "SHAXS", "ISHI", "👤", "#E2B54C"], d: ["Sanalar va voqealar", "SANA", "VOQEA", "📅", "#22D3EE"], j: ["Davlatlar va joylar", "NOMI", "JOYI", "📍", "#F472B6"], t: ["Atamalar va ma’nolari", "ATAMA", "MA’NOSI", "📖", "#34D399"] };
-  const LV = [[6, "Oson"], [8, "O‘rta"], [10, "Qiyin"]], CL = ["6", "7", "8", "9", "10", "11"], HAS = ["6", "7", "7j", "8", "8j", "9", "9j", "10", "10j"], SUBJ = { "6": "Qadimgi dunyo tarixi", "7": "O‘zbekiston tarixi", "7j": "Jahon tarixi", "8": "O‘zbekiston tarixi", "8j": "Jahon tarixi", "9": "O‘zbekiston tarixi", "9j": "Jahon tarixi", "10": "O‘zbekiston tarixi", "10j": "Jahon tarixi" }, VAR = { "7": ["7", "7j"], "8": ["8", "8j"], "9": ["9", "9j"], "10": ["10", "10j"] }, GR = c => String(c).replace(/j$/, "");
+  const LV = [[6, "Oson"], [8, "O‘rta"], [10, "Qiyin"]], CL = ["6", "7", "8", "9", "10", "11"], HAS = ["6", "7", "7j", "8", "8j", "9", "9j", "10", "10j", "11", "11j"], SUBJ = { "6": "Qadimgi dunyo tarixi", "7": "O‘zbekiston tarixi", "7j": "Jahon tarixi", "8": "O‘zbekiston tarixi", "8j": "Jahon tarixi", "9": "O‘zbekiston tarixi", "9j": "Jahon tarixi", "10": "O‘zbekiston tarixi", "10j": "Jahon tarixi", "11": "O‘zbekiston tarixi", "11j": "Jahon tarixi" }, VAR = { "7": ["7", "7j"], "8": ["8", "8j"], "9": ["9", "9j"], "10": ["10", "10j"], "11": ["11", "11j"] }, GR = c => String(c).replace(/j$/, "");
   const B = "#60A5FA";
   let S = { c: "6", k: "s", l: 1 }, G = null, P = {};
   try { Object.assign(S, JSON.parse(localStorage.getItem("zm_jf") || "{}")); } catch (e) {}
