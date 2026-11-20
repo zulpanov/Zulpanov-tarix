@@ -43,6 +43,9 @@ jobs:
           for r in 1.1.1.1 8.8.8.8; do echo "-- $r NS: $(dig +short NS $D @$r | tr '\n' ' ') | A: $(dig +short A $D @$r | tr '\n' ' ') | www: $(dig +short CNAME www.$D @$r)"; done
           echo "-- brian (CF) A: $(dig +short A $D @brian.ns.cloudflare.com | tr '\n' ' ') | www: $(dig +short CNAME www.$D @brian.ns.cloudflare.com)"
           echo "-- .uz registri NS: $(dig +short NS $D @ns.cctld.uz 2>/dev/null | tr '\n' ' ') $(dig +norecurse NS $D @$(dig +short NS uz | head -1) | grep -A3 AUTHORITY | tail -2 | tr '\n' ' ')"
+          echo "== bot setup"; SUB=$(api GET "/accounts/$A/workers/subdomain" | jq -r '.result.subdomain // empty'); echo "sub=$SUB"
+          [ -n "$SUB" ] && curl -s -m 30 "https://zulpanov-tarix-bot.$SUB.workers.dev/?setup=1" | head -c 400; echo
+          echo "== sayt"; curl -sI -m 20 https://tarixarena.uz/ | head -3; curl -sI -m 20 https://zulpanov.github.io/Zulpanov-tarix/ | grep -i "^HTTP\|^location"
           } > dns.txt 2>&1
           cat dns.txt
       - name: Natijani dns-log shoxiga yozish
@@ -54,3 +57,4 @@ jobs:
 # Tue Nov 17 11:05:29 +05 2026
 # Tue Nov 17 11:10:58 +05 2026
 # Tue Nov 17 11:30:06 +05 2026
+# Fri Nov 20 06:35:37 +05 2026
