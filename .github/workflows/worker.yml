@@ -24,3 +24,7 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           workingDirectory: cfworker
           wranglerVersion: "3.114.0"
+          secrets: |
+            FIREBASE_SA
+        env:
+          FIREBASE_SA: ${{ secrets.FIREBASE_SA }}

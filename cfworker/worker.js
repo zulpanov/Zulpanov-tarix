@@ -111,6 +111,48 @@ async function verifyInit(env, initData) {
   if (Date.now() / 1000 - Number(p.get("auth_date") || 0) > 7 * 86400) throw new Error("Sessiya eskirgan — botni qayta oching");
   return p.get("user") ? JSON.parse(p.get("user")) : null;
 }
+// ---------------- Firebase xizmat hisobi (FIREBASE_SA): bir martalik kirish kaliti va parolni yangilash ----------------
+let saTok = null, saK = null;
+const b64u = buf => btoa(String.fromCharCode(...new Uint8Array(buf))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+const b64uS = str => b64u(enc.encode(str));
+async function saKey(env) {
+  if (saK) return saK;
+  let sa = null; try { sa = JSON.parse(env.FIREBASE_SA || "null"); } catch (e) {}
+  if (!sa || !sa.private_key || !sa.client_email) throw new Error("Server sozlanmagan (FIREBASE_SA)");
+  const der = Uint8Array.from(atob(sa.private_key.replace(/-----[^-]+-----/g, "").replace(/\s+/g, "")), c => c.charCodeAt(0));
+  const key = await crypto.subtle.importKey("pkcs8", der, { name: "RSASSA-PKCS1-v1_5", hash: "SHA-256" }, false, ["sign"]);
+  return (saK = { sa, key });
+}
+async function jwt(key, payload) { const h = b64uS(JSON.stringify({ alg: "RS256", typ: "JWT" })) + "." + b64uS(JSON.stringify(payload)); return h + "." + b64u(await crypto.subtle.sign("RSASSA-PKCS1-v1_5", key, enc.encode(h))); }
+async function customToken(env, uid) {
+  const { sa, key } = await saKey(env), now = Math.floor(Date.now() / 1000);
+  return jwt(key, { iss: sa.client_email, sub: sa.client_email, aud: "https://identitytoolkit.googleapis.com/google.identity.identitytoolkit.v1.IdentityToolkit", iat: now, exp: now + 3600, uid: String(uid) });
+}
+async function saAccess(env) {
+  if (saTok && saTok.exp > Date.now()) return saTok.t;
+  const { sa, key } = await saKey(env), now = Math.floor(Date.now() / 1000);
+  const a = await jwt(key, { iss: sa.client_email, scope: "https://www.googleapis.com/auth/identitytoolkit https://www.googleapis.com/auth/cloud-platform", aud: "https://oauth2.googleapis.com/token", iat: now, exp: now + 3600 });
+  const j = await fetch("https://oauth2.googleapis.com/token", { method: "POST", headers: { "content-type": "application/x-www-form-urlencoded" }, body: "grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Ajwt-bearer&assertion=" + a }).then(r => r.json());
+  if (!j.access_token) throw new Error("Xizmat kaliti ishlamadi");
+  saTok = { t: j.access_token, exp: Date.now() + 3000e3 }; return saTok.t;
+}
+async function adminSetPw(env, uid, password) {
+  const t = await saAccess(env), { sa } = await saKey(env);
+  const j = await fetch(`https://identitytoolkit.googleapis.com/v1/projects/${sa.project_id}/accounts:update`, { method: "POST", headers: { authorization: "Bearer " + t, "content-type": "application/json" }, body: JSON.stringify({ localId: uid, password }) }).then(r => r.json());
+  if (j.error) throw new Error("Parolni yangilab bo‘lmadi: " + j.error.message);
+}
+// Sayt paroli (botdan kelganlar uchun qo'shimcha login): PBKDF2 xeshi faqat serverda (tg/sp — faqat admin/bot o'qiydi)
+async function pwHash(pw, salt) {
+  const k = await crypto.subtle.importKey("raw", enc.encode(pw), "PBKDF2", false, ["deriveBits"]);
+  return hex(await crypto.subtle.deriveBits({ name: "PBKDF2", hash: "SHA-256", salt: enc.encode(salt), iterations: 100000 }, k, 256));
+}
+const LOGIN_RE = /^[a-z0-9_]{3,20}$/, RESERVED = ["zulpanov", "admin", "ustoz", "administrator", "bot"];
+const checkLogin = l => { if (!LOGIN_RE.test(l)) throw new Error("Login 3–20 ta lotin harfi, raqam yoki _ belgisidan iborat bo‘lsin"); if (RESERVED.includes(l) || /^tg\d+$/.test(l)) throw new Error("Bu login band. Boshqasini tanlang"); };
+async function saveSitePw(env, uid, login, pw) {
+  if (String(pw || "").length < 6) throw new Error("Parol kamida 6 belgidan iborat bo‘lsin");
+  const salt = hex(crypto.getRandomValues(new Uint8Array(16)));
+  await db(env, "PUT", "tg/sp/" + login, { uid, s: salt, h: await pwHash(pw, salt), at: Date.now() });
+}
 // Saytdagi «Telegram orqali kirish» (Login Widget) imzosi: secret = SHA256(bot token)
 async function verifyWidget(env, d) {
   if (!d || typeof d !== "object" || !d.hash || !d.id) throw new Error("Telegram ma’lumoti yo‘q");
@@ -155,6 +197,7 @@ const FN = {
     need(u);
     const k = await acctKey(env, u.id);
     const ln = await db(env, "GET", "tg/link/" + u.id).catch(() => null); // eski (login-parolli) hisobga ulangan bo'lsa
+    if (ln && ln.ct && ln.uid) return { token: await customToken(env, ln.uid), login: "tg" + u.id, linked: true, f: u.first_name || "", l: u.last_name || "", photo: u.photo_url || "" };
     return { email: ln && ln.email ? ln.email : `tg${u.id}.${k.slice(0, 8)}@${DOMAIN}`, pw: k.slice(8, 40), login: "tg" + u.id, linked: !!(ln && ln.email), f: u.first_name || "", l: u.last_name || "", photo: u.photo_url || "" };
   },
   // Eski login-parolli hisobni Telegram'ga ko'chirish: o'quvchi bir marta eski login-paroli bilan kirgan bo'lishi kerak
@@ -164,8 +207,12 @@ const FN = {
     if (!a.email || /^tg\d+\./.test(a.email) || a.email === BOT_EMAIL) throw new Error("Bu hisobni ko‘chirib bo‘lmaydi");
     const ex = await db(env, "GET", "tg/link/" + u.id).catch(() => null);
     if (ex && ex.uid && ex.uid !== a.uid) throw new Error("Bu Telegram allaqachon boshqa hisobga ulangan");
-    await db(env, "PUT", "tg/link/" + u.id, { email: a.email, uid: a.uid, at: Date.now() });
-    return { pw: (await acctKey(env, u.id)).slice(8, 40) };
+    const own = await db(env, "GET", "logins/tg" + u.id).catch(() => null);
+    if (own && own !== a.uid) throw new Error("Bu Telegram bilan alohida hisob ochilgan. Ikki hisobni birlashtirish uchun ustozga murojaat qiling");
+    await db(env, "PUT", "tg/link/" + u.id, { email: a.email, uid: a.uid, ct: 1, at: Date.now() });
+    await db(env, "PUT", "tg/tgu/" + a.uid, u.id);
+    try { await customToken(env, a.uid); } catch (e) { await db(env, "DELETE", "tg/link/" + u.id); throw e; } // kalit ishlamasa — eski holat qoladi
+    return { ct: 1 };
   },
   // Ustozning Telegram hisobiga admin huquqi
   async grantAdmin(env, input, u) {
@@ -577,6 +624,59 @@ const VFN = {
     return saveRes(env, uid, user, g, { ttl: i.ttl, hw: i.hw, set: i.set, n: i.n, dur });
   },
   async lb(env, uid) { return syncLb(env, uid); },
+  // Kirish usullari: Telegram ulanganmi, saytga qaysi login bilan kiriladi
+  async lpInfo(env, uid) {
+    const r = await db(env, "GET", "users/" + uid) || {}, tgO = /^tg\d+$/.test(r.login || "");
+    const al = await db(env, "GET", "tg/spu/" + uid).catch(() => null), tu = await db(env, "GET", "tg/tgu/" + uid).catch(() => null);
+    return { login: al || (tgO ? "" : r.login || ""), tg: tgO || !!tu, tgOrigin: tgO };
+  },
+  // Saytga kirish uchun login-parol o'rnatish / o'zgartirish
+  async setLp(env, uid, i) {
+    const login = String(i.login || "").toLowerCase().trim(), pw = String(i.pw || "");
+    const r = await db(env, "GET", "users/" + uid); if (!r) throw new Error("Hisob topilmadi");
+    if (String(pw).length < 6) throw new Error("Parol kamida 6 belgidan iborat bo‘lsin");
+    const tgO = /^tg\d+$/.test(r.login || ""), old = await db(env, "GET", "tg/spu/" + uid).catch(() => null);
+    if (!tgO && login === r.login) { // saytda ochilgan hisob — o'z paroli
+      await adminSetPw(env, uid, pw);
+      if (old === login) await saveSitePw(env, uid, login, pw);
+      return { login };
+    }
+    checkLogin(login);
+    const lg = await db(env, "GET", "logins/" + login).catch(() => null), sp = await db(env, "GET", "tg/sp/" + login).catch(() => null);
+    if ((lg && lg !== uid) || (sp && sp.uid !== uid)) throw new Error("Bu login band. Boshqasini tanlang");
+    await saveSitePw(env, uid, login, pw);
+    await db(env, "PUT", "logins/" + login, uid);
+    await db(env, "PUT", "tg/spu/" + uid, login);
+    if (old && old !== login && old !== r.login) { await db(env, "DELETE", "tg/sp/" + old).catch(() => {}); const o = await db(env, "GET", "logins/" + old).catch(() => null); if (o === uid) await db(env, "DELETE", "logins/" + old).catch(() => {}); }
+    return { login };
+  },
+  // Saytda ochilgan hisobga Telegramni ulash (Telegram Login tasdig'i bilan)
+  async linkTg(env, uid, i) {
+    const t = await verifyWidget(env, i.d), r = await db(env, "GET", "users/" + uid);
+    if (!r) throw new Error("Hisob topilmadi");
+    if (/^tg\d+$/.test(r.login || "")) throw new Error("Telegram allaqachon ulangan");
+    const ex = await db(env, "GET", "tg/link/" + t.id).catch(() => null);
+    if (ex && ex.uid && ex.uid !== uid) throw new Error("Bu Telegram boshqa hisobga ulangan");
+    const own = await db(env, "GET", "logins/tg" + t.id).catch(() => null);
+    if (own && own !== uid) throw new Error("Bu Telegram bilan botda alohida hisob ochilgan. Ikki hisobni birlashtirish uchun ustozga murojaat qiling");
+    await customToken(env, uid); // kalit ishlashini oldindan tekshiramiz
+    await db(env, "PUT", "tg/link/" + t.id, { email: "", uid, ct: 1, at: Date.now() });
+    await db(env, "PUT", "tg/tgu/" + uid, t.id);
+    await db(env, "PATCH", "users/" + uid, { tg: 1 }).catch(() => {});
+    return { ok: true };
+  },
+  // Ustoz: o'quvchi parolini yangilash
+  async admPw(env, uid, i) {
+    if ((await db(env, "GET", "admins/" + uid)) !== true) throw new Error("Faqat ustoz uchun");
+    const t = String(i.uid || ""), pw = String(i.pw || ""), r = await db(env, "GET", "users/" + t);
+    if (!r) throw new Error("O‘quvchi topilmadi");
+    if (pw.length < 6) throw new Error("Parol kamida 6 belgidan iborat bo‘lsin");
+    const al = await db(env, "GET", "tg/spu/" + t).catch(() => null), tgO = /^tg\d+$/.test(r.login || "");
+    if (tgO && !al) throw new Error("Bu o‘quvchi Telegram orqali kiradi. Avval o‘zi profilida «Saytga kirish uchun login-parol»ni o‘rnatsin");
+    if (al) await saveSitePw(env, t, al, pw);
+    if (!tgO) await adminSetPw(env, t, pw);
+    return { login: al || r.login };
+  },
   // Ota-ona havolasi (brauzerdagi sayt uchun)
   async plink(env, uid) {
     const r = await db(env, "GET", "users/" + uid);
@@ -632,6 +732,23 @@ export default {
         if (req.method !== "POST") return json({ ok: true, bot_id: Number(String(token(env)).split(":")[0]), bot: BOT_NAME });
         const b = await req.json(), u = await verifyWidget(env, b.d);
         return json({ ok: true, r: await FN.auth(env, {}, u) });
+      } catch (e) { return json({ ok: false, err: String((e && e.message) || e) }); }
+    }
+
+    if (url.pathname === "/wp") { // saytda login-parol: server tekshiradigan (botdan kelgan) hisoblar uchun
+      try {
+        if (req.method !== "POST") return json({ ok: true });
+        const b = await req.json(), login = String(b.login || "").toLowerCase().trim(), pw = String(b.pw || "");
+        if (!LOGIN_RE.test(login) || !pw) throw new Error("Login yoki parol noto‘g‘ri");
+        const rl = await db(env, "GET", "tg/rl/" + login).catch(() => null);
+        if (rl && rl.n >= 5 && Date.now() - rl.t < 15 * 60e3) throw new Error("Ko‘p marta xato kiritildi. 15 daqiqadan keyin urinib ko‘ring");
+        const sp = await db(env, "GET", "tg/sp/" + login).catch(() => null);
+        if (!sp || (await pwHash(pw, sp.s)) !== sp.h) {
+          await db(env, "PUT", "tg/rl/" + login, { n: (rl && Date.now() - rl.t < 15 * 60e3 ? rl.n : 0) + 1, t: Date.now() }).catch(() => {});
+          throw new Error("Login yoki parol noto‘g‘ri");
+        }
+        if (rl) await db(env, "DELETE", "tg/rl/" + login).catch(() => {});
+        return json({ ok: true, r: { token: await customToken(env, sp.uid) } });
       } catch (e) { return json({ ok: false, err: String((e && e.message) || e) }); }
     }
 

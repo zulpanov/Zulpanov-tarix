@@ -801,6 +801,8 @@ html[data-th="tong"] .clsc,html[data-th="vodiy"] .clsc{background:var(--card);bo
 }
 .lpw{margin-top:14px;text-align:left}.lpw-seg{display:grid;grid-template-columns:1fr 1fr;margin-bottom:6px}.lpw-seg button{white-space:nowrap;font-size:14px}.lpw label{display:block;font-size:12.5px;color:#B9C2DD;margin:10px 0 4px}.lpw input{width:100%}.lpw .row{display:flex;gap:10px}.lpw .btn{margin-top:14px;width:100%}.lpw .tnote{margin-top:10px}.lpw .accerr{margin-top:8px}
 .lpw-or{display:flex;align-items:center;gap:10px;margin:16px 0 12px;color:#9fb0d0;font-size:12.5px}.lpw-or:before,.lpw-or:after{content:"";flex:1;height:1px;background:rgba(255,255,255,.14)}
+.lk-r{display:flex;align-items:center;gap:12px;padding:12px 2px;border-top:1px solid var(--line)}.lk-r:first-child{border-top:0}.lk-r>i{font-style:normal;font-size:22px;width:40px;height:40px;display:grid;place-items:center;border-radius:12px;background:rgba(var(--w),.06);flex:none}.lk-r>div{flex:1;min-width:0}.lk-r small{display:block;color:var(--mu);font-size:12.5px}.lk-r .btn{margin:0;width:auto;padding:0 16px;height:38px;flex:none;font-size:13.5px}.lk-ok{color:var(--ok);font-weight:700;font-size:13px}
+.lk .lpw label{color:var(--mu)}
 .tgbtn.tgsm{height:48px;font-size:15px}
 .kbg{display:none;text-align:center;font-size:12.5px;color:var(--mu);margin-top:14px}.kbg b{color:var(--tx);background:rgba(var(--w),.08);border-radius:6px;padding:1px 6px;font-weight:600}
 </style>
@@ -4415,7 +4417,7 @@ const HOMEX=(()=>{
     const it=(fn,ic,col,t,s)=>`<button onclick="${fn}"><i style="background:${col}26;color:${col}">${sv(ic,18)}</i><span><b>${t}</b><small>${s}</small></span><u>${sv(IC.chev,16)}</u></button>`;
     $("tz").innerHTML=`<div class="card hm-pf"><div class="avatar" style="width:64px;height:64px">${AV.html(c.uid,c.f+" "+c.l,"fill")}</div><div style="flex:1;min-width:0"><b>${esc(c.f+" "+c.l)}</b><small>@${esc(c.login||"")}${c.g?" · "+esc(c.g):""}</small></div></div>
       <div class="amg-t">Natijalar</div><div class="amg">${it("ACCT.history()",IC.chart,"#34D399","Statistika","Natijalar, daraja va nishonlar")}${it("GAME.startErrors()",IC.repeat,"#F43F5E","Xatolarim",ne?ne+" ta xato savol":"Xato yo'q")}${it("GAME.board()",IC.trophy,"#FBBF24","Haftalik reyting","Guruh va barcha o'quvchilar")}</div>
-      <div class="amg-t">Hisob</div><div class="amg">${it("PM.open()",IC.gem,"#C084FC","Premium",PM.is()?"Faol":"Barcha imkoniyatlarni oching")}${it("PRF.open()",IC.gear,"#A7A3D6","Profil sozlamalari","Ism, rasm, guruh")}${it("THEME.open()",IC.gem,"#22C55E","Mavzu (tema)",(THEME.L.find(x=>x[0]===THEME.get())||[,""])[1])}${tch?it("TCH.open()",IC.teach,"#22D3EE","Ustoz paneli","Guruhlarim, vazifalar"):it("TCH.apply()",IC.teach,"#22D3EE","Ustozmisiz?","O'z guruhingiz bilan foydalaning")}</div>
+      <div class="amg-t">Hisob</div><div class="amg">${it("PM.open()",IC.gem,"#C084FC","Premium",PM.is()?"Faol":"Barcha imkoniyatlarni oching")}${it("PRF.open()",IC.gear,"#A7A3D6","Profil sozlamalari","Ism, rasm, guruh")}${it("LINK.open()",IC.gear,"#38BDF8","Kirish usullari","Telegram va saytdagi login-parol")}${it("THEME.open()",IC.gem,"#22C55E","Mavzu (tema)",(THEME.L.find(x=>x[0]===THEME.get())||[,""])[1])}${tch?it("TCH.open()",IC.teach,"#22D3EE","Ustoz paneli","Guruhlarim, vazifalar"):it("TCH.apply()",IC.teach,"#22D3EE","Ustozmisiz?","O'z guruhingiz bilan foydalaning")}</div>
       <div class="amg-t">Boshqa</div><div class="amg">${it("$('wlX')&&$('wlX').click()",IC.out,"#F43F5E","Chiqish","Akkauntdan chiqish")}</div>`;
   }
   return{goal,forYou,live,games,prof,isLive:()=>isLive};
@@ -5976,7 +5978,52 @@ const TGW_ = (() => {
     const back = location.origin + location.pathname + location.search;
     location.href = "https://oauth.telegram.org/auth?bot_id=" + id + "&origin=" + encodeURIComponent(location.origin) + "&request_access=write&return_to=" + encodeURIComponent(back);
   }
-  return { go, auth: post };
+  const W = "https://zulpanov-tarix-bot.zulponovalimqul.workers.dev";
+  const j = r => r.json().then(x => { if (x && x.ok) return x.r; throw new Error((x && x.err) || "Xatolik"); });
+  const wp = (login, pw) => fetch(W + "/wp", { method: "POST", headers: { "content-type": "text/plain" }, body: JSON.stringify({ login, pw }) }).then(r => r.json()).then(x => { if (x && x.ok) return x.r.token; throw new Error((x && x.err) || "Xatolik"); });
+  const v = async (fn, input) => j(await fetch(W + "/v", { method: "POST", headers: { "content-type": "text/plain" }, body: JSON.stringify({ fn, idToken: await AUTH.idToken(), input: input || {} }) }));
+  return { go, auth: post, wp, v };
+})();
+// Kirish usullari: bitta hisobga Telegram va login-parol bilan kirish
+const LINK = (() => {
+  const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  async function open() {
+    const c = ACCT.cur; if (!c) return show("auth");
+    show("tz"); setNav("prof"); BK(null);
+    $("tz").innerHTML = `<div class="dl-h"><button class="adh-b" onclick="HOMEX.prof()" title="Orqaga">‹</button><div class="adh-t"><small>Bitta hisob — ikki yo‘l</small><b>🔐 Kirish usullari</b></div></div><div id="lkB"><div class="card sub" style="text-align:center">Yuklanmoqda…</div></div>`;
+    let I; try { I = await TGW_.v("lpInfo"); } catch (e) { $("lkB").innerHTML = `<div class="card sub" style="text-align:center">⚠️ ${esc(e.message)}</div>`; return; }
+    if (!$("lkB")) return;
+    const tgRow = I.tg ? `<span class="lk-ok">✓ Ulangan</span>` : (window.IN_TG ? `<span class="sub">—</span>` : `<button class="btn sm" id="lkTg">Ulash</button>`);
+    $("lkB").innerHTML = `<div class="card lk">
+        <div class="lk-r"><i>✈️</i><div><b>Telegram</b><small>${I.tg ? "Botda bir bosishda kirasiz" : "Ulasangiz, botda ham shu hisob ochiladi"}</small></div>${tgRow}</div>
+        <div class="lk-r"><i>🔑</i><div><b>Login va parol</b><small>${I.login ? "Saytda kirish logini: <b>" + esc(I.login) + "</b>" : "Kompyuterda saytga kirish uchun o‘rnating"}</small></div><button class="btn sm ${I.login ? "ghost" : ""}" id="lkLp">${I.login ? "O‘zgartirish" : "O‘rnatish"}</button></div>
+        <div id="lkF"></div></div>
+      <p class="sub" style="margin:12px 4px 0">Ikkala yo‘l bilan ham <b>bitta hisob</b> ochiladi: ballar, XP, reyting va Premium umumiy.</p>`;
+    $("lkLp").onclick = () => form(I);
+    if ($("lkTg")) $("lkTg").onclick = () => { try { sessionStorage.setItem("zm_tglink", c.uid); } catch (e) {} TGW_.go().catch(e => FX.toast("⚠️ " + e.message)); };
+  }
+  function form(I) {
+    const F = $("lkF"), fixed = I.login && !I.tgOrigin;
+    F.innerHTML = `<div class="lpw" style="margin-top:12px"><label>Login</label><input id="lkL" autocapitalize="none" placeholder="masalan: ali_valiyev"${fixed ? " disabled" : ""}>
+      <div class="row"><div style="flex:1"><label>Yangi parol</label><input id="lkP" type="password" placeholder="kamida 6 belgi"></div><div style="flex:1"><label>Takrorlang</label><input id="lkP2" type="password"></div></div>
+      <div class="accerr" id="lkE"></div><button class="btn" id="lkGo">Saqlash</button></div>`;
+    $("lkL").value = I.login || ""; (fixed ? $("lkP") : $("lkL")).focus();
+    $("lkGo").onclick = async () => {
+      const l = $("lkL").value.trim().toLowerCase(), p = $("lkP").value, E = m => $("lkE").textContent = m;
+      if (!/^[a-z0-9_]{3,20}$/.test(l)) return E("Login 3–20 ta lotin harfi, raqam yoki _ belgisidan iborat bo'lsin.");
+      if (p.length < 6) return E("Parol kamida 6 belgidan iborat bo'lsin.");
+      if (p !== $("lkP2").value) return E("Parollar bir xil emas.");
+      $("lkGo").disabled = true; E("");
+      try { const r = await TGW_.v("setLp", { login: l, pw: p }); FX.toast("🔑 Saqlandi! Saytga «" + r.login + "» logini bilan kirasiz", "up"); open(); }
+      catch (e) { $("lkGo").disabled = false; E("⚠️ " + e.message); }
+    };
+  }
+  // Telegram tasdig'idan qaytganda (saytda): Telegramni shu hisobga ulaymiz
+  async function finish(d) {
+    try { sessionStorage.removeItem("zm_tglink"); } catch (e) {}
+    try { await TGW_.v("linkTg", { d }); FX.toast("✅ Telegram hisobingizga ulandi!", "up"); } catch (e) { FX.toast("⚠️ " + e.message); }
+  }
+  return { open, finish };
 })();
 const TGB = (() => {
   const w = () => window.Telegram && Telegram.WebApp;
@@ -6288,6 +6335,8 @@ const ACCT = (() => {
       let s = null; try { s = JSON.parse(L.get("zm_user") || "null"); } catch (e) {}
       if (s && s.u && s.uid) { cur = { uid: s.uid, login: s.u, f: s.f, l: s.l, g: s.g || "" }; apply(); }
       await AUTH.ready();
+      let lk = ""; try { lk = sessionStorage.getItem("zm_tglink") || ""; } catch (e) {}
+      if (window.TGW && lk && AUTH.uid === lk) { const d = window.TGW; window.TGW = null; setTimeout(() => LINK.finish(d), 800); }
       if (window.TGW) { const d = window.TGW; window.TGW = null; try { await tgLogin(true, await TGW_.auth(d)); return; } catch (e) { if (AUTH.uid) { try { await AUTH.signOut(); } catch (x) {} } cur = null; L.del("zm_user"); ready = true; renderBox("⚠️ " + ((e && e.uz) || (e && e.message) || "Kirib bo‘lmadi")); return; } }
       if (window.TGW === false) { window.TGW = null; }
       let uid = AUTH.uid;
@@ -6319,7 +6368,8 @@ const ACCT = (() => {
     const a = pre || await TGB.call("auth");
     const f = cap(a.f || "O'quvchi"), l = a.l ? cap(a.l) : "";
     let uid;
-    try { uid = await AUTH.signInEmail(a.email, a.pw); }
+    if (a.token) uid = await AUTH.signInToken(a.token);
+    else try { uid = await AUTH.signInEmail(a.email, a.pw); }
     catch (e) {
       if (!create) throw e;
       const cfg = await DBA.get("c/main");
@@ -6387,7 +6437,7 @@ const ACCT = (() => {
       if (!r) { await AUTH.signOut(); throw { uz: "Hisob topilmadi." }; }
       if (r.b) { await AUTH.signOut(); throw { uz: "Hisobingiz ustoz tomonidan bloklangan." }; }
       const res = await TGB.call("bindLegacy", { idToken: await AUTH.idToken() });
-      await AUTH.setPwNow(res.pw);
+      if (res && res.pw) await AUTH.setPwNow(res.pw);
       cur = { uid, login: u, f: r.f, l: r.l, g: r.g || "", bx: r.bx || 0 };
       L.set("zm_user", JSON.stringify({ uid, u, f: r.f, l: r.l, g: r.g || "" }));
       DBA.update("users/" + uid, { last: DBA.now(), tg: 1 }).catch(() => {});
@@ -6453,17 +6503,23 @@ const ACCT = (() => {
     $("aGo").disabled = true; E("");
     if (AUTH.FB) {
       try {
-        const uid = await AUTH.signIn(u, p);
+        let uid;
+        try { uid = await AUTH.signIn(u, p); }
+        catch (e1) { // bot orqali ochilgan hisob (saytga kirish logini) — parolni server tekshiradi
+          if (!/wrong-password|user-not-found|invalid-credential|invalid-login|INVALID_LOGIN/i.test(String((e1 && (e1.code || e1.message)) || ""))) throw e1;
+          let t; try { t = await TGW_.wp(u, p); } catch (e2) { throw { uz: e2.message || "Login yoki parol noto'g'ri." }; }
+          uid = await AUTH.signInToken(t);
+        }
         const r = await DBA.get("users/" + uid);
         $("aGo").disabled = false;
         if (!r) { await AUTH.signOut(); return E(u === ADMIN.login ? "Bu admin hisobi. Admin panel tugmasi orqali kiring." : "Hisob topilmadi."); }
         if (r.b) { await AUTH.signOut(); return E("Hisobingiz ustoz tomonidan bloklangan."); }
-        cur = { uid, login: u, f: r.f, l: r.l, g: r.g || "" };
-        L.set("zm_user", JSON.stringify({ uid, u, f: r.f, l: r.l, g: r.g || "" }));
+        cur = { uid, login: r.login || u, f: r.f, l: r.l, g: r.g || "", bx: r.bx || 0 };
+        L.set("zm_user", JSON.stringify({ uid, u: r.login || u, f: r.f, l: r.l, g: r.g || "" }));
         DBA.update("users/" + uid, { last: DBA.now() });
         try { localStorage.setItem("zm_lm", "in"); } catch (e) {}
         apply(true); FX.toast(`👋 Xush kelibsiz, ${esc(r.f)}!`, "up"); TGB.link(u, p); return;
-      } catch (e) { $("aGo").disabled = false; return E(AUTH.msg(e)); }
+      } catch (e) { $("aGo").disabled = false; return E((e && e.uz) || AUTH.msg(e)); }
     }
     let r; try { r = await DBA.get("u/" + u); } catch (e) { $("aGo").disabled = false; return E("Ulanib bo'lmadi. Internetni tekshiring."); }
     $("aGo").disabled = false;
@@ -6697,7 +6753,7 @@ const ACC = (() => {
         if (a === "pwok") {
           const v = row.querySelector(".pwbox input").value.trim(), min = AUTH.FB ? 6 : 4;
           if (v.length < min) { FX.toast(`Parol kamida ${min} belgi`); return; }
-          if (AUTH.FB) { b.disabled = true; AUTH.adminSetPw(lg, X.p, v).then(() => DBA.set("pw/" + u, v)).then(() => FX.toast("🔑 Parol yangilandi", "up")).catch(e => { b.disabled = false; FX.toast(AUTH.msg(e)); }); }
+          if (AUTH.FB) { b.disabled = true; TGW_.v("admPw", { uid: u, pw: v }).then(r => { DBA.set("pw/" + u, v).catch(() => {}); FX.toast("🔑 Parol yangilandi · login: " + r.login, "up"); b.disabled = false; }).catch(e => { b.disabled = false; FX.toast("⚠️ " + e.message); }); }
           else { DBA.update("u/" + u, { p: v }); FX.toast("🔑 Parol yangilandi", "up"); }
         }
       };
@@ -7594,6 +7650,7 @@ const AUTH = (() => {
       AV.drop(old); ACCT.relogin({ uid: nu, login: nl }, pw);
     },
     async signIn(login, pw) { const f = await fb(); const c = await f.auth().signInWithEmailAndPassword(email(login), pw); user = c.user; admin = !!(await DBA.get("admins/" + user.uid).catch(() => null)); return user.uid; },
+    async signInToken(t) { const f = await fb(); const c = await f.auth().signInWithCustomToken(t); user = c.user; admin = !!(await DBA.get("admins/" + user.uid).catch(() => null)); return user.uid; },
     async signInEmail(em, pw) { const f = await fb(); const c = await f.auth().signInWithEmailAndPassword(em, pw); user = c.user; admin = !!(await DBA.get("admins/" + user.uid).catch(() => null)); return user.uid; },
     async signUpEmail(em, pw) { const f = await fb(); const c = await f.auth().createUserWithEmailAndPassword(em, pw); user = c.user; admin = false; return user.uid; },
     async signUp(login, pw) { const f = await fb(); const c = await f.auth().createUserWithEmailAndPassword(email(login), pw); user = c.user; admin = false; return user.uid; },
