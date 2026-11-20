@@ -671,7 +671,7 @@ body.dlm #bkb{display:none!important}
 .tgbtn:disabled{opacity:.7}
 .arg{background:radial-gradient(ellipse at 50% 18%,#21407A,#091629 78%)!important;color:#F5F1E4!important;border-radius:26px;padding:26px 18px 16px!important;box-shadow:0 14px 40px rgba(9,22,41,.35)}
 .arg .arg-lg{width:200px;height:200px;border-radius:50%;display:block;margin:0 auto 6px;box-shadow:0 0 50px rgba(212,166,58,.3)}
-.arg h2{color:#fff!important;margin:14px 0 4px!important}.arg>p{color:#B9C2DD!important}
+.arg h2{color:#fff!important;margin:14px 0 4px!important}.arg>p,.arg-l>p{color:#B9C2DD!important}.arg-l{display:contents}
 .arg-ch{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin:12px 0 14px}.arg-ch span{background:rgba(255,255,255,.09);border:1px solid rgba(243,210,122,.25);color:#F3E6C0;border-radius:12px;padding:7px 10px;font:600 12px Inter,sans-serif}
 .authcard.argw{background:transparent!important;border:0!important;box-shadow:none!important;padding:0!important}.authcard.argw>.grab{display:none}
 .arg .kunbtn{background:rgba(255,255,255,.06)!important;border-color:rgba(243,210,122,.35)!important}.arg .kunbtn b{color:#fff!important}.arg .kunbtn small{color:#B9C2DD!important}
@@ -761,10 +761,11 @@ html[data-th="tong"] .clsc,html[data-th="vodiy"] .clsc{background:var(--card);bo
   #res,#start>.sthead,#start>.st-seg{max-width:none}
   /* Kirish sahifasi: ikki ustun */
   .arg{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:40px;align-items:center;padding:44px 48px 40px!important;grid-auto-flow:row dense}
+  .arg{align-items:start!important}
   .arg>*{grid-column:2}
-  .arg>.arg-lg,.arg>h2,.arg>p:not(.sub),.arg>.arg-ch{grid-column:1}
-  .arg>.arg-lg{grid-row:1/span 2;width:240px;height:240px}
-  .arg>h2{grid-row:3;text-align:center;font-size:30px}.arg>p:not(.sub){grid-row:4;text-align:center}.arg>.arg-ch{grid-row:5}
+  .arg>.arg-l{display:block;grid-column:1;grid-row:1/span 12;align-self:center;position:sticky;top:90px}
+  .arg-l .arg-lg{width:240px;height:240px}
+  .arg-l h2{text-align:center;font-size:30px}.arg-l>p{text-align:center}
   .arg>.kunbtn,.arg>#kunCard{align-self:end}
   #auth .sky{display:none}
 }
@@ -798,6 +799,9 @@ html[data-th="tong"] .clsc,html[data-th="vodiy"] .clsc{background:var(--card);bo
   .ju-it{font-size:15.5px;min-height:64px}
   .jf-n{font-size:14.5px}
 }
+.lpw{margin-top:14px;text-align:left}.lpw-seg{display:grid;grid-template-columns:1fr 1fr;margin-bottom:6px}.lpw-seg button{white-space:nowrap;font-size:14px}.lpw label{display:block;font-size:12.5px;color:#B9C2DD;margin:10px 0 4px}.lpw input{width:100%}.lpw .row{display:flex;gap:10px}.lpw .btn{margin-top:14px;width:100%}.lpw .tnote{margin-top:10px}.lpw .accerr{margin-top:8px}
+.lpw-or{display:flex;align-items:center;gap:10px;margin:16px 0 12px;color:#9fb0d0;font-size:12.5px}.lpw-or:before,.lpw-or:after{content:"";flex:1;height:1px;background:rgba(255,255,255,.14)}
+.tgbtn.tgsm{height:48px;font-size:15px}
 .kbg{display:none;text-align:center;font-size:12.5px;color:var(--mu);margin-top:14px}.kbg b{color:var(--tx);background:rgba(var(--w),.08);border-radius:6px;padding:1px 6px;font-weight:600}
 </style>
 </head>
@@ -6399,21 +6403,29 @@ const ACCT = (() => {
     const inTg = AUTH.FB && TGB.on();
     const tgIc = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 4L3 11l6 2 2 6 3-4 5 4z"></path><path d="M9 13l12-9"></path></svg>`;
     box.innerHTML = `<div class="xpin arg">
-        <img class="arg-lg" src="img/brand/emblem-400.jpg?v=2" alt="TARIX ARENA" width="200" height="200">
+        <div class="arg-l"><img class="arg-lg" src="img/brand/emblem-400.jpg?v=2" alt="TARIX ARENA" width="200" height="200">
         <h2>Tarixni o‘yin bilan o‘rgan!</h2>
         <p>Test, turnir va xarita janglari — bir joyda</p>
-        <div class="arg-ch"><span>📚 5 700+ test</span><span>🎓 Sertifikat</span><span>🗺 Xarita jangi</span></div>
+        <div class="arg-ch"><span>📚 5 700+ test</span><span>🎓 Sertifikat</span><span>🗺 Xarita jangi</span></div></div>
         ${KUN.card()}
         ${inTg ? `<button class="tgbtn" id="aTg">${tgIc}<span>Telegram bilan kirish</span><em class="arg-xp">+50 XP</em></button>`
-               : `<button class="tgbtn" id="aTgW">${tgIc}<span>Telegram orqali kirish</span><em class="arg-xp">+50 XP</em></button><p class="sub" style="text-align:center;margin:10px 0 0">Saytda qolasiz · Telegram faqat tasdiqlash so‘raydi · login va parol kerak emas</p>
-                 <a class="tgapp" href="https://t.me/${window.TG_BOT}?startapp${(x => x ? "=" + x : "")(ST.tg(HW.pend() ? "g-" + HW.pend() : ""))}">📲 Yoki Telegram ilovasida (bot orqali) ochish</a>`}
-        <div class="accerr" id="aE" style="text-align:center"></div>
+               : `<div class="lpw"><div class="seg lpw-seg"><button data-m="up">📝 Ro‘yxatdan o‘tish</button><button data-m="in">🔑 Kirish</button></div><div id="accF"></div></div>
+                 <div class="lpw-or"><span>yoki</span></div>
+                 <button class="tgbtn tgsm" id="aTgW">${tgIc}<span>Telegram orqali kirish</span></button>
+                 <a class="tgapp" href="https://t.me/${window.TG_BOT}?startapp${(x => x ? "=" + x : "")(ST.tg(HW.pend() ? "g-" + HW.pend() : ""))}">📲 Telegram ilovasida (bot orqali) ochish</a>`}
+        ${inTg ? `<div class="accerr" id="aE" style="text-align:center"></div>` : ""}
         ${inTg ? `<button class="xpmv" id="aMvL">Avval login bilan ro'yxatdan o'tganmisiz? <u>Hisobni ko'chirish</u></button><div id="aMove"></div>` : ""}
       </div>`;
     if ($("aTg")) $("aTg").onclick = tgGo; KUN.bind();
     if ($("aTgW")) $("aTgW").onclick = async () => { const b = $("aTgW"); b.disabled = true; b.querySelector("span").textContent = "Telegram ochilmoqda…"; try { await TGW_.go(); } catch (e) { b.disabled = false; b.querySelector("span").textContent = "Telegram orqali kirish"; $("aE").textContent = "⚠️ " + ((e && e.message) || "Internetni tekshiring"); } };
     if ($("aMvL")) $("aMvL").onclick = () => { $("aMvL").remove(); moveForm(); };
-    if (msg) $("aE").textContent = msg;
+    if ($("accF")) {
+      const seg = box.querySelector(".lpw-seg"), go = m => { seg.querySelectorAll("button").forEach(b => b.classList.toggle("on", b.dataset.m === m)); form(m); };
+      seg.onclick = e => { const b = e.target.closest("[data-m]"); if (b) go(b.dataset.m); };
+      let m0 = "up"; try { if (localStorage.getItem("zm_lm") === "in") m0 = "in"; } catch (e) {}
+      go(m0);
+    }
+    if (msg && $("aE")) $("aE").textContent = msg;
   }
   function form(mode, msg) {
     const F = $("accF");
@@ -6429,9 +6441,9 @@ const ACCT = (() => {
         
         <label>Login (lotin harflari, raqam, _ belgisi)</label><input id="rL" autocapitalize="none" placeholder="ali_valiyev">
         <div class="row"><div style="flex:1"><label>Parol</label><input id="rP" type="password" placeholder="kamida 6 belgi"></div><div style="flex:1"><label>Parolni takrorlang</label><input id="rP2" type="password"></div></div>
-        <div class="tnote" style="font-size:12px">⚠️ Boshqa joylarda (Telegram, Instagram, pochta) ishlatadigan parolingizni yozmang. Bu parolni ustozingiz ko'ra oladi.</div>
+        <div class="tnote" style="font-size:12px">⚠️ Boshqa joylarda (Telegram, Instagram, pochta) ishlatadigan parolingizni yozmang. Login va parolni eslab qoling yoki yozib qo'ying.</div>
         <div class="accerr" id="aE"></div><button class="btn" id="rGo">Ro'yxatdan o'tish</button>`;
-      $("rGo").onclick = register;
+      $("rGo").onclick = register; ["rF", "rLn", "rL", "rP", "rP2"].forEach(id => { const x = $(id); if (x) x.onkeydown = e => { if (e.key === "Enter") register(); }; });
     }
     if (msg) $("aE").textContent = msg;
   }
@@ -6449,6 +6461,7 @@ const ACCT = (() => {
         cur = { uid, login: u, f: r.f, l: r.l, g: r.g || "" };
         L.set("zm_user", JSON.stringify({ uid, u, f: r.f, l: r.l, g: r.g || "" }));
         DBA.update("users/" + uid, { last: DBA.now() });
+        try { localStorage.setItem("zm_lm", "in"); } catch (e) {}
         apply(true); FX.toast(`👋 Xush kelibsiz, ${esc(r.f)}!`, "up"); TGB.link(u, p); return;
       } catch (e) { $("aGo").disabled = false; return E(AUTH.msg(e)); }
     }
@@ -6477,10 +6490,12 @@ const ACCT = (() => {
         if (ex) { $("rGo").disabled = false; return E("Bu login band. Boshqa login tanlang."); }
         const uid = await AUTH.signUp(u, p);
         await DBA.set("logins/" + u, uid);
-        await DBA.set("users/" + uid, { f, l, g, login: u, c: DBA.now(), last: DBA.now() });
-        await DBA.set("pw/" + uid, p);
-        cur = { uid, login: u, f, l, g };
+        await DBA.set("users/" + uid, { f, l, g, login: u, bx: 50, src: ST.src(), c: DBA.now(), last: DBA.now() });
+        try { await DBA.set("pw/" + uid, p); } catch (e) {} // faqat ustoz yoza oladi — o'quvchida rad etilsa, ro'yxatdan o'tish to'xtamaydi
+        try { ST.hit("new"); ST.hit("n_" + ST.src()); } catch (e) {}
+        cur = { uid, login: u, f, l, g, bx: 50 };
         L.set("zm_user", JSON.stringify({ uid, u, f, l, g }));
+        try { localStorage.setItem("zm_lm", "in"); } catch (e) {}
         apply(true); FX.toast("🎉 Ro'yxatdan o'tdingiz!", "up"); FX.burst(innerWidth / 2, 160, 50, 7); TGB.link(u, p); return;
       } catch (e) { $("rGo").disabled = false; return E(AUTH.msg(e)); }
     }
