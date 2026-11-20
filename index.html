@@ -997,6 +997,79 @@ html[data-th="tong"] .xr-rc b,html[data-th="vodiy"] .xr-rc b,html[data-th="tong"
 html[data-th="tong"] .km-pt b,html[data-th="vodiy"] .km-pt b,html[data-th="tong"] .km-more,html[data-th="vodiy"] .km-more,html[data-th="tong"] .km-rule b,html[data-th="vodiy"] .km-rule b,html[data-th="tong"] .km-mw em,html[data-th="vodiy"] .km-mw em{color:#B45309}
 @media (min-width:1024px){#tz:has(.km-cls){max-width:760px;margin:0 auto}.km-rv~.km-cls{margin-bottom:12px}}
 .upd-b{position:fixed;left:50%;transform:translateX(-50%);top:max(10px,env(safe-area-inset-top));z-index:9999;border:0;border-radius:999px;padding:10px 18px;background:linear-gradient(90deg,#F2C14E,#D4A63A);color:#1b1300;font:800 13px Poppins,sans-serif;box-shadow:0 8px 24px rgba(0,0,0,.35);cursor:pointer}
+/* 🃏 Tarixiy kartalar jangi */
+.kj-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+@media(min-width:700px){.kj-grid{grid-template-columns:repeat(5,1fr)}}
+.kj-dk{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.kc{position:relative;border-radius:14px;padding:16px 5px 8px;text-align:center;color:#F7EFD8;cursor:pointer;box-sizing:border-box;min-height:150px;display:flex;flex-direction:column;align-items:center;transition:transform .15s}
+.kc:active{transform:scale(.97)}
+.kc.a{background:linear-gradient(160deg,#6b4f12,#2b2208);border:2px solid #f5c84c;box-shadow:0 0 14px rgba(245,200,76,.35)}
+.kc.n{background:linear-gradient(160deg,#1f3b7a,#141e3f);border:2px solid #5d8cff}
+.kc.o{background:linear-gradient(160deg,#454a63,#23263a);border:2px solid #8a90a8}
+.kc-tg{position:absolute;top:-1px;right:-1px;font-size:8.5px;font-weight:800;padding:2px 6px;border-radius:0 12px 0 9px;letter-spacing:.3px}
+.kc.a .kc-tg{background:#f5c84c;color:#2b2208}.kc.n .kc-tg{background:#5d8cff;color:#fff}.kc.o .kc-tg{background:#8a90a8;color:#15172a}
+.kc-lv{position:absolute;top:2px;left:6px;font-size:10px;color:#f5d27a;letter-spacing:-1px}
+.kc-e{font-size:32px;line-height:1.2;margin-top:2px}
+.kc-n{font-size:11.5px;line-height:1.2;margin:3px 0 2px;min-height:28px;display:flex;align-items:center;justify-content:center}
+.kc .kc-er{display:block;font-size:11px!important;font-weight:600;line-height:1.3;opacity:.75;margin:0 0 4px;color:#eadcb0}
+.kc-s{display:flex;gap:8px;justify-content:center;font-weight:800;font-size:12px}
+.kc-ab{font-size:9.5px;color:#eadcb0;margin-top:4px;line-height:1.25}
+.kc.sel{outline:3px solid #22c55e;outline-offset:2px}
+.kc-ck{position:absolute;bottom:-8px;left:50%;transform:translateX(-50%);background:#22c55e;color:#fff;border-radius:50%;width:22px;height:22px;font-style:normal;font-weight:900;display:flex;align-items:center;justify-content:center;font-size:13px}
+.kc.big{width:200px;max-width:80%;margin:6px auto 0;padding:20px 12px 14px;min-height:0}
+.kc.big .kc-e{font-size:64px}.kc.big .kc-n{font-size:17px;min-height:0}.kc.big .kc-s{font-size:17px;gap:16px;margin-top:4px}.kc.big .kc-ab{font-size:12px;margin-top:8px}.kc.big .kc-lv{font-size:14px;top:4px;left:8px}
+.kj-rc{margin-top:0}
+.kj-new{border:1px solid #f5c84c;background:linear-gradient(135deg,rgba(245,200,76,.18),var(--card));margin-bottom:10px;font-size:14px;line-height:1.45}
+.kj-daily,.kj-chest{width:100%;display:grid;grid-template-columns:auto 1fr auto;grid-template-rows:auto auto;column-gap:12px;align-items:center;text-align:left;border-radius:18px;padding:12px 14px;margin-top:10px;font-family:inherit;color:var(--tx);border:1px solid var(--line);background:var(--card);cursor:pointer}
+.kj-daily{border:2px solid #f5c84c;background:linear-gradient(135deg,rgba(245,200,76,.25),rgba(239,68,68,.12));animation:kjPulse 1.8s infinite}
+.kj-daily span,.kj-chest .kj-cb{grid-row:1/3;font-size:34px}.kj-daily b,.kj-chest b{font-size:15.5px}.kj-daily small,.kj-chest small{grid-column:2;color:var(--mu);font-size:12.5px}
+.kj-daily em{grid-row:1/3;grid-column:3;font-style:normal;font-weight:800;background:linear-gradient(90deg,#e0b44e,#f5d27a);color:#1b1400;padding:8px 14px;border-radius:12px}
+.kj-chest:disabled{opacity:.6;cursor:default}.kj-chest.on{border-color:#a855f7;background:linear-gradient(135deg,rgba(168,85,247,.22),var(--card))}
+.kj-chest.on .kj-cb{animation:kjWob 1.6s infinite}
+@keyframes kjPulse{0%,100%{box-shadow:0 0 0 0 rgba(245,200,76,.4)}50%{box-shadow:0 0 0 8px rgba(245,200,76,0)}}
+@keyframes kjWob{0%,80%,100%{transform:rotate(0)}85%{transform:rotate(-12deg)}90%{transform:rotate(12deg)}95%{transform:rotate(-6deg)}}
+.kj-tabs{display:flex;gap:6px;margin:0 0 10px}.kj-tabs button{flex:1;font-family:inherit;font-size:12.5px;font-weight:700;padding:8px 4px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--tx);cursor:pointer}.kj-tabs button.on{background:var(--gr);color:#fff;border-color:transparent}
+.kj-rule{margin-top:12px;font-size:13px;line-height:1.5;color:var(--mu)}.kj-rule b{color:var(--tx)}
+.kj-mod{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:9000;display:flex;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(4px)}
+.kj-mb{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:16px;width:100%;max-width:380px;max-height:92vh;overflow:auto}
+.kj-fact{margin:12px 0 6px;font-size:13px;line-height:1.45;background:var(--card2);border-radius:12px;padding:9px 11px;text-align:left}
+.kj-up{display:grid;grid-template-columns:1fr auto;gap:6px 10px;align-items:center;margin:10px 0 8px}.kj-up>div:first-child{grid-column:1/-1}.kj-up small{display:block;color:var(--mu);font-size:12px;margin-top:2px}.kj-up em{font-style:normal;font-weight:800;font-size:13px}
+.kj-pb{height:9px;border-radius:6px;background:var(--card2);overflow:hidden}.kj-pb i{display:block;height:100%;background:linear-gradient(90deg,#f5d27a,#22c55e)}
+.kj-open{text-align:center;padding:10px 0;position:relative}
+.kj-box{font-size:90px;margin:60px 0;animation:kjShake .9s}
+@keyframes kjShake{0%{transform:scale(.6)}20%{transform:scale(1) rotate(-10deg)}40%{transform:rotate(10deg)}60%{transform:rotate(-10deg)}80%{transform:rotate(8deg) scale(1.15)}100%{transform:scale(1.4);opacity:.2}}
+.kj-glow{position:absolute;left:50%;top:40px;width:320px;height:320px;margin-left:-160px;border-radius:50%;pointer-events:none;z-index:0}
+.kj-glow.a{background:radial-gradient(rgba(245,200,76,.45),transparent 65%)}.kj-glow.n{background:radial-gradient(rgba(93,140,255,.4),transparent 65%)}.kj-glow.o{background:radial-gradient(rgba(160,166,190,.25),transparent 65%)}
+.kj-open>*{position:relative;z-index:1}.kj-open .kc.big{animation:kjIn .6s cubic-bezier(.2,1.6,.4,1)}
+@keyframes kjIn{0%{transform:scale(.3) rotateY(90deg);opacity:0}100%{transform:none;opacity:1}}
+.kj-rar{font-weight:900;font-size:22px;margin:4px 0 8px}.kj-rar.a{color:#f5c84c}.kj-rar.n{color:#7ea4ff}.kj-rar.o{color:#b9bed2}
+.kj-f{position:relative;display:flex;gap:10px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:8px 10px;margin-top:8px}
+.kj-f.me{border-color:rgba(34,197,94,.5)}.kj-f.op{border-color:rgba(244,63,94,.45)}
+.kj-av{width:58px;height:58px;flex:none;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:34px}
+.kj-av.a{background:linear-gradient(160deg,#6b4f12,#2b2208);border:2px solid #f5c84c}.kj-av.n{background:linear-gradient(160deg,#1f3b7a,#141e3f);border:2px solid #5d8cff}.kj-av.o{background:linear-gradient(160deg,#454a63,#23263a);border:2px solid #8a90a8}
+.kj-fm{flex:1;min-width:0}
+.kj-fn{display:flex;justify-content:space-between;gap:6px;font-size:14px}.kj-fn b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.kj-fn span{font-weight:800;color:#f59e0b;flex:none}
+.kj-hp{position:relative;height:16px;border-radius:9px;background:rgba(var(--k),.25);overflow:hidden;margin:4px 0}.kj-hp i{display:block;height:100%;background:linear-gradient(90deg,#22c55e,#4ade80);transition:width .5s}.kj-f.op .kj-hp i{background:linear-gradient(90deg,#ef4444,#f97316)}
+.kj-hp em{position:absolute;inset:0;font-style:normal;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;color:#fff;text-shadow:0 1px 2px #000}
+.kj-fx{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--mu)}
+.kj-mn{display:flex;gap:3px}.kj-mn i{font-style:normal;width:22px;height:22px;border-radius:6px;background:var(--card2);display:flex;align-items:center;justify-content:center;font-size:13px}.kj-mn i.on{outline:2px solid var(--ac)}.kj-mn i.dd{opacity:.25;filter:grayscale(1)}
+.kj-f.hit{animation:kjHit .45s}.kj-f.ko{animation:kjKo .9s forwards}
+@keyframes kjHit{0%,100%{transform:none}20%{transform:translateX(-8px);background:rgba(244,63,94,.25)}40%{transform:translateX(7px)}60%{transform:translateX(-5px)}80%{transform:translateX(3px)}}
+@keyframes kjKo{0%{opacity:1}100%{opacity:.25;transform:scale(.95);filter:grayscale(1)}}
+.kj-dmg{position:absolute;right:16px;top:-6px;font-weight:900;font-size:20px;pointer-events:none;animation:kjUp 1.1s forwards;text-shadow:0 2px 6px rgba(0,0,0,.6)}
+@keyframes kjUp{0%{transform:translateY(8px) scale(.6);opacity:0}20%{transform:none;opacity:1}100%{transform:translateY(-26px);opacity:0}}
+.kj-vs{text-align:center;min-height:22px;margin-top:6px;font-size:13px;font-weight:700}.kj-vs span.pop{display:inline-block;animation:pop .35s}
+.kj-tm{height:6px;border-radius:4px;background:rgba(var(--k),.25);overflow:hidden;margin-top:10px}.kj-tm i{display:block;height:100%;width:100%;background:linear-gradient(90deg,#f5d27a,#ef4444);transition:width .1s linear}
+.kj-q{background:#fff;color:#1f1147;border-radius:18px;padding:12px 14px;margin-top:10px;font-weight:700;font-size:16px;line-height:1.35;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,.25)}.kj-q small{display:block;color:#7C3AED;font-size:11px;margin-bottom:3px}
+.kj-o{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.kj-op{display:flex;gap:8px;align-items:center;text-align:left;min-height:58px;border:0;border-radius:14px;padding:8px 10px;font-family:inherit;font-size:14px;font-weight:700;color:#fff;cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.3)}
+.kj-op i{font-style:normal;font-weight:900;opacity:.85;font-size:16px}.kj-op.k0{background:#E21B3C}.kj-op.k1{background:#1368CE}.kj-op.k2{background:#D89E00}.kj-op.k3{background:#26890C}
+.kj-o.done .kj-op{opacity:.35}.kj-o.done .kj-op.okk{opacity:1;outline:3px solid #fff;box-shadow:0 0 0 6px rgba(34,197,94,.6)}.kj-o.done .kj-op.bad{opacity:1;outline:3px solid #000}
+.kj-res{text-align:center}.kj-res.win{border:2px solid #f5c84c}.kj-res.lose{border:2px solid rgba(244,63,94,.5)}.kj-big{font-size:58px}
+.kj-dk.sm{display:flex;justify-content:center;gap:4px;align-items:center;margin:12px 0 6px;flex-wrap:wrap}.kj-dk.sm span{display:flex;flex-direction:column;align-items:center;font-size:22px;background:var(--card2);border-radius:10px;padding:3px 2px;min-width:38px}.kj-dk.sm span small{font-size:10px}.kj-dk.sm span.dd{opacity:.4}.kj-dk.sm b{color:#ef4444;margin:0 2px;font-size:13px}
+.kj-rw{display:inline-block;margin-top:8px;font-weight:900;font-size:18px;background:linear-gradient(90deg,#e0b44e,#f5d27a);color:#1b1400;border-radius:14px;padding:8px 16px}
+.km-ops button.ok{background:#16a34a;color:#fff;border-color:#16a34a}
+@media (min-width:1024px){#tz:has(.kj-f),#tz:has(.kj-grid),#tz:has(.kj-open),#tz:has(.kj-res){max-width:720px;margin:0 auto}}
 </style>
 </head>
 <body>
@@ -1338,7 +1411,7 @@ let VIEW={k:"cls"};
 const PM = (() => {
   const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const DAY = 864e5;
-  const FEAT = [["ms", "🎓", "Milliy sertifikat (barcha variantlar)"], ["kun", "📅", "Kun testi"], ["blitz", "⚡", "Blits"], ["hayoq", "✅", "Ha yoki Yo‘q"], ["duel", "⚔️", "Duel"], ["ladder", "🪜", "Bilimlar zinapoyasi"], ["turnir", "🏆", "Turnir va Boss jangiga kirish"], ["err", "🔁", "Xatolarim (xatolar ustida ishlash)"], ["board", "🏅", "Haftalik reyting"], ["stat", "📊", "Statistika"], ["xarita", "🗺️", "Xarita o‘yini"], ["arqon", "🪢", "Arqon tortish (o‘yin ochish)"], ["juft", "🧩", "Juftini top"], ["xron", "⏳", "Xronologiya"], ["kim", "🕵️", "Kim bu?"]];
+  const FEAT = [["ms", "🎓", "Milliy sertifikat (barcha variantlar)"], ["kun", "📅", "Kun testi"], ["blitz", "⚡", "Blits"], ["hayoq", "✅", "Ha yoki Yo‘q"], ["duel", "⚔️", "Duel"], ["ladder", "🪜", "Bilimlar zinapoyasi"], ["turnir", "🏆", "Turnir va Boss jangiga kirish"], ["err", "🔁", "Xatolarim (xatolar ustida ishlash)"], ["board", "🏅", "Haftalik reyting"], ["stat", "📊", "Statistika"], ["xarita", "🗺️", "Xarita o‘yini"], ["arqon", "🪢", "Arqon tortish (o‘yin ochish)"], ["juft", "🧩", "Juftini top"], ["xron", "⏳", "Xronologiya"], ["kim", "🕵️", "Kim bu?"], ["karta", "🃏", "Tarixiy kartalar jangi"]];
   const DEF_TXT = "Premium bilan platformaning barcha imkoniyatlari ochiladi. To‘lov qilgach, ustoz premiumingizni darhol yoqib beradi.";
   let cfg = {}, me = null, unC = null, unM = null, mUid = null, tcfg = {};
   const gk = g => String(g || "").replace(/[.#$\[\]\/]/g, "_");
@@ -2382,12 +2455,13 @@ const HOMEX=(()=>{
     arqon:["#E5484D","#3E8EF7",'<path d="M2 12h20" stroke-dasharray="2.5 1.5"/><circle cx="12" cy="12" r="2.6" fill="#fff" stroke="none"/><circle cx="4.5" cy="8" r="2"/><path d="M4.5 10v5M3 18l1.5-3 1.5 3"/><circle cx="19.5" cy="8" r="2"/><path d="M19.5 10v5M18 18l1.5-3 1.5 3"/>'],
     kim:["#7C3AED","#C026D3",'<circle cx="10" cy="10" r="6" fill="rgba(255,255,255,.18)"/><path d="M14.5 14.5 20 20" stroke-width="2.6"/><path d="M8.3 8.5a1.9 1.9 0 1 1 2.6 1.8c-.6.3-.9.7-.9 1.3M10 13.4v.1" stroke-width="1.9"/>'],
     xron:["#F59E0B","#B45309",'<path d="M7 3h10M7 21h10" stroke-width="2.2"/><path d="M8 3c0 5 8 5 8 9s-8 4-8 9M16 3c0 5-8 5-8 9s8 4 8 9" fill="rgba(255,255,255,.18)"/><path d="M10 18.5h4" stroke-width="2.4"/>'],
+    karta:["#F59E0B","#7C3AED",'<rect x="3" y="5" width="10" height="14" rx="2" transform="rotate(-10 8 12)" fill="rgba(255,255,255,.2)"/><rect x="11" y="4" width="10" height="14" rx="2" transform="rotate(8 16 11)"/><path d="M14.5 9.5l3 3M17.5 9.5l-3 3" stroke-width="2.2"/>'],
     xarita:["#A855F7","#22D3EE",'<path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2z" fill="rgba(var(--w),.15)"/><path d="M9 4v14M15 6v14"/><path d="M17.5 9.5a1.6 1.6 0 1 0 0 .01"/>']};
   const glogo=(k,z=50)=>{const[a,b,d]=GL[k];return `<span class="gm-lg" style="width:${z}px;height:${z}px;background:linear-gradient(140deg,${a},${b});box-shadow:0 8px 20px ${b}55,inset 0 1px 0 rgba(255,255,255,.35)"><svg aria-hidden="true" width="${Math.round(z*.58)}" height="${Math.round(z*.58)}" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">${d}</svg></span>`};
   function games(){
     if(!ACCT.cur){show("auth");return}
     show("tz");setNav("games");BK(null);
-    const G=[["duel","Duel","Do'stingni chaqir","1 ga 1","DUEL.open()"],["blits","Blits","2 daqiqalik poyga","Yakka","BLITZ.open()"],["hayoq","Ha yoki Yo‘q","Tez javob ber","Yakka","HAYOQ.open()"],["zina","Bilimlar zinapoyasi","15 pog'ona · 3 yordam","Yakka","LADDER.open()"],["boss","Boss jangi","Butun sinf birgalikda","Guruh bilan","T.openJoin()"],["juft","Juftini top","Shaxs, sana, atama juftlari","Yakka"+((PM.cfg.f&&PM.cfg.f.juft)?" · 👑":""),"PM.gate('juft',()=>JUFTG.open())"],["xron","Xronologiya","Voqealarni tartibga qo‘y","Yakka"+((PM.cfg.f&&PM.cfg.f.xron)?" · 👑":""),"PM.gate('xron',()=>XRON.open())"],["kim","Kim bu?","Ishoralardan shaxsni top","Yakka"+((PM.cfg.f&&PM.cfg.f.kim)?" · 👑":""),"PM.gate('kim',()=>KIMG.open())"],["arqon","Arqon tortish","Ikki jamoa — bitta arqon","👥 Jamoaviy"+((PM.cfg.f&&PM.cfg.f.arqon)?" · 👑":""),"T.rope()"],["xarita","Xarita o'yini","Joylarni xaritada top","Yakka","PM.gate('xarita',()=>{location.href='xarita.html'})"],["xarita","Xarita jangi","Kim tez topadi? Jamoa bilan","👥 Jamoaviy · 👑","T.mapBattle()"]];
+    const G=[["karta","Kartalar jangi","Yig‘, kuchaytir, jang qil","🆕 1 ga 1"+((PM.cfg.f&&PM.cfg.f.karta)?" · 👑":""),"PM.gate('karta',()=>KJ.open())"],["duel","Duel","Do'stingni chaqir","1 ga 1","DUEL.open()"],["blits","Blits","2 daqiqalik poyga","Yakka","BLITZ.open()"],["hayoq","Ha yoki Yo‘q","Tez javob ber","Yakka","HAYOQ.open()"],["zina","Bilimlar zinapoyasi","15 pog'ona · 3 yordam","Yakka","LADDER.open()"],["boss","Boss jangi","Butun sinf birgalikda","Guruh bilan","T.openJoin()"],["juft","Juftini top","Shaxs, sana, atama juftlari","Yakka"+((PM.cfg.f&&PM.cfg.f.juft)?" · 👑":""),"PM.gate('juft',()=>JUFTG.open())"],["xron","Xronologiya","Voqealarni tartibga qo‘y","Yakka"+((PM.cfg.f&&PM.cfg.f.xron)?" · 👑":""),"PM.gate('xron',()=>XRON.open())"],["kim","Kim bu?","Ishoralardan shaxsni top","Yakka"+((PM.cfg.f&&PM.cfg.f.kim)?" · 👑":""),"PM.gate('kim',()=>KIMG.open())"],["arqon","Arqon tortish","Ikki jamoa — bitta arqon","👥 Jamoaviy"+((PM.cfg.f&&PM.cfg.f.arqon)?" · 👑":""),"T.rope()"],["xarita","Xarita o'yini","Joylarni xaritada top","Yakka","PM.gate('xarita',()=>{location.href='xarita.html'})"],["xarita","Xarita jangi","Kim tez topadi? Jamoa bilan","👥 Jamoaviy · 👑","T.mapBattle()"]];
     $("tz").innerHTML=`<div class="adh"><div class="adh-t"><small>Bilimingizni o'yin bilan sinang</small><b>O'yinlar</b></div></div>
       <button class="gm-hero" onclick="T.openJoin()">${glogo("turnir",54).replace("gm-lg","gm-lg gm-lgw")}<span class="gm-ht">${isLive?'<em>JONLI TURNIR BOR</em>':""}<b>Turnir</b><small>Kod bilan kiring yoki o'zingiz oching</small></span><span class="gm-hb">Kirish</span></button>
       <div class="gm-grid">${G.map(([k,n,s,ch,fn])=>{const a=GL[k][0];return `<button class="gm-c" style="background:linear-gradient(160deg,${a}30,var(--card) 70%);border-color:${a}55" onclick="${fn}">${glogo(k)}<b>${n}</b><small>${s}</small><em>${ch}</em></button>`}).join("")}</div>`;
@@ -2458,7 +2532,7 @@ function start(){
 }
 function fmt(ms){const s=Math.floor(ms/1000);return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0")}
 var BKfn;function BK(fn){BKfn=fn;const hm=["home","auth"].some(i=>$(i)&&!$(i).classList.contains("hide"));$("bkb").classList.toggle("hide",!fn||hm)}
-function show(id){try{KT.leave()}catch(e){}document.body.classList.remove("adm","dlm","tchm");if(id!=="tz"){try{BLITZ.leave()}catch(e){}try{XRON.leave()}catch(e){}try{KIMG.leave()}catch(e){}try{HAYOQ.leave()}catch(e){}try{LADDER.leave()}catch(e){}try{JUFTG.leave()}catch(e){}try{BOSS.leave()}catch(e){}}try{$("amore").classList.add("hide")}catch(e){}["auth","home","start","quiz","res","tz"].forEach(s=>$(s).classList.toggle("hide",s!==id));BK(id==="res"?(()=>{if(FROM_T)goHome();else{renderTopics();show("start")}}):id==="start"?BKfn:null);setNav(id==="start"&&typeof VIEW!=="undefined"&&VIEW.k==="ms"?"ms":({home:"home",start:"tests",res:"tests"}[id]||null));window.scrollTo(0,0)}
+function show(id){try{KT.leave()}catch(e){}document.body.classList.remove("adm","dlm","tchm");if(id!=="tz"){try{BLITZ.leave()}catch(e){}try{XRON.leave()}catch(e){}try{KIMG.leave()}catch(e){}try{KJ.leave()}catch(e){}try{HAYOQ.leave()}catch(e){}try{LADDER.leave()}catch(e){}try{JUFTG.leave()}catch(e){}try{BOSS.leave()}catch(e){}}try{$("amore").classList.add("hide")}catch(e){}["auth","home","start","quiz","res","tz"].forEach(s=>$(s).classList.toggle("hide",s!==id));BK(id==="res"?(()=>{if(FROM_T)goHome();else{renderTopics();show("start")}}):id==="start"?BKfn:null);setNav(id==="start"&&typeof VIEW!=="undefined"&&VIEW.k==="ms"?"ms":({home:"home",start:"tests",res:"tests"}[id]||null));window.scrollTo(0,0)}
 function setNav(active){active={ms:"tests",turnir:"games",stat:"prof"}[active]||active;const on=!!(active&&typeof ACCT!=="undefined"&&ACCT.cur);$("bnav").classList.toggle("hide",!on);[...$("bnav").children].forEach(b=>b.classList.toggle("on",b.dataset.g===active));const av=$("hdrAv");if(av){const c=typeof ACCT!=="undefined"&&ACCT.cur;av.classList.toggle("hide",!c);if(c){const k=c.uid+"|"+c.f+c.l;if(av.dataset.k!==k){av.dataset.k=k;av.innerHTML=AV.html(c.uid,c.f+" "+c.l,"fill")}}}}
 function goHome(){if(typeof ACCT!=="undefined"&&ACCT.cur){show("home");ACCT.renderHome()}else show("auth")}
 function goTests(){VIEW={k:"cls"};set=null;show("start");renderTopics();setNav("tests")}
@@ -3822,6 +3896,469 @@ const KIMG = (() => {
 })();
 
 
+const KJ = (() => { // 🃏 Tarixiy kartalar jangi
+  const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const KEYS = ["6", "7", "7j", "8", "8j", "9", "9j", "10", "10j", "11"];
+  const SUBJ = k => k === "6" ? "Qadimgi dunyo tarixi" : /j$/.test(k) ? "Jahon tarixi" : "O‘zbekiston tarixi";
+  const GRD = k => String(k).replace("j", "") + "-sinf";
+  const EXCL = new Set(["Islom Karimov", "Shavkat Mirziyoyev", "Vladimir Putin", "Javoharla’l Neru", "Benito Mussolini", "Antonio Salazar", "Gavrilo Prinsip"]);
+  const LEG = new Set(["Amir Temur", "To‘maris", "Shiroq", "Spitaman", "Kir II", "Doro I", "Arximed", "Imom Buxoriy", "Muhammad Muso Xorazmiy", "Abu Rayhon Beruniy", "Abu Ali ibn Sino", "Abu Nasr Forobiy", "Ahmad Farg‘oniy", "Ismoil Somoniy", "Mahmud Qoshg‘ariy", "Jaloliddin Manguberdi", "Temur Malik", "Mirzo Ulug‘bek", "Alisher Navoiy", "Bahouddin Naqshband", "Zahiriddin Muhammad Bobur", "Kamoliddin Behzod", "Mahmudxo‘ja Behbudiy", "Abdurauf Fitrat", "Buyuk Karl", "Mehmed II", "Galileo Galiley", "Pyotr I", "Xristofor Kolumb", "Yuriy Gagarin"]);
+  const OVR = { "Amir Temur": "x2", "Abu Ali ibn Sino": "hl", "Rixsixon Mo‘minova": "hl", "To‘maris": "rv", "Shiroq": "rv", "Spitaman": "rv", "Jaloliddin Manguberdi": "rv", "Temur Malik": "rv", "Muqanna": "rv", "Janna d’Ark": "rv", "Dukchi eshon": "rv", "Mirzo Ulug‘bek": "ol", "Abu Rayhon Beruniy": "ol", "Muhammad Muso Xorazmiy": "ol", "Ahmad Farg‘oniy": "ol", "Ali Qushchi": "ol", "Galileo Galiley": "ol", "Nikolay Kopernik": "ol", "Alisher Navoiy": "dn", "Abu Nasr Forobiy": "dn", "Mahmud Qoshg‘ariy": "dn", "Imom Buxoriy": "dn", "Zahiriddin Muhammad Bobur": "dn", "Mehmed II": "pc", "Kir II": "pc", "Ismoil Somoniy": "sh", "Pyotr I": "sh" };
+  const EXTRA = [{ n: "Amir Temur", g: "h", i: "👑", k: "8", c: ["XIV asrda yashagan buyuk sarkarda va davlat arbobi.", "1336-yilda Kesh (Shahrisabz) yaqinidagi Xo‘ja Ilg‘or qishlog‘ida tug‘ilgan.", "1370-yilda Balx qurultoyida oliy hukmdor deb e’lon qilingan.", "Poytaxti Samarqand bo‘lgan, «Kuch — adolatda» shiori bilan mashhur."] }];
+  const AB = { x2: ["⚔️", "Sarkarda", "Birinchi zarbasi ikki barobar kuchli"], sh: ["🛡️", "Qalqon", "Birinchi olgan zarbasi yarmiga tushadi"], pc: ["💥", "Bosqinchi", "Raqib kartasi yiqilsa, ortiqcha zarar keyingisiga o‘tadi"], rg: ["🔥", "Jasur", "Joni yarmidan kam bo‘lsa, hujumi +3"], ol: ["🔭", "Olim", "Ikkalangiz to‘g‘ri topsangiz, tezlikdan qat’i nazar u uradi"], dn: ["📜", "Donishmand", "Ikkalangiz xato qilsangiz ham, yarim kuch bilan uradi"], hl: ["⚕️", "Tabib", "Har zarbasidan keyin +2 ❤️ tiklaydi"], rv: ["🗡️", "Qasoskor", "Yiqilganda raqib kartasiga −4 ❤️ beradi"] };
+  const GAB = { h: ["x2", "sh", "pc"], x: ["x2", "rg", "pc", "rv"], o: ["ol", "dn", "sh"], u: ["dn", "ol"], s: ["rg", "x2", "sh"] };
+  const RN = { a: ["AFSONA", "Afsonaviy"], n: ["NOYOB", "Noyob"], o: ["ODDIY", "Oddiy"] };
+  const NQ = 12, TL = 15000, MAXLV = 3, UPN = 5, WINCH = 5;
+  const hsh = s => { let h = 2166136261; for (const ch of String(s)) { h ^= ch.codePointAt(0); h = Math.imul(h, 16777619); } return h >>> 0; };
+  const slug = n => String(n).toLowerCase().replace(/[‘’'`ʻʼ]/g, "").replace(/[^a-z0-9]+/g, "").slice(0, 28) || "x" + hsh(n);
+  const shuf = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const pick = a => a[Math.floor(Math.random() * a.length)];
+  const rngF = a => () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+  const me = () => ACCT.cur, full = c => ((c.f || "") + " " + (c.l || "")).trim();
+  const setById = id => SETS.find(x => x.id === id);
+  const today = () => { const d = new Date(DBA.now()); return "" + d.getFullYear() + String(d.getMonth() + 1).padStart(2, "0") + String(d.getDate()).padStart(2, "0"); };
+  const sec = ms => (Math.abs(ms) / 1000).toFixed(1).replace(".", ",") + " s";
+  const webLink = code => location.href.split("#")[0].split("?")[0] + "#kj-" + code;
+  const tgLink = code => window.TG_BOT ? (window.TG_APP ? `https://t.me/${window.TG_BOT}/${window.TG_APP}?startapp=kj-${code}` : `https://t.me/${window.TG_BOT}?startapp=kj-${code}`) : webLink(code);
+  const ls = { get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }, del(k) { try { localStorage.removeItem(k); } catch (e) {} } };
+  let BACK = null, CARDS = null, BY = {}, LP = {}, S = null, B = null, cfg = { cls: null, f: "all" };
+  try { Object.assign(cfg, JSON.parse(ls.get("zm_kj") || "{}")); } catch (e) {}
+  const saveCfg = () => ls.set("zm_kj", JSON.stringify(cfg));
+
+  // ---------- Kartalar ----------
+  const loadKey = k => (window.KIM && window.KIM[k]) ? Promise.resolve() : (LP[k] = LP[k] || new Promise((ok, no) => { const sc = document.createElement("script"); sc.src = "data/kim" + k + ".js?v=2"; sc.onload = ok; sc.onerror = () => { LP[k] = null; no(new Error("Kartalar yuklanmadi. Internetni tekshiring.")); }; document.head.appendChild(sc); }));
+  async function loadAll() { if (CARDS) return; await Promise.all(KEYS.map(loadKey)); build(); }
+  function build() {
+    const seen = new Set(); CARDS = []; BY = {};
+    const add = (p, k) => {
+      if (!p || EXCL.has(p.n) || seen.has(p.n)) return; seen.add(p.n);
+      let id = slug(p.n); while (BY[id]) id += "x";
+      const h = hsh(p.n), r = LEG.has(p.n) ? "a" : (h % 100 < 28 ? "n" : "o"), gl = GAB[p.g] || GAB.h;
+      const ab = OVR[p.n] || (/[🔭🔬]/u.test(p.i || "") ? "ol" : /[✒📖]/u.test(p.i || "") && "ou".includes(p.g) ? "dn" : gl[(h >>> 3) % gl.length]), base = r === "a" ? [7, 10] : r === "n" ? [5, 8] : [3, 6];
+      const c = { id, n: p.n, i: p.i || "👤", g: p.g, k, c: p.c || [], r, ab, atk: base[0] + (h >>> 8) % 3, hp: base[1] + (h >>> 12) % 3 };
+      CARDS.push(c); BY[id] = c;
+    };
+    EXTRA.forEach(p => add(p, p.k)); KEYS.forEach(k => ((window.KIM || {})[k] || []).forEach(p => add(p, k)));
+  }
+  const stat = (c, lv) => ({ atk: c.atk + (lv - 1), hp: c.hp + 2 * (lv - 1) });
+  const power = () => Object.entries(S.c || {}).reduce((s, [id, lv]) => { const c = BY[id]; if (!c) return s; const t = stat(c, lv); return s + t.atk + t.hp; }, 0);
+  const owned = () => Object.keys(S.c || {}).filter(id => BY[id]);
+  const stars = lv => "★".repeat(lv);
+  function cardHtml(c, lv, x) {
+    x = x || {}; const t = stat(c, lv || 1), a = AB[c.ab];
+    return `<div class="kc ${c.r}${x.sel ? " sel" : ""}${x.big ? " big" : ""}" data-id="${c.id}"><span class="kc-tg">${RN[c.r][0]}</span>${lv ? `<span class="kc-lv">${stars(lv)}</span>` : ""}<div class="kc-e">${esc(c.i)}</div><b class="kc-n">${esc(c.n)}</b>${x.big ? `<small class="kc-er">${GRD(c.k)} · ${SUBJ(c.k)}</small>` : ""}<div class="kc-s"><span>⚔️${t.atk}</span><span>❤️${t.hp}</span></div><div class="kc-ab">${a[0]} ${a[1]}${x.big ? `: ${a[2]}` : ""}</div>${x.sel ? `<i class="kc-ck">✓</i>` : ""}</div>`;
+  }
+
+  // ---------- Saqlash ----------
+  const PATH = () => "lb/kc/" + me().uid;
+  async function loadS() {
+    const d = await DBA.get(PATH());
+    S = Object.assign({ c: {}, u: {}, ch: 0, w: 0, l: 0, dk: [] }, d || {}); S.c = S.c || {}; S.u = S.u || {}; S.dk = (S.dk || []).filter(id => S.c[id]);
+    if (!S.st) {
+      const o = shuf(CARDS.filter(c => c.r === "o")).slice(0, 3), n = shuf(CARDS.filter(c => c.r === "n")).slice(0, 1);
+      [...o, ...n].forEach(c => S.c[c.id] = 1); S.ch = (S.ch || 0) + 1; S.st = 1; S.dk = [...n, ...o].slice(0, 3).map(c => c.id); S.isNew = 1;
+      await saveS();
+    }
+    if (S.wk !== GAME.wk()) { S.wk = GAME.wk(); S.wn = 0; }
+  }
+  async function saveS() {
+    const o = Object.assign({}, S); delete o.isNew; delete o._u;
+    try { await DBA.set(PATH(), o); } catch (e) { FX.toast("⚠️ Saqlab bo‘lmadi. Internetni tekshiring."); }
+    try { const u = me(); await DBA.set("lb/kj" + GAME.wk() + "/" + u.uid, { n: full(u), w: S.wk === GAME.wk() ? (S.wn || 0) : 0, p: power(), k: owned().length, at: DBA.now() }); } catch (e) {}
+  }
+  const deck = () => { let d = (S.dk || []).filter(id => S.c[id] && BY[id]); if (d.length < 3) d = [...d, ...owned().filter(id => !d.includes(id)).sort((a, b) => { const x = stat(BY[b], S.c[b]), y = stat(BY[a], S.c[a]); return x.atk + x.hp - y.atk - y.hp; })].slice(0, 3); return d; };
+  const dk2 = d => d.map(id => [id, S.c[id] || 1]);
+  function winChest() { if (S.dw !== today()) { S.dw = today(); S.dn = 0; } if ((S.dn || 0) >= WINCH) return false; S.dn = (S.dn || 0) + 1; S.ch = (S.ch || 0) + 1; return true; }
+  function addWin() { if (S.wk !== GAME.wk()) { S.wk = GAME.wk(); S.wn = 0; } S.w = (S.w || 0) + 1; S.wn = (S.wn || 0) + 1; }
+
+  // ---------- Ekranlar ----------
+  function head(t, sub, back) { document.body.classList.add("dlm"); return `<div class="dl-h"><button class="adh-b" onclick="${back || "HOMEX.games()"}" title="Orqaga">‹</button><div class="adh-t"><small>${esc(sub || "Yig‘ · kuchaytir · jang qil")}</small><b>${t}</b></div><button class="adh-b" onclick="goHome()" title="Bosh sahifa">🏠</button></div>`; }
+  const busy = msg => { $("tz").innerHTML = head("🃏 Tarixiy kartalar") + `<div class="sub" style="text-align:center;margin:30px 0">${msg || "Yuklanmoqda…"}</div>`; };
+  async function ensure() {
+    if (!me()) { show("auth"); return false; }
+    try { await loadAll(); if (!S || S._u !== me().uid) { await loadS(); S._u = me().uid; } } catch (e) { $("tz").innerHTML = head("🃏 Tarixiy kartalar") + `<div class="card" style="text-align:center"><p class="sub">${esc(e.message || e)}</p><button class="btn" onclick="KJ.open()">Qayta urinish</button></div>`; return false; }
+    return true;
+  }
+  async function hostRewards() { // chaqiruvlarim natijasi: do'stim yutqazgan bo'lsa — g'alaba meniki
+    let L = null; try { L = await DBA.get("lb/kbx" + me().uid); } catch (e) { return; }
+    let n = 0, w = 0, ch = 0, mx = S.hs || 0;
+    Object.values(L || {}).forEach(g => Object.values(g || {}).forEach(x => { if (!x || !(x.c > (S.hs || 0))) return; n++; mx = Math.max(mx, x.c); if (x.res === "l") { w++; addWin(); if (winChest()) ch++; } else if (x.res === "w") S.l = (S.l || 0) + 1; }));
+    if (!n) return 0; S.hs = mx; await saveS();
+    FX.toast(`⚔️ ${n} ta do‘stingiz chaqiruvingizni qabul qildi${w ? ` · ${w} ta g‘alaba` : ""}${ch ? ` · +${ch} 🎁` : ""}`);
+    return n;
+  }
+  async function open() {
+    stop(); try { T.leave(); } catch (e) {}
+    if (!me()) { show("auth"); return; }
+    show("tz"); setNav("games"); BK(null); busy();
+    if (!await ensure()) return;
+    hostRewards().then(n => { if (n && $("kjMain")) menu(); });
+    menu();
+  }
+  function menu() {
+    show("tz"); setNav("games"); BK(null); stop();
+    const own = owned(), d = deck(), canD = S.d !== today(), dn = PM.is() ? 2 : 1, F = cfg.f || "all";
+    const list = own.map(id => BY[id]).filter(c => F === "all" || c.r === F).sort((a, b) => "ano".indexOf(a.r) - "ano".indexOf(b.r) || (S.c[b.id] - S.c[a.id]) || a.n.localeCompare(b.n));
+    const tot = CARDS.length;
+    $("tz").innerHTML = head("🃏 Tarixiy kartalar") + `<div id="kjMain"></div>
+      ${S.isNew ? `<div class="card kj-new">🎉 <b>Xush kelibsiz!</b> Sizga 4 ta boshlang‘ich karta va 1 ta sandiq berildi. Sandiqni oching, 3 ta kartani tanlab, jangga kiring!</div>` : ""}
+      <div class="xr-rc kj-rc"><div><b>${own.length}<small style="display:inline;font-size:12px"> / ${tot}</small></b><small>karta</small></div><div><b>⚡ ${power()}</b><small>kolleksiya kuchi</small></div><div><b>🏆 ${S.w || 0}</b><small>g‘alaba</small></div></div>
+      ${canD ? `<button class="kj-daily" id="kjDaily"><span>🎁</span><b>Kunlik sandiq tayyor!</b><small>Bugun ${dn} ta sandiq olishingiz mumkin${PM.is() ? " (Premium +1)" : ""}</small><em>Olish</em></button>` : ""}
+      <button class="kj-chest${S.ch ? " on" : ""}" id="kjChest"${S.ch ? "" : " disabled"}><span class="kj-cb">🎁</span><b>Sandiq ochish</b><small>${S.ch ? `${S.ch} ta sandiq bor` : canD ? "Kunlik sandiqni oling" : "Jangda yuting — sandiq oling (kuniga " + WINCH + " ta)"}</small></button>
+      <div class="ah">⚔️ Jang uchun kartalarim <small style="font-weight:600;opacity:.7">(3 ta)</small></div>
+      <div class="kj-dk">${d.map(id => cardHtml(BY[id], S.c[id])).join("")}</div>
+      <button class="btn ghost" id="kjDeck" style="margin-top:8px">🔄 Kartalarni almashtirish</button>
+      <div class="jf-lb" style="margin-top:14px">SAVOLLAR</div><div class="jf-cls" id="kjCls">${clsList().map(c => `<button data-c="${esc(c)}"${c === curCls() ? ' class="on"' : ""}>${esc(c)}</button>`).join("")}</div>
+      <div class="row" style="gap:10px;margin-top:10px"><button class="btn" style="margin:0" id="kjBot">🤖 Bot bilan jang</button><button class="btn" style="margin:0;background:linear-gradient(135deg,#F59E0B,#EF4444)" id="kjDuel">👥 Do‘stni chaqirish</button></div>
+      <div class="card kj-rule"><b>Qanday o‘ynaladi?</b><br>Har raundda ikkalangizga bir xil savol tushadi. <b>To‘g‘ri va tezroq</b> javob bergan kartasi bilan uradi. Joni tugagan karta yiqiladi, keyingisi chiqadi. 3 ta kartasi yiqilgan o‘yinchi yutqazadi. ${NQ} raunddan keyin jon ko‘p qolgan yutadi.</div>
+      <div id="kjMy"></div>
+      <div class="row" style="gap:10px;margin-top:4px"><button class="btn ghost" style="margin:0" id="kjLb">🏅 Reyting</button></div>
+      <div class="ah">🎴 Kolleksiya</div>
+      <div class="tabs kj-tabs">${[["all", "Hammasi"], ["a", "🌟 Afsona"], ["n", "🔷 Noyob"], ["o", "🥈 Oddiy"]].map(([k, n]) => `<button data-f="${k}"${k === F ? ' class="on"' : ""}>${n}</button>`).join("")}</div>
+      <div class="kj-grid" id="kjGrid">${list.map(c => cardHtml(c, S.c[c.id])).join("")}${list.length ? "" : `<p class="sub" style="grid-column:1/-1;text-align:center">Bu turdagi karta hali yo‘q. Sandiq oching! 🎁</p>`}</div>
+      <p class="sub" style="text-align:center;margin:10px 0 0">🔒 Yana ${tot - own.length} ta karta sizni kutmoqda</p>`;
+    if (S.isNew) { delete S.isNew; }
+    if ($("kjDaily")) $("kjDaily").onclick = async () => { if (S.d === today()) return; S.d = today(); S.ch = (S.ch || 0) + dn; await saveS(); FX.toast(`🎁 +${dn} sandiq!`); menu(); };
+    $("kjChest").onclick = openChest;
+    $("kjDeck").onclick = pickDeck;
+    $("kjCls").onclick = e => { const b = e.target.closest("[data-c]"); if (!b) return; cfg.cls = b.dataset.c; saveCfg(); $("kjCls").querySelectorAll("button").forEach(x => x.classList.toggle("on", x === b)); };
+    $("kjBot").onclick = () => fight("bot");
+    $("kjDuel").onclick = () => fight("host");
+    $("kjLb").onclick = board;
+    $("tz").querySelector(".kj-tabs").onclick = e => { const b = e.target.closest("[data-f]"); if (b) { cfg.f = b.dataset.f; saveCfg(); menu(); } };
+    $("kjGrid").onclick = e => { const c = e.target.closest(".kc"); if (c) detail(c.dataset.id); };
+    $("tz").querySelector(".kj-dk").onclick = e => { const c = e.target.closest(".kc"); if (c) detail(c.dataset.id); };
+    myBattles();
+  }
+  const clsList = () => { const s = new Set(); SETS.forEach(x => { if (x.qs && !x.ms && x.qs.length >= 8) s.add(clsOf(x.g)); }); return [...s].sort((a, b) => parseInt(a) - parseInt(b)); };
+  const curCls = () => { const L = clsList(); if (cfg.cls && L.includes(cfg.cls)) return cfg.cls; const g = String((me() || {}).g || ""); return L.find(c => g.startsWith(String(parseInt(c)))) || L.find(c => parseInt(c) === 7) || L[0]; };
+  function detail(id) {
+    const c = BY[id], lv = S.c[id]; if (!c) return;
+    const pr = S.u[id] || 0, inD = deck().includes(id);
+    const m = document.createElement("div"); m.className = "kj-mod";
+    m.innerHTML = `<div class="kj-mb">${cardHtml(c, lv, { big: 1 })}
+      <div class="kj-fact">📜 ${esc(c.c[0] || "")}</div>
+      ${lv < MAXLV ? `<div class="kj-up"><div><b>⬆️ Kuchaytirish</b><small>${GRD(c.k)} · ${SUBJ(c.k)} shaxslari haqida ${UPN} ta to‘g‘ri javob · keyingi daraja: ⚔️+1 ❤️+2</small></div><div class="kj-pb"><i style="width:${pr / UPN * 100}%"></i></div><em>${pr} / ${UPN}</em></div><button class="btn" id="kjUp">⬆️ Kuchaytirish</button>` : `<div class="kj-up"><b>👑 Maksimal daraja!</b></div>`}
+      ${inD ? "" : `<button class="btn ghost" id="kjToD" style="margin-top:8px">⚔️ Jang kartalariga qo‘shish</button>`}
+      <button class="btn ghost" id="kjCl" style="margin-top:8px">Yopish</button></div>`;
+    document.body.appendChild(m);
+    const close = () => m.remove();
+    m.onclick = e => { if (e.target === m) close(); };
+    m.querySelector("#kjCl").onclick = close;
+    if (m.querySelector("#kjUp")) m.querySelector("#kjUp").onclick = () => { close(); upgrade(id); };
+    if (m.querySelector("#kjToD")) m.querySelector("#kjToD").onclick = async () => { const d = deck(); S.dk = [id, ...d.slice(0, 2)]; close(); await saveS(); menu(); FX.toast("✅ Jang kartalariga qo‘shildi"); };
+  }
+  function pickDeck(back) {
+    let sel = deck().slice();
+    const draw = () => {
+      const L = owned().map(id => BY[id]).sort((a, b) => "ano".indexOf(a.r) - "ano".indexOf(b.r) || a.n.localeCompare(b.n));
+      $("tz").innerHTML = head("⚔️ 3 ta karta tanlang", "Jang kartalari", back ? "KJ._back()" : "KJ.menu()") + `<p class="sub" style="text-align:center;margin:0 0 10px">Tanlandi: <b>${sel.length} / 3</b></p><div class="kj-grid" id="kjPG">${L.map(c => cardHtml(c, S.c[c.id], { sel: sel.includes(c.id) })).join("")}</div><div class="xr-ft"><button class="btn" id="kjPS"${sel.length === 3 ? "" : " disabled"}>✅ Saqlash</button></div>`;
+      $("kjPG").onclick = e => { const c = e.target.closest(".kc"); if (!c) return; const id = c.dataset.id; if (sel.includes(id)) sel = sel.filter(x => x !== id); else if (sel.length < 3) sel.push(id); else { sel.shift(); sel.push(id); } draw(); };
+      $("kjPS").onclick = async () => { S.dk = sel; await saveS(); if (back) back(); else menu(); };
+    };
+    draw();
+  }
+  // ---------- Sandiq ----------
+  function roll() {
+    const x = Math.random(), r = x < .08 ? "a" : x < .35 ? "n" : "o", pool = CARDS.filter(c => c.r === r), un = pool.filter(c => !S.c[c.id]);
+    let c = un.length && Math.random() < .75 ? pick(un) : pick(pool);
+    if ((S.c[c.id] || 0) >= MAXLV) { const u2 = CARDS.filter(z => !S.c[z.id]); if (u2.length) c = pick(u2); }
+    return c;
+  }
+  async function openChest() {
+    if (!S.ch) return; S.ch--;
+    const c = roll(), had = S.c[c.id] || 0, kind = !had ? "new" : had < MAXLV ? "up" : "max";
+    if (kind === "new") S.c[c.id] = 1; else if (kind === "up") S.c[c.id] = had + 1;
+    await saveS();
+    $("tz").innerHTML = head("🎁 Sandiq", "Yangi karta", "KJ.menu()") + `<div class="kj-open"><div class="kj-box">🎁</div></div>`;
+    setTimeout(() => {
+      if (!$("tz").querySelector(".kj-open")) return;
+      $("tz").querySelector(".kj-open").innerHTML = `<div class="kj-glow ${c.r}"></div><p class="sub" style="margin:0">${kind === "new" ? "Yangi karta!" : kind === "up" ? "Takror karta — daraja oshdi! ⬆️" : "Bu karta allaqachon maksimal darajada"}</p><div class="kj-rar ${c.r}">✨ ${RN[c.r][1].toUpperCase()} ✨</div>${cardHtml(c, S.c[c.id] || 1, { big: 1 })}<div class="kj-fact">📜 ${esc(c.c[0] || "")}</div>
+        <div class="row" style="gap:10px;margin-top:12px">${S.ch ? `<button class="btn" style="margin:0" id="kjAg">🎁 Yana ochish (${S.ch})</button>` : ""}<button class="btn ghost" style="margin:0" onclick="KJ.menu()">🃏 Kartalarim</button></div>`;
+      if ($("kjAg")) $("kjAg").onclick = openChest;
+      try { if (c.r !== "o") { FX.rain(c.r === "a" ? 260 : 120); FX.S.win(); } else FX.S.ok(); } catch (e) {}
+    }, 900);
+  }
+  // ---------- Kuchaytirish (Kim bu? uslubida) ----------
+  function upgrade(id) {
+    const c = BY[id]; if (!c) return;
+    const same = CARDS.filter(x => x.k === c.k && x.c.length >= 3);
+    const ppl = shuf([c, ...shuf(same.filter(x => x !== c)).slice(0, UPN - 1)]);
+    const U = { id, i: 0, ok: 0, Q: ppl.map(p => { const cl = shuf([0, 1, 2]).slice(0, 2).sort().map(j => p.c[j]); const sg = same.filter(x => x !== p && x.g === p.g), ot = same.filter(x => x !== p && x.g !== p.g); const ds = shuf(sg).slice(0, 3); if (ds.length < 3) ds.push(...shuf(ot).slice(0, 3 - ds.length)); return { p, cl, ops: shuf([p, ...ds]).map(x => x.n) }; }) };
+    const q = () => {
+      const x = U.Q[U.i], pr = S.u[id] || 0;
+      $("tz").innerHTML = head("⬆️ " + esc(c.n), `Kuchaytirish · ${pr} / ${UPN}`, "KJ.menu()") + `<div class="fq-seg xr-seg">${U.Q.map((_, i) => `<i class="${i < U.i ? "d" : i === U.i ? "c" : ""}"></i>`).join("")}</div>
+        <div class="km-who"><span class="km-q">❓</span><div><b>Bu kim?</b><small>${GRD(c.k)} · ${SUBJ(c.k)}</small></div></div>
+        <div class="km-cls">${x.cl.map((t, i) => `<div class="km-cl"><i>${i + 1}</i><span>${esc(t)}</span></div>`).join("")}</div>
+        <div class="km-ops" id="kjUO">${x.ops.map(o => `<button data-o="${esc(o)}">${esc(o)}</button>`).join("")}</div>`;
+      $("kjUO").onclick = async e => {
+        const b = e.target.closest("[data-o]"); if (!b || U.lock) return; U.lock = true;
+        const ok = b.dataset.o === x.p.n;
+        $("kjUO").querySelectorAll("button").forEach(z => { if (z.dataset.o === x.p.n) z.classList.add("ok"); else if (z === b) z.classList.add("no"); z.disabled = true; });
+        let lvUp = false;
+        if (ok) { U.ok++; S.u[id] = (S.u[id] || 0) + 1; if (S.u[id] >= UPN && S.c[id] < MAXLV) { S.c[id]++; S.u[id] = 0; lvUp = true; } try { FX.correct(b, "+1"); } catch (e) {} } else { try { FX.wrong(); } catch (e) {} }
+        if (lvUp || U.i + 1 >= U.Q.length) await saveS();
+        setTimeout(() => {
+          U.lock = false;
+          if (lvUp) return done(true);
+          U.i++; if (U.i >= U.Q.length) return done(false); q();
+        }, ok ? 800 : 1500);
+      };
+    };
+    const done = up => {
+      const lv = S.c[id];
+      $("tz").innerHTML = head("⬆️ Kuchaytirish", c.n, "KJ.menu()") + `<div class="kj-open">${up ? `<div class="kj-rar ${c.r}">⬆️ DARAJA OSHDI!</div>` : `<p class="sub">To‘g‘ri javoblar: <b>${U.ok}</b> · jarayon: <b>${S.u[id] || 0} / ${UPN}</b></p>`}${cardHtml(c, lv, { big: 1 })}
+        <div class="row" style="gap:10px;margin-top:12px">${lv < MAXLV ? `<button class="btn" style="margin:0" id="kjUA">⬆️ Davom etish</button>` : ""}<button class="btn ghost" style="margin:0" onclick="KJ.menu()">🃏 Kartalarim</button></div></div>`;
+      if ($("kjUA")) $("kjUA").onclick = () => upgrade(id);
+      if (up) try { FX.rain(160); FX.S.win(); } catch (e) {}
+    };
+    q();
+  }
+  // ---------- Jang mexanikasi ----------
+  function mkSide(d) { return { i: 0, cards: d.map(([id, lv]) => { const c = BY[id] || CARDS[0], t = stat(c, lv || 1); return { id: c.id, c, lv: lv || 1, atk: t.atk, hp: t.hp, max: t.hp, ab: c.ab, x2u: false, shu: false }; }) }; }
+  const cur = s => s.cards[s.i];
+  const dead = s => s.i >= s.cards.length;
+  function round(st, ra, rb) { // ra, rb: musbat — to'g'ri (ms), manfiy — xato
+    const ev = [], A = st.A, Bs = st.B; if (dead(A) || dead(Bs)) return ev;
+    const a = cur(A), b = cur(Bs), okA = ra > 0, okB = rb > 0; let h = null, half = false;
+    if (okA && okB) { if (a.ab === "ol" && b.ab !== "ol") h = "A"; else if (b.ab === "ol" && a.ab !== "ol") h = "B"; else h = ra <= rb ? "A" : "B"; }
+    else if (okA) h = "A"; else if (okB) h = "B";
+    else if (a.ab === "dn" && b.ab !== "dn") { h = "A"; half = true; } else if (b.ab === "dn" && a.ab !== "dn") { h = "B"; half = true; }
+    if (!h) { ev.push({ t: "miss" }); return ev; }
+    const X = st[h], Y = st[h === "A" ? "B" : "A"], att = cur(X), def = cur(Y), y = h === "A" ? "B" : "A";
+    let d = att.atk + (att.ab === "rg" && att.hp <= att.max / 2 ? 3 : 0), tags = [];
+    if (att.ab === "x2" && !att.x2u) { d *= 2; att.x2u = true; tags.push("⚔️×2"); }
+    if (half) { d = Math.ceil(d / 2); tags.push("📜"); }
+    if (att.ab === "rg" && att.hp <= att.max / 2) tags.push("🔥+3");
+    if (def.ab === "sh" && !def.shu) { d = Math.ceil(d / 2); def.shu = true; tags.push("🛡️"); }
+    def.hp -= d; ev.push({ t: "hit", s: h, d, tg: tags.join(" ") });
+    if (att.ab === "hl" && att.hp > 0) { const v = Math.min(2, att.max - att.hp); if (v > 0) { att.hp += v; ev.push({ t: "heal", s: h, d: v }); } }
+    if (def.hp <= 0) {
+      const over = -def.hp; def.hp = 0; Y.i++; ev.push({ t: "ko", s: y, n: def.c.n });
+      if (def.ab === "rv") { att.hp -= 4; ev.push({ t: "rv", s: h, d: 4 }); if (att.hp <= 0) { att.hp = 0; X.i++; ev.push({ t: "ko", s: h, n: att.c.n }); } }
+      if (att.ab === "pc" && over > 0 && !dead(Y) && att.hp > 0) { const nd = cur(Y); nd.hp -= over; ev.push({ t: "pc", s: y, d: over }); if (nd.hp <= 0) { nd.hp = 0; Y.i++; ev.push({ t: "ko", s: y, n: nd.c.n }); } }
+    }
+    return ev;
+  }
+  const hpLeft = s => s.cards.reduce((x, c) => x + Math.max(0, c.hp), 0) / s.cards.reduce((x, c) => x + c.max, 0);
+  function verdict(st, ra, rb) { // "A" | "B" | "T"
+    const da = dead(st.A), db = dead(st.B);
+    if (da && !db) return "B"; if (db && !da) return "A";
+    const ha = da ? 0 : hpLeft(st.A), hb = db ? 0 : hpLeft(st.B);
+    if (Math.abs(ha - hb) > 1e-9) return ha > hb ? "A" : "B";
+    const ok = r => r.filter(x => x > 0).length, tm = r => r.reduce((s, x) => s + Math.abs(x), 0);
+    if (ok(ra) !== ok(rb)) return ok(ra) > ok(rb) ? "A" : "B";
+    if (tm(ra) !== tm(rb)) return tm(ra) < tm(rb) ? "A" : "B";
+    return "T";
+  }
+  function simulate(da, ra, db, rb) { const st = { A: mkSide(da), B: mkSide(db) }; const n = Math.min(ra.length, rb.length); for (let i = 0; i < n && !dead(st.A) && !dead(st.B); i++) round(st, ra[i], rb[i]); return verdict(st, ra.slice(0, n), rb.slice(0, n)); }
+  // ---------- Savollar ----------
+  function pickQ() {
+    const cls = curCls(), src = PM.free(SETS.filter(x => x.qs && !x.ms && x.qs.length >= 8 && clsOf(x.g) === cls));
+    if (!src.length) return null;
+    const pool = []; src.forEach(x => x.qs.forEach((q, i) => { if (q && Array.isArray(q.o) && q.o.length === 4) pool.push(x.id + ":" + i); }));
+    return { cls, keys: shuf(pool).slice(0, NQ), seed: Math.floor(Math.random() * 1e9) };
+  }
+  const qsOf = keys => keys.map(k => { const [sid, i] = String(k).split(":"); const x = setById(sid); return x && x.qs[+i]; });
+  function botFor(myD) {
+    const d = myD.map(([id, lv]) => { const c = BY[id]; return [pick(CARDS.filter(z => z.r === c.r && z.id !== id)).id, Math.max(1, lv - (Math.random() < .4 ? 1 : 0))]; });
+    const acc = .58 + Math.random() * .12, r = [];
+    for (let i = 0; i < NQ; i++) { const t = Math.round(2500 + Math.random() * 7500); r.push(Math.random() < acc ? t : -t); }
+    const names = ["Bot Temurbek", "Bot Zarina", "Bot Jasur", "Bot Malika", "Bot Sardor", "Bot Nilufar"];
+    return { n: pick(names), dk: d, r, bot: 1 };
+  }
+  // ---------- Jang ekrani ----------
+  function stop() { if (B) { clearInterval(B.tk); clearTimeout(B.to); } B = null; }
+  function fight(mode) {
+    const Q = pickQ(); if (!Q) return PM.ask();
+    const myD = dk2(deck()); if (myD.length < 3) { FX.toast("Jang uchun 3 ta karta kerak — sandiq oching 🎁"); return; }
+    if (mode === "bot") { const opp = botFor(myD); return play({ mode, keys: Q.keys, seed: Q.seed, cls: Q.cls, myD, opp }); }
+    play({ mode: "host", keys: Q.keys, seed: Q.seed, cls: Q.cls, myD, opp: null, id: Date.now().toString(36) + Math.random().toString(36).slice(2, 5) });
+  }
+  function fighter(side, name, st, me_) {
+    const s = st, c = dead(s) ? null : cur(s);
+    return `<div class="kj-f ${me_ ? "me" : "op"}" id="kjF${side}"><div class="kj-av ${c ? c.c.r : "o"}">${c ? esc(c.c.i) : "💀"}</div><div class="kj-fm"><div class="kj-fn"><b>${c ? esc(c.c.n) : "—"}</b><span>⚔️${c ? c.atk : 0}</span></div><div class="kj-hp"><i style="width:${c ? Math.max(0, c.hp / c.max * 100) : 0}%"></i><em>❤️ ${c ? c.hp : 0}/${c ? c.max : 0}</em></div><div class="kj-fx"><small>${esc(name)}</small><span class="kj-mn">${s.cards.map((x, i) => `<i class="${i < s.i ? "dd" : i === s.i ? "on" : ""}">${esc(x.c.i)}</i>`).join("")}</span></div></div></div>`;
+  }
+  function ghostF(name) { return `<div class="kj-f op" id="kjFB"><div class="kj-av o">❔</div><div class="kj-fm"><div class="kj-fn"><b>Raqib kutilmoqda</b></div><div class="kj-fx"><small>${esc(name)}</small></div></div></div>`; }
+  function play(o) {
+    stop();
+    if (!PM.is() && [...new Set(o.keys.map(k => String(k).split(":")[0]))].some(sid => PM.lockSet(setById(sid)))) return PM.ask();
+    const Q = qsOf(o.keys); if (Q.some(x => !x)) { FX.toast("Savollar topilmadi."); return menu(); }
+    const R = rngF(o.seed || 1), perms = Q.map(() => { const a = [0, 1, 2, 3]; for (let i = 3; i > 0; i--) { const j = Math.floor(R() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; });
+    B = Object.assign({}, o, { Q, perms, i: 0, r: [], st: { A: mkSide(o.myD), B: o.opp ? mkSide(o.opp.dk) : mkSide(o.myD) }, lock: false, myN: String((me() || {}).f || "Siz") });
+    show("tz"); setNav(null); BK(null); document.body.classList.add("dlm");
+    rq();
+  }
+  function frame() {
+    const opN = B.opp ? B.opp.n : "Do‘stingiz";
+    $("tz").innerHTML = `<div class="xr-bar"><button class="adh-b" onclick="KJ.quit()" title="Chiqish">✕</button><div class="xr-m">Raund <b>${Math.min(B.i + 1, NQ)}</b> / ${NQ}<small>${esc(B.cls || "")}${B.mode === "bot" ? " · 🤖 bot bilan" : B.mode === "host" ? " · chaqiruv" : " · do‘st bilan"}</small></div><span class="xr-sc">✅ ${B.r.filter(x => x > 0).length}</span></div>
+      ${B.opp ? fighter("B", opN, B.st.B, false) : ghostF(opN)}
+      <div class="kj-vs"><span id="kjLog"></span></div>
+      ${fighter("A", "Siz", B.st.A, true)}
+      <div class="kj-tm"><i id="kjT"></i></div>
+      <div id="kjQ"></div>`;
+  }
+  function rq() {
+    if (!B) return;
+    if (B.i >= NQ || dead(B.st.A) || (B.opp && dead(B.st.B))) return end();
+    frame();
+    const q = B.Q[B.i], perm = B.perms[B.i];
+    $("kjQ").innerHTML = `<div class="kj-q"><small></small><div></div></div><div class="kj-o" id="kjO"></div>`;
+    $("kjQ").querySelector("small").textContent = q.t || ""; $("kjQ").querySelector(".kj-q div").textContent = q.q;
+    perm.forEach((oi, k) => { const b = document.createElement("button"); b.className = "kj-op k" + k; b.innerHTML = `<i>${"ABCD"[k]}</i><span></span>`; b.lastChild.textContent = q.o[oi]; b.onclick = () => ans(oi, b); $("kjO").appendChild(b); });
+    B.t0 = Date.now(); B.lock = false;
+    clearInterval(B.tk); B.tk = setInterval(() => { if (!B || !$("kjT")) return; const e = Date.now() - B.t0; $("kjT").style.width = Math.max(0, 100 - e / TL * 100) + "%"; if (e >= TL && !B.lock) ans(-1, null); }, 100);
+  }
+  function log(t) { const l = $("kjLog"); if (l) { l.innerHTML = t; l.classList.remove("pop"); void l.offsetWidth; l.classList.add("pop"); } }
+  function ans(oi, b) {
+    if (!B || B.lock) return; B.lock = true; clearInterval(B.tk);
+    const q = B.Q[B.i], ok = oi === q.a, ms = Math.max(1, Math.min(TL, Date.now() - B.t0)), rec = ok ? ms : -ms;
+    try { GAME.track(q, ok); } catch (e) {}
+    B.r.push(rec);
+    const os = [...$("kjO").children]; os.forEach((x, k) => { if (B.perms[B.i][k] === q.a) x.classList.add("okk"); }); if (b && !ok) b.classList.add("bad"); $("kjO").classList.add("done");
+    if (ok) { try { FX.S.ok(); } catch (e) {} } else { try { FX.wrong(); } catch (e) {} }
+    if (!B.opp) { log(ok ? `✅ To‘g‘ri · ${sec(ms)}` : oi < 0 ? "⌛ Vaqt tugadi" : "❌ Xato"); B.i++; B.to = setTimeout(rq, 1200); return; }
+    const ro = B.opp.r[B.i];
+    const ev = round(B.st, rec, ro);
+    const mine = ok ? `✅ ${sec(ms)}` : oi < 0 ? "⌛" : "❌", his = ro > 0 ? `✅ ${sec(ro)}` : "❌";
+    log(`Siz ${mine} <b>·</b> ${esc(String(B.opp.n).split(" ").slice(-1)[0])} ${his}`);
+    B.i++;
+    B.to = setTimeout(() => anim(ev, () => { B.to = setTimeout(rq, 900); }), 700);
+  }
+  function anim(ev, next) {
+    if (!B) return; let k = 0;
+    const step = () => {
+      if (!B) return; if (k >= ev.length) return next();
+      const e = ev[k++], side = e.s, tgt = e.t === "hit" || e.t === "pc" ? (side === "A" ? "B" : "A") : side;
+      const upd = () => { const el = $("kjF" + tgt); if (!el) return; el.outerHTML = fighter(tgt, tgt === "A" ? "Siz" : B.opp.n, B.st[tgt], tgt === "A"); };
+      if (e.t === "miss") { log("🤷 Ikkalangiz ham topmadingiz — hech kim urmadi"); return setTimeout(step, 700); }
+      if (e.t === "hit") { upd(); const el = $("kjF" + tgt); if (el) { el.classList.add("hit"); fl(el, "−" + e.d + (e.tg ? " " + e.tg : ""), "#ff6b5b"); } log(`${side === "A" ? "💥 Siz urdingiz" : "💥 Raqib urdi"}: −${e.d}${e.tg ? " " + e.tg : ""}`); try { side === "A" ? FX.S.ok() : FX.wrong(); } catch (x) {} return setTimeout(step, 750); }
+      if (e.t === "heal") { const el = $("kjF" + side); if (el) { el.outerHTML = fighter(side, side === "A" ? "Siz" : B.opp.n, B.st[side], side === "A"); fl($("kjF" + side), "+" + e.d + " ⚕️", "#4ade80"); } return setTimeout(step, 550); }
+      if (e.t === "rv") { const el = $("kjF" + side); if (el) { el.outerHTML = fighter(side, side === "A" ? "Siz" : B.opp.n, B.st[side], side === "A"); fl($("kjF" + side), "−4 🗡️", "#ff6b5b"); } log("🗡️ Qasoskor yiqilayotib zarba berdi: −4"); return setTimeout(step, 750); }
+      if (e.t === "pc") { const el = $("kjF" + tgt); if (el) { el.outerHTML = fighter(tgt, tgt === "A" ? "Siz" : B.opp.n, B.st[tgt], tgt === "A"); fl($("kjF" + tgt), "−" + e.d + " 💥", "#ff6b5b"); } log("💥 Bosqinchi: ortiqcha zarar keyingi kartaga o‘tdi"); return setTimeout(step, 750); }
+      if (e.t === "ko") { const el = $("kjF" + side); if (el) { el.classList.add("ko"); } log(`💀 ${esc(e.n)} yiqildi!`); return setTimeout(() => { const x = $("kjF" + side); if (x) x.outerHTML = fighter(side, side === "A" ? "Siz" : B.opp.n, B.st[side], side === "A"); step(); }, 900); }
+      step();
+    };
+    step();
+  }
+  function fl(el, t, col) { if (!el) return; const s = document.createElement("span"); s.className = "kj-dmg"; s.style.color = col; s.textContent = t; el.appendChild(s); setTimeout(() => s.remove(), 1100); }
+  function quit() { if (B && B.i > 0 && !confirm("Jangdan chiqasizmi? Natija saqlanmaydi.")) return; stop(); menu(); }
+  async function end() {
+    if (!B) return; const g = B; stop(); clearInterval(g.tk);
+    const u = me();
+    if (g.mode === "host") {
+      busy("Saqlanmoqda…");
+      const rec = { own: 1, n: full(u), cls: g.cls, q: g.keys, seed: g.seed, dk: g.myD, r: g.r, c: DBA.now() };
+      try { await DBA.set("lb/kb/" + u.uid + "/" + g.id, rec); } catch (e) { FX.toast("⚠️ Saqlab bo‘lmadi. Internetni tekshiring."); return menu(); }
+      return shareScr(u.uid + "_" + g.id, g.r);
+    }
+    const v = simulate(g.myD, g.r, g.opp.dk, g.opp.r), win = v === "A", res = v === "A" ? "w" : v === "B" ? "l" : "t";
+    let chest = false;
+    if (win) { addWin(); chest = winChest(); } else if (v === "B") S.l = (S.l || 0) + 1;
+    busy("Saqlanmoqda…");
+    if (g.mode === "guest") {
+      try { await Promise.all([DBA.set(`lb/kbx${g.hostUid}/${u.uid}/${g.id}`, { n: full(u), dk: g.myD, r: g.r, res, c: DBA.now() }), DBA.set(`lb/kb/${u.uid}/${g.id}`, { from: g.hostUid, n: g.opp.n, res, c: DBA.now() })]); } catch (e) { FX.toast("⚠️ Natijani saqlab bo‘lmadi."); }
+    }
+    await saveS();
+    result(g, v, chest);
+  }
+  function result(g, v, chest) {
+    const ok = g.r.filter(x => x > 0).length, n = g.r.length;
+    $("tz").innerHTML = head("⚔️ Jang natijasi", g.mode === "bot" ? "🤖 Bot bilan" : "👥 Do‘st bilan", "KJ.menu()") + `<div class="card kj-res ${v === "A" ? "win" : v === "B" ? "lose" : "tie"}"><div class="kj-big">${v === "A" ? "🏆" : v === "B" ? "💔" : "🤝"}</div><h1 style="margin:4px 0">${v === "A" ? "G‘alaba! " + esc(pick(["Sen balosan!", "Kuchayding!", "Duxing zo‘r!", "Supersan-u!"])) : v === "B" ? "Bu safar yutqazdingiz" : "Durang!"}</h1>
+      <p class="sub" style="margin:0">vs ${esc(g.opp.n)} · to‘g‘ri javoblar: <b>${ok} / ${n}</b></p>
+      <div class="kj-dk sm">${g.st.A.cards.map(c => `<span class="${c.hp > 0 ? "" : "dd"}">${esc(c.c.i)}<small>${c.hp > 0 ? "❤️" + c.hp : "💀"}</small></span>`).join("")}<b>VS</b>${g.st.B.cards.map(c => `<span class="${c.hp > 0 ? "" : "dd"}">${esc(c.c.i)}<small>${c.hp > 0 ? "❤️" + c.hp : "💀"}</small></span>`).join("")}</div>
+      ${v === "A" ? (chest ? `<div class="kj-rw">🎁 +1 sandiq!</div>` : `<p class="sub">Bugungi g‘alaba sandiqlari tugadi (kuniga ${WINCH} ta) — ertaga yana!</p>`) : v === "B" ? `<p class="sub">Kartalaringizni kuchaytiring va revansh oling! 💪</p>` : ""}</div>
+      <div class="row" style="gap:10px;margin-top:12px">${g.mode === "bot" ? `<button class="btn" style="margin:0" onclick="KJ.fight('bot')">🔁 Yana jang</button>` : `<button class="btn" style="margin:0" onclick="KJ.fight('host')">⚔️ Men chaqiraman</button>`}<button class="btn ghost" style="margin:0" onclick="KJ.menu()">🃏 Kartalarim</button></div>`;
+    setTimeout(() => { try { if (v === "A") { FX.rain(180); FX.S.win(); } } catch (e) {} }, 250);
+  }
+  function shareScr(code, r) {
+    const ok = r.filter(x => x > 0).length, c = me();
+    $("tz").innerHTML = head("👥 Chaqiruv tayyor!", "Do‘stni chaqirish", "KJ.menu()") + `<div class="card dl-hero"><div class="dl-x">🃏</div><b>Siz ${ok} / ${NQ} ta savolga to‘g‘ri javob berdingiz</b><p class="sub" style="margin:6px 0 0">Endi do‘stingizga havolani yuboring. U o‘z kartalari bilan aynan shu savollarga javob beradi — kartalaringiz jang qiladi! Natijani «Chaqiruvlarim»da ko‘rasiz.</p>
+      <button class="btn" id="kjTg" style="margin-top:14px">✈️ Telegram'da yuborish</button><button class="btn ghost" id="kjCp" style="margin-top:10px">🔗 Havolani nusxalash</button></div><button class="btn ghost" style="margin-top:12px" onclick="KJ.menu()">🃏 Kartalarim</button>`;
+    const txt = `🃏 ${String(c.f)} seni «Tarixiy kartalar jangi»ga chaqiryapti! Kartalaringni olib kel ⚔️`, url = `https://t.me/share/url?url=${encodeURIComponent(tgLink(code))}&text=${encodeURIComponent(txt)}`;
+    $("kjTg").onclick = () => { try { if (window.IN_TG && Telegram.WebApp.openTelegramLink) return Telegram.WebApp.openTelegramLink(url); } catch (e) {} window.open(url, "_blank"); };
+    $("kjCp").onclick = async () => { const w = webLink(code); try { await navigator.clipboard.writeText(w); FX.toast("✅ Havola nusxalandi"); } catch (e) { prompt("Havolani nusxalang:", w); } };
+  }
+  // ---------- Chaqiruvlar ----------
+  async function myBattles() {
+    const el = $("kjMy"); if (!el) return; const u = me();
+    let my = null, gx = null; try { [my, gx] = await Promise.all([DBA.get("lb/kb/" + u.uid), DBA.get("lb/kbx" + u.uid)]); } catch (e) { return; }
+    if (!$("kjMy")) return;
+    const opp = {}; Object.entries(gx || {}).forEach(([gu, m]) => Object.entries(m || {}).forEach(([id, x]) => { if (x) (opp[id] = opp[id] || []).push({ uid: gu, ...x }); }));
+    const L = Object.entries(my || {}).filter(([, x]) => x).map(([id, x]) => ({ id, ...x })).sort((a, b) => (b.c || 0) - (a.c || 0)).slice(0, 15);
+    if (!L.length) return;
+    const ic = r => r === "w" ? "🏆" : r === "l" ? "💔" : "🤝";
+    el.innerHTML = `<div class="ah">👥 Chaqiruvlarim</div><div class="card" style="padding:4px 12px">${L.map(x => {
+      if (x.own) { const o = opp[x.id] || []; return `<div class="dl-row" data-h="${esc(u.uid)}" data-id="${esc(x.id)}"><div class="dl-ic">${o.length ? "🏁" : "⏳"}</div><div class="dl-m"><b>${esc(x.cls || "Chaqiruv")}</b><small>${o.length ? o.length + " ta raqib" : "raqib kutilmoqda"}</small>${o.length ? `<div class="dl-chips">${o.map(z => `<span class="dl-chip ${z.res === "l" ? "w" : z.res === "w" ? "l" : "t"}">${z.res === "l" ? "✓" : z.res === "w" ? "✕" : "="} ${esc(String(z.n || "").split(" ")[0])}</span>`).join("")}</div>` : ""}</div><span class="dl-go">›</span></div>`; }
+      return `<div class="dl-row" data-h="${esc(x.from)}" data-id="${esc(x.id)}"><div class="dl-ic">${ic(x.res)}</div><div class="dl-m"><b>${esc(x.n || "Raqib")} bilan</b><small>${x.res === "w" ? "Siz yutdingiz" : x.res === "l" ? "U yutdi" : "Durang"}</small></div><span class="dl-go">›</span></div>`;
+    }).join("")}</div>`;
+    el.onclick = e => { const r = e.target.closest("[data-id]"); if (r) openLink(r.dataset.h + "_" + r.dataset.id); };
+  }
+  const parse = code => { const k = String(code || "").lastIndexOf("_"); return k > 0 ? { uid: code.slice(0, k), id: code.slice(k + 1) } : null; };
+  async function openLink(code) {
+    const p = parse(code); if (!p) return open();
+    if (!me()) { ls.set("zm_kj_l", code); FX.toast("🃏 Jangga kirish uchun avval tizimga kiring"); return goHome(); }
+    stop(); show("tz"); setNav(null); BK(null); busy();
+    if (!await ensure()) return;
+    const u = me(); let host = null; try { host = await DBA.get(`lb/kb/${p.uid}/${p.id}`); } catch (e) {}
+    if (!host || !host.own) { $("tz").innerHTML = head("🃏 Chaqiruv", "", "KJ.menu()") + `<div class="card" style="text-align:center"><div style="font-size:40px">🤷</div><h1>Chaqiruv topilmadi</h1><p class="sub">Havola noto‘g‘ri yoki chaqiruv o‘chirilgan.</p><button class="btn" onclick="KJ.menu()">🃏 Kartalarim</button></div>`; return; }
+    if (p.uid === u.uid) {
+      let gx = null; try { gx = await DBA.get("lb/kbx" + u.uid); } catch (e) {}
+      const o = []; Object.entries(gx || {}).forEach(([gu, m]) => { const x = m && m[p.id]; if (x) o.push({ uid: gu, ...x }); });
+      $("tz").innerHTML = head("👥 Chaqiruv natijalari", host.cls || "", "KJ.menu()") + `<div class="card dl-hero"><b>Siz: ${host.r.filter(x => x > 0).length} / ${NQ} to‘g‘ri</b><div class="kj-dk sm">${host.dk.map(([id]) => `<span>${esc((BY[id] || {}).i || "❔")}</span>`).join("")}</div></div>
+        <div class="ah">Raqiblar (${o.length})</div><div class="card" style="padding:4px 12px" id="kjOpp">${o.length ? o.map((z, i) => `<div class="dl-row" data-i="${i}"><div class="dl-av">${AV.html(z.uid, z.n, "sm")}</div><div class="dl-m"><b>${esc(z.n)}</b><small>${z.res === "l" ? "Siz yutdingiz 🏆" : z.res === "w" ? "U yutdi" : "Durang"} · ▶ jangni ko‘rish</small></div><span class="dl-go">›</span></div>`).join("") : `<p class="sub" style="text-align:center;margin:12px 0">Hali hech kim qabul qilmadi. Havolani yuboring!</p>`}</div>
+        <button class="btn" id="kjAgain" style="margin-top:12px">✈️ Havolani yana yuborish</button>`;
+      $("kjAgain").onclick = () => shareScr(code, host.r);
+      if ($("kjOpp")) $("kjOpp").onclick = e => { const r = e.target.closest("[data-i]"); if (!r) return; const z = o[+r.dataset.i]; replay({ n: "Siz", dk: host.dk, r: host.r }, { n: z.n, dk: z.dk, r: z.r }, code); };
+      return;
+    }
+    let mine = null; try { mine = await DBA.get(`lb/kbx${p.uid}/${u.uid}/${p.id}`); } catch (e) {}
+    if (mine && mine.r) return replay({ n: "Siz", dk: mine.dk, r: mine.r }, { n: host.n, dk: host.dk, r: host.r }, null);
+    $("tz").innerHTML = head("🃏 Sizni jangga chaqirishdi!", host.cls || "", "KJ.menu()") + `<div class="card" style="text-align:center"><div class="dl-p" style="display:inline-flex;flex-direction:column;align-items:center">${AV.html(p.uid, host.n, "lg")}<b>${esc(host.n)}</b></div>
+      <p class="sub" style="margin:8px 0 6px">Raqib kartalari:</p><div class="kj-dk">${host.dk.map(([id, lv]) => BY[id] ? cardHtml(BY[id], lv) : "").join("")}</div></div>
+      <div class="ah">Sizning kartalaringiz</div><div class="kj-dk">${deck().map(id => cardHtml(BY[id], S.c[id])).join("")}</div>
+      <button class="btn ghost" style="margin-top:8px" id="kjPD">🔄 Kartalarni almashtirish</button>
+      <p class="sub" style="text-align:center;margin:12px 0 6px">${NQ} ta savol · har biriga ${TL / 1000} soniya · kim to‘g‘ri va tez — o‘sha uradi</p>
+      <button class="btn" id="kjAcc">⚔️ Qabul qilaman!</button>`;
+    $("kjPD").onclick = () => { BACK = () => openLink(code); pickDeck(BACK); };
+    $("kjAcc").onclick = () => { const myD = dk2(deck()); if (myD.length < 3) { FX.toast("Jang uchun 3 ta karta kerak — sandiq oching 🎁"); return menu(); } play({ mode: "guest", keys: host.q, seed: host.seed, cls: host.cls, myD, opp: { n: host.n, dk: host.dk, r: host.r }, hostUid: p.uid, id: p.id }); };
+  }
+  function replay(A, Bo, code) {
+    stop();
+    B = { mode: "replay", Q: [], i: 0, r: [], st: { A: mkSide(A.dk), B: mkSide(Bo.dk) }, opp: { n: Bo.n }, cls: "Jangni ko‘rish" };
+    const n = Math.min(A.r.length, Bo.r.length), v = simulate(A.dk, A.r, Bo.dk, Bo.r);
+    show("tz"); setNav(null); BK(null); document.body.classList.add("dlm");
+    const draw = () => { $("tz").innerHTML = `<div class="xr-bar"><button class="adh-b" onclick="KJ.menu()" title="Chiqish">✕</button><div class="xr-m">Raund <b>${Math.min(B.i + 1, n)}</b> / ${n}<small>▶ Jangni ko‘rish</small></div><button class="adh-b" id="kjSkip" title="O‘tkazib yuborish">⏭</button></div>${fighter("B", Bo.n, B.st.B, false)}<div class="kj-vs"><span id="kjLog"></span></div>${fighter("A", "Siz", B.st.A, true)}`; $("kjSkip").onclick = fin; };
+    const fin = () => { stop(); $("tz").innerHTML = head("⚔️ Jang natijasi", "vs " + esc(Bo.n), "KJ.menu()") + `<div class="card kj-res ${v === "A" ? "win" : v === "B" ? "lose" : "tie"}"><div class="kj-big">${v === "A" ? "🏆" : v === "B" ? "💔" : "🤝"}</div><h1>${v === "A" ? "Siz yutdingiz!" : v === "B" ? esc(Bo.n) + " yutdi" : "Durang!"}</h1><p class="sub">Siz: ${A.r.slice(0, n).filter(x => x > 0).length} to‘g‘ri · ${esc(Bo.n)}: ${Bo.r.slice(0, n).filter(x => x > 0).length} to‘g‘ri</p></div><div class="row" style="gap:10px;margin-top:12px">${code ? `<button class="btn" style="margin:0" onclick="KJ.openLink('${esc(code)}')">‹ Raqiblar</button>` : `<button class="btn" style="margin:0" onclick="KJ.fight('host')">🔁 Revansh</button>`}<button class="btn ghost" style="margin:0" onclick="KJ.menu()">🃏 Kartalarim</button></div>`; };
+    const stepR = () => {
+      if (!B || B.mode !== "replay") return;
+      if (B.i >= n || dead(B.st.A) || dead(B.st.B)) return (B.to = setTimeout(fin, 900));
+      draw(); const ra = A.r[B.i], rb = Bo.r[B.i];
+      log(`Siz ${ra > 0 ? "✅ " + sec(ra) : "❌"} <b>·</b> ${esc(String(Bo.n).split(" ")[0])} ${rb > 0 ? "✅ " + sec(rb) : "❌"}`);
+      const ev = round(B.st, ra, rb); B.i++;
+      B.to = setTimeout(() => anim(ev, () => { B.to = setTimeout(stepR, 500); }), 700);
+    };
+    stepR();
+  }
+  // ---------- Reyting ----------
+  async function board() {
+    stop(); let t = "w";
+    $("tz").innerHTML = head("🏅 Haftalik reyting", "Tarixiy kartalar", "KJ.menu()") + `<div class="tabs kj-tabs"><button data-t="w" class="on">🏆 Ko‘p g‘alaba</button><button data-t="p">⚡ Kuchli kolleksiya</button></div><div class="card" style="padding:6px 12px" id="kjB"><div class="sub" style="text-align:center;margin:12px 0">Yuklanmoqda…</div></div>`;
+    let L = {}; try { L = (await DBA.get("lb/kj" + GAME.wk())) || {}; } catch (e) {}
+    const my = (me() || {}).uid;
+    const draw = () => {
+      if (!$("kjB")) return;
+      const a = Object.entries(L).map(([uid, x]) => x ? { uid, ...x } : null).filter(x => x && (t === "w" ? x.w > 0 : x.p > 0)).sort((x, y) => (y[t] || 0) - (x[t] || 0)).slice(0, 20);
+      $("kjB").innerHTML = a.length ? a.map((x, i) => `<div class="bz-r${x.uid === my ? " me" : ""}"><span class="bz-i">${["🥇", "🥈", "🥉"][i] || i + 1}</span>${AV.html(x.uid, x.n, "sm")}<b>${esc(x.n)}</b><em>${t === "w" ? "🏆 " + x.w : "⚡ " + x.p}</em></div>`).join("") : `<p class="sub" style="text-align:center;margin:12px 0">Bu hafta hali hech kim yo‘q. Birinchi bo‘ling! 🃏</p>`;
+    };
+    $("tz").querySelector(".kj-tabs").onclick = e => { const b = e.target.closest("[data-t]"); if (!b) return; t = b.dataset.t; $("tz").querySelectorAll(".kj-tabs button").forEach(x => x.classList.toggle("on", x === b)); draw(); };
+    draw();
+  }
+  function pending() { const c = ls.get("zm_kj_l"); if (c && me()) { ls.del("zm_kj_l"); setTimeout(() => openLink(c), 700); return true; } return false; }
+  window.addEventListener("hashchange", () => { const h = location.hash; if (!h.startsWith("#kj-")) return; const c = h.slice(4); try { history.replaceState(null, "", location.pathname + location.search); } catch (e) {} if (me()) openLink(c); else { ls.set("zm_kj_l", c); FX.toast("🃏 Jangga kirish uchun avval tizimga kiring"); } });
+  return { open, menu: () => { if (S) menu(); else open(); }, fight, quit, openLink, pickDeck: () => pickDeck(), _back: () => BACK ? BACK() : menu(), pending, leave: stop, _sim: simulate, _cards: () => CARDS, _B: () => B };
+})();
+
 const LADDER = (() => {
   const STEPS = [100, 200, 300, 500, 1000, 2000, 4000, 8000, 16000, 32000, 64000, 125000, 250000, 500000, 1000000];
   const SAFE = [4, 9], QT = 30000;
@@ -4819,6 +5356,7 @@ const ACCT = (() => {
     if (!cur) return;
     try { BK(null); } catch (e) {}
     try { if (DUEL.pending()) return; } catch (e) {}
+    try { if (KJ.pending()) return; } catch (e) {}
     $("wlAv").innerHTML = AV.html(cur.uid, cur.f + " " + cur.l, "fill"); $("wlAv").onclick = () => PRF.open(); $("wlAv").style.cursor = "pointer";
     $("wlN").textContent = cur.f + " " + cur.l;
     $("wlG").textContent = "@" + cur.login + (cur.g ? " · " + cur.g : ""); $("wlHi").textContent = greet();
@@ -6935,7 +7473,8 @@ const T = (() => {
     if (km) { try { if (!window.IN_TG) history.replaceState(null, "", location.pathname + location.search); } catch (e) {} return KT.join(km[1]); }
     const gm = (window.IN_TG ? "#" + (window.TG_START || "") : location.hash).match(/^#g-([A-Za-z0-9]{6,8})$/);
     if (gm) { try { if (!window.IN_TG) history.replaceState(null, "", location.pathname + location.search); } catch (e) {} if (ACCT.cur) HW.join(gm[1]).catch(e => FX.toast("⚠️ " + (e && e.message || e))); else try { localStorage.setItem("zm_gj", gm[1].toUpperCase()); } catch (e) {} }
-    const h = window.IN_TG ? (/^(turnir(-\d{4})?|duel-[A-Za-z0-9_]+)$/.test(window.TG_START || "") ? "#" + window.TG_START : "") : location.hash;
+    const h = window.IN_TG ? (/^(turnir(-\d{4})?|duel-[A-Za-z0-9_]+|kj-[A-Za-z0-9_]+)$/.test(window.TG_START || "") ? "#" + window.TG_START : "") : location.hash;
+    if (h.startsWith("#kj-")) { const kc = h.slice(4); try { history.replaceState(null, "", location.pathname + location.search); } catch (e) {} if (ACCT.cur) return KJ.openLink(kc); try { localStorage.setItem("zm_kj_l", kc); } catch (e) {} }
     if (h.startsWith("#duel-")) { const dc = h.slice(6); try { history.replaceState(null, "", location.pathname + location.search); } catch (e) {} if (ACCT.cur) return DUEL.openLink(dc); try { ls.set("zm_duel", dc); } catch (e) {} }
     if (window.IN_TG && /^#turnir-\d{4}$/.test(h) && ACCT.cur) { openJoin(h.split("-")[1]); join(true); return; }
     if (h.startsWith("#turnir")) openJoin((h.split("-")[1] || "").slice(0, 4));
@@ -7244,7 +7783,7 @@ PM.install();
 (function(){
   const ready=()=>window.TQOK||window.TQPART;
   const W=f=>function(...a){if(ready())return f.apply(this,a);try{FX.toast("⏳ Testlar yuklanmoqda…")}catch(e){}return TQR.then(()=>f.apply(this,a))};
-  [[BLITZ,"open"],[HAYOQ,"open"],[LADDER,"open"],[LADDER,"start"],[DUEL,"open"],[DUEL,"openLink"],[KUN,"go"],[BOSS,"setup"],[BOSS,"play"],[T,"openHost"],[T,"openJoin"],[GAME,"startErrors"],[KT,"join"],[KT,"create"],[HW,"open"],[HW,"join"],[DARS,"open"],[STAT,"open"],[XRON,"open"]].forEach(([o,m])=>{try{if(o&&typeof o[m]==="function")o[m]=W(o[m])}catch(e){}});
+  [[BLITZ,"open"],[HAYOQ,"open"],[LADDER,"open"],[LADDER,"start"],[DUEL,"open"],[DUEL,"openLink"],[KUN,"go"],[BOSS,"setup"],[BOSS,"play"],[T,"openHost"],[T,"openJoin"],[GAME,"startErrors"],[KT,"join"],[KT,"create"],[HW,"open"],[HW,"join"],[DARS,"open"],[STAT,"open"],[XRON,"open"],[KJ,"open"],[KJ,"openLink"]].forEach(([o,m])=>{try{if(o&&typeof o[m]==="function")o[m]=W(o[m])}catch(e){}});
   window.goTests=W(goTests);window.goMS=W(goMS);window.start=W(start);
   TQR.then(()=>{try{if(!$("home").classList.contains("hide")&&ACCT.cur)ACCT.renderHome();if(!$("start").classList.contains("hide"))renderTopics()}catch(e){}});
 })();
