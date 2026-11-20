@@ -122,6 +122,7 @@ html[data-th="tong"] .xf,html[data-th="vodiy"] .xf{background:#F0F7F2}html[data-
 }
 .pop{top:20%}
 @media (min-width:900px){.pop{top:24%;left:calc(50% - 180px)}}
+.cc.mix{grid-column:1/-1;background:linear-gradient(135deg,rgba(212,166,58,.22),rgba(14,116,144,.25)),var(--card)!important;border-color:rgba(212,166,58,.55)}
 </style>
 </head>
 <body>
@@ -131,7 +132,7 @@ html[data-th="tong"] .xf,html[data-th="vodiy"] .xf{background:#F0F7F2}html[data-
   <div id="menu">
     <div class="hero">
       <h1>Davlatni xaritadan top!</h1>
-      <div class="sub">Xaritada bitta davlat belgilanadi — uning nomini 4 ta variantdan toping. Qiynalsangiz 🔍 yaqinlashtiring yoki 💡 poytaxtini oching (ochilsa ball yarmiga tushadi).</div>
+      <div class="sub">Xarita davlatdan davlatga uchib boradi — belgilangan davlat nomini 4 ta variantdan toping. Qiynalsangiz 🌍 kengroq ko‘ring yoki 💡 poytaxtini oching (ochilsa ball yarmiga tushadi).</div>
       <div class="seg" id="cnt"><button data-n="10" class="on">10 ta savol</button><button data-n="20">20 ta</button><button data-n="0">Hammasi</button></div>
     </div>
     <div class="grid" id="conts"><div class="loading">Xarita yuklanmoqda…</div></div>
@@ -180,7 +181,7 @@ const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math
 const E=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const LS={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
 const HINT={"Isroil":"Yirik shaharlari: Quddus, Tel-Aviv"};
-let N=10,K=null,list=[],i=0,score=0,streak=0,bestStreak=0,right=0,usedHint=false,zoomed=false,mist=[],answered=false;
+let N=10,K=null,MODE=null,list=[],i=0,score=0,streak=0,bestStreak=0,right=0,usedHint=false,zoomed=false,mist=[],answered=false;
 
 // tovush (Web Audio) va tebranish
 let AC=null;function beep(ok){try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();const t=AC.currentTime;(ok?[523,659,784]:[220,175]).forEach((f,k)=>{const o=AC.createOscillator(),g=AC.createGain();o.type=ok?"triangle":"sawtooth";o.frequency.value=f;g.gain.setValueAtTime(.0001,t+k*.09);g.gain.exponentialRampToValueAtTime(.18,t+k*.09+.02);g.gain.exponentialRampToValueAtTime(.0001,t+k*.09+.22);o.connect(g).connect(AC.destination);o.start(t+k*.09);o.stop(t+k*.09+.25)})}catch(e){}
@@ -196,7 +197,9 @@ document.querySelectorAll("#cnt button").forEach(b=>b.onclick=()=>{document.quer
 (()=>{const s=LS.get("zm_xmap_n",10);const b=document.querySelector(`#cnt button[data-n="${s}"]`);if(b)b.click()})();
 
 function renderMenu(){if(typeof XMAP==="undefined")return;const g=$("conts");g.innerHTML="";
-  ORDER.filter(k=>OK(k).length>=4).forEach((k,ix)=>{const c=XMAP[k],best=LS.get("zm_xmap_best_"+k,null);
+  const ks=ORDER.filter(k=>OK(k).length>=4),tot=ks.reduce((a,k)=>a+OK(k).length,0),bm=LS.get("zm_xmap_best_MIX",null),mb=document.createElement("button");
+  mb.className="cc mix";mb.innerHTML=`${bm!=null?`<span class="best">🏆 ${bm}%</span>`:""}<div class="em">🌍</div><b>Aralash — butun dunyo</b><span>${tot} ta davlat · barcha qit’alardan</span>`;mb.onclick=()=>start("MIX");g.appendChild(mb);
+  ks.forEach((k,ix)=>{const c=XMAP[k],best=LS.get("zm_xmap_best_"+k,null);
     const b=document.createElement("button");b.className="cc";b.style.animationDelay=ix*60+"ms";
     b.innerHTML=`${best!=null?`<span class="best">🏆 ${best}%</span>`:""}<div class="em">${EMO[k]}</div><b>${E(c.n)}</b><span>${OK(k).length} ta davlat</span>`;
     b.onclick=()=>start(k);g.appendChild(b)})}
@@ -208,8 +211,8 @@ function noteOf(n){if(typeof XNOTE==="undefined")return "";let L=XNOTE[n];if(!L)
   return L[i]}
 // Faqat mavzulashgan testlarda uchraydigan davlatlar (XNOTE) so‘raladi
 const OK=k=>XMAP[k].q.map((q,ix)=>ix).filter(ix=>typeof XNOTE==="undefined"||XMAP[k].q[ix].n in XNOTE);
-function start(k,only){K=k;const all=OK(k);
-  list=only&&only.length?shuf(only):shuf(all).slice(0,N||all.length);
+function start(k,only){MODE=k;const ks=k==="MIX"?ORDER.filter(x=>OK(x).length>=4):[k],all=[].concat(...ks.map(x=>OK(x).map(t=>({k:x,t}))));
+  list=only&&only.length?shuf(only):shuf(all).slice(0,N||all.length);K=list[0].k;
   i=0;score=0;streak=0;bestStreak=0;right=0;mist=[];prevQ=null;show("game");drawBase();requestAnimationFrame(()=>ask())}
 
 function drawBase(){const c=XMAP[K];let h="";
@@ -257,22 +260,24 @@ function zoomTo(q){let [x0,y0,x1,y1]=q.b;let w=Math.max(x1-x0,70)*3,h=Math.max(y
   w=Math.min(w,1000);h=Math.min(h,760);let cx=(x0+x1)/2,cy=(y0+y1)/2;if(q.big<4000){cx=q.x;cy=q.y}
   let x=Math.max(0,Math.min(1000-w,cx-w/2)),y=Math.max(0,Math.min(760-h,cy-h/2));setVB([x,y,w,h])}
 
-function ask(){answered=false;usedHint=false;zoomed=false;const t=list[i],c=XMAP[K],q=c.q[t];
+function ask(){answered=false;usedHint=false;zoomed=false;let hop="";
+  if(list[i].k!==K){K=list[i].k;prevQ=null;hop="✈️ "+XMAP[K].n+"ga uchdik!";const m=$("map");m.style.transition="none";m.style.opacity="0";drawBase();requestAnimationFrame(()=>{m.style.transition="opacity .5s";m.style.opacity="1"})}
+  const t=list[i].t,c=XMAP[K],q=c.q[t];
   $("hN").textContent=`${i+1}/${list.length}`;$("hB").style.width=(i/list.length*100)+"%";$("hS").textContent="⭐ "+score;$("hK").textContent="🔥 "+streak;
   document.querySelectorAll("#map path.tg").forEach(p=>p.setAttribute("class","l1"+(p.dataset.c!=null?" c"+p.dataset.c:"")));
   document.querySelectorAll(`#map path[data-q="${t}"]`).forEach(p=>{p.setAttribute("class","tg");p.parentNode.insertBefore(p,$("ov"))});
   const small=Math.max(q.b[2]-q.b[0],q.b[3]-q.b[1])<36;
   $("ov").innerHTML=small?`<circle class="ring" cx="${q.x}" cy="${q.y}" r="22"/>`:"";
   wide=false;$("zoom").textContent="🌍 Kengroq ko‘rish";fly(q);clearTimeout(autoT);
-  $("hint").textContent="";$("hintB").classList.remove("used");$("zoom").classList.remove("used");
+  $("hint").textContent=hop;$("hintB").classList.remove("used");$("zoom").classList.remove("used");
   $("fb").className="fb";
   const o=$("opts");o.innerHTML="";nearOpts(t).forEach(ix=>{const b=document.createElement("button");b.className="op";b.textContent=c.q[ix].n;b.onclick=()=>answer(ix,b);o.appendChild(b)})}
 
-$("zoom").onclick=()=>{const q=XMAP[K].q[list[i]];flying++;wide=!wide;if(wide){setVB(fit(0,0,1000,760),600);$("zoom").textContent="🎯 Yaqinlashtirish"}else{setVB(cam(q),600);$("zoom").textContent="🌍 Kengroq ko‘rish"}};
+$("zoom").onclick=()=>{const q=XMAP[K].q[list[i].t];flying++;wide=!wide;if(wide){setVB(fit(0,0,1000,760),600);$("zoom").textContent="🎯 Yaqinlashtirish"}else{setVB(cam(q),600);$("zoom").textContent="🌍 Kengroq ko‘rish"}};
 let autoT=0;
-$("hintB").onclick=()=>{if(answered||usedHint)return;usedHint=true;const q=XMAP[K].q[list[i]];$("hint").textContent=HINT[q.n]||("Poytaxti: "+q.c);$("hintB").classList.add("used")};
+$("hintB").onclick=()=>{if(answered||usedHint)return;usedHint=true;const q=XMAP[K].q[list[i].t];$("hint").textContent=HINT[q.n]||("Poytaxti: "+q.c);$("hintB").classList.add("used")};
 
-function answer(ix,btn){if(answered)return;answered=true;const t=list[i],c=XMAP[K],q=c.q[t],ok=ix===t;
+function answer(ix,btn){if(answered)return;answered=true;const t=list[i].t,c=XMAP[K],q=c.q[t],ok=ix===t;
   document.querySelectorAll(".op").forEach(b=>{b.disabled=true;if(b.textContent===q.n)b.classList.add("ok")});
   if(!ok)btn.classList.add("bad");
   document.querySelectorAll(`#map path[data-q="${t}"]`).forEach(p=>p.setAttribute("class","tg "+(ok?"okc":"badc")));
@@ -280,7 +285,7 @@ function answer(ix,btn){if(answered)return;answered=true;const t=list[i],c=XMAP[
   let ph;
   if(ok){right++;streak++;bestStreak=Math.max(bestStreak,streak);const pts=(usedHint?5:10)+(streak>=3?2:0);score+=pts;
     ph=pick(PRAISE);if(streak>=3)ph+=` 🔥${streak}`;popup(ph,"#4ade80");$("fbP").textContent="✅ "+ph+` +${pts}`}
-  else{streak=0;mist.push(t);ph=pick(FAIL);popup(ph,"#fb7185");$("fbP").textContent="❌ "+ph}
+  else{streak=0;mist.push({k:K,t});ph=pick(FAIL);popup(ph,"#fb7185");$("fbP").textContent="❌ "+ph}
   const cap=HINT[q.n]?HINT[q.n].replace("Yirik shaharlari","yirik shaharlari"):`poytaxti — ${q.c}`;
   const nt=noteOf(q.n);
   $("fbE").innerHTML=`Bu — <b>${E(q.n)}</b>, ${E(cap)}.`+(nt?`<div class="xf"><b>📖 Tarixdan</b>${E(nt)}</div>`:"");
@@ -297,16 +302,16 @@ document.addEventListener("keydown",e=>{if($("game").classList.contains("hide")|
 
 function popup(t,col){const p=$("pop");p.textContent=t;p.style.color=col;p.classList.remove("go");void p.offsetWidth;p.classList.add("go")}
 
-function finish(){clearTimeout(autoT);flying++;const pc=Math.round(right/list.length*100),c=XMAP[K];
-  const k="zm_xmap_best_"+K,b=LS.get(k,null);if(b==null||pc>b)LS.set(k,pc);
-  $("rC").textContent=`${EMO[K]} ${c.n} · ${list.length} ta savol`;
+function finish(){clearTimeout(autoT);flying++;const pc=Math.round(right/list.length*100),mx=MODE==="MIX";
+  const k="zm_xmap_best_"+MODE,b=LS.get(k,null);if(b==null||pc>b)LS.set(k,pc);
+  $("rC").textContent=`${mx?"🌍":EMO[MODE]} ${mx?"Aralash — butun dunyo":XMAP[MODE].n} · ${list.length} ta savol`;
   $("rB").textContent=`${right}/${list.length}`;
   $("rP").textContent=pc>=90?"🏆 Legenda! A+ sizniki!":pc>=70?"💪 Krasavchik! Yana ozgina — a’lo!":pc>=50?"🙂 Yomon emas, lekin xaritani yana bir ko‘r":"😬 Obbo… xaritani qayta o‘qib chiq!";
   $("rS").textContent=`⭐ ${score} ball · eng uzun seriya 🔥 ${bestStreak} · ${pc}%`+(b!=null&&pc>b?" · yangi rekord!":"");
-  const m=$("rM");if(mist.length){m.innerHTML=`<b>📌 Takrorlash uchun:</b>`+mist.map(t=>{const q=c.q[t];return `<div>${E(q.n)} <small>— ${E(HINT[q.n]||"poytaxti "+q.c)}</small></div>`}).join("");m.classList.remove("hide");$("fix").classList.remove("hide")}
+  const m=$("rM");if(mist.length){m.innerHTML=`<b>📌 Takrorlash uchun:</b>`+mist.map(x=>{const q=XMAP[x.k].q[x.t];return `<div>${E(q.n)} <small>— ${E(HINT[q.n]||"poytaxti "+q.c)}</small></div>`}).join("");m.classList.remove("hide");$("fix").classList.remove("hide")}
   else{m.classList.add("hide");$("fix").classList.add("hide")}
   $("hB").style.width="100%";show("res");if(pc>=70)beep(true)}
-$("again").onclick=()=>start(K);$("fix").onclick=()=>start(K,mist.slice());$("toMenu").onclick=()=>show("menu");
+$("again").onclick=()=>start(MODE);$("fix").onclick=()=>start(MODE,mist.slice());$("toMenu").onclick=()=>show("menu");
 
 const xn=document.createElement("script");xn.src="xnote.js?v=2";xn.onload=xn.onerror=()=>{const s=document.createElement("script");s.src="xmap-data.js?v=1";s.onload=renderMenu;s.onerror=()=>{$("conts").innerHTML='<div class="loading">Xaritani yuklab bo‘lmadi. Internetni tekshiring.</div>'};document.body.appendChild(s);};document.body.appendChild(xn);
 </script>
