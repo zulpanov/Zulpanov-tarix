@@ -51,6 +51,9 @@ jobs:
           for r in 1.1.1.1 8.8.8.8; do echo "-- $r NS: $(dig +short NS $D @$r | tr '\n' ' ') | A: $(dig +short A $D @$r | tr '\n' ' ') | www: $(dig +short CNAME www.$D @$r)"; done
           echo "-- brian (CF) A: $(dig +short A $D @brian.ns.cloudflare.com | tr '\n' ' ') | www: $(dig +short CNAME www.$D @brian.ns.cloudflare.com)"
           echo "-- .uz registri NS: $(dig +short NS $D @ns.cctld.uz 2>/dev/null | tr '\n' ' ') $(dig +norecurse NS $D @$(dig +short NS uz | head -1) | grep -A3 AUTHORITY | tail -2 | tr '\n' ' ')"
+          echo "-- rdns1 javobi: $(dig +short A $D @rdns1.ahost.uz 2>&1 | head -3 | tr '\n' ' ') status: $(dig A $D @rdns1.ahost.uz | grep -o 'status: [A-Z]*')"
+          echo "-- registr NS (to'liq): $(dig +norecurse NS $D @$(dig +short NS uz | head -1) | grep -E '\sNS\s' | awk '{print $5}' | tr '\n' ' ')"
+          echo "-- 1.1.1.1 status: $(dig A $D @1.1.1.1 | grep -o 'status: [A-Z]*')"
           echo "== bot setup"; SUB=$(api GET "/accounts/$A/workers/subdomain" | jq -r '.result.subdomain // empty'); echo "sub=$SUB"
           [ -n "$SUB" ] && curl -s -m 30 "https://zulpanov-tarix-bot.$SUB.workers.dev/?setup=1" | head -c 400; echo
           echo "== sayt"; curl -sI -m 20 https://tarixarena.uz/ | head -3; curl -sI -m 20 https://zulpanov.github.io/Zulpanov-tarix/ | grep -i "^HTTP\|^location"
@@ -69,3 +72,4 @@ jobs:
 # Sat Nov 21 00:38:37 +05 2026
 # Sat Nov 21 00:44:10 +05 2026
 # Sat Nov 21 00:48:48 +05 2026
+# Sat Nov 21 00:50:20 2026
