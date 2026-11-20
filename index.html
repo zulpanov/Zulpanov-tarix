@@ -5932,62 +5932,106 @@ function isAdmin() { if (typeof AUTH !== "undefined" && AUTH.FB) return AUTH.isA
 
 const DBA = (() => {
   if (FIREBASE_CONFIG && FIREBASE_CONFIG.databaseURL) {
-    let ready = null, off = 0;
+    // ⚡ Ikki yo'l: oddiy o'qish/yozish — qisqa REST so'rovlari (doimiy ulanish ochilmaydi, bepul rejadagi
+    // 100 ta bir vaqtdagi ulanish chegarasiga ta'sir qilmaydi); jonli o'yinlar (t/, kt/) va admin — Firebase SDK (websocket).
+    const BASE = FIREBASE_CONFIG.databaseURL.replace(/\/+$/, "");
+    const LIVE = /^(t|kt)(\/|$)/;
+    const ADM = () => { try { return typeof isAdmin === "function" && isAdmin(); } catch (e) { return false; } };
+    const sdkFor = p => LIVE.test(String(p || "").replace(/^\/+/, "")) || ADM();
+    let appP = null, dbP = null, authP = null, off = 0, offSet = false;
     const load = src => new Promise((r, j) => { const s = document.createElement("script"); s.async = false; s.src = src; s.onload = r; s.onerror = j; document.head.appendChild(s); });
-    const init = () => ready || (ready = (async () => {
-      if (!window.firebase) {
-        // uchalasi bir vaqtda yuklanadi, tartib bilan ishga tushadi (async=false)
-        await Promise.all(["app", "auth", "database"].map(n => load("https://www.gstatic.com/firebasejs/10.12.2/firebase-" + n + "-compat.js")));
-      }
+    const app = () => appP || (appP = (async () => {
+      if (!window.firebase) await Promise.all(["app", "auth", "database"].map(n => load("https://www.gstatic.com/firebasejs/10.12.2/firebase-" + n + "-compat.js")));
       if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
-      const d = firebase.database();
-      d.ref(".info/serverTimeOffset").on("value", s => off = s.val() || 0);
+      return firebase;
+    })());
+    const authReady = () => authP || (authP = app().then(f => new Promise(r => { const un = f.auth().onAuthStateChanged(() => { try { un(); } catch (e) {} r(); }); setTimeout(r, 8000); })));
+    // ---- Firebase SDK (faqat jonli o'yin va admin uchun) ----
+    let online = true, conn = false, lastAct = Date.now(), hidAt = 0, held = false;
+    const live = new Map(), waiters = [];
+    const init = () => dbP || (dbP = (async () => {
+      await app(); const d = firebase.database();
+      d.ref(".info/serverTimeOffset").on("value", s => { off = s.val() || 0; offSet = true; });
       d.ref(".info/connected").on("value", s => { conn = !!s.val(); if (conn) { const q = waiters.splice(0); q.forEach(f => f()); } });
       return d;
     })());
-    // Bepul rejada bir vaqtda faqat 100 ta ulanish bor. Shuning uchun foydalanuvchi sahifani yopib qo'ysa
-    // yoki uzoq vaqt hech narsa qilmasa, bazadan uziladi; harakat qilishi bilan qayta ulanadi.
-    // Turnir (t/...) davomida ulanish uzilmaydi.
-    let online = true, conn = false, lastAct = Date.now(), hidAt = 0;
-    const live = new Map(), waiters = [];
-    const crit = () => [...live.keys()].some(p => /^t\//.test(p));
+    const crit = () => [...live.keys()].some(p => LIVE.test(p));
     const waitConn = ms => conn ? Promise.resolve() : new Promise(r => { waiters.push(r); setTimeout(r, ms); });
-    async function wake() {
-      lastAct = Date.now();
-      const d = await init();
-      if (!online) { online = true; d.goOnline(); }
-      if (!conn) await waitConn(8000); // qayta ulanish tugashini kutamiz (aks holda "Client is offline")
-      return d;
-    }
-    // Ulanish endigina tiklanayotgan bo'lsa, o'qish "offline" xatosini beradi — ulanishni kutib, yana urinamiz
+    async function wake() { lastAct = Date.now(); const d = await init(); if (!online) { online = true; d.goOnline(); } if (!conn) await waitConn(8000); return d; }
     const rd = async q => { try { return await q(); } catch (e) { if (!/offline/i.test(String(e && e.message))) throw e; await waitConn(10000); return await q(); } };
-    let held = false;
-    const nudge = () => { lastAct = Date.now(); if (!online && ready && !held) wake(); };
+    const nudge = () => { lastAct = Date.now(); if (!online && dbP && !held) wake(); };
     ["pointerdown", "keydown", "touchstart", "scroll"].forEach(ev => addEventListener(ev, nudge, { passive: true, capture: true }));
-    document.addEventListener("visibilitychange", () => { if (document.hidden) hidAt = Date.now(); else nudge(); });
+    document.addEventListener("visibilitychange", () => { if (document.hidden) hidAt = Date.now(); else { nudge(); refreshAll(Date.now() - hidAt > 60000); } });
     setInterval(() => {
-      if (!online || !ready || crit()) return;
+      if (!online || !dbP || crit()) return;
       const now = Date.now();
       if ((document.hidden && now - hidAt > 20000) || now - lastAct > 3 * 60000) { online = false; init().then(d => d.goOffline()); }
     }, 10000);
+    // ---- REST ----
+    const sleep = ms => new Promise(r => setTimeout(r, ms));
+    const clean = p => String(p || "").replace(/^\/+|\/+$/g, "");
+    async function rest(method, p, body, q) {
+      await authReady();
+      let t = null; try { const u = firebase.auth().currentUser; if (u) t = await u.getIdToken(); } catch (e) {}
+      const qs = new URLSearchParams(q || {}); if (t) qs.set("auth", t);
+      const url = BASE + "/" + clean(p) + ".json" + (qs.toString() ? "?" + qs : "");
+      let res, err;
+      for (let i = 0; i < 3; i++) {
+        try { res = await fetch(url, { method, cache: "no-store", body: body === undefined ? undefined : JSON.stringify(body), headers: body === undefined ? undefined : { "Content-Type": "application/json" } }); if (res.status >= 500 || res.status === 429) { err = new Error("HTTP " + res.status); await sleep(700 * (i + 1)); continue; } break; }
+        catch (e) { err = e; if (i < 2) await sleep(800 * (i + 1)); }
+      }
+      if (!res) throw err || new Error("network");
+      if (!offSet) { const dh = Date.parse(res.headers.get("Date") || ""); if (dh) { off = dh + 500 - Date.now(); if (Math.abs(off) < 1500) off = 0; offSet = true; } }
+      const txt = await res.text(); let j = null; try { j = txt ? JSON.parse(txt) : null; } catch (e) {}
+      if (!res.ok) { const m = (j && j.error) || ("HTTP " + res.status); throw new Error((/permission|401|403/i.test(m + res.status) ? "PERMISSION_DENIED: " : "") + m); }
+      return j;
+    }
+    const sv = v => ({ ".sv": { increment: v } });
+    // ---- REST bilan «kuzatish»: bir marta o'qiladi, keyin o'z yozuvimizdan so'ng, sahifaga qaytilganda va vaqti-vaqti bilan yangilanadi ----
+    const W = new Map(); // key -> {p, q, cbs:Set, val, t, iv, busy, again}
+    const ivOf = p => /^c(\/|$)|^cq/.test(p) ? 600e3 : /^lb\//.test(p) ? 240e3 : 150e3;
+    async function pull(w) {
+      if (w.busy) { w.again = true; return; } w.busy = true;
+      try { const v = await rest("GET", w.p, undefined, w.q); w.val = v; w.t = Date.now(); w.cbs.forEach(cb => { try { cb(v); } catch (e) { console.warn(e); } }); }
+      catch (e) { if (!w.t) w.cbs.forEach(cb => { try { cb(null); } catch (x) {} }); }
+      w.busy = false; if (w.again) { w.again = false; pull(w); }
+    }
+    function watchRest(p, q, cb) {
+      p = clean(p); const key = p + "?" + (q ? JSON.stringify(q) : "");
+      let w = W.get(key); if (!w) { w = { p, q, cbs: new Set(), val: undefined, t: 0, iv: ivOf(p), busy: false, again: false }; W.set(key, w); }
+      w.cbs.add(cb);
+      if (w.t && Date.now() - w.t < 30e3) { try { cb(w.val); } catch (e) {} } else pull(w);
+      return () => { w.cbs.delete(cb); if (!w.cbs.size) W.delete(key); };
+    }
+    let dTo = null; const dirty = new Set();
+    function touched(p) { // yozilgan yo'l kuzatilayotgan yo'lga tegsa — o'sha yo'l qayta o'qiladi
+      p = clean(p); W.forEach(w => { if (!p || p === w.p || p.startsWith(w.p + "/") || w.p.startsWith(p + "/")) dirty.add(w); });
+      clearTimeout(dTo); dTo = setTimeout(() => { const L = [...dirty]; dirty.clear(); L.forEach(pull); }, 350);
+    }
+    function refreshAll(force) { const now = Date.now(); W.forEach(w => { if (force || now - w.t > w.iv) pull(w); }); }
+    setInterval(() => { if (document.hidden || Date.now() - lastAct > 5 * 60000) return; refreshAll(false); }, 30e3);
     return {
-      kind: "fb", init,
-      get online() { return online; },
-      async get(p) { const d = await wake(); return (await rd(() => d.ref(p).get())).val(); },
-      async set(p, v) { const d = await wake(); return d.ref(p).set(v); },
-      async update(p, v) { const d = await wake(); return d.ref(p).update(v); },
-      async inc(p) { const d = await init(); return d.ref(p).set(firebase.database.ServerValue.increment(1)); },
-      async addMany(o) { const d = await wake(); const u = {}; Object.entries(o).forEach(([k, v]) => u[k] = typeof v === "number" ? firebase.database.ServerValue.increment(v) : v); return d.ref().update(u); },
-      hold(on) { held = !!on; if (held && online && ready) { online = false; init().then(d => d.goOffline()); } },
-      async since(p, child, from) { const d = await wake(); return (await rd(() => d.ref(p).orderByChild(child).startAt(from).get())).val(); },
-      async eq(p, child, v) { const d = await wake(); return (await rd(() => d.ref(p).orderByChild(child).equalTo(v).get())).val(); },
-      // Faqat kerakli qismini kuzatish (butun daraxtni emas) — trafikni tejaydi
+      kind: "fb", init, app,
+      get online() { return true; },
+      async get(p) { if (sdkFor(p)) { const d = await wake(); return (await rd(() => d.ref(p).get())).val(); } return rest("GET", p); },
+      async set(p, v) { if (sdkFor(p)) { const d = await wake(); return d.ref(p).set(v); } const r = await rest("PUT", p, v === undefined ? null : v); touched(p); return r; },
+      async update(p, v) { if (sdkFor(p)) { const d = await wake(); return d.ref(p).update(v); } const r = await rest("PATCH", p, v); clean(p) ? touched(p) : Object.keys(v || {}).forEach(touched); return r; },
+      async inc(p) { if (sdkFor(p)) { const d = await init(); return d.ref(p).set(firebase.database.ServerValue.increment(1)); } const r = await rest("PUT", p, sv(1)); touched(p); return r; },
+      async addMany(o) {
+        if (ADM()) { const d = await wake(); const u = {}; Object.entries(o).forEach(([k, v]) => u[k] = typeof v === "number" ? firebase.database.ServerValue.increment(v) : v); return d.ref().update(u); }
+        const u = {}; Object.entries(o).forEach(([k, v]) => u[k] = typeof v === "number" ? sv(v) : v); const r = await rest("PATCH", "", u); Object.keys(u).forEach(touched); return r;
+      },
+      hold(on) { held = !!on; if (held && online && dbP) { online = false; init().then(d => d.goOffline()); } },
+      async since(p, child, from) { if (sdkFor(p)) { const d = await wake(); return (await rd(() => d.ref(p).orderByChild(child).startAt(from).get())).val(); } return rest("GET", p, undefined, { orderBy: JSON.stringify(child), startAt: JSON.stringify(from) }); },
+      async eq(p, child, v) { if (sdkFor(p)) { const d = await wake(); return (await rd(() => d.ref(p).orderByChild(child).equalTo(v).get())).val(); } return rest("GET", p, undefined, { orderBy: JSON.stringify(child), equalTo: JSON.stringify(v) }); },
       onSince(p, child, from, cb) {
+        if (!sdkFor(p)) return watchRest(p, { orderBy: JSON.stringify(child), startAt: JSON.stringify(from) }, cb);
         let r, fn, stop = false; live.set(p, (live.get(p) || 0) + 1);
         wake().then(d => { if (stop) return; r = d.ref(p).orderByChild(child).startAt(from); fn = s => cb(s.val()); r.on("value", fn, () => cb(null)); });
         return () => { if (stop) return; stop = true; const n = (live.get(p) || 1) - 1; if (n > 0) live.set(p, n); else live.delete(p); r && fn && r.off("value", fn); };
       },
       on(p, cb) {
+        if (!sdkFor(p)) return watchRest(p, null, cb);
         let r, fn, stop = false; live.set(p, (live.get(p) || 0) + 1);
         wake().then(d => { if (stop) return; r = d.ref(p); fn = s => cb(s.val()); r.on("value", fn, () => cb(null)); });
         return () => { if (stop) return; stop = true; const n = (live.get(p) || 1) - 1; if (n > 0) live.set(p, n); else live.delete(p); r && fn && r.off("value", fn); };
@@ -6014,7 +6058,7 @@ const AUTH = (() => {
     if (/PERMISSION_DENIED|permission/i.test(String(e && (e.message || e)))) return "Ruxsat yo'q.";
     return "Xatolik: " + (c || (e && e.message) || e);
   };
-  async function fb() { await DBA.init(); return firebase; }
+  async function fb() { await DBA.app(); return firebase; }
   function ready() {
     if (!FB) return Promise.resolve();
     return readyP || (readyP = (async () => {
