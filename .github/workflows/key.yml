@@ -2,7 +2,7 @@ name: Javob kalitlari (server tekshiruvi uchun)
 on:
   push:
     branches: [main]
-    paths: ["index.html", "data/tests.js", "ms11.js", "ms7.js", "ms8.js", "tools/build_key.py", ".github/workflows/key.yml"]
+    paths: ["index.html", "data/tests.js", "tools/split_tests.py", "ms11.js", "ms7.js", "ms8.js", "tools/build_key.py", ".github/workflows/key.yml"]
   workflow_dispatch:
 permissions:
   contents: write
@@ -15,11 +15,12 @@ jobs:
       - uses: actions/setup-python@v5
         with: { python-version: "3.12" }
       - run: pip install playwright==1.48.0 && python -m playwright install --with-deps chromium
+      - run: python tools/split_tests.py
       - run: python tools/build_key.py
       - name: Commit
         run: |
           git config user.name "github-actions"; git config user.email "actions@github.com"
-          git add -A data/key
+          git add -A data/key data/t index.html
           if git diff --cached --quiet; then echo "Kalitlar o'zgarmagan"; exit 0; fi
           git commit -qm "Javob kalitlari yangilandi"
           git pull -q --rebase origin main && git push -q origin HEAD:main

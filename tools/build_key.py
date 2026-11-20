@@ -31,7 +31,7 @@ async def main():
         b = await p.chromium.launch(**({"executable_path": exe} if exe else {}), args=["--no-sandbox"])
         pg = await b.new_page()
         await pg.goto(f"http://127.0.0.1:{port}/index.html", wait_until="load")
-        await pg.wait_for_function("typeof SETS!=='undefined' && typeof MS!=='undefined' && typeof GAME!=='undefined'")
+        await pg.wait_for_function("typeof SETS!=='undefined' && typeof MS!=='undefined' && typeof GAME!=='undefined' && window.TQOK===1")
         r = await pg.evaluate(JS)
         await b.close()
     srv.shutdown()
