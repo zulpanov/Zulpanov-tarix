@@ -430,8 +430,11 @@ body.tchm #bnav{display:none!important}body.tchm .wrap{padding-bottom:110px}body
 .ju-col{display:flex;flex-direction:column;gap:10px}.ju-it{position:relative;min-height:64px;border-radius:14px;border:1px solid var(--line);background:var(--card);color:var(--tx);font-family:inherit;text-align:left;padding:8px 12px;cursor:pointer;display:flex;align-items:center;box-sizing:border-box;transition:background .2s,border-color .2s,transform .15s}
 .ju-col.l .ju-it{font-weight:700;font-size:14px;line-height:1.25}.ju-col.r .ju-it{font-size:12.5px;line-height:1.3;padding-left:16px}
 .ju-it::after{content:"";position:absolute;top:50%;width:12px;height:12px;margin-top:-8px;border-radius:50%;background:var(--mu);border:2px solid var(--bg,#0B1630)}.ju-col.l .ju-it::after{right:-9px}.ju-col.r .ju-it::after{left:-9px}
-.ju-it.sel{border:2px solid var(--ac);background:rgba(226,181,76,.15);transform:scale(1.02)}.ju-it.sel::after{background:var(--ac)}
-.ju-it.ok{border:2px solid var(--c);background:color-mix(in srgb,var(--c) 14%,var(--card));cursor:default}.ju-it.ok::after{background:var(--c)}
+.ju-it.sel{border:2px solid #F3D27A;background:#3a2f12;color:#fff;box-shadow:0 0 0 3px rgba(243,210,122,.3);transform:scale(1.02)}.ju-it.sel::after{background:var(--ac)}
+.ju-it.ok{border:2px solid var(--c);background:var(--c);color:#06121f;font-weight:800;cursor:default;animation:jcOk .45s ease}.ju-it.ok::after{background:#fff;border:3px solid var(--c)}
+.ju-w .ju-it.ok::before{content:attr(data-no);flex:none;width:22px;height:22px;margin-right:9px;border-radius:50%;background:rgba(6,18,31,.22);color:#06121f;font:800 12px/22px Inter,sans-serif;text-align:center}
+.ju-it .ju-ck{display:none;font-style:normal}.ju-w .ju-it.ok .ju-ck{display:block;position:absolute;top:-9px;width:24px;height:24px;border-radius:50%;background:#fff;color:#16a34a;font:900 14px/24px Inter,sans-serif;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.4);z-index:2}
+.ju-col.l .ju-it .ju-ck{left:-9px}.ju-col.r .ju-it .ju-ck{right:-9px}
 .ju-it.bad{border:2px solid var(--bad);background:rgba(251,113,133,.16);animation:jfSh .4s}.ju-it.bad::after{background:var(--bad)}
 .ju-stg{text-align:center;font-size:12px;color:var(--mu);margin:-4px 0 10px}
 .jf-n{margin-top:12px;padding:12px 14px;border-radius:14px;font-size:13px;line-height:1.45;background:rgba(52,211,153,.12);border:1px solid rgba(52,211,153,.4);min-height:20px}.jf-n.e{background:var(--card);border-color:var(--line);color:var(--mu)}
@@ -5635,8 +5638,8 @@ const JUFTG = (() => {
       ${S.m === "c" ? `<div class="jc-g" id="juW">${shuf(ids.flatMap(i => [[0, i], [1, i]])).map(([sd, i]) => `<button class="ju-it jc ${sd ? "r" : "l"}" data-s="${sd}" data-i="${i}"><small>${esc(sd ? ty[2] : ty[1])}</small><span>${esc(sd ? G.pairs[i].b : G.pairs[i].a)}</span></button>`).join("")}</div>
       <div class="jf-n e" id="jfN">Bitta <b style="color:#34D399">${esc(ty[1].toLowerCase())}</b> va unga mos <b style="color:#60A5FA">${esc(ty[2].toLowerCase())}</b> kartochkasini bosing.</div>` : `
       <div class="ju-w" id="juW"><svg id="juS" aria-hidden="true"></svg>
-        <div><div class="ju-hd" style="color:${ty[4]}">${esc(ty[1])}</div><div class="ju-col l">${Lc.map(i => `<button class="ju-it" data-s="0" data-i="${i}">${esc(G.pairs[i].a)}</button>`).join("")}</div></div>
-        <div><div class="ju-hd" style="color:${B}">${esc(ty[2])}</div><div class="ju-col r">${Rc.map(i => `<button class="ju-it" data-s="1" data-i="${i}">${esc(G.pairs[i].b)}</button>`).join("")}</div></div></div>
+        <div><div class="ju-hd" style="color:${ty[4]}">${esc(ty[1])}</div><div class="ju-col l">${Lc.map(i => `<button class="ju-it" data-s="0" data-i="${i}"><i class="ju-ck">✓</i>${esc(G.pairs[i].a)}</button>`).join("")}</div></div>
+        <div><div class="ju-hd" style="color:${B}">${esc(ty[2])}</div><div class="ju-col r">${Rc.map(i => `<button class="ju-it" data-s="1" data-i="${i}"><i class="ju-ck">✓</i>${esc(G.pairs[i].b)}</button>`).join("")}</div></div></div>
       <div class="jf-n e" id="jfN">${esc(cap)}ni bosing, keyin uni o‘ngdagi mos ${esc(ty[2].toLowerCase())}ga ulang.</div>`}`;
     $("juW").querySelectorAll(".ju-it").forEach(b => b.onclick = () => tap(b));
     draw(); setTimeout(draw, 300);
@@ -5645,7 +5648,7 @@ const JUFTG = (() => {
   function line(W, a, b, c, dash) {
     const w = W.getBoundingClientRect(), r1 = a.getBoundingClientRect(), r2 = b.getBoundingClientRect();
     const x1 = r1.right - w.left + 3, y1 = r1.top + r1.height / 2 - w.top - 2, x2 = r2.left - w.left - 3, y2 = r2.top + r2.height / 2 - w.top - 2, d = (x2 - x1) * .5;
-    return `<path d="M${x1} ${y1} C ${x1 + d} ${y1}, ${x2 - d} ${y2}, ${x2} ${y2}" stroke="${c}" stroke-width="3" fill="none" stroke-linecap="round"${dash ? ' stroke-dasharray="6 5"' : ""}/>`;
+    return `<path d="M${x1} ${y1} C ${x1 + d} ${y1}, ${x2 - d} ${y2}, ${x2} ${y2}" stroke="${c}" stroke-width="${dash ? 3 : 5}" fill="none" stroke-linecap="round"${dash ? ' stroke-dasharray="6 5"' : ""}/>`;
   }
   function draw(extra) {
     const W = $("juW"), sv = $("juS"); if (!W || !sv || !G) return;
