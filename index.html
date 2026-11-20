@@ -831,6 +831,9 @@ html[data-th="tong"] .clsc,html[data-th="vodiy"] .clsc{background:var(--card);bo
 .pm-lnk{border:0;background:none;color:var(--ac);font-weight:600;font-size:13px;font-family:inherit;padding:6px 0 0;cursor:pointer;text-decoration:underline;display:block}
 .pma-pn{font-size:12px;background:rgba(226,181,76,.18);color:var(--ac);border-radius:8px;padding:2px 8px;vertical-align:middle}
 .pma-pay{display:flex;gap:12px;padding:10px 0;border-top:1px solid var(--line)}.pma-pay:first-child{border-top:0}.pma-pay>img{width:72px;height:96px;object-fit:cover;border-radius:10px;flex:none;cursor:zoom-in;background:#fff}.pma-pay>div{flex:1;min-width:0}.pma-pb{display:flex;flex-wrap:wrap;gap:6px}.pma-pb .btn{margin:0;width:auto;padding:0 10px;height:34px;font-size:12.5px}.pma-pb .pma-no{color:var(--bad)}
+.tle-bar{height:6px;border-radius:4px;background:rgba(var(--w),.1);margin-top:8px;overflow:hidden}.tle-bar i{display:block;height:100%;border-radius:4px;background:linear-gradient(90deg,#C99A2E,#F3D27A);transition:width .5s}.tle-bar.all i{background:#22C55E}
+.tle-bl{display:flex;justify-content:space-between;gap:8px;font-size:11.5px;color:var(--mu);margin-top:4px}.tle-bl b{color:#D4A63A;font-weight:800;font-size:12px!important;display:inline!important;margin:0!important}.tle-bar.all+.tle-bl b{color:#22C55E}
+html[data-th="vodiy"] .tle-bl b,html[data-th="tong"] .tle-bl b{color:#B45309}html[data-th="vodiy"] .tle-bar.all+.tle-bl b,html[data-th="tong"] .tle-bar.all+.tle-bl b{color:#15803D}
 .kbg{display:none;text-align:center;font-size:12.5px;color:var(--mu);margin-top:14px}.kbg b{color:var(--tx);background:rgba(var(--w),.08);border-radius:6px;padding:1px 6px;font-weight:600}
 
 /* ===== Ranglar kontrasti (tuzatish) ===== */
@@ -4363,7 +4366,7 @@ function renderTopics(){
     if(TL){
       const bt=best[s.id]||best[s.title],mv=/mavzu(lar)?$/i.test(s.title||""),kw=String(s.sub||"").split(" · ")[0];
       const ev=document.createElement("div");ev.className="tle"+(bt?" done":"")+(set&&set.id===s.id?" sel":"");
-      ev.innerHTML=`<div class="tle-n"><b>${E(s.n)}</b><span>mavzu</span></div><div class="tle-d"></div><div class="tp" role="button" tabindex="0"><div class="tle-h"><b>${E(mv?String(s.title).split(": ").pop():s.title)}${PM.badge(s)}</b>${bt?`<span class="tle-s" style="color:${lvc(bt.lv)};background:${lvc(bt.lv)}22">${bt.lv?E(bt.lv)+" · ":""}${bt.pts}</span>`:""}</div><span class="tle-k">${E(mv?kw:s.sub)}</span></div>`;
+      ev.innerHTML=`<div class="tle-n"><b>${E(s.n)}</b><span>mavzu</span></div><div class="tle-d"></div><div class="tp" role="button" tabindex="0"><div class="tle-h"><b>${E(mv?String(s.title).split(": ").pop():s.title)}${PM.badge(s)}</b>${bt?`<span class="tle-s" style="color:${lvc(bt.lv)};background:${lvc(bt.lv)}22">${bt.lv?E(bt.lv)+" · ":""}${bt.pts}</span>`:""}</div><span class="tle-k">${E(mv?kw:s.sub)}</span>${s.qs&&s.qs.length&&!s.ms?(()=>{const r=ROT.stat(s),all=r.n>=r.L,pc=Math.round(r.n/r.L*100);return `<div class="tle-bar${all?" all":""}"><i style="width:${pc}%"></i></div><div class="tle-bl"><span>📚 ${r.n} / ${r.L} ko‘rildi</span><b>${all?"✅ hammasi":r.n?`🆕 ${r.L-r.n} ta yangi`:`🆕 ${r.L} ta yangi`}</b></div>`})():""}</div>`;
       const card=ev.querySelector(".tp");
       card.onclick=e=>{if(e.target.closest("#go"))return;set=s;document.querySelectorAll(".tle").forEach(x=>x.classList.toggle("sel",x===ev));const g=$("go");if(g){g.classList.add("in");card.appendChild(g)}chk()};
       wrap.appendChild(ev);
@@ -4384,7 +4387,8 @@ const ROT=(()=>{const key=st=>"zm_rot_"+((typeof ACCT!=="undefined"&&ACCT.cur&&(
  function pick(st,N){const L=st.qs.length;let d={r:0,s:{}};try{d=JSON.parse(localStorage.getItem(key(st)))||d}catch(e){}if(!d.s)d.s={};
   const r=(d.r||0)+1;const idx=shuffle(st.qs.map((_,i)=>i)).sort((x,y)=>(d.s[x]||0)-(d.s[y]||0));const ch=idx.slice(0,Math.min(N,L));
   ch.forEach(i=>d.s[i]=r);d.r=r;try{localStorage.setItem(key(st),JSON.stringify(d))}catch(e){}return shuffle(ch.map(i=>st.qs[i]))}
- return{pick}})();
+ function stat(st){const L=(st.qs||[]).length;let d=null;try{d=JSON.parse(localStorage.getItem(key(st)))}catch(e){}const s=(d&&d.s)||{};let n=0;for(let i=0;i<L;i++)if(s[i])n++;return{n,L}}
+ return{pick,stat}})();
 // ================== KUN TESTI (ro'yxatdan o'tmasdan) + KIRISHLAR STATISTIKASI ==================
 // Xatolar jurnali: o'quvchilarda chiqqan xatolar err/<kun>/<id> ga yoziladi (sessiyada ko'pi bilan 5 ta)
 const ERRLOG=(()=>{
