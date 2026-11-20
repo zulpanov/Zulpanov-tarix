@@ -405,6 +405,13 @@ input,select,textarea,button{font-family:inherit}
 .tch-plan{margin-top:8px;font-size:13px;padding:8px 10px;border-radius:10px;background:var(--card2);border:1px solid var(--line)}.tch-plan.pro{border-color:rgba(250,204,21,.5);background:rgba(250,204,21,.1)}.tch-plan .lnk{margin-left:4px}
 .anav button svg{display:block;margin:0 auto 2px}.abell{position:relative;display:grid;place-items:center}.abell span{position:absolute;top:8px;right:9px;width:8px;height:8px;border-radius:50%;background:#F43F5E}
 .ak2s{display:grid;grid-template-columns:1fr 1fr;gap:10px}.ak2{padding:12px;border-radius:16px;background:var(--card);border:1px solid var(--line);display:flex;flex-direction:column;gap:2px;min-width:0}.ak2 span,.ak2 small{font-size:11.5px;color:var(--mu);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ak2 b{font-size:23px}
+.aibs{display:flex;flex-direction:column;gap:9px}.aib{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;align-items:center;padding:12px;border-radius:16px;background:var(--card);border:1px solid var(--line);transition:opacity .3s,transform .3s}.aib.gone{opacity:0;transform:translateX(40px)}
+.aib-ic{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-style:normal}.aib-im{width:54px;height:40px;object-fit:cover;border-radius:9px;cursor:zoom-in;background:var(--card2);border:1px solid var(--line)}
+.aib-t{min-width:0;display:flex;flex-direction:column;gap:2px}.aib-t b{font-size:13.5px;line-height:1.3}.aib-t small{font-size:11.5px;color:var(--mu);line-height:1.35}
+.aib-a{grid-column:1/-1;display:flex;gap:6px;flex-wrap:wrap}.aib-a:empty{display:none}.aib-a button{flex:1;min-width:max-content;padding:9px 10px;border-radius:11px;border:1px solid var(--line);font-family:inherit;font-size:12.5px;font-weight:700;cursor:pointer;background:var(--card2);color:var(--tx)}.aib-a button.ok{background:#16A34A;border-color:#16A34A;color:#fff}.aib-a button.go{background:#D4A63A;border-color:#D4A63A;color:#1b1300}.aib-a button:disabled{opacity:.55;cursor:default}
+.aqb{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.aqb button{display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;gap:10px;min-height:78px;padding:11px 10px;border-radius:16px;border:0;color:#fff;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;text-align:left;box-shadow:0 4px 14px rgba(0,0,0,.18)}.aqb i{display:flex}
+.ak2s.ak4{grid-template-columns:repeat(4,1fr);gap:7px}.ak2s.ak4 .ak2{padding:9px 8px;border-radius:13px}.ak2s.ak4 .ak2 b{font-size:18px}.ak2s.ak4 .ak2 span,.ak2s.ak4 .ak2 small{font-size:10px}
+@media(min-width:900px){.aibs{display:grid;grid-template-columns:1fr 1fr}.aib-a button{flex:0 1 auto}}
 .atds{display:flex;flex-direction:column;gap:8px}.atd{display:flex;align-items:center;gap:12px;padding:12px;border-radius:16px;background:var(--card);border:1px solid var(--line)}.atd>i{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;flex:none}.atd>div{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}.atd b{font-size:13.5px}.atd small{font-size:11.5px;color:var(--mu)}.atd button{height:36px;padding:0 12px;border-radius:10px;border:1px solid var(--line);background:var(--card2);color:var(--tx);font:600 12px inherit;font-family:inherit;cursor:pointer;flex:none}
 .aqa{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.aqa button{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 4px;border-radius:16px;border:1px solid var(--line);background:var(--card);color:var(--tx);font-family:inherit;font-size:11.5px;font-weight:600;cursor:pointer}.aqa i{width:36px;height:36px;border-radius:11px;background:var(--gr);display:grid;place-items:center}
 .amq{display:flex;align-items:center;gap:10px;height:46px;padding:0 14px;border-radius:14px;background:var(--card);border:1px solid var(--line);color:var(--mu);margin-bottom:10px}.amq input{flex:1;border:0;background:transparent;color:var(--tx);font-family:inherit;font-size:14px;outline:none;margin:0;padding:0;height:auto}
@@ -949,7 +956,7 @@ html[data-th="arena"] .bnav button.on span{color:#0A1830!important}
   </section>
 </div>
 
-<nav class="bnav anav" id="anav"><button data-a="dash"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg><span>Bosh</span></button><button data-a="acc"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.8c2 .7 3.2 2.5 3.6 5.2"/></svg><span>O'quvchi</span></button><button data-a="cq"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v17H6.5A2.5 2.5 0 0 0 4 21.5z"/><path d="M4 19.5V4.5"/></svg><span>Kontent</span></button><button data-a="pm"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M15 9.2c-.6-.9-1.7-1.4-3-1.4-1.8 0-3 .9-3 2.1 0 2.9 6 1.5 6 4.3 0 1.2-1.3 2.1-3 2.1-1.4 0-2.6-.6-3.2-1.6M12 6v1.8M12 16.3V18"/></svg><span>Daromad</span></button><button data-a="more"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg><span>Yana</span></button></nav>
+<nav class="bnav anav" id="anav"><button data-a="dash"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg><span>Bugun</span></button><button data-a="acc"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.8c2 .7 3.2 2.5 3.6 5.2"/></svg><span>O'quvchi</span></button><button data-a="tur"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M7 6H4a3 3 0 0 0 3 4M17 6h3a3 3 0 0 1-3 4M12 14v4M8 21h8"/></svg><span>Turnir</span></button><button data-a="pm"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M15 9.2c-.6-.9-1.7-1.4-3-1.4-1.8 0-3 .9-3 2.1 0 2.9 6 1.5 6 4.3 0 1.2-1.3 2.1-3 2.1-1.4 0-2.6-.6-3.2-1.6M12 6v1.8M12 16.3V18"/></svg><span>To‘lov</span></button><button data-a="more"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg><span>Yana</span></button></nav>
 <div class="amore hide" id="amore"><div class="amore-s"><div class="grab"></div><div class="amore-g">
 <button data-a="stat"><i class="aic c4">📊</i>Statistika</button><button data-a="cq"><i class="aic c6">✏️</i>Savollar</button><button data-a="ms"><i class="aic c5">🎓</i>Sertifikat</button><button data-a="pm"><i class="aic c3">💎</i>Premium</button><button data-a="tch"><i class="aic c2">👨‍🏫</i>Ustozlar</button><button data-a="bot"><i class="aic c7">🤖</i>Telegram bot</button><button data-a="boss"><i class="aic c1">🏰</i>Boss jangi</button><button data-a="vt"><i class="aic c4">⏱</i>Saytdagi vaqt</button><button data-a="pw"><i class="aic c8">🔑</i>Parol</button><button data-a="out"><i class="aic c1">🚪</i>Chiqish</button></div></div></div>
 <nav class="bnav hide" id="bnav"><button data-g="home"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg><span>Bosh</span></button><button data-g="tests"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v17H6.5A2.5 2.5 0 0 0 4 21.5z"/><path d="M4 19.5V4.5"/></svg><span>Testlar</span></button><button data-g="games"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="7" width="19" height="11" rx="4"/><path d="M7 11v3M5.5 12.5h3M15.5 12h.01M18 13.5h.01"/></svg><span>O'yinlar</span></button><button data-g="rank"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M7 6H4a3 3 0 0 0 3 4M17 6h3a3 3 0 0 1-3 4M12 14v4M8 21h8"/></svg><span>Reyting</span></button><button data-g="prof"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4.4 4.2-6.5 8-6.5s7 2.1 8 6.5"/></svg><span>Profil</span></button></nav>
@@ -6941,7 +6948,7 @@ function adminNav(active) {
   if (active !== "dash" && typeof ADASH !== "undefined") ADASH.leave();
   if (active !== "boss" && typeof BOSS !== "undefined") BOSS.leave();
   document.body.classList.add("adm"); try { setNav(null); } catch (e) {}
-  const main = ["dash", "acc", "cq", "pm"].includes(active) ? active : "more";
+  const main = ["dash", "acc", "tur", "pm"].includes(active) ? active : "more";
   [...$("anav").children].forEach(b => b.classList.toggle("on", b.dataset.a === main));
   [...$("amore").querySelectorAll("button")].forEach(b => b.classList.toggle("on", b.dataset.a === active));
   if (active === "dash") return "";
@@ -6965,52 +6972,96 @@ const ADI = (() => {
   return (n, s = 20, w = 1.8) => `<svg aria-hidden="true" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round">${P[n] || ""}</svg>`;
 })();
 // Boshqaruv paneli (bosh sahifa): ko'rsatkichlar, «Bugun e'tibor bering», tezkor amallar, so'nggi faollik
-const ADASH = (() => {
-  let alive = 0;
+const ADASH = (() => { // B: «Bugungi ishlar oldinda» — ishlar shu yerning o'zida bajariladi
+  let alive = 0, items = [];
   const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const ago = ms => { const s = (Date.now() - ms) / 1000; if (s < 60) return "hozir"; if (s < 3600) return Math.floor(s / 60) + " daq"; if (s < 86400) return Math.floor(s / 3600) + " soat"; return Math.floor(s / 86400) + " kun"; };
-  const hr = () => { const h = new Date().getHours(); return h < 5 ? "Xayrli tun" : h < 12 ? "Xayrli tong" : h < 18 ? "Xayrli kun" : "Xayrli kech"; };
+  const nk = s => String(s || "").trim().toLowerCase();
   const kpi = (l, v, c, d) => `<div class="ak2"><span>${l}</span><b style="color:${c}">${v}</b><small>${d || "&nbsp;"}</small></div>`;
-  const todo = (ic, c, t, s, btn, go) => `<div class="atd"><i style="background:${c}26;color:${c}">${ADI(ic)}</i><div><b>${t}</b><small>${s}</small></div><button onclick="${go}">${btn}</button></div>`;
+  const dtt = ms => { const d = new Date(ms), z = n => String(n).padStart(2, "0"); return `${z(d.getDate())}.${z(d.getMonth() + 1)} ${z(d.getHours())}:${z(d.getMinutes())}`; };
   function open() {
     if (!isAdmin()) return T.openHost();
     try { T.leave(); } catch (e) {} try { ACC.leave(); } catch (e) {}
     show("tz"); BK(null); setTimeout(() => { try { PMADM.tick(); } catch (e) {} }, 1500);
-    $("tz").innerHTML = `${adminNav("dash")}<div class="adh adh0"><div class="logo blogo" style="width:42px;height:42px;border-radius:13px"><img src="img/brand/logo-mini.svg?v=2" alt="TA"></div><div class="adh-t"><b>Boshqaruv</b><small>${hr()}, ustoz</small></div><button class="adh-b abell" aria-label="Bugungi ishlar" onclick="document.getElementById('adT').scrollIntoView({behavior:'smooth'})">${ADI("bell")}<span class="hide" id="adBd"></span></button></div>
-      <div class="ak2s" id="adK">${kpi("O'quvchilar", "…", "#67E8F9")}${kpi("Bugun faol", "…", "#F472B6")}${kpi("O'rtacha ball", "…", "#A78BFA")}${kpi("Premium", "…", "#FBBF24")}</div>
-      <div class="ah" id="adT">Bugun e'tibor bering</div>
-      <div class="atds" id="adTd"><div class="sub" style="margin:4px 2px">Yuklanmoqda…</div></div>
-      <div class="ah">Tezkor amallar</div>
-      <div class="aqa">${[["trophy", "Turnir", "tur"], ["screen", "Dars ekrani", "dars"], ["task", "Vazifa", "hw"], ["send", "Xabar", "bot"]].map(([i, l, k]) => `<button onclick="adminGo('${k}')"><i>${ADI(i, 18)}</i>${l}</button>`).join("")}</div>
+    $("tz").innerHTML = `${adminNav("dash")}<div class="adh adh0"><div class="logo blogo" style="width:42px;height:42px;border-radius:13px"><img src="img/brand/logo-mini.svg?v=2" alt="TA"></div><div class="adh-t"><b id="adH">Bugungi ishlar</b><small id="adHs">Yuklanmoqda…</small></div><button class="adh-b" aria-label="Yangilash" title="Yangilash" onclick="ADASH.open()">⟳</button></div>
+      <div class="aibs" id="adTd"><div class="sub" style="margin:4px 2px">Yuklanmoqda…</div></div>
+      <div class="ah">Tez boshlash</div>
+      <div class="aqb">${[["trophy", "Turnir", "tur", "#7C3AED,#C026D3"], ["task", "Vazifa", "hw", "#0EA5E9,#2563EB"], ["send", "Xabar", "bot", "#F43F5E,#E11D48"], ["screen", "Dars ekrani", "dars", "#16A34A,#059669"]].map(([i, l, k, g]) => `<button onclick="adminGo('${k}')" style="background:linear-gradient(135deg,${g})"><i>${ADI(i, 22)}</i>${l}</button>`).join("")}</div>
+      <div class="ah">Ko'rsatkichlar</div>
+      <div class="ak2s ak4" id="adK">${kpi("O'quvchilar", "…", "#67E8F9")}${kpi("Bugun faol", "…", "#F472B6")}${kpi("O'rtacha ball", "…", "#A78BFA")}${kpi("Premium", "…", "#FBBF24")}</div>
       <div class="ah">So'nggi faollik <a onclick="adminGo('stat')">Hammasi</a></div>
       <div class="card" style="padding:4px 14px" id="adF"><div class="sub" style="margin:10px 0">Yuklanmoqda…</div></div>`;
     load(++alive);
   }
+  // Ish kartasi: {id, ic, c, t, s, img, acts:[[label, cls, fn]]}
+  function card(it) {
+    return `<div class="aib" data-id="${esc(it.id)}">${it.img ? `<img class="aib-im" src="${esc(it.img)}" alt="chek">` : `<i class="aib-ic" style="background:${it.c}26;color:${it.c}">${it.ic}</i>`}<div class="aib-t"><b>${it.t}</b><small>${it.s}</small></div>
+      <div class="aib-a">${it.acts.map((a, j) => `<button class="${a[1]}" data-j="${j}">${a[0]}</button>`).join("")}</div></div>`;
+  }
+  function paint() {
+    const el = $("adTd"); if (!el) return;
+    const n = items.length;
+    if ($("adH")) $("adH").textContent = n ? `Bugun ${n} ta ish` : "Bugungi ishlar";
+    if ($("adHs")) $("adHs").textContent = n ? "Bajarilsa ro‘yxatdan o‘chadi" : "Shoshilinch ish yo‘q";
+    el.innerHTML = n ? items.map(card).join("") : `<div class="aib done"><i class="aib-ic" style="background:#22C55E26;color:#22C55E">${ADI("ok")}</i><div class="aib-t"><b>Hammasi bajarildi 🎉</b><small>Yangi chek yoki ariza kelsa, shu yerda chiqadi</small></div></div>`;
+    el.querySelectorAll(".aib-im").forEach(im => im.onclick = () => { const o = document.createElement("div"); o.className = "pm-ask"; o.innerHTML = `<img src="${im.src}" style="max-width:96vw;max-height:90vh;border-radius:12px">`; o.onclick = () => o.remove(); document.body.appendChild(o); });
+    el.querySelectorAll(".aib[data-id]").forEach(r => r.querySelectorAll("[data-j]").forEach(b => b.onclick = async () => {
+      const it = items.find(x => x.id === r.dataset.id); if (!it) return; const a = it.acts[+b.dataset.j]; if (!a || !a[2]) return;
+      const res = await a[2](b, r, it); if (res === "done") remove(it.id, r);
+    }));
+  }
+  function remove(id, r) { if (r) { r.classList.add("gone"); setTimeout(() => { items = items.filter(x => x.id !== id); paint(); }, 320); } else { items = items.filter(x => x.id !== id); paint(); } }
+  const busy = (r, on) => r.querySelectorAll("button").forEach(x => x.disabled = on);
   async function load(my) {
-    let r = {}, us = {}, hw = {}, act = {}, pm = {}, ap = {};
-    try { [r, us, hw, act, pm, ap] = await Promise.all([DBA.since("r", "at", DBA.now() - 8 * 864e5), DBA.get(AUTH.FB ? "users" : "u"), DBA.since("hw", "due", DBA.now() - 30 * 864e5), DBA.since("a", "c", DBA.now() - 2 * 864e5), DBA.get("pm").catch(() => ({})), DBA.get("tapp").catch(() => ({}))]); } catch (e) {}
+    let r = {}, us = {}, hw = {}, act = {}, pm = {}, ap = {}, pay = {};
+    try { [r, us, hw, act, pm, ap, pay] = await Promise.all([DBA.since("r", "at", DBA.now() - 8 * 864e5), DBA.get(AUTH.FB ? "users" : "u"), DBA.since("hw", "due", DBA.now() - 30 * 864e5), DBA.since("a", "c", DBA.now() - 2 * 864e5), DBA.get("pm").catch(() => ({})), DBA.get("tapp").catch(() => ({})), DBA.eq("pay", "st", "new").catch(() => ({}))]); } catch (e) {}
     if (my !== alive || !$("adK")) return;
-    r = r || {}; us = us || {}; hw = hw || {}; act = act || {}; pm = pm || {}; ap = ap || {};
+    r = r || {}; us = us || {}; hw = hw || {}; act = act || {}; pm = pm || {}; ap = ap || {}; pay = pay || {};
     const now = DBA.now(), d0 = new Date(); d0.setHours(0, 0, 0, 0);
-    const U = Object.entries(us).filter(([k, x]) => x && x.f && !x.moved).map(([k, x]) => ({ ...x, login: x.login || k })), wk = U.filter(x => x.c && now - x.c < 7 * 864e5).length;
+    const U = Object.entries(us).filter(([k, x]) => x && x.f && !x.moved).map(([k, x]) => ({ ...x, k, login: x.login || k })), wk = U.filter(x => x.c && now - x.c < 7 * 864e5).length;
     const R = Object.values(r).filter(x => x && x.at);
     const today = new Set(R.filter(x => x.at >= +d0).map(x => x.u || x.n)); U.forEach(x => { if (x.last && x.last >= +d0) today.add(x.login); });
     const r7 = R.filter(x => now - x.at < 7 * 864e5 && typeof x.pts === "number"), avg = r7.length ? Math.round(r7.reduce((a, x) => a + x.pts, 0) / r7.length) : null;
-    const pmA = Object.values(pm).filter(v => v && v.e > now), pmLow = pmA.filter(v => v.e - now <= 3 * 864e5).length, apN = Object.values(ap).filter(x => x && x.n).length;
-    const H = Object.entries(hw).filter(([k, x]) => x && x.set && !x.t).map(([k, x]) => ({ id: k, ...x })).sort((a, b) => (b.c || 0) - (a.c || 0));
-    let hwT = null;
-    if (H.length) { const h = H[0]; let sub = {}; try { sub = (await DBA.get("hwr/" + h.id)) || {}; } catch (e) {} const st = U.filter(u => h.g === "*" || String(u.g || "").trim().toLowerCase() === String(h.g || "").trim().toLowerCase()).length; hwT = { n: Object.keys(sub).length, st, h }; }
-    if (my !== alive || !$("adK")) return;
-    $("adK").innerHTML = kpi("O'quvchilar", U.length, "#67E8F9", wk ? `+${wk} bu hafta` : "") + kpi("Bugun faol", today.size, "#F472B6", U.length ? Math.round(today.size * 100 / U.length) + "%" : "") + kpi("O'rtacha ball", avg == null ? "—" : avg, "#A78BFA", "oxirgi 7 kun") + kpi("Premium", pmA.length, "#FBBF24", pmLow ? `${pmLow} tasi tugayapti` : "faol");
+    const pmA = Object.values(pm).filter(v => v && v.e > now), pmLow = pmA.filter(v => v.e - now <= 3 * 864e5).length;
+    const T = (Array.isArray(PM.cfg.tar) ? PM.cfg.tar : Object.values(PM.cfg.tar || {})).filter(t => t && t.n);
+    items = [];
+    // 1) To'lov cheklari
+    const P = Object.entries(pay).filter(([id, x]) => x && x.st === "new").sort((a, b) => (b[1].at || 0) - (a[1].at || 0));
+    P.slice(0, 8).forEach(([id, x]) => {
+      const tar = T.find(t => +t.d === +x.d), nm = ((x.f || "") + " " + (x.l || "")).trim() || x.login || "O'quvchi";
+      const act1 = async (b, row, d) => { busy(row, true); try { const res = await TGW_.v("payAct", { id, ok: true, d }); FX.toast(res.already ? "Bu to‘lov allaqachon ko‘rib chiqilgan" : (res.res || "✅ Premium berildi"), "up"); return "done"; } catch (er) { busy(row, false); FX.toast("⚠️ " + ((er && er.message) || er)); } };
+      const no = async (b, row, why) => { busy(row, true); try { await TGW_.v("payAct", { id, ok: false, why }); FX.toast("❌ Rad etildi, o‘quvchiga xabar boradi"); return "done"; } catch (er) { busy(row, false); FX.toast("⚠️ " + ((er && er.message) || er)); } };
+      const it = { id: "p_" + id, img: x.img || "", t: `💳 ${esc(nm)} · ${esc(x.tn || (tar && tar.n) || "")}`, s: `${esc(x.p || "")}${x.g ? " · " + esc(x.g) : ""} · chek ${ago(x.at || now)} oldin${x.pc ? " · 🎟 " + esc(x.pc) : ""}`, acts: [] };
+      const base = () => [[`✓ Tasdiqlash${tar ? "" : " (" + (+x.d || 30) + " kun)"}`, "ok", (b, row) => act1(b, row, +x.d || 30)], ["✕ Rad etish", "no", (b, row, it2) => { it2.acts = [["Summa kam", "no", (b2, r2) => no(b2, r2, "sum")], ["Chek noto‘g‘ri", "no", (b2, r2) => no(b2, r2, "bad")], ["‹ Ortga", "no", (b2, r2, it3) => { it3.acts = base(); paint(); }]]; paint(); }]];
+      it.acts = base(); items.push(it);
+    });
+    if (P.length > 8) items.push({ id: "pmore", ic: ADI("coin"), c: "#FBBF24", t: `Yana ${P.length - 8} ta chek`, s: "To‘lovlar bo‘limida", acts: [["Ochish", "go", () => adminGo("pm")]] });
+    // 2) Ustozlik arizalari
+    Object.entries(ap).filter(([u, x]) => x && x.n).forEach(([u, x]) => items.push({ id: "t_" + u, ic: ADI("teach"), c: "#22D3EE", t: `Ustozlik arizasi · ${esc(x.n)}`, s: [x.org, x.ph].filter(Boolean).map(esc).join(" · ") || "Tasdiqlash kutilmoqda", acts: [
+      ["✓ Qabul", "ok", async (b, row) => { busy(row, true); try { await DBA.set("tch/" + u, { n: x.n, org: x.org || "", ok: true, at: DBA.now() }); await DBA.set("tapp/" + u, null); FX.toast("✅ " + x.n + " ustoz bo'ldi", "up"); return "done"; } catch (e) { busy(row, false); FX.toast("⚠️ " + ((e && e.message) || e)); } }],
+      ["✕ Rad", "no", async (b, row) => { if (!confirm("Ariza rad etilsinmi?")) return; busy(row, true); try { await DBA.set("tapp/" + u, null); return "done"; } catch (e) { busy(row, false); FX.toast("⚠️ " + ((e && e.message) || e)); } }]] }));
+    // 3) Jonli o'yinlar
     const live = Object.values(act).filter(x => x && x.code && x.ph !== "end" && now - (x.c || 0) < 6 * 3600e3);
-    const T = [];
-    if (apN) T.push(todo("teach", "#22D3EE", `${apN} ta ustozlik arizasi`, "Tasdiqlash kutilmoqda", "Ko'rish", "adminGo('tch')"));
-    if (pmLow) T.push(todo("gem", "#FBBF24", `${pmLow} ta Premium tugayapti`, "3 kun ichida", "Ko'rish", "adminGo('pm')"));
-    if (live.length) T.push(todo("live", "#F472B6", `${live.length} ta jonli o'yin`, esc(live[0].ttl || "Turnir"), "Ochish", "adminGo('tur')"));
-    if (hwT) T.push(todo("task", "#22C55E", `Vazifa: ${hwT.n}/${hwT.st || "?"} bajardi`, `${esc(hwT.h.g === "*" ? "Hamma" : hwT.h.g)} · ${hwT.h.due > now ? "muddat " + new Date(hwT.h.due).toLocaleDateString("ru-RU") : "muddat o'tgan"}`, "Ochish", "adminGo('hw')"));
-    $("adTd").innerHTML = T.length ? T.join("") : `<div class="atd"><i style="background:#22C55E26;color:#22C55E">${ADI("ok")}</i><div><b>Hammasi joyida</b><small>Hozircha shoshilinch ish yo'q</small></div></div>`;
-    const bn = apN + pmLow; if ($("adBd")) { $("adBd").classList.toggle("hide", !bn); }
-    MORE.badges({ tch: apN, pm: pmLow, tur: live.length ? "JONLI" : "" });
+    if (live.length) items.push({ id: "live", ic: ADI("live"), c: "#F472B6", t: `${live.length} ta jonli o'yin`, s: esc(live[0].ttl || "Turnir"), acts: [["Ochish", "go", () => adminGo("tur")]] });
+    // 4) Vazifa topshirmaganlar (muddati o'tmagan vazifalar)
+    const H = Object.entries(hw).filter(([k, x]) => x && x.set && !x.t && x.due > now).map(([k, x]) => ({ id: k, ...x })).sort((a, b) => a.due - b.due).slice(0, 3);
+    for (const h of H) {
+      let sub = {}; try { sub = (await DBA.get("hwr/" + h.id)) || {}; } catch (e) {}
+      const st = U.filter(u => h.g === "*" || nk(u.g) === nk(h.g)), nd = st.filter(u => !sub[u.k]); if (!nd.length || !st.length) continue;
+      const txt = `⏰ Eslatma: «${h.ttl || "Uy vazifasi"}» vazifasini hali bajarmadingiz. Muddat: ${dtt(h.due)}.`;
+      items.push({ id: "h_" + h.id, ic: ADI("task"), c: "#F43F5E", t: `${esc(h.g === "*" ? "Hamma" : h.g)}: ${nd.length} kishi vazifa topshirmadi`, s: `${esc(h.ttl || "")} · muddat ${dtt(h.due)} · ${st.length - nd.length}/${st.length} bajardi`, acts: [
+        ...(TGB.on() ? [["📣 Eslatma yuborish", "go", async (b, row) => { if (!confirm(`${nd.length} ta o'quvchiga Telegram orqali eslatma yuborilsinmi?`)) return; busy(row, true); try { const x = await TGB.call("broadcast", { to: "stu", text: txt, logins: [...new Set(nd.flatMap(s => [s.login].concat(s.al || []).map(nk)))] }); FX.toast(`📨 ${x.sent || 0} ta o'quvchiga yuborildi`, "up"); return "done"; } catch (e) { busy(row, false); FX.toast("⚠️ " + ((e && e.message) || e)); } }]] : []),
+        ["Ro‘yxat", "no", () => adminGo("hw")]] });
+    }
+    // 5) Premium tugayapti
+    if (pmLow) items.push({ id: "pmlow", ic: ADI("gem"), c: "#FBBF24", t: `${pmLow} ta Premium tugayapti`, s: "3 kun ichida · bot orqali eslatish mumkin", acts: [["Ko‘rish", "go", () => adminGo("pm")]] });
+    // 6) Uzoq kirmaganlar
+    const ina = U.filter(x => (x.rs || {}).n && !(((x.rs || {}).last || 0) > now - 7 * 864e5) && !(x.last > now - 7 * 864e5)).length;
+    if (ina >= 3) items.push({ id: "ina", ic: ADI("clock"), c: "#A7A3D6", t: `${ina} kishi 7 kundan beri test ishlamadi`, s: "Saytdagi vaqt bo‘limida kim kam kirayotganini ko‘ring", acts: [["Ko‘rish", "no", () => adminGo("vt")]] });
+    if (my !== alive || !$("adK")) return;
+    paint();
+    $("adK").innerHTML = kpi("O'quvchilar", U.length, "#67E8F9", wk ? `+${wk} bu hafta` : "") + kpi("Bugun faol", today.size, "#F472B6", U.length ? Math.round(today.size * 100 / U.length) + "%" : "") + kpi("O'rtacha ball", avg == null ? "—" : avg, "#A78BFA", "7 kun") + kpi("Premium", pmA.length, "#FBBF24", pmLow ? `${pmLow} tugayapti` : "faol");
+    MORE.badges({ tch: Object.keys(ap).length, pm: P.length + pmLow || "", tur: live.length ? "JONLI" : "" });
     MORE.stats({ u: U.length, a: today.size, p: pmA.length });
     const ev = R.map(x => ({ at: x.at, ic: x.mode === "turnir" ? "🏆" : x.hw ? "📝" : "✅", t: `<b>${esc(x.n)}</b> · ${esc(x.ttl || x.set || "")}`, p: x.pts }))
       .concat(U.filter(x => x.c).map(x => ({ at: x.c, ic: "🆕", t: `<b>${esc(x.f + " " + (x.l || ""))}</b> ro'yxatdan o'tdi` }))).sort((a, b) => b.at - a.at).slice(0, 6);
