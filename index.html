@@ -804,6 +804,16 @@ html[data-th="tong"] .clsc,html[data-th="vodiy"] .clsc{background:var(--card);bo
 .lk-r{display:flex;align-items:center;gap:12px;padding:12px 2px;border-top:1px solid var(--line)}.lk-r:first-child{border-top:0}.lk-r>i{font-style:normal;font-size:22px;width:40px;height:40px;display:grid;place-items:center;border-radius:12px;background:rgba(var(--w),.06);flex:none}.lk-r>div{flex:1;min-width:0}.lk-r small{display:block;color:var(--mu);font-size:12.5px}.lk-r .btn{margin:0;width:auto;padding:0 16px;height:38px;flex:none;font-size:13.5px}.lk-ok{color:var(--ok);font-weight:700;font-size:13px}
 .lk .lpw label{color:var(--mu)}
 .tgbtn.tgsm{height:48px;font-size:15px}
+.jf-md{display:grid;grid-template-columns:1fr 1fr;gap:8px}.jf-md button{display:flex;align-items:center;gap:10px;padding:12px;border-radius:16px;border:1px solid var(--line);background:var(--card);color:var(--tx);font-family:inherit;text-align:left;cursor:pointer}.jf-md button i{font-style:normal;font-size:22px}.jf-md button b{display:block;font-size:13.5px}.jf-md button small{display:block;font-size:11px;color:var(--mu)}.jf-md button.on{border:2px solid var(--ac);background:rgba(226,181,76,.1)}
+.jc-g{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.ju-it.jc{min-height:92px;flex-direction:column;justify-content:center;text-align:center;gap:4px;padding:8px 4px;border:2px solid #34D39999;border-radius:16px;font-size:12.5px;font-weight:700;line-height:1.25;overflow-wrap:break-word;letter-spacing:-.1px}
+.ju-it.jc.r{border-color:#60A5FA99;font-weight:600;font-size:12px}
+.ju-it.jc small{font-size:9.5px;font-weight:800;letter-spacing:.12em;color:#34D399}.ju-it.jc.r small{color:#60A5FA}
+.ju-it.jc::after{display:none}
+.ju-it.jc.sel{border-color:var(--ac);background:rgba(226,181,76,.16)}
+.ju-it.jc.ok{border-color:var(--c);opacity:.78}.ju-it.jc.ok small{color:var(--c)}.ju-it.jc.ok::before{content:"✓";position:absolute;top:5px;right:8px;font-size:13px;color:var(--c)}
+.ju-it.jc.bad{border-color:var(--bad)}
+@media (min-width:1024px){.jc-g{grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}.ju-it.jc{min-height:110px;font-size:15px}.ju-it.jc.r{font-size:14px}}
 .kbg{display:none;text-align:center;font-size:12.5px;color:var(--mu);margin-top:14px}.kbg b{color:var(--tx);background:rgba(var(--w),.08);border-radius:6px;padding:1px 6px;font-weight:600}
 </style>
 </head>
@@ -5471,12 +5481,12 @@ const JUFTG = (() => {
   const TY = { s: ["Shaxslar va ishlari", "SHAXS", "ISHI", "👤", "#E2B54C"], d: ["Sanalar va voqealar", "SANA", "VOQEA", "📅", "#22D3EE"], j: ["Davlatlar va joylar", "NOMI", "JOYI", "📍", "#F472B6"], t: ["Atamalar va ma’nolari", "ATAMA", "MA’NOSI", "📖", "#34D399"] };
   const LV = [[6, "Oson"], [8, "O‘rta"], [10, "Qiyin"]], CL = ["6", "7", "8", "9", "10", "11"], HAS = ["6", "7", "7j", "8", "8j", "9", "9j", "10", "10j", "11", "11j"], SUBJ = { "6": "Qadimgi dunyo tarixi", "7": "O‘zbekiston tarixi", "7j": "Jahon tarixi", "8": "O‘zbekiston tarixi", "8j": "Jahon tarixi", "9": "O‘zbekiston tarixi", "9j": "Jahon tarixi", "10": "O‘zbekiston tarixi", "10j": "Jahon tarixi", "11": "O‘zbekiston tarixi", "11j": "Jahon tarixi" }, VAR = { "7": ["7", "7j"], "8": ["8", "8j"], "9": ["9", "9j"], "10": ["10", "10j"], "11": ["11", "11j"] }, GR = c => String(c).replace(/j$/, "");
   const B = "#60A5FA";
-  let S = { c: "6", k: "s", l: 1 }, G = null, P = {};
+  let S = { c: "6", k: "s", l: 1, m: "l" }, G = null, P = {};
   try { Object.assign(S, JSON.parse(localStorage.getItem("zm_jf") || "{}")); } catch (e) {}
   const save = () => { try { localStorage.setItem("zm_jf", JSON.stringify(S)); } catch (e) {} };
   const load = c => (window.JUFT && window.JUFT[c]) ? Promise.resolve() : (P[c] = P[c] || new Promise((ok, no) => { const sc = document.createElement("script"); sc.src = "data/juft" + c + ".js?v=1"; sc.onload = ok; sc.onerror = () => { P[c] = null; no(new Error("Yuklanmadi. Internetni tekshiring.")); }; document.head.appendChild(sc); }));
   const list = () => ((window.JUFT || {})[S.c] || []).filter(x => x.k === S.k);
-  const bkey = n => "zm_jfo_" + S.c + S.k + n;
+  const bkey = n => "zm_jfo_" + S.c + S.k + n + (S.m === "c" ? "c" : "");
   const best = n => { try { return JSON.parse(localStorage.getItem(bkey(n)) || "null"); } catch (e) { return null; } };
   const fmt = ms => { const s = Math.floor(ms / 1000); return String(Math.floor(s / 60)).padStart(2, "0") + ":" + String(s % 60).padStart(2, "0"); };
   const shuf = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
@@ -5496,21 +5506,23 @@ const JUFTG = (() => {
     $("tz").innerHTML = head("🧩 Juftini top", GR(S.c) + "-sinf · " + (SUBJ[S.c] || "Moslarini toping")) +
       `<div class="jf-cls">${CL.map(c => `<button data-c="${c}"${c === GR(S.c) ? ' class="on"' : ""}${HAS.includes(c) ? "" : " disabled"}>${c}-sinf${HAS.includes(c) ? "" : " · tez kunda"}</button>`).join("")}</div>
       ${VAR[GR(S.c)] ? `<div class="jf-cls" style="margin-top:8px">${VAR[GR(S.c)].map(v => `<button data-v="${v}"${v === S.c ? ' class="on"' : ""}>${SUBJ[v]}</button>`).join("")}</div>` : ""}
+      <div class="jf-lb">O‘YIN REJIMI</div><div class="jf-md">${[["l", "✏️", "Chiziq bilan ulash", "Ikki ustun · chiziq"], ["c", "🃏", "Aralash kartochkalar", "Mosini topib bosing"]].map(([m, i, t, d]) => `<button data-m="${m}"${m === S.m ? ' class="on"' : ""}><i>${i}</i><span><b>${t}</b><small>${d}</small></span></button>`).join("")}</div>
       <div class="jf-lb">JUFTLAR TURI</div><div class="jf-ty">${Object.entries(TY).map(([k, t]) => `<button data-k="${k}"${k === S.k ? ' class="on"' : ""}><i style="background:${t[4]}26;color:${t[4]}">${t[3]}</i><span style="flex:1"><b>${t[0]}</b><small>${cnt(k)} ta juft</small></span></button>`).join("")}</div>
-      <div class="jf-lb">DARAJA</div><div class="jf-lv">${LV.map((v, i) => `<button data-l="${i}"${i === S.l ? ' class="on"' : ""}>${v[1]}<small>${v[0]} juft${v[0] > 6 ? " · 2 bosqich" : ""}</small></button>`).join("")}</div>
+      <div class="jf-lb">DARAJA</div><div class="jf-lv">${LV.map((v, i) => `<button data-l="${i}"${i === S.l ? ' class="on"' : ""}>${v[1]}<small>${v[0]} juft${v[0] > 6 && S.m !== "c" ? " · 2 bosqich" : ""}</small></button>`).join("")}</div>
       ${b ? `<div class="tnote" style="margin-top:14px;display:flex;justify-content:space-between"><span>Eng yaxshi natijangiz</span><b>${fmt(b.t)} · ${b.m} xato · ${"⭐".repeat(b.s)}</b></div>` : ""}
       <button class="btn" id="jfGo" style="margin-top:14px"${L.length < 4 ? " disabled" : ""}>🧩 O‘ynash</button>
-      <div class="sub" style="text-align:center;margin-top:10px">Daftardagidek: chapdagi ${esc(TY[S.k][1].toLowerCase())}ni o‘ngdagi mos ${esc(TY[S.k][2].toLowerCase())} bilan chiziq orqali ulang.</div>`;
+      <div class="sub" style="text-align:center;margin-top:10px">${S.m === "c" ? `Aralash kartochkalardan bitta ${esc(TY[S.k][1].toLowerCase())} va unga mos ${esc(TY[S.k][2].toLowerCase())}ni bosing.` : `Daftardagidek: chapdagi ${esc(TY[S.k][1].toLowerCase())}ni o‘ngdagi mos ${esc(TY[S.k][2].toLowerCase())} bilan chiziq orqali ulang.`}</div>`;
     $("tz").querySelectorAll("[data-v]").forEach(b => b.onclick = async () => { S.c = b.dataset.v; save(); try { await load(S.c); } catch (e) {} menu(); });
     $("tz").querySelectorAll("[data-c]").forEach(b => b.onclick = async () => { if (GR(S.c) === b.dataset.c) return; S.c = b.dataset.c; save(); try { await load(S.c); } catch (e) {} menu(); });
     $("tz").querySelectorAll("[data-k]").forEach(b => b.onclick = () => { S.k = b.dataset.k; save(); menu(); });
+    $("tz").querySelectorAll("[data-m]").forEach(b => b.onclick = () => { S.m = b.dataset.m === "c" ? "c" : "l"; save(); menu(); });
     $("tz").querySelectorAll("[data-l]").forEach(b => b.onclick = () => { S.l = +b.dataset.l; save(); menu(); });
     $("jfGo").onclick = start;
   }
   const PAL = ["#F59E0B", "#22D3EE", "#A78BFA", "#F472B6", "#34D399", "#FB923C"];
   function start() {
     stop();
-    const L = list(), n = Math.min(LV[S.l][0], L.length), pairs = shuf(L).slice(0, n), ns = Math.ceil(n / 6), sz = Math.ceil(n / ns), stg = [];
+    const L = list(), n = Math.min(LV[S.l][0], L.length), pairs = shuf(L).slice(0, n), ns = S.m === "c" ? 1 : Math.ceil(n / 6), sz = Math.ceil(n / ns), stg = [];
     for (let i = 0; i < n; i += sz) stg.push(pairs.slice(i, i + sz).map((p, j) => i + j));
     G = { n, pairs, stg, si: 0, sel: null, ok: 0, x: 0, wr: new Set(), links: [], done: 0, t0: Date.now(), tk: null };
     show("tz"); setNav(null); BK(null); stage();
@@ -5523,10 +5535,12 @@ const JUFTG = (() => {
     $("tz").innerHTML = head("🧩 Juftini top", ty[0] + " · " + LV[S.l][1], "JUFTG.open()") +
       `<div class="jf-st"><span>⏱ <em id="jfT" style="font-style:normal">${fmt(Date.now() - G.t0)}</em></span><span style="color:var(--bad)">✗ <em id="jfX" style="font-style:normal">${G.x}</em></span><span class="sp"></span>${G.stg.length > 1 ? `<span>${G.si + 1}/${G.stg.length} bosqich</span>` : ""}</div>
       <div class="ju-pg"><i><em id="juP" style="width:${G.ok / G.n * 100}%"></em></i><b id="juPb">${G.ok}/${G.n}</b></div>
+      ${S.m === "c" ? `<div class="jc-g" id="juW">${shuf(ids.flatMap(i => [[0, i], [1, i]])).map(([sd, i]) => `<button class="ju-it jc ${sd ? "r" : "l"}" data-s="${sd}" data-i="${i}"><small>${esc(sd ? ty[2] : ty[1])}</small><span>${esc(sd ? G.pairs[i].b : G.pairs[i].a)}</span></button>`).join("")}</div>
+      <div class="jf-n e" id="jfN">Bitta <b style="color:#34D399">${esc(ty[1].toLowerCase())}</b> va unga mos <b style="color:#60A5FA">${esc(ty[2].toLowerCase())}</b> kartochkasini bosing.</div>` : `
       <div class="ju-w" id="juW"><svg id="juS" aria-hidden="true"></svg>
         <div><div class="ju-hd" style="color:${ty[4]}">${esc(ty[1])}</div><div class="ju-col l">${Lc.map(i => `<button class="ju-it" data-s="0" data-i="${i}">${esc(G.pairs[i].a)}</button>`).join("")}</div></div>
         <div><div class="ju-hd" style="color:${B}">${esc(ty[2])}</div><div class="ju-col r">${Rc.map(i => `<button class="ju-it" data-s="1" data-i="${i}">${esc(G.pairs[i].b)}</button>`).join("")}</div></div></div>
-      <div class="jf-n e" id="jfN">${esc(cap)}ni bosing, keyin uni o‘ngdagi mos ${esc(ty[2].toLowerCase())}ga ulang.</div>`;
+      <div class="jf-n e" id="jfN">${esc(cap)}ni bosing, keyin uni o‘ngdagi mos ${esc(ty[2].toLowerCase())}ga ulang.</div>`}`;
     $("juW").querySelectorAll(".ju-it").forEach(b => b.onclick = () => tap(b));
     draw(); setTimeout(draw, 300);
   }
