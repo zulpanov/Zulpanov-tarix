@@ -286,7 +286,7 @@ function answer(ix,btn){if(answered)return;answered=true;const t=list[i],c=XMAP[
   $("fbE").innerHTML=`Bu — <b>${E(q.n)}</b>, ${E(cap)}.`+(nt?`<div class="xf"><b>📖 Tarixdan</b>${E(nt)}</div>`:"");
   $("fb").className="fb show "+(ok?"ok":"bad");beep(ok);
   $("hS").textContent="⭐ "+score;$("hK").textContent="🔥 "+streak;
-  const last=i+1>=list.length,wait=nt?3800:2200;
+  const last=i+1>=list.length,wait=5000;
   $("next").innerHTML=(last?"Natijani ko‘rish 🏁":"Keyingisi →")+(ok&&!last?`<i class="tm go" style="animation-duration:${wait}ms"></i>`:"");
   clearTimeout(autoT);if(ok&&!last)autoT=setTimeout(()=>{if(answered&&!$("game").classList.contains("hide"))$("next").click()},wait)}
 $("next").onclick=()=>{clearTimeout(autoT);i++;if(i<list.length)ask();else finish()};
