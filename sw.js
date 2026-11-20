@@ -1,5 +1,5 @@
 // TARIX ARENA — oflayn ishlash uchun xizmat ishchisi
-const V = "zm-v42";
+const V = "zm-v43";
 const DATA = "zm-data"; // versiyali fayllar (?v=) — yangilanishda o'chirilmaydi
 const SHELL = ["./", "./index.html", "./manifest.webmanifest", "./icons/icon-192.png", "./icons/icon-512.png"];
 self.addEventListener("install", e => { e.waitUntil(caches.open(V).then(c => c.addAll(SHELL)).then(() => self.skipWaiting())); });

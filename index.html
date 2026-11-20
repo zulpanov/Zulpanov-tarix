@@ -769,6 +769,36 @@ html[data-th="tong"] .clsc,html[data-th="vodiy"] .clsc{background:var(--card);bo
   #auth .sky{display:none}
 }
 @media (min-width:1500px){.wrap{max-width:1280px}.gm-grid{grid-template-columns:repeat(4,1fr)}}
+
+/* ===== KOMPYUTER: o'yinlar (2-bosqich) ===== */
+@media (min-width:1024px){
+  body.dlm #tz{max-width:1000px;margin:0 auto}
+  body.dlm #tz:has(>.bz-hero),body.dlm #tz:has(>.zn-hero),body.dlm #tz:has(>.dl-hero){max-width:1180px}
+  #tz:not(.hide):has(>.bz-hero),#tz:not(.hide):has(>.zn-hero),#tz:not(.hide):has(>.dl-hero){display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);column-gap:24px;align-items:start;grid-auto-flow:row dense}
+  #tz:has(>.bz-hero)>*,#tz:has(>.zn-hero)>*,#tz:has(>.dl-hero)>*{grid-column:1/-1}
+  #tz>.bz-hero,#tz>.zn-hero{grid-column:1;grid-row:3/span 3;margin-bottom:0}
+  #tz>.dl-hero{grid-column:1;grid-row:2/span 3;margin-bottom:0}
+  #tz:has(>.bz-hero)>.ah,#tz:has(>.zn-hero)>.ah{grid-column:2;grid-row:3;margin-top:0}
+  #tz>#bzL,#tz>#hyLb,#tz>#znL{grid-column:2;grid-row:4}
+  #tz>#dlL{grid-column:2;grid-row:2}
+  #tz>.hy-how{grid-row:6}
+  .bz-clock{width:130px;height:130px}
+  /* O'yin jarayoni: yirikroq savol va variantlar */
+  .kh-q{font-size:24px;padding:30px 30px;border-radius:26px}
+  .bz-q{font-size:23px;padding:28px 26px}
+  .kh-g{gap:14px;margin-top:18px}
+  .kh-o{min-height:120px;font-size:17px;padding:16px;cursor:pointer;transition:transform .15s,box-shadow .15s}
+  .kh-o:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 8px 22px rgba(0,0,0,.28)}
+  .bz-ring{width:84px;height:84px}
+  .bz-sc{padding:12px}
+  .hy-btns button{min-height:76px;font-size:22px}
+  .kbg{display:block!important}
+  /* Juftini top */
+  .jf-ty{display:grid!important;grid-template-columns:1fr 1fr}
+  .ju-it{font-size:15.5px;min-height:64px}
+  .jf-n{font-size:14.5px}
+}
+.kbg{display:none;text-align:center;font-size:12.5px;color:var(--mu);margin-top:14px}.kbg b{color:var(--tx);background:rgba(var(--w),.08);border-radius:6px;padding:1px 6px;font-weight:600}
 </style>
 </head>
 <body>
@@ -4486,6 +4516,12 @@ $("next").onclick=()=>{
   $("mdl").classList.add("on");
 };
 $("mNo").onclick=()=>$("mdl").classList.remove("on");
+// Kompyuter: Blits va Zinapoya variantlarini klaviatura bilan tanlash (1–4 / A–D)
+document.addEventListener("keydown",e=>{
+  if(e.ctrlKey||e.metaKey||e.altKey||!document.body.classList.contains("dlm"))return;const t=e.target;if(t&&(t.tagName==="INPUT"||t.tagName==="TEXTAREA"))return;
+  const g=$("bzO")||$("znO");if(!g)return;const m={"1":0,"2":1,"3":2,"4":3,a:0,b:1,c:2,d:3,"а":0,"б":1,"в":2,"г":3}[e.key.toLowerCase()];if(m==null)return;
+  const b=g.children[m];if(b&&!b.disabled&&getComputedStyle(b).visibility!=="hidden"){e.preventDefault();b.click()}
+});
 // Kompyuter: klaviatura bilan test ishlash (1–4 / A–D — javob, Enter — keyingisi, ← → — savollar)
 document.addEventListener("keydown",e=>{
   if(e.ctrlKey||e.metaKey||e.altKey)return;const t=e.target;if(t&&(t.tagName==="INPUT"||t.tagName==="TEXTAREA"||t.isContentEditable))return;
@@ -5002,7 +5038,7 @@ const BLITZ = (() => {
     for (let i = pool.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [pool[i], pool[j]] = [pool[j], pool[i]]; }
     pool = pool.slice(0, cnt);
     G = { pool, i: 0, s: 0, w: 0, streak: 0, t0: Date.now(), end: Date.now() + DUR, lock: false };
-    $("tz").innerHTML = `<div class="bz-top"><div class="bz-ring" id="bzRing"><span id="bzT">2:00</span></div><div class="bz-sc"><small>Ball</small><b id="bzS">0</b></div><div class="bz-sc"><small>Savol</small><b id="bzP">1/${pool.length}</b></div><div class="bz-sc"><small>Seriya</small><b id="bzK">🔥 0</b></div></div><div class="bz-pb"><i id="bzPb"></i></div><div id="bzQ"></div>`;
+    $("tz").innerHTML = `<div class="bz-top"><div class="bz-ring" id="bzRing"><span id="bzT">2:00</span></div><div class="bz-sc"><small>Ball</small><b id="bzS">0</b></div><div class="bz-sc"><small>Savol</small><b id="bzP">1/${pool.length}</b></div><div class="bz-sc"><small>Seriya</small><b id="bzK">🔥 0</b></div></div><div class="bz-pb"><i id="bzPb"></i></div><div id="bzQ"></div><div class="kbg">⌨️ Klaviatura: <b>1–4</b> yoki <b>A–D</b> — javob</div>`;
     try { FX.toast("⚡ Boshladik!", "up"); } catch (e) {}
     G.tk = setInterval(tick, 100); tick(); q();
   }
@@ -5608,7 +5644,7 @@ const LADDER = (() => {
     $("tz").innerHTML = `<div class="zn-bar"><button class="adh-b" id="znStop" title="To'xtash">✋</button><div class="zn-lv"><small>${G.i + 1}-pog'ona${SAFE.includes(G.i) ? " · 🛡 xavfsiz" : ""}</small><b>🪙 ${fmtN(STEPS[G.i])}</b></div><button class="adh-b" id="znLd" title="Zinapoya">🪜</button></div>
       <div class="zn-steps">${STEPS.map((_, k) => `<i class="${k < G.i ? "ok" : k === G.i ? "cur" : ""}${SAFE.includes(k) ? " safe" : ""}"></i>`).join("")}</div>
       <div class="zn-time"><i id="znTb"></i><span id="znT">30</span></div>
-      <div class="kh-q"><span class="tag"></span><div class="q"></div></div><div class="kh-g" id="znO"></div>
+      <div class="kh-q"><span class="tag"></span><div class="q"></div></div><div class="kh-g" id="znO"></div><div class="kbg">⌨️ Klaviatura: <b>1–4</b> yoki <b>A–D</b> — javob</div>
       <div class="zn-life"><button id="znH" ${G.life.h ? "" : "disabled"}><b>50:50</b><small>Ikki xatoni olib tashlash</small></button><button id="znU" ${G.life.u ? "" : "disabled"}><b>👨‍🏫</b><small>Ustoz maslahati</small></button><button id="znS" ${G.life.s ? "" : "disabled"}><b>📊</b><small>Sinf ovozi</small></button></div><div id="znHelp"></div>`;
     $("tz").querySelector(".tag").textContent = qq.t || ""; $("tz").querySelector(".q").textContent = qq.q;
     perm.forEach((oi, k) => { const b = document.createElement("button"); b.className = "opt kh-o k" + k; b.innerHTML = `<span class="sh">${"ABCD"[k]}</span><span></span>`; b.lastChild.textContent = qq.o[oi]; b.onclick = () => ans(oi, b); $("znO").appendChild(b); });
@@ -5639,7 +5675,7 @@ const LADDER = (() => {
     const qq = G.Q[G.i], ok = oi === qq.a; try { GAME.track(qq, ok); } catch (e) {}
     b.classList.add("pick");
     setTimeout(() => {
-      if (!G) return; b.classList.remove("pick"); b.classList.add(ok ? "okk" : "bad");
+      if (!G || !$("znO")) return; b.classList.remove("pick"); b.classList.add(ok ? "okk" : "bad");
       if (!ok) { [...$("znO").children][ci()].classList.add("okk"); FX.wrong(); PRAISE.bad(1); return setTimeout(() => finish("wrong"), 1800); }
       FX.correct(b, "🪙"); PRAISE.ok(b, G.i + 1);
       if (SAFE.includes(G.i)) setTimeout(() => FX.toast(`🛡 Xavfsiz pog'ona! 🪙 ${fmtN(STEPS[G.i])} endi kafolatlangan`, "up"), 600);
