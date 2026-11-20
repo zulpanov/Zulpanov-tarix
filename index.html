@@ -10,8 +10,8 @@
 <meta property="og:site_name" content="TARIX ARENA">
 <meta property="og:title" content="TARIX ARENA — tarixdan testlar, turnirlar va o‘yinlar">
 <meta property="og:description" content="5 700+ test, Milliy sertifikat variantlari, turnir va duellar. Telegram orqali bir bosishda kirish.">
-<meta property="og:url" content="https://zulpanov.github.io/Zulpanov-tarix/">
-<meta property="og:image" content="https://zulpanov.github.io/Zulpanov-tarix/og.jpg?v=2">
+<meta property="og:url" content="https://tarixarena.uz/">
+<meta property="og:image" content="https://tarixarena.uz/og.jpg?v=2">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
@@ -4223,7 +4223,7 @@ const ST=(()=>{ // st/<kun>/<kalit> = son. Faqat sonlar, shaxsiy ma'lumot yo'q
   return{day,hit,visit,src,tg,ref,myRef};
 })();
 const REF=(()=>{ // Do'stlarni taklif qilish: shaxsiy havola (bonus kunlar premium ishga tushganda hisoblanadi)
-  const url=()=>"https://zulpanov.github.io/Zulpanov-tarix/?s=dost&r="+ST.myRef()+"#kun";
+  const url=()=>"https://tarixarena.uz/?s=dost&r="+ST.myRef()+"#kun";
   function card(){ if(!ST.myRef())return ""; return `<button class="kunbtn" id="refGo" style="margin-top:10px;border-color:rgba(52,211,153,.45);background:linear-gradient(135deg,rgba(52,211,153,.14),rgba(59,130,246,.10))"><span class="kun-i">🤝</span><span class="kun-t"><b>Do'stlarni taklif qilish</b><small>${(()=>{const b=typeof PM!=="undefined"?+PM.cfg.bonus||0:0;return b?`Do'stingiz 1 ta test ishlasa, sizga +${b} kun Premium`:"Tarixni birga o'rganing — havolani yuboring"})()}</small></span><span class="kun-a">›</span></button>`; }
   function bind(){ const b=$("refGo"); if(!b)return; b.onclick=()=>{ const u=url(), txt="📚 Tarixdan testlar, Milliy sertifikat variantlari va turnirlar. Men shu yerda tayyorlanyapman — sen ham qo'shil! Ro'yxatdan o'tmasdan Kun testini ishlab ko'r:";
       const sh=`https://t.me/share/url?url=${encodeURIComponent(txt+"\n\n👉 "+u)}`; // havola matn ostida, rasmli ko'rinish (og.jpg) bilan
@@ -4247,7 +4247,7 @@ const KUN=(()=>{
   const doneKey=()=>"zm_kun_"+day(),done=()=>{try{return localStorage.getItem(doneKey())}catch(e){return null}};
   function go(){set=make();start()}
   function started(){ST.hit("kun_s");ST.hit("ks_"+ST.src())}
-  const link=()=>"https://zulpanov.github.io/Zulpanov-tarix/?s=dost"+(ST.myRef()?"&r="+ST.myRef():"")+"#kun";
+  const link=()=>"https://tarixarena.uz/?s=dost"+(ST.myRef()?"&r="+ST.myRef():"")+"#kun";
   function result(st,ok,tot){
     const box=$("kunRes");if(!box)return;box.innerHTML="";if(!st||!st.kun)return;
     try{localStorage.setItem(doneKey(),ok+"/"+tot)}catch(e){}
@@ -5675,7 +5675,7 @@ const STAT = (() => {
         <div class="row" style="gap:8px;flex-wrap:wrap;margin-top:8px"><select id="lkW" style="flex:1;min-width:150px;margin:0"><option value="kun">📅 Kun testiga (ro'yxatsiz)</option><option value="bot">✈️ Telegram botga</option><option value="home">🏠 Saytning bosh sahifasiga</option></select></div>
         <div style="margin-top:8px;padding:10px;border-radius:10px;background:var(--bg);word-break:break-all;font-size:13px" id="lkO"></div>
         <button class="btn sm" id="lkCp" style="margin-top:8px">📋 Nusxalash</button></div>`;
-    const site = "https://zulpanov.github.io/Zulpanov-tarix/";
+    const site = "https://tarixarena.uz/";
     const mk = () => { const sel = $("lkT").value; $("lkC").style.display = sel ? "none" : ""; const t = (sel || $("lkC").value).toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, 8); const w = $("lkW").value;
       const u = !t ? "" : w === "bot" ? `https://t.me/${window.TG_BOT}?startapp=s-${t}` : w === "home" ? `${site}?s=${t}` : `${site}?s=${t}#kun`; $("lkO").textContent = u || "Belgini yozing (lotin harflari va raqamlar)"; return u; };
     $("lkT").onchange = mk; $("lkW").onchange = mk; $("lkC").oninput = mk; mk();
@@ -8409,7 +8409,7 @@ const KT = (() => {
   const fmt = ms => { ms = Math.max(0, ms); const s = Math.ceil(ms / 1000); return String(Math.floor(s / 60)).padStart(2, "0") + ":" + String(s % 60).padStart(2, "0"); };
   const fsec = ms => { const s = Math.round((ms || 0) / 1000); return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0"); };
   const link = code => window.TG_BOT ? `https://t.me/${window.TG_BOT}?startapp=kt-${code}` : location.href.split("#")[0].split("?")[0] + "#kt-" + code;
-  const webLink = code => "https://zulpanov.github.io/Zulpanov-tarix/#kt-" + code;
+  const webLink = code => "https://tarixarena.uz/#kt-" + code;
   async function rest(method, path, body) {
     const t = await AUTH.idToken(false);
     const r = await fetch(`${FIREBASE_CONFIG.databaseURL}/${path}.json?auth=${encodeURIComponent(t)}`, { method, body: body === undefined ? undefined : JSON.stringify(body) });

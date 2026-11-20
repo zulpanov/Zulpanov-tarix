@@ -17,7 +17,7 @@ const DOMAIN = "zulpanovtarix.uz";
 const BOT_EMAIL = "bot@" + DOMAIN;
 const BOT_NAME = "tarix_arena_bot";
 const OLD_BOT_NAME = "alimqul_tarix_testbot";      // eski bot: OLD_BOT_TOKEN qo'yilsa, foydalanuvchilarni yangi botga yo'naltiradi
-const SITE = "https://zulpanov.github.io/Zulpanov-tarix/";
+const SITE = "https://tarixarena.uz/";
 const ADMIN_TG = ["zulpanov_methods"];            // ustozning Telegram username'i (kichik harflarda)
 const CONTACT = "@ZULPANOV_METHODS";
 const CONTACT_URL = "https://t.me/ZULPANOV_METHODS";
@@ -263,7 +263,7 @@ async function oldBotReply(env, up) {
 
 // ---------------- Bot: xabarlar ----------------
 // Ulashish: brend rasmi + matn + havola (havola matn ostida)
-const SHARE_IMG = "https://zulpanov.github.io/Zulpanov-tarix/og.jpg?v=2";
+const SHARE_IMG = "https://tarixarena.uz/og.jpg?v=2";
 const SHARE_TEXT = "📚 Tarixdan testlar, jonli turnirlar va o‘yinlar — <b>TARIX ARENA</b> botiga qo‘shiling! Milliy sertifikatga birga tayyorlanamiz 👇\n\n👉 https://t.me/" + BOT_NAME;
 const shareKb = () => ({ inline_keyboard: [[{ text: "📚 Botga kirish", url: "https://t.me/" + BOT_NAME + "?start=dost" }]] });
 // Bot o'zi ulashiladigan xabarni yuboradi: uni do'stga yuborish (inline) yoki forward qilish mumkin
