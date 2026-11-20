@@ -811,8 +811,12 @@ html[data-th="tong"] .clsc,html[data-th="vodiy"] .clsc{background:var(--card);bo
 .ju-it.jc.r{border-color:#60A5FA99;font-weight:600;font-size:12px}
 .ju-it.jc small{font-size:9.5px;font-weight:800;letter-spacing:.12em;color:#34D399}.ju-it.jc.r small{color:#60A5FA}
 .ju-it.jc::after{display:none}
-.ju-it.jc.sel{border-color:var(--ac);background:rgba(226,181,76,.16)}
-.ju-it.jc.ok{border-color:var(--c);opacity:.78}.ju-it.jc.ok small{color:var(--c)}.ju-it.jc.ok::before{content:"✓";position:absolute;top:5px;right:8px;font-size:13px;color:var(--c)}
+.ju-it.jc{position:relative;overflow:visible}
+.ju-it.jc.sel{border-color:#F3D27A;background:#3a2f12;color:#fff;box-shadow:0 0 0 3px rgba(243,210,122,.3)}
+.ju-it.jc.ok{background:var(--c);border-color:var(--c);color:#06121f;opacity:1;animation:jcOk .45s ease}.ju-it.jc.ok small{color:rgba(6,18,31,.72)}
+.ju-it.jc.ok::before{content:"✓";position:absolute;top:-9px;right:-9px;width:26px;height:26px;border-radius:50%;background:#fff;color:#16a34a;font:900 15px/26px Inter,sans-serif;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.4);z-index:2}
+.ju-it.jc.ok::after{content:attr(data-no);display:block;position:absolute;top:6px;left:8px;font:800 11px/1.4 Inter,sans-serif;background:rgba(6,18,31,.25);color:#06121f;border-radius:8px;padding:0 6px}
+@keyframes jcOk{0%{transform:scale(1)}40%{transform:scale(1.07)}100%{transform:scale(1)}}
 .ju-it.jc.bad{border-color:var(--bad)}
 @media (min-width:1024px){.jc-g{grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}.ju-it.jc{min-height:110px;font-size:15px}.ju-it.jc.r{font-size:14px}}
 .pm-al{text-align:left;margin:10px 0}.pm-how{margin:6px 0 4px;font-size:13px}
@@ -5658,7 +5662,7 @@ const JUFTG = (() => {
     if (o) o.classList.remove("sel"); G.sel = null;
     if (li === ri) {
       const c = PAL[G.links.length % PAL.length]; G.links.push([li, c]); G.ok++; G.done++;
-      [A, Bb].forEach(x => { x.style.setProperty("--c", c); x.classList.add("ok"); });
+      [A, Bb].forEach(x => { x.style.setProperty("--c", c); x.dataset.no = G.links.length; x.classList.add("ok"); });
       $("juP").style.width = (G.ok / G.n * 100) + "%"; $("juPb").textContent = G.ok + "/" + G.n;
       const p = G.pairs[li], N = $("jfN"); N.className = "jf-n"; void N.offsetWidth; N.className = "jf-n ok"; N.style.setProperty("--c", c);
       N.innerHTML = `<div class="jf-pr"><i></i><span>✓ ${esc(p.a)} — ${esc(p.b)}</span></div>${p.e ? `<div class="jf-ex">💡 ${esc(p.e)}</div>` : ""}`;
