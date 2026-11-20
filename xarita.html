@@ -123,6 +123,9 @@ html[data-th="tong"] .xf,html[data-th="vodiy"] .xf{background:#F0F7F2}html[data-
 .pop{top:20%}
 @media (min-width:900px){.pop{top:24%;left:calc(50% - 180px)}}
 .cc.mix{grid-column:1/-1;background:linear-gradient(135deg,rgba(212,166,58,.22),rgba(14,116,144,.25)),var(--card)!important;border-color:rgba(212,166,58,.55)}
+body.g3 #map{display:none}
+#glc{position:absolute;inset:0;display:block}
+body.g3 .mapbox{background:radial-gradient(circle at 50% 50%,#0f2240 0,#060d1d 70%);background-image:radial-gradient(1px 1px at 12% 18%,#fff8,transparent),radial-gradient(1px 1px at 78% 12%,#fff6,transparent),radial-gradient(1.5px 1.5px at 30% 82%,#fff7,transparent),radial-gradient(1px 1px at 88% 66%,#fff6,transparent),radial-gradient(1px 1px at 55% 6%,#fff5,transparent),radial-gradient(1px 1px at 6% 60%,#fff6,transparent),radial-gradient(1.5px 1.5px at 94% 92%,#fff6,transparent),radial-gradient(circle at 50% 50%,#0f2240 0,#060d1d 70%)}
 </style>
 </head>
 <body>
@@ -132,7 +135,7 @@ html[data-th="tong"] .xf,html[data-th="vodiy"] .xf{background:#F0F7F2}html[data-
   <div id="menu">
     <div class="hero">
       <h1>Davlatni xaritadan top!</h1>
-      <div class="sub">Xarita davlatdan davlatga uchib boradi — belgilangan davlat nomini 4 ta variantdan toping. Qiynalsangiz 🌍 kengroq ko‘ring yoki 💡 poytaxtini oching (ochilsa ball yarmiga tushadi).</div>
+      <div class="sub">Globus aylanib, samolyot davlatdan davlatga uchib boradi — belgilangan davlat nomini 4 ta variantdan toping. Qiynalsangiz 🌍 kengroq ko‘ring yoki 💡 poytaxtini oching (ochilsa ball yarmiga tushadi).</div>
       <div class="seg" id="cnt"><button data-n="10" class="on">10 ta savol</button><button data-n="20">20 ta</button><button data-n="0">Hammasi</button></div>
     </div>
     <div class="grid" id="conts"><div class="loading">Xarita yuklanmoqda…</div></div>
@@ -213,7 +216,7 @@ function noteOf(n){if(typeof XNOTE==="undefined")return "";let L=XNOTE[n];if(!L)
 const OK=k=>XMAP[k].q.map((q,ix)=>ix).filter(ix=>typeof XNOTE==="undefined"||XMAP[k].q[ix].n in XNOTE);
 function start(k,only){MODE=k;const ks=k==="MIX"?ORDER.filter(x=>OK(x).length>=4):[k],all=[].concat(...ks.map(x=>OK(x).map(t=>({k:x,t}))));
   list=only&&only.length?shuf(only):shuf(all).slice(0,N||all.length);K=list[0].k;
-  i=0;score=0;streak=0;bestStreak=0;right=0;mist=[];prevQ=null;show("game");drawBase();requestAnimationFrame(()=>ask())}
+  i=0;score=0;streak=0;bestStreak=0;right=0;mist=[];prevQ=null;show("game");drawBase();if(GLB.init())GLB.reset();requestAnimationFrame(()=>ask())}
 
 function drawBase(){const c=XMAP[K];let h="";
   c.s.forEach(([d,q],ix)=>{h+=`<path id="p${ix}" class="${q===undefined?"l0":"l1"}" d="${d}"${q!==undefined?` data-q="${q}"`:""}/>`});
@@ -275,7 +278,68 @@ async function exitHop(from,dx,dy){const id=++flying,ov=$("ov"),a=[from.x,from.y
     setPlane(pl,pt.x,pt.y,ang,Math.min(1,.5+e));if(p<1)requestAnimationFrame(mv)};
   requestAnimationFrame(mv);await setVBp(fit(0,0,1000,760),T);
   const m=$("map");m.style.transition="opacity .3s";m.style.opacity="0";await new Promise(r=>setTimeout(r,320))}
+// ================= 🌍 3D GLOBUS (A variant): globus aylanadi, samolyot yer yuzi bo'ylab uchib qo'nadi =================
+const GLB=(()=>{
+  let ok=false,cv,cx,W=0,H=0,DPR=1,F=[],byN={},rot=[-64,-41],sc=300,tgt=null,tst="tg",lbl="",arc=null,pl=null,run=0,cur=null,wideOn=false,need=false;
+  const PAL=["#3b4a8f","#2f6f7a","#5b3f8f","#2f6b4f","#4b4f9a","#6b3f6f"],TG={tg:"#fbbf24",okc:"#22c55e",badc:"#f43f5e"};
+  const R0=()=>Math.min(W,H)*.44;
+  function init(){
+    if(ok)return true;if(typeof GL==="undefined"||typeof GLOBE==="undefined")return false;
+    try{F=GL.feature(GLOBE.topo,GLOBE.topo.objects.countries).features;
+      F.forEach(f=>{f.c=GL.geoCentroid(f);const b=GL.geoBounds(f);let r=0;[[b[0][0],b[0][1]],[b[1][0],b[1][1]],[b[0][0],b[1][1]],[b[1][0],b[0][1]]].forEach(p=>{const d=GL.geoDistance(f.c,p);if(d<1.6)r=Math.max(r,d)});f.r=Math.max(r,.004);f.bb=b;byN[f.properties.n]=f});
+      if(GLOBE.lo)GL.feature(GLOBE.lo,GLOBE.lo.objects.countries).features.forEach(g=>{const f=byN[g.properties.n];if(f)f.lo=g});
+      // qo'shnilar har xil rangda (chegara qutilari kesishganlar)
+      const near=(a,b)=>!(a.bb[1][0]<b.bb[0][0]-.3||b.bb[1][0]<a.bb[0][0]-.3||a.bb[1][1]<b.bb[0][1]-.3||b.bb[1][1]<a.bb[0][1]-.3);
+      const ord=F.slice().sort((a,b)=>b.r-a.r);ord.forEach(f=>{const u=new Set();ord.forEach(g=>{if(g.col!=null&&g!==f&&near(f,g))u.add(g.col)});let c=0;while(u.has(c)&&c<5)c++;f.col=c});
+      cv=document.createElement("canvas");cv.id="glc";$("mapbox").insertBefore(cv,$("mapbox").firstChild);cx=cv.getContext("2d");
+      ok=true;document.body.classList.add("g3");addEventListener("resize",()=>{size();draw()});size();return true}catch(e){console.warn(e);return false}}
+  function size(){const b=$("mapbox").getBoundingClientRect();DPR=Math.min(2,devicePixelRatio||1);W=b.width;H=b.height;cv.width=W*DPR;cv.height=H*DPR;cv.style.width=W+"px";cv.style.height=H+"px"}
+  const feat=q=>byN[(GLOBE.map||{})[q.n]]||null;
+  function camFor(f){if(!f)return{c:[0,20],s:R0()};const r=Math.min(Math.max(f.r,.035),1.25);return{c:f.c,s:Math.max(R0(),Math.min(R0()*60,Math.min(W,H)*.2/Math.sin(r)))}}
+  function proj(){return GL.geoOrthographic().rotate(rot).scale(sc).translate([W/2,H/2]).clipAngle(90).precision(.4)}
+  function draw(){if(!ok)return;if(!W)size();const p=proj(),g=GL.geoPath(p,cx),ctr=[-rot[0],-rot[1]];
+    cx.setTransform(DPR,0,0,DPR,0,0);cx.clearRect(0,0,W,H);
+    const gr=cx.createRadialGradient(W/2-sc*.35,H/2-sc*.4,sc*.1,W/2,H/2,sc);gr.addColorStop(0,"#1e5592");gr.addColorStop(1,"#0a2241");
+    cx.beginPath();cx.arc(W/2,H/2,sc,0,7);cx.fillStyle=gr;cx.fill();
+    if(sc<R0()*4){cx.beginPath();g(GL.geoGraticule10());cx.strokeStyle="rgba(255,255,255,.07)";cx.lineWidth=1;cx.stroke()}
+    const va=Math.min(Math.PI/2,Math.asin(Math.min(1,Math.hypot(W,H)/2/sc))),lo=sc<R0()*2.4,G=f=>lo&&f.lo?f.lo:f;
+    const vis=F.filter(f=>GL.geoDistance(f.c,ctr)<va+f.r+.03);
+    const byC=PAL.map(()=>[]);vis.forEach(f=>{if(f!==tgt)byC[f.col%PAL.length].push(f)});
+    byC.forEach((L,k)=>{if(!L.length)return;cx.beginPath();L.forEach(f=>g(G(f)));cx.fillStyle=PAL[k];cx.fill()});
+    cx.beginPath();vis.forEach(f=>g(G(f)));cx.strokeStyle="rgba(226,232,240,.75)";cx.lineWidth=sc>R0()*3?1:.6;cx.stroke();
+    if(tgt){cx.beginPath();g(tgt);cx.shadowColor=TG[tst];cx.shadowBlur=14;cx.fillStyle=TG[tst];cx.fill();cx.shadowBlur=0;cx.strokeStyle="#fff";cx.lineWidth=1.5;cx.stroke();
+      const pc=p(tgt.c),vis2=GL.geoDistance(tgt.c,ctr)<Math.PI/2;
+      if(pc&&vis2&&sc*Math.sin(tgt.r)<9){cx.beginPath();cx.arc(pc[0],pc[1],16,0,7);cx.strokeStyle=TG[tst];cx.lineWidth=3;cx.stroke()}
+      if(lbl&&pc&&vis2){cx.font="800 16px Inter,sans-serif";cx.textAlign="center";cx.lineWidth=4;cx.strokeStyle="#000";cx.strokeText(lbl,pc[0],pc[1]-18);cx.fillStyle="#fff";cx.fillText(lbl,pc[0],pc[1]-18)}}
+    if(arc){cx.beginPath();g({type:"LineString",coordinates:[arc[0],arc[1]]});cx.setLineDash([7,7]);cx.strokeStyle="rgba(253,230,138,.95)";cx.lineWidth=2.5;cx.stroke();cx.setLineDash([])}
+    if(pl){const a=p(pl.p),b=p(pl.n);if(a&&b&&GL.geoDistance(pl.p,ctr)<Math.PI/2){const ang=Math.atan2(b[1]-a[1],b[0]-a[0]),s=Math.max(.9,Math.min(1.5,W/420))*(1+.3*pl.alt),o=6+22*pl.alt;
+      plane(a[0]+o*.45,a[1]+o,ang,s*.85,"rgba(0,0,0,.32)",null);plane(a[0],a[1],ang,s,"#e2e8f0","#475569")}}
+    const sh=cx.createRadialGradient(W/2-sc*.3,H/2-sc*.35,sc*.05,W/2,H/2,sc);sh.addColorStop(0,"rgba(255,255,255,.10)");sh.addColorStop(.7,"rgba(255,255,255,0)");sh.addColorStop(1,"rgba(0,0,0,.35)");
+    cx.beginPath();cx.arc(W/2,H/2,sc,0,7);cx.fillStyle=sh;cx.fill();
+    cx.beginPath();cx.arc(W/2,H/2,sc+1,0,7);cx.strokeStyle="rgba(147,197,253,.35)";cx.lineWidth=2;cx.stroke()}
+  const PP=new Path2D("M-20 -3 L18 -3 Q26 0 18 3 L-20 3Z M-2 -3 L-8 -18 L0 -18 L10 -3Z M-2 3 L-8 18 L0 18 L10 3Z M-16 -3 L-20 -10 L-15 -10 L-11 -3Z M-16 3 L-20 10 L-15 10 L-11 3Z");
+  function plane(x,y,ang,s,fill,stroke){cx.save();cx.translate(x,y);cx.rotate(ang);cx.scale(s,s);cx.fillStyle=fill;cx.fill(PP);if(stroke){cx.strokeStyle=stroke;cx.lineWidth=1;cx.stroke(PP);cx.beginPath();cx.arc(12,0,2,0,7);cx.fillStyle="#38bdf8";cx.fill()}cx.restore()}
+  const ease=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
+  // kamerani a -> b ga silliq olib borish (log-masshtabda, o'rtada uzoqlashib)
+  function anim(c1,s1,ms,opt){const id=++run,c0=[-rot[0],-rot[1]],s0=sc,I=GL.geoInterpolate(c0,c1),d=GL.geoDistance(c0,c1),la=Math.log(s0),lb=Math.log(s1);
+    const sout=Math.max(R0(),Math.min(s0,s1,Math.min(W,H)*.34/Math.sin(Math.min(d/2+.2,1.45)))),lm=(opt&&opt.dip)?2*Math.log(sout)-.5*(la+lb):(la+lb)/2;
+    return new Promise(res=>{const t0=performance.now();const st=now=>{if(id!==run)return res(false);const t=Math.min(1,(now-t0)/ms),e=ease(t),c=I(e);rot=[-c[0],-c[1]];
+      sc=Math.exp((1-e)*(1-e)*la+2*e*(1-e)*lm+e*e*lb);if(opt&&opt.fl)opt.fl(t,e);draw();if(t<1)requestAnimationFrame(st);else res(true)};requestAnimationFrame(st)})}
+  async function go(q,first){if(!init())return false;size();const f=feat(q),cm=camFor(f);tgt=f;tst="tg";lbl="";wideOn=false;
+    if(first||!cur){rot=[-cm.c[0],-cm.c[1]+12];sc=R0();arc=null;pl=null;draw();await new Promise(r=>setTimeout(r,200));cur=cm.c;return anim(cm.c,cm.s,1300,{})}
+    const a=cur,b=cm.c,d=GL.geoDistance(a,b),I=GL.geoInterpolate(a,b);cur=b;
+    if(d<.004){return anim(b,cm.s,600,{})}
+    arc=[a,b];const ms=1500+Math.min(1400,d*900);
+    const r=await anim(b,cm.s,ms,{dip:true,fl:(t,e)=>{const pe=Math.min(1,e*1.04);pl={p:I(pe),n:I(Math.min(1,pe+.01)),alt:Math.sin(Math.PI*Math.min(1,t*1.02))}}});
+    pl=null;const fade=performance.now(),aid=run;const fo=now=>{if(aid!==run)return;if(now-fade<500){requestAnimationFrame(fo)}else{arc=null;draw()}};requestAnimationFrame(fo);draw();return r}
+  function mark(q,okk,name){tst=okk?"okc":"badc";lbl=name||"";draw()}
+  function wide(on){wideOn=on;const c=[-rot[0],-rot[1]];if(on)return anim(c,R0(),700,{});const f=tgt;return anim(f?f.c:c,camFor(f).s,700,{})}
+  function stop(){run++;pl=null;arc=null}
+  function reset(){stop();cur=null;tgt=null}
+  return {init,go,mark,wide,stop,reset,draw,get ok(){return ok}};
+})();
 async function ask(){answered=false;usedHint=false;zoomed=false;let hop="";
+  if(GLB.ok&&list[i].k!==K){hop="✈️ "+XMAP[list[i].k].n+"ga uchyapmiz!";K=list[i].k;drawBase()}
   if(list[i].k!==K){const oK=K,nK=list[i].k,c0=CPOS[oK]||[.5,.5],c1=CPOS[nK]||[.5,.5];let dx=c1[0]-c0[0],dy=c1[1]-c0[1];const dl=Math.hypot(dx,dy)||1;dx/=dl;dy/=dl;
     answered=true;$("opts").innerHTML="";$("fb").className="fb";$("hint").textContent="✈️ "+XMAP[oK].n+" → "+XMAP[nK].n+" — uchyapmiz…";
     if(prevQ)await exitHop(prevQ,dx,dy);
@@ -288,16 +352,16 @@ async function ask(){answered=false;usedHint=false;zoomed=false;let hop="";
   document.querySelectorAll(`#map path[data-q="${t}"]`).forEach(p=>{p.setAttribute("class","tg");p.parentNode.insertBefore(p,$("ov"))});
   const small=Math.max(q.b[2]-q.b[0],q.b[3]-q.b[1])<36;
   $("ov").innerHTML=small?`<circle class="ring" cx="${q.x}" cy="${q.y}" r="22"/>`:"";
-  wide=false;$("zoom").textContent="🌍 Kengroq ko‘rish";fly(q);clearTimeout(autoT);
+  wide=false;$("zoom").textContent="🌍 Kengroq ko‘rish";if(GLB.ok)GLB.go(q,i===0).then(r=>{if(hop&&r&&$("hint").textContent===hop)$("hint").textContent=hop.replace("uchyapmiz","uchdik")});else fly(q);clearTimeout(autoT);
   $("hint").textContent=hop;$("hintB").classList.remove("used");$("zoom").classList.remove("used");
   $("fb").className="fb";
   const o=$("opts");o.innerHTML="";nearOpts(t).forEach(ix=>{const b=document.createElement("button");b.className="op";b.textContent=c.q[ix].n;b.onclick=()=>answer(ix,b);o.appendChild(b)})}
 
-$("zoom").onclick=()=>{const q=XMAP[K].q[list[i].t];flying++;wide=!wide;if(wide){setVB(fit(0,0,1000,760),600);$("zoom").textContent="🎯 Yaqinlashtirish"}else{setVB(cam(q),600);$("zoom").textContent="🌍 Kengroq ko‘rish"}};
+$("zoom").onclick=()=>{const q=XMAP[K].q[list[i].t];if(GLB.ok){wide=!wide;GLB.wide(wide);$("zoom").textContent=wide?"🎯 Yaqinlashtirish":"🌍 Kengroq ko‘rish";return}flying++;wide=!wide;if(wide){setVB(fit(0,0,1000,760),600);$("zoom").textContent="🎯 Yaqinlashtirish"}else{setVB(cam(q),600);$("zoom").textContent="🌍 Kengroq ko‘rish"}};
 let autoT=0;
 $("hintB").onclick=()=>{if(answered||usedHint)return;usedHint=true;const q=XMAP[K].q[list[i].t];$("hint").textContent=HINT[q.n]||("Poytaxti: "+q.c);$("hintB").classList.add("used")};
 
-function answer(ix,btn){if(answered)return;answered=true;const t=list[i].t,c=XMAP[K],q=c.q[t],ok=ix===t;
+function answer(ix,btn){if(answered)return;answered=true;const t=list[i].t,c=XMAP[K],q=c.q[t],ok=ix===t;if(GLB.ok)GLB.mark(q,ok,q.n);
   document.querySelectorAll(".op").forEach(b=>{b.disabled=true;if(b.textContent===q.n)b.classList.add("ok")});
   if(!ok)btn.classList.add("bad");
   document.querySelectorAll(`#map path[data-q="${t}"]`).forEach(p=>p.setAttribute("class","tg "+(ok?"okc":"badc")));
@@ -322,7 +386,7 @@ document.addEventListener("keydown",e=>{if($("game").classList.contains("hide")|
 
 function popup(t,col){const p=$("pop");p.textContent=t;p.style.color=col;p.classList.remove("go");void p.offsetWidth;p.classList.add("go")}
 
-function finish(){clearTimeout(autoT);flying++;const pc=Math.round(right/list.length*100),mx=MODE==="MIX";
+function finish(){clearTimeout(autoT);flying++;GLB.stop();const pc=Math.round(right/list.length*100),mx=MODE==="MIX";
   const k="zm_xmap_best_"+MODE,b=LS.get(k,null);if(b==null||pc>b)LS.set(k,pc);
   $("rC").textContent=`${mx?"🌍":EMO[MODE]} ${mx?"Aralash — butun dunyo":XMAP[MODE].n} · ${list.length} ta savol`;
   $("rB").textContent=`${right}/${list.length}`;
@@ -333,7 +397,7 @@ function finish(){clearTimeout(autoT);flying++;const pc=Math.round(right/list.le
   $("hB").style.width="100%";show("res");if(pc>=70)beep(true)}
 $("again").onclick=()=>start(MODE);$("fix").onclick=()=>start(MODE,mist.slice());$("toMenu").onclick=()=>show("menu");
 
-const xn=document.createElement("script");xn.src="xnote.js?v=2";xn.onload=xn.onerror=()=>{const s=document.createElement("script");s.src="xmap-data.js?v=1";s.onload=renderMenu;s.onerror=()=>{$("conts").innerHTML='<div class="loading">Xaritani yuklab bo‘lmadi. Internetni tekshiring.</div>'};document.body.appendChild(s);};document.body.appendChild(xn);
+const xn=document.createElement("script");xn.src="xnote.js?v=2";xn.onload=xn.onerror=()=>{const s=document.createElement("script");s.src="xmap-data.js?v=1";s.onload=()=>{renderMenu();["vendor/globe-lib.js?v=1","data/globe.js?v=1"].forEach(u=>{const g=document.createElement("script");g.src=u;g.async=false;document.body.appendChild(g)})};s.onerror=()=>{$("conts").innerHTML='<div class="loading">Xaritani yuklab bo‘lmadi. Internetni tekshiring.</div>'};document.body.appendChild(s);};document.body.appendChild(xn);
 </script>
 </body>
 </html>
