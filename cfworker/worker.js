@@ -153,6 +153,68 @@ async function saveSitePw(env, uid, login, pw) {
   const salt = hex(crypto.getRandomValues(new Uint8Array(16)));
   await db(env, "PUT", "tg/sp/" + login, { uid, s: salt, h: await pwHash(pw, salt), at: Date.now() });
 }
+// ---------------- 💳 Premium to'lovi: o'quvchi chek yuboradi → ustozga Telegram'da bir bosishda tasdiqlash ----------------
+const PAY_DAY = 864e5;
+const fmtD = ms => { const d = new Date(ms + 5 * 3600e3), z = n => String(n).padStart(2, "0"); return `${z(d.getUTCDate())}.${z(d.getUTCMonth() + 1)}.${d.getUTCFullYear()}`; };
+const hesc = s => String(s == null ? "" : s).replace(/[&<>]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
+async function tariffs(env) { const c = await db(env, "GET", "c/pm/tar").catch(() => null); return (Array.isArray(c) ? c : Object.values(c || {})).filter(t => t && t.n && +t.d > 0); }
+async function studentChat(env, uid) {
+  const t = await db(env, "GET", "tg/tgu/" + uid).catch(() => null); if (t) return Number(t);
+  const r = await db(env, "GET", "users/" + uid + "/login").catch(() => null), m = /^tg(\d+)$/.exec(String(r || ""));
+  return m ? Number(m[1]) : null;
+}
+function payCaption(x, extra) {
+  return `💳 <b>Yangi to‘lov</b>\n👤 ${hesc(((x.f || "") + " " + (x.l || "")).trim())}${x.g ? " · " + hesc(x.g) : ""}\n🔑 ${hesc(x.login || "")}\n💎 ${hesc(x.tn || "")} — ${hesc(x.p || "")}\n🕐 ${fmtD(x.at)} ${new Date(x.at + 5 * 3600e3).toISOString().slice(11, 16)}` + (extra ? "\n\n" + extra : "");
+}
+async function payNotify(env, id) {
+  const x = await db(env, "GET", "pay/" + id); if (!x || x.st !== "new") return;
+  const T = await tariffs(env), kb = [];
+  const main = T.find(t => +t.d === +x.d); if (main) kb.push([{ text: `✅ ${main.n} berish`, callback_data: `py:o:${id}:${main.d}` }]);
+  const other = T.filter(t => +t.d !== +x.d).map(t => ({ text: `✅ ${t.n}`, callback_data: `py:o:${id}:${t.d}` })); if (other.length) kb.push(other.slice(0, 3));
+  kb.push([{ text: "❌ Summa kam", callback_data: `py:n:${id}:sum` }, { text: "❌ Chek noto‘g‘ri", callback_data: `py:n:${id}:bad` }]);
+  const m = /^data:(image\/[a-z]+);base64,(.+)$/.exec(String(x.img || "")); const sent = [];
+  for (const chat of await adminChats(env)) {
+    try {
+      let r;
+      if (m) {
+        const bin = Uint8Array.from(atob(m[2]), c => c.charCodeAt(0)), fd = new FormData();
+        fd.append("chat_id", chat); fd.append("caption", payCaption(x)); fd.append("parse_mode", "HTML"); fd.append("reply_markup", JSON.stringify({ inline_keyboard: kb }));
+        fd.append("photo", new Blob([bin], { type: m[1] }), "chek.jpg");
+        const j = await fetch(`https://api.telegram.org/bot${token(env)}/sendPhoto`, { method: "POST", body: fd }).then(r => r.json()); r = j.ok ? j.result : null;
+      } else r = await tg(env, "sendMessage", { chat_id: chat, parse_mode: "HTML", text: payCaption(x, "⚠️ Chek rasmi yo‘q"), reply_markup: { inline_keyboard: kb } });
+      if (r) sent.push({ c: chat, m: r.message_id, ph: !!m });
+    } catch (e) {}
+  }
+  if (sent.length) await db(env, "PATCH", "pay/" + id, { msg: sent }).catch(() => {});
+}
+const WHY = { sum: "To‘langan summa tarif narxidan kam", bad: "Chek noto‘g‘ri yoki o‘qib bo‘lmadi" };
+async function payAct(env, id, ok, val, by) {
+  const x = await db(env, "GET", "pay/" + id); if (!x) throw new Error("To‘lov topilmadi");
+  if (x.st !== "new") return { already: x.st };
+  let res = "";
+  if (ok) {
+    const d = Math.max(1, Math.min(400, +val || +x.d || 30)), cur = await db(env, "GET", "pm/" + x.uid).catch(() => null);
+    const e = Math.max(Date.now(), (cur && cur.e) || 0) + d * PAY_DAY;
+    await db(env, "PUT", "pm/" + x.uid, { e, src: "pay", at: Date.now() });
+    await db(env, "PATCH", "pay/" + id, { st: "ok", gd: d, e, by: by || "", dt: Date.now() });
+    res = `✅ Tasdiqlandi — Premium ${fmtD(e)} gacha (${d} kun)`;
+    const ch = await studentChat(env, x.uid);
+    if (ch) await tg(env, "sendMessage", { chat_id: ch, parse_mode: "HTML", text: `🎉 <b>Premium yoqildi!</b>\n\n💎 ${d} kun · <b>${fmtD(e)}</b> gacha.\nBarcha mavzu va o‘yinlar ochildi. Omad! 🚀`, reply_markup: { inline_keyboard: [[{ text: "🚀 Platformani ochish", url: appLink("") }]] } }).catch(() => {});
+  } else {
+    const why = WHY[val] || String(val || "Rad etildi").slice(0, 120);
+    await db(env, "PATCH", "pay/" + id, { st: "no", why, by: by || "", dt: Date.now() });
+    res = "❌ Rad etildi — " + why;
+    const ch = await studentChat(env, x.uid);
+    if (ch) await tg(env, "sendMessage", { chat_id: ch, parse_mode: "HTML", text: `⚠️ <b>To‘lov tasdiqlanmadi</b>\nSabab: ${hesc(why)}.\n\nPlatformada Premium sahifasidan chekni qayta yuborishingiz mumkin yoki ustozga yozing: ${CONTACT}` }).catch(() => {});
+  }
+  for (const s of (Array.isArray(x.msg) ? x.msg : [])) {
+    try {
+      const body = { chat_id: s.c, message_id: s.m, parse_mode: "HTML", reply_markup: { inline_keyboard: [] } };
+      if (s.ph) await tg(env, "editMessageCaption", { ...body, caption: payCaption(x, res) }); else await tg(env, "editMessageText", { ...body, text: payCaption(x, res) });
+    } catch (e) {}
+  }
+  return { ok: true, res };
+}
 // Saytdagi «Telegram orqali kirish» (Login Widget) imzosi: secret = SHA256(bot token)
 async function verifyWidget(env, d) {
   if (!d || typeof d !== "object" || !d.hash || !d.id) throw new Error("Telegram ma’lumoti yo‘q");
@@ -459,6 +521,12 @@ async function onCallback(env, q) {
   if (q.data === "yozil") return sendYozil(env, chat, q.from);
   if (q.data === "ota") return sendOta(env, chat);
   if (q.data === "share") return sendShare(env, chat);
+  const mp = /^py:(o|n):([A-Za-z0-9_-]{6,40}):(\w{1,5})$/.exec(q.data || "");
+  if (mp && isAdminTg(q.from)) {
+    try { const r = await payAct(env, mp[2], mp[1] === "o", mp[3], "@" + (q.from.username || "")); if (r.already) await tg(env, "answerCallbackQuery", { callback_query_id: q.id, text: "Bu to‘lov allaqachon ko‘rib chiqilgan" }).catch(() => {}); }
+    catch (e) { await tg(env, "sendMessage", { chat_id: chat, text: "⚠️ " + (e.message || e) }).catch(() => {}); }
+    return;
+  }
   const mt = /^(tok|tno):([A-Za-z0-9]{1,40}):(\d{1,15})$/.exec(q.data || "");
   if (mt && isAdminTg(q.from)) {
     const [, act, uid, tid] = mt, ap = await db(env, "GET", "tapp/" + uid).catch(() => null), mid = q.message && q.message.message_id;
@@ -624,6 +692,18 @@ const VFN = {
     return saveRes(env, uid, user, g, { ttl: i.ttl, hw: i.hw, set: i.set, n: i.n, dur });
   },
   async lb(env, uid) { return syncLb(env, uid); },
+  // O'quvchi chek yubordi → ustozga Telegram'da xabar
+  async payNew(env, uid, i) {
+    const id = String(i.id || ""); if (!/^[A-Za-z0-9_-]{6,40}$/.test(id)) throw new Error("Noto‘g‘ri so‘rov");
+    const x = await db(env, "GET", "pay/" + id); if (!x || x.uid !== uid) throw new Error("To‘lov topilmadi");
+    if (x.msg) return { ok: true };
+    await payNotify(env, id); return { ok: true };
+  },
+  // Ustoz admin paneldan tasdiqlaydi yoki rad etadi
+  async payAct(env, uid, i) {
+    if ((await db(env, "GET", "admins/" + uid)) !== true) throw new Error("Faqat ustoz uchun");
+    return payAct(env, String(i.id || ""), !!i.ok, i.ok ? i.d : i.why, "admin panel");
+  },
   // Kirish usullari: Telegram ulanganmi, saytga qaysi login bilan kiriladi
   async lpInfo(env, uid) {
     const r = await db(env, "GET", "users/" + uid) || {}, tgO = /^tg\d+$/.test(r.login || "");
@@ -737,7 +817,9 @@ export default {
 
     if (url.pathname === "/wp") { // saytda login-parol: server tekshiradigan (botdan kelgan) hisoblar uchun
       try {
-        if (req.method !== "POST") { let sa = "yo‘q"; try { await saAccess(env); sa = "ishlayapti"; } catch (e) { sa = String(e.message || e); } return json({ ok: true, sa }); }
+        if (req.method !== "POST") {
+          if ((await db(env, "GET", "c/pm/tarV").catch(() => null)) !== 2) { await db(env, "PUT", "c/pm/tar", [{ n: "1 oy", d: 30, p: "69 000 so‘m" }, { n: "3 oy", d: 90, p: "150 000 so‘m" }]); await db(env, "PUT", "c/pm/tarV", 2); }
+          let sa = "yo‘q"; try { await saAccess(env); sa = "ishlayapti"; } catch (e) { sa = String(e.message || e); } return json({ ok: true, sa }); }
         const b = await req.json(), login = String(b.login || "").toLowerCase().trim(), pw = String(b.pw || "");
         if (!LOGIN_RE.test(login) || !pw) throw new Error("Login yoki parol noto‘g‘ri");
         const rl = await db(env, "GET", "tg/rl/" + login).catch(() => null);

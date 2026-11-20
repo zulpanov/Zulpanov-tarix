@@ -814,6 +814,15 @@ html[data-th="tong"] .clsc,html[data-th="vodiy"] .clsc{background:var(--card);bo
 .ju-it.jc.ok{border-color:var(--c);opacity:.78}.ju-it.jc.ok small{color:var(--c)}.ju-it.jc.ok::before{content:"✓";position:absolute;top:5px;right:8px;font-size:13px;color:var(--c)}
 .ju-it.jc.bad{border-color:var(--bad)}
 @media (min-width:1024px){.jc-g{grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}.ju-it.jc{min-height:110px;font-size:15px}.ju-it.jc.r{font-size:14px}}
+.pm-al{text-align:left;margin:10px 0}.pm-how{margin:6px 0 4px;font-size:13px}
+.pm-pay .pm-s{color:var(--mu);font-size:13px;margin:12px 0 6px}.pm-pay .pm-s:first-child{margin-top:0}.pm-gold{color:var(--ac)}
+.pm-tp{display:flex;width:100%;justify-content:space-between;align-items:center;gap:8px;padding:12px 14px;margin-top:8px;border:1px solid var(--line);border-radius:14px;background:var(--card2);color:var(--tx);font-weight:600;font-size:14.5px;font-family:inherit;cursor:pointer}.pm-tp small{color:var(--mu);font-weight:500}.pm-tp b{color:var(--ac)}.pm-tp.on{border:2px solid var(--ac);background:rgba(226,181,76,.1)}
+.pm-cc{background:linear-gradient(135deg,#1d4ed8,#0e7490);color:#fff;border-radius:18px;padding:14px 16px}.pm-cc-h{display:flex;justify-content:space-between;align-items:center}.pm-cc small{opacity:.85;font-size:11.5px;letter-spacing:.04em}.pm-cn{font:700 21px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:1.5px;margin:10px 0 6px}.pm-cp{border:0;background:rgba(255,255,255,.2);color:#fff;border-radius:10px;padding:5px 10px;font-weight:600;font-size:12.5px;font-family:inherit;cursor:pointer}
+.pm-up{display:flex;flex-direction:column;align-items:center;gap:8px;border:2px dashed rgba(226,181,76,.55);border-radius:16px;padding:16px;text-align:center;color:var(--ac);font-weight:600;font-size:14px;cursor:pointer;margin:0}.pm-up small{display:block;color:var(--mu);font-weight:500;font-size:12px;margin-top:2px}.pm-up img{max-height:180px;max-width:100%;border-radius:10px}
+.pm-pst{border-radius:16px;padding:12px 14px;margin-bottom:10px;font-size:14px}.pm-pst small{display:block;color:var(--mu);margin-top:3px;font-size:12.5px}.pm-pst.w{background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.45)}.pm-pst.y{background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.5)}.pm-pst.n{background:rgba(244,63,94,.1);border:1px solid rgba(244,63,94,.45)}
+.pm-lnk{border:0;background:none;color:var(--ac);font-weight:600;font-size:13px;font-family:inherit;padding:6px 0 0;cursor:pointer;text-decoration:underline;display:block}
+.pma-pn{font-size:12px;background:rgba(226,181,76,.18);color:var(--ac);border-radius:8px;padding:2px 8px;vertical-align:middle}
+.pma-pay{display:flex;gap:12px;padding:10px 0;border-top:1px solid var(--line)}.pma-pay:first-child{border-top:0}.pma-pay>img{width:72px;height:96px;object-fit:cover;border-radius:10px;flex:none;cursor:zoom-in;background:#fff}.pma-pay>div{flex:1;min-width:0}.pma-pb{display:flex;flex-wrap:wrap;gap:6px}.pma-pb .btn{margin:0;width:auto;padding:0 10px;height:34px;font-size:12.5px}.pma-pb .pma-no{color:var(--bad)}
 .kbg{display:none;text-align:center;font-size:12.5px;color:var(--mu);margin-top:14px}.kbg b{color:var(--tx);background:rgba(var(--w),.08);border-radius:6px;padding:1px 6px;font-weight:600}
 </style>
 </head>
@@ -3465,7 +3474,7 @@ const PM = (() => {
     try {
       if (!unC) { unC = DBA.on("c/pm", v => { cfg = v || {}; refresh(); }); DBA.on("c/tc", v => { tcfg = v || {}; try { TCH.cfgChanged(); } catch (e) {} }); }
       const c = cur(), u = c && c.uid ? String(c.uid) : null;
-      if (u !== mUid) { if (unM) unM(); unM = null; me = null; mUid = u; if (u) unM = DBA.on("pm/" + u, v => { me = v; refresh(); }); }
+      if (u !== mUid) { if (unM) unM(); unM = null; me = null; mUid = u; if (u) { let first = true; unM = DBA.on("pm/" + u, v => { const was = me && me.e > now(); me = v; if (!first && !was && v && v.e > now() && v.src === "pay") { try { FX.toast("🎉 To‘lov tasdiqlandi — Premium yoqildi!", "up"); FX.burst(innerWidth / 2, 160, 50, 7); } catch (e) {} } first = false; refresh(); }); } }
     } catch (e) {}
   }
   const left = () => (me && me.e ? me.e - now() : 0);
@@ -3482,16 +3491,24 @@ const PM = (() => {
   }
   const okSet = s => is() || !lockSet(s);
   const badge = s => (!is() && lockSet(s) ? " 💎" : "");
-  function gate(k, fn) { watch(); if (is() || !f(k)) return fn(); wall(); }
-  function wall() { FX.toast("💎 Bu bo‘lim Premium foydalanuvchilar uchun"); open(); }
-  // O'yinlarda premium mavzu tanlanganda chiqadigan oyna
-  function ask() {
+  function gate(k, fn) { watch(); if (is() || !f(k)) return fn(); const x = FEAT.find(z => z[0] === k); wall(x ? x[1] + " «" + x[2] + "»" : ""); }
+  function wall(t) { ask(typeof t === "string" ? t : ""); }
+  // Qulflangan bo'lim/mavzu bosilganda: nega Premium, nimalar ochiladi, qanday olinadi
+  const priceMin = () => { const v = tars().map(t => +String(t.p || "").replace(/\D/g, "")).filter(Boolean); return v.length ? Math.min(...v) : 0; };
+  const som = n => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, " ") + " so‘m";
+  function ask(t) {
     const o0 = document.querySelector(".pm-ask"); if (o0) o0.remove();
+    const inc = included().slice(0, 6), pm = priceMin(), hasCard = !!(cfg.card && cfg.card.n);
     const o = document.createElement("div"); o.className = "pm-ask";
-    o.innerHTML = `<div class="card pm-ask-c"><div class="pm-gem">💎</div><h1>Bu mavzu Premium</h1><div class="sub">Premium bilan barcha mavzular o‘yinlarda ham ochiladi.</div><button class="btn" data-x="buy">💎 Premium olish</button><button class="btn ghost" data-x="no">Yopish</button></div>`;
-    o.onclick = e => { const b = e.target.closest("[data-x]"); if (e.target === o || b) { o.remove(); if (b && b.dataset.x === "buy") open(); } };
+    o.innerHTML = `<div class="card pm-ask-c"><div class="pm-gem">🔒💎</div><h1>${t ? esc(t) + " — Premium" : "Bu bo‘lim Premium"}</h1>
+      <div class="sub">Bu ${t ? "bo‘lim" : "mavzu"} Premium o‘quvchilar uchun. Premium olsangiz shu va quyidagilar ochiladi:</div>
+      ${inc.length ? `<ul class="pm-l pm-al">${inc.map(x => `<li>${esc(x)}</li>`).join("")}</ul>` : ""}
+      <div class="sub pm-how">${hasCard ? "💳 Kartaga to‘laysiz, chekni shu yerga yuborasiz — ustoz tasdiqlashi bilan Premium o‘zi yoqiladi." : "✉️ Ustozga yozasiz, to‘lovdan keyin Premium yoqiladi."}</div>
+      <button class="btn" data-x="buy">💎 Premium olish${pm ? " — " + som(pm) + "dan" : ""}</button><button class="btn ghost" data-x="no">Keyinroq</button></div>`;
+    o.onclick = e => { const b = e.target.closest("[data-x]"); if (e.target === o || b) { o.remove(); if (b && b.dataset.x === "buy") pay(); } };
     document.body.appendChild(o);
   }
+  function pay() { open(); setTimeout(() => { const el = $("pmBuy"); if (el) el.scrollIntoView({ behavior: "smooth", block: "start" }); }, 250); }
   const setOf = id => (typeof SETS !== "undefined" ? SETS.find(x => x.id === id) : null);
   // Tanlash ro'yxatidagi premium mavzularni belgilash (checkbox yoki [data-s] qatorlar)
   function markBoxes(root) {
@@ -3502,7 +3519,7 @@ const PM = (() => {
   }
   // Ro'yxatdan faqat ochiq mavzularni qoldirish; bo'sh qolsa — oyna
   const free = L => (is() ? L : (L || []).filter(x => x && !lockSet(x)));
-  try { document.addEventListener("click", e => { const t = e.target && e.target.closest && e.target.closest(".pm-lk"); if (t && !is()) { e.preventDefault(); e.stopPropagation(); ask(); } }, true); } catch (e) {}
+  try { document.addEventListener("click", e => { const t = e.target && e.target.closest && e.target.closest(".pm-lk"); if (t && !is()) { e.preventDefault(); e.stopPropagation(); const st = setOf(t.dataset.s || (t.querySelector("input[value]") || {}).value); ask(st ? "«" + (st.title || st.n || st.g) + "»" : ""); } }, true); } catch (e) {}
   const anyLock = () => Object.values(cfg.f || {}).some(Boolean) || Object.values(cfg.g || {}).some(Boolean) || Object.values(cfg.s || {}).some(Boolean);
   const tars = () => (Array.isArray(cfg.tar) ? cfg.tar : Object.values(cfg.tar || {})).filter(t => t && t.n);
   const dt = ms => { const d = new Date(ms), z = n => String(n).padStart(2, "0"); return `${z(d.getDate())}.${z(d.getMonth() + 1)}.${d.getFullYear()}`; };
@@ -3545,12 +3562,13 @@ const PM = (() => {
     el.innerHTML = `<div id="pmPage"><div class="card pm-hero"><div class="pm-gem">💎</div><h1>Premium</h1><div class="sub" style="white-space:pre-line">${esc(cfg.txt || DEF_TXT)}</div>${st}</div>
       <div class="card" style="margin-top:12px"><h1>✨ Premium’da nimalar ochiladi</h1>${inc.length ? `<ul class="pm-l">${inc.map(x => `<li>${esc(x)}</li>`).join("")}</ul>` : `<div class="sub" style="margin:0">Hozircha barcha bo‘limlar bepul 🎉</div>`}</div>
       ${trialOk ? `<button class="btn" id="pmTr" style="margin-top:12px;width:100%">🎁 ${+cfg.trial} kunlik bepul sinovni boshlash</button>` : ""}
-      ${T.length ? `<div class="hsec-t">Tariflar</div><div class="pm-ts">${T.map((t, i) => `<div class="card pm-t"><b>${esc(t.n)}</b><div class="pm-p">${esc(t.p || "")}</div><small>${+t.d || 0} kun</small><button class="btn sm" data-buy="${i}">Sotib olish</button></div>`).join("")}</div>
+      ${T.length && cfg.card && cfg.card.n && c && !adm() ? payBox(T) : T.length ? `<div class="hsec-t">Tariflar</div><div class="pm-ts">${T.map((t, i) => `<div class="card pm-t"><b>${esc(t.n)}</b><div class="pm-p">${esc(t.p || "")}</div><small>${+t.d || 0} kun</small><button class="btn sm" data-buy="${i}">Sotib olish</button></div>`).join("")}</div>
         <div class="card" style="margin-top:10px"><label style="margin-top:0">🎟 Promo-kod (ustozingiz bergan bo‘lsa)</label><input id="pmPc" maxlength="12" placeholder="Masalan: KARIMOV" style="text-transform:uppercase;margin-bottom:0"></div>
         <div class="sub" style="text-align:center;margin-top:8px">«Sotib olish» tugmasi ustozga Telegram’da tayyor xabar ochadi. To‘lovdan keyin Premium yoqiladi.</div>` : `<div class="card" style="margin-top:12px"><div class="sub" style="margin:0">Premium olish uchun ustozga yozing: <b>@${esc(contact())}</b></div><button class="btn sm" id="pmCt" style="margin-top:10px">✉️ Ustozga yozish</button></div>`}
       ${+cfg.bonus > 0 && c ? `<div class="card" style="margin-top:12px"><h1>🤝 Do‘stingizni taklif qiling</h1><div class="sub" style="margin:0">Havolangiz orqali kirgan do‘stingiz kamida 1 ta test ishlasa, sizga <b>+${+cfg.bonus} kun</b> Premium qo‘shiladi.</div><div id="pmRef"></div></div>` : ""}
       </div>`;
     el.querySelectorAll("[data-buy]").forEach(b => b.onclick = () => buy(T[+b.dataset.buy]));
+    if ($("pmBuy")) bindPay(T);
     if ($("pmPc") && c) DBA.get("upc/" + c.uid).then(v => { if (v && $("pmPc") && !$("pmPc").value) $("pmPc").value = v; }).catch(() => {});
     if ($("pmCt")) $("pmCt").onclick = () => openTg(`https://t.me/${contact()}?text=${encodeURIComponent("Assalomu alaykum! Premium olmoqchiman." + (c ? "\n🔑 Login: " + (c.login || c.uid) : ""))}`);
     if ($("pmRef")) { try { $("pmRef").innerHTML = REF.card(); REF.bind(); } catch (e) {} }
@@ -3558,6 +3576,54 @@ const PM = (() => {
       $("pmTr").disabled = true;
       try { await DBA.set("pm/" + c.uid, { e: now() + (+cfg.trial) * DAY - 6e4, src: "trial", at: now() }); FX.toast("🎁 Sinov muddati boshlandi!", "up"); try { FX.burst(innerWidth / 2, 160, 40, 6); } catch (e) {} }
       catch (e) { $("pmTr").disabled = false; FX.toast("⚠️ Sinovni boshlab bo‘lmadi"); }
+    };
+  }
+  // 💳 To'lov: tarif → karta → chek rasmi → ustozga
+  let selT = 0, imgData = "";
+  const cardFmt = n => String(n || "").replace(/\D/g, "").replace(/(\d{4})(?=\d)/g, "$1 ");
+  function payBox(T) {
+    if (selT >= T.length) selT = 0; const t = T[selT], C = cfg.card;
+    return `<div id="pmBuy"><div class="hsec-t">💳 Premium olish</div><div id="pmPs"></div>
+      <div class="card pm-pay" id="pmPf"><div class="pm-s">1) Tarifni tanlang</div>
+        ${T.map((x, i) => `<button class="pm-tp${i === selT ? " on" : ""}" data-tp="${i}"><span>${esc(x.n)} <small>· ${+x.d || 0} kun</small></span><b>${esc(x.p || "")}</b></button>`).join("")}
+        <div class="pm-s">2) Shu kartaga <b class="pm-gold">${esc(t.p || "")}</b> o‘tkazing</div>
+        <div class="pm-cc"><div class="pm-cc-h"><small>${esc(C.b || "Karta")} · karta raqami</small><button class="pm-cp" id="pmCp">📋 Nusxa</button></div><div class="pm-cn">${esc(cardFmt(C.n))}</div><small>${esc(C.h || "")}</small></div>
+        <div class="pm-s">3) To‘lov chekini (skrinshot) yuklang</div>
+        <label class="pm-up"><input type="file" accept="image/*" id="pmFile" hidden><img id="pmPrev" class="hide" alt=""><span id="pmUpT">📎 Chek rasmini tanlang<small>Click, Payme yoki bank ilovasidan skrinshot</small></span></label>
+        <label style="margin-top:12px">🎟 Promo-kod (ustozingiz bergan bo‘lsa)</label><input id="pmPc" maxlength="12" placeholder="Masalan: KARIMOV" style="text-transform:uppercase;margin-bottom:0">
+        <button class="btn" id="pmSend" disabled style="margin-top:12px;width:100%">📤 Chekni yuborish</button><div class="accerr" id="pmPe"></div>
+        <div class="sub" style="text-align:center;margin:8px 0 0">Chek ustozga darhol boradi. Tasdiqlangach Premium o‘zi yoqiladi va xabar keladi.</div></div></div>`;
+  }
+  function shrink(file) {
+    return new Promise((ok, no) => { const r = new FileReader(); r.onerror = () => no(new Error("Rasmni o‘qib bo‘lmadi")); r.onload = () => { const im = new Image(); im.onerror = () => no(new Error("Bu fayl rasm emas")); im.onload = () => {
+      let q = .78, m = 1100; const go = () => { const k = Math.min(1, m / Math.max(im.width, im.height)), cv = document.createElement("canvas"); cv.width = Math.round(im.width * k); cv.height = Math.round(im.height * k); const x = cv.getContext("2d"); x.fillStyle = "#fff"; x.fillRect(0, 0, cv.width, cv.height); x.drawImage(im, 0, 0, cv.width, cv.height); const d = cv.toDataURL("image/jpeg", q); if (d.length > 420000 && m > 500) { m -= 200; q -= .08; return go(); } ok(d); }; go(); }; im.src = r.result; }; r.readAsDataURL(file); });
+  }
+  async function payStatus() {
+    const el = $("pmPs"), c = cur(); if (!el || !c) return;
+    let id = null, x = null; try { id = await DBA.get("payu/" + c.uid); if (id) x = await DBA.get("pay/" + id); } catch (e) {}
+    if (!$("pmPs") || !x) return;
+    if (x.st === "new") { el.innerHTML = `<div class="pm-pst w">⏳ <b>Chekingiz tekshirilmoqda</b><small>${esc(x.tn || "")} · ${esc(x.p || "")} · ustoz tasdiqlashi bilan Premium o‘zi yoqiladi.</small><button class="pm-lnk" id="pmAgain">Boshqa chek yuborish</button></div>`; $("pmPf").classList.add("hide"); $("pmAgain").onclick = () => { el.innerHTML = ""; $("pmPf").classList.remove("hide"); }; }
+    else if (x.st === "no") el.innerHTML = `<div class="pm-pst n">⚠️ <b>Oxirgi chek tasdiqlanmadi</b><small>Sabab: ${esc(x.why || "—")}. Quyida qayta yuborishingiz mumkin.</small></div>`;
+    else if (x.st === "ok" && left() > 0 && now() - (x.dt || 0) < 3 * DAY) el.innerHTML = `<div class="pm-pst y">🎉 <b>To‘lov tasdiqlandi — Premium yoqildi!</b><small>Yana uzaytirish uchun quyidan to‘lashingiz mumkin.</small></div>`;
+  }
+  function bindPay(T) {
+    const c = cur(); payStatus();
+    $("pmBuy").querySelectorAll("[data-tp]").forEach(b => b.onclick = () => { selT = +b.dataset.tp; render(); });
+    $("pmCp").onclick = async () => { const n = String(cfg.card.n || "").replace(/\D/g, ""); try { await navigator.clipboard.writeText(n); } catch (e) { const t = document.createElement("textarea"); t.value = n; document.body.appendChild(t); t.select(); try { document.execCommand("copy"); } catch (x) {} t.remove(); } FX.toast("📋 Karta raqami nusxalandi", "up"); };
+    if (imgData) { $("pmPrev").src = imgData; $("pmPrev").classList.remove("hide"); $("pmUpT").innerHTML = "✅ Chek tanlandi<small>Boshqasini tanlash uchun bosing</small>"; $("pmSend").disabled = false; }
+    $("pmFile").onchange = async e => { const f = e.target.files && e.target.files[0]; if (!f) return; $("pmPe").textContent = ""; $("pmUpT").innerHTML = "⏳ Tayyorlanmoqda…";
+      try { imgData = await shrink(f); $("pmPrev").src = imgData; $("pmPrev").classList.remove("hide"); $("pmUpT").innerHTML = "✅ Chek tanlandi<small>Boshqasini tanlash uchun bosing</small>"; $("pmSend").disabled = false; }
+      catch (er) { $("pmUpT").innerHTML = "📎 Chek rasmini tanlang<small>Click, Payme yoki bank ilovasidan skrinshot</small>"; $("pmPe").textContent = "⚠️ " + er.message; } };
+    $("pmSend").onclick = async () => {
+      if (!imgData) return; const t = T[selT], b = $("pmSend"); b.disabled = true; b.textContent = "⏳ Yuborilmoqda…"; $("pmPe").textContent = "";
+      const id = Date.now().toString(36) + Math.random().toString(36).slice(2, 8), pc = await savePromo();
+      const x = { uid: c.uid, f: c.f || "", l: c.l || "", g: c.g || "", login: c.login || "", tn: t.n, d: +t.d || 30, p: t.p || "", pc: pc || "", img: imgData, at: now(), st: "new" };
+      try {
+        await DBA.set("pay/" + id, x); await DBA.set("payu/" + c.uid, id);
+        imgData = ""; FX.toast("📤 Chek ustozga yuborildi!", "up");
+        try { await TGW_.v("payNew", { id }); } catch (e) {}
+        render();
+      } catch (e) { b.disabled = false; b.textContent = "📤 Chekni yuborish"; $("pmPe").textContent = "⚠️ Yuborib bo‘lmadi: " + ((e && e.message) || e); }
     };
   }
   function homeBox() {
@@ -3589,7 +3655,7 @@ const PM = (() => {
     watch();
   }
   function reset() { try { if (unC) unC(); if (unM) unM(); } catch (e) {} unC = unM = null; mUid = null; me = null; watch(); }
-  return { watch, reset, preview, ask, markBoxes, free, is, lockSet, okSet, badge, gate, wall, open, homeBox, install, gk, FEAT, DAY, get cfg() { return cfg; }, get tcfg() { return tcfg; }, get me() { return me; } };
+  return { watch, reset, preview, ask, pay, markBoxes, free, is, lockSet, okSet, badge, gate, wall, open, homeBox, install, gk, FEAT, DAY, get cfg() { return cfg; }, get tcfg() { return tcfg; }, get me() { return me; } };
 })();
 // Ustoz paneli: 💎 Premium
 const PMADM = (() => {
@@ -3639,10 +3705,13 @@ const PMADM = (() => {
       <div class="card"><h1>💎 Premium</h1><div class="pm-sum"><div><b>${act.length}</b><span>faol premium</span></div><div><b>${low.length}</b><span>3 kunda tugaydi</span></div><div><b>${T.length}</b><span>tarif</span></div></div>
         <button class="btn sm" style="margin-top:10px" onclick="PM.preview(true)">👁 O‘quvchi ko‘zi bilan ko‘rish</button>
         <div class="sub" style="margin:8px 0 0">Siz (ustoz) hamma bo‘limni doim ochiq ko‘rasiz, shuning uchun qulflar sizga chiqmaydi. Tekshirish uchun yuqoridagi tugmani bosing. Uy vazifasi qilib bergan testingiz premium bo‘lsa ham o‘quvchiga ochiladi.</div></div>
+      <div class="card" style="margin-top:12px"><h1>💳 To‘lovlar <span class="pma-pn" id="pmaPn"></span></h1><div id="pmaPay"><div class="sub" style="margin:0">Yuklanmoqda…</div></div></div>
       <div class="card" style="margin-top:12px"><h1>🔐 Nimalar premium bo‘ladi</h1><div class="sub" style="margin:0 0 8px">Yoqilgan bo‘lim faqat Premium o‘quvchilarga ochiladi. O‘zgarish darhol kuchga kiradi.</div><div id="pmaF"></div></div>
       <div class="card" style="margin-top:12px"><h1>🏷 Tariflar</h1><div id="pmaT"></div><div class="row" style="margin-top:8px"><button class="btn sm ghost" id="pmaTa">➕ Tarif qo‘shish</button><button class="btn sm" id="pmaTs">💾 Saqlash</button></div><div class="accerr" id="pmaTe"></div></div>
       <div class="card" style="margin-top:12px"><h1>🎁 Bonus va sozlamalar</h1>
         <div class="row"><div style="flex:1"><label>Do‘st taklifi uchun bonus (kun, 0 — o‘chiq)</label><input id="pmaB" type="number" min="0" max="365" value="${+C.bonus || 0}"></div><div style="flex:1"><label>Yangi o‘quvchiga bepul sinov (kun, 0 — o‘chiq)</label><input id="pmaTr" type="number" min="0" max="60" value="${+C.trial || 0}"></div></div>
+        <label>💳 Karta raqami (o‘quvchilar shunga to‘laydi)</label><input id="pmaCn" inputmode="numeric" placeholder="9860 1234 5678 9012" value="${esc((C.card || {}).n || "")}">
+        <div class="row"><div style="flex:2"><label>Kartadagi ism-familiya</label><input id="pmaCh" placeholder="ZULPANOV ALIMQUL" value="${esc((C.card || {}).h || "")}"></div><div style="flex:1"><label>Karta turi</label><input id="pmaCb" placeholder="HUMO" value="${esc((C.card || {}).b || "")}"></div></div>
         <label>Telegram kontakt (to‘lov uchun)</label><input id="pmaC" value="${esc(C.ct || "@ZULPANOV_METHODS")}">
         <label>Premium sahifasidagi matn</label><textarea id="pmaX" rows="3" style="width:100%" placeholder="Bo‘sh qolsa odatdagi matn chiqadi">${esc(C.txt || "")}</textarea>
         <button class="btn sm" id="pmaS" style="margin-top:8px">💾 Saqlash</button><div class="accerr" id="pmaSe"></div>
@@ -3655,12 +3724,14 @@ const PMADM = (() => {
       <div class="card" style="margin-top:12px"><h1>🔐 Sertifikat variantlari kalitlari</h1><div class="sub" id="pmaK" style="margin:0">Tekshirilmoqda…</div>
         <div class="row" style="margin-top:8px"><input id="pmaKi" placeholder="Kalitlar havolasini shu yerga qo‘ying" style="flex:1"><button class="btn sm" id="pmaKs">💾</button></div><div class="accerr" id="pmaKe"></div></div>
       <div class="card" style="margin-top:12px"><h1>📋 Faol premiumlar</h1>${TGB.on() ? `<button class="btn sm ghost" id="pmaRm" ${low.length ? "" : "disabled"}>🤖 Tugayotganlarga bot orqali eslatma</button><div class="accerr" id="pmaRme"></div>` : `<div class="tnote">Bot orqali eslatma yuborish uchun admin panelni Telegram’dagi bot ichidan oching.</div>`}<div id="pmaA"></div></div>`;
-    drawCfg(); drawTar(T); drawRes(); drawAct();
+    drawCfg(); drawTar(T); drawRes(); drawAct(); drawPay();
     $("pmaTa").onclick = () => { const L = readTar(); L.push({ n: "", d: 30, p: "" }); drawTar(L); };
     $("pmaTs").onclick = async () => { const L = readTar().filter(t => t.n); try { await DBA.set("c/pm/tar", L.length ? L : null); $("pmaTe").textContent = "✅ Saqlandi"; } catch (e) { $("pmaTe").textContent = "⚠️ " + (e.message || e); } };
     $("pmaS").onclick = async () => {
       const b = Math.max(0, Math.min(365, parseInt($("pmaB").value) || 0)), tr = Math.max(0, Math.min(60, parseInt($("pmaTr").value) || 0));
-      const up = { bonus: b || null, trial: tr || null, ct: $("pmaC").value.trim().slice(0, 40) || null, txt: $("pmaX").value.trim().slice(0, 800) || null };
+      const cn = $("pmaCn").value.replace(/\D/g, "").slice(0, 19);
+      if (cn && cn.length < 16) { $("pmaSe").textContent = "⚠️ Karta raqami 16 ta raqamdan iborat bo‘lsin"; return; }
+      const up = { bonus: b || null, trial: tr || null, ct: $("pmaC").value.trim().slice(0, 40) || null, txt: $("pmaX").value.trim().slice(0, 800) || null, card: cn ? { n: cn, h: $("pmaCh").value.trim().toUpperCase().slice(0, 40), b: $("pmaCb").value.trim().slice(0, 20) } : null };
       if (b && !+C.bonus) up.bAt = now();
       try { await DBA.update("c/pm", up); $("pmaSe").textContent = "✅ Saqlandi"; } catch (e) { $("pmaSe").textContent = "⚠️ " + (e.message || e); }
     };
@@ -3718,6 +3789,23 @@ const PMADM = (() => {
       try { await grant(b.dataset.dt, 0, e); FX.toast("💎 " + dt(e) + " gacha berildi", "up"); } catch (er) { FX.toast("⚠️ " + (er.message || er)); } drawRes(); drawAct();
     });
     el.querySelectorAll("[data-rv]").forEach(b => b.onclick = async () => { if (!confirm(nm(b.dataset.rv) + ": premium bekor qilinsinmi?")) return; try { const v = { e: now(), src: "off", at: now() }; await DBA.set("pm/" + b.dataset.rv, v); pms[b.dataset.rv] = v; FX.toast("✖ Bekor qilindi"); } catch (e) { FX.toast("⚠️ " + (e.message || e)); } drawRes(); drawAct(); });
+  }
+  async function drawPay() {
+    const el = $("pmaPay"); if (!el) return;
+    let L = {}; try { L = (await DBA.eq("pay", "st", "new")) || {}; } catch (e) { el.innerHTML = `<div class="sub" style="margin:0">⚠️ ${esc(e.message || e)}</div>`; return; }
+    if (!$("pmaPay")) return;
+    const T = (Array.isArray(PM.cfg.tar) ? PM.cfg.tar : Object.values(PM.cfg.tar || {})).filter(t => t && t.n), A = Object.entries(L).sort((a, b) => (b[1].at || 0) - (a[1].at || 0));
+    $("pmaPn").textContent = A.length ? A.length + " ta yangi" : "";
+    const tm = ms => { const d = new Date(ms), z = n => String(n).padStart(2, "0"); return `${z(d.getDate())}.${z(d.getMonth() + 1)} ${z(d.getHours())}:${z(d.getMinutes())}`; };
+    el.innerHTML = !(PM.cfg.card && PM.cfg.card.n) ? `<div class="tnote" style="margin:0">Karta raqami hali kiritilmagan — pastdagi «🎁 Bonus va sozlamalar»da yozing. Shundan keyin o‘quvchilar chek yubora oladi.</div>` : A.length ? A.map(([id, x]) => `<div class="pma-pay" data-id="${esc(id)}"><img src="${esc(x.img || "")}" alt="chek" data-zoom="1"><div><b>${esc(((x.f || "") + " " + (x.l || "")).trim())}</b>${x.g ? ` <small>· ${esc(x.g)}</small>` : ""}<div class="sub" style="margin:2px 0 6px">${esc(x.tn || "")} · ${esc(x.p || "")} · ${tm(x.at)}${x.pc ? " · 🎟 " + esc(x.pc) : ""}</div>
+        <div class="pma-pb">${T.map(t => `<button class="btn sm${+t.d === +x.d ? "" : " ghost"}" data-ok="${+t.d}">✅ ${esc(t.n)}</button>`).join("")}<button class="btn sm ghost pma-no" data-no="sum">❌ Summa kam</button><button class="btn sm ghost pma-no" data-no="bad">❌ Chek noto‘g‘ri</button></div></div></div>`).join("") : `<div class="sub" style="margin:0">Yangi to‘lov yo‘q. Chek kelsa, shu yerda va Telegram’da bot orqali ko‘rasiz.</div>`;
+    el.querySelectorAll("[data-zoom]").forEach(im => im.onclick = () => { const o = document.createElement("div"); o.className = "pm-ask"; o.innerHTML = `<img src="${im.src}" style="max-width:96vw;max-height:90vh;border-radius:12px">`; o.onclick = () => o.remove(); document.body.appendChild(o); });
+    el.querySelectorAll(".pma-pay").forEach(r => r.onclick = async e => {
+      const b = e.target.closest("[data-ok],[data-no]"); if (!b) return; const id = r.dataset.id, ok = !!b.dataset.ok;
+      r.querySelectorAll("button").forEach(x => x.disabled = true);
+      try { const res = await TGW_.v("payAct", ok ? { id, ok: true, d: +b.dataset.ok } : { id, ok: false, why: b.dataset.no }); FX.toast(res.already ? "Bu to‘lov allaqachon ko‘rib chiqilgan" : res.res, "up"); try { await load(); } catch (x) {} drawPay(); drawAct(); }
+      catch (er) { r.querySelectorAll("button").forEach(x => x.disabled = false); FX.toast("⚠️ " + er.message); }
+    });
   }
   function drawRes() {
     const el = $("pmaR"); if (!el) return; const s = q.trim().toLowerCase();
@@ -4463,7 +4551,7 @@ const HB=(()=>{
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
 function start(){
   FROM_T=false;TEAMWIN="";HWCUR=HWNEXT;HWNEXT=null;
-  if(!HWCUR&&!PM.okSet(set)&&!(set.ms&&MSACC.saved(set))){PM.wall();return}
+  if(!HWCUR&&!PM.okSet(set)&&!(set.ms&&MSACC.saved(set))){PM.wall("«"+(set.title||set.n||set.g)+"»");return}
   if(set.ms&&!HWCUR&&!MSACC.can(set)&&!MSACC.saved(set)){FX.toast("🔒 Bu variant hali yopiq. Ustoz ruxsat berganda ochiladi.");return}
   if(set.ms&&set.ms.enc){if(!ACCT.cur)return;const s0=set,h0=HWCUR;FX.toast("⏳ Variant yuklanmoqda…");MSK.open(s0).then(()=>{set=s0;HWNEXT=h0;start()}).catch(e=>{const m=String(e&&e.message);if(m==="deny")PM.wall();else FX.toast(m==="nokey"?"⚠️ Bu variant hali tayyorlanmoqda. Ustozga xabar bering.":"⚠️ Variantni yuklab bo‘lmadi. Internetni tekshiring.")});return}
   if(set.ms){const ac=ACCT.cur;if(!ac)return;FN=ac.f;LN=ac.l;name=FN+" "+LN;return MS.start()}

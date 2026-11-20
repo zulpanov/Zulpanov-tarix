@@ -262,6 +262,22 @@
       "$t": {
         ".read": "auth != null && auth.uid === $t"
       }
+    },
+    "pay": {
+      ".read": "auth != null && root.child('admins').child(auth.uid).val() === true",
+      ".indexOn": [
+        "st"
+      ],
+      "$id": {
+        ".read": "auth != null && (root.child('admins').child(auth.uid).val() === true || data.child('uid').val() === auth.uid)",
+        ".write": "auth != null && (root.child('admins').child(auth.uid).val() === true || (!data.exists() && newData.child('uid').val() === auth.uid && newData.child('st').val() === 'new' && newData.child('img').isString() && newData.child('img').val().length < 450000))"
+      }
+    },
+    "payu": {
+      "$uid": {
+        ".read": "auth != null && (auth.uid === $uid || root.child('admins').child(auth.uid).val() === true)",
+        ".write": "auth != null && (auth.uid === $uid || root.child('admins').child(auth.uid).val() === true)"
+      }
     }
   }
 }
