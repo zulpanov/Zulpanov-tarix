@@ -5990,12 +5990,13 @@ const XRON = (() => {
 // ================== 🕵️ KIM BU?: ishoralar bo'yicha tarixiy shaxsni topish (data/kim<sinf>.js) ==================
 const KIMG = (() => {
   const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-  const CL = ["7", "8", "9", "10", "11"], HAS = ["7"], PTS = [10, 7, 5, 3], RN = 10;
+  const CL = ["6", "7", "8", "9", "10", "11"], HAS = ["6", "7", "7j", "8", "8j", "9", "9j", "10", "10j", "11", "11j"], PTS = [10, 7, 5, 3], RN = 10;
+  const GR = c => String(c).replace("j", ""), SUBJ = c => c === "6" ? "Qadimgi dunyo tarixi" : /j$/.test(c) ? "Jahon tarixi" : "O‘zbekiston tarixi";
   let S = { c: "7" }, G = null, P = {};
   try { Object.assign(S, JSON.parse(localStorage.getItem("zm_km") || "{}")); } catch (e) {}
   if (!HAS.includes(S.c)) S.c = "7";
   const save = () => { try { localStorage.setItem("zm_km", JSON.stringify(S)); } catch (e) {} };
-  const load = c => (window.KIM && window.KIM[c]) ? Promise.resolve() : (P[c] = P[c] || new Promise((ok, no) => { const sc = document.createElement("script"); sc.src = "data/kim" + c + ".js?v=1"; sc.onload = ok; sc.onerror = () => { P[c] = null; no(new Error("Yuklanmadi. Internetni tekshiring.")); }; document.head.appendChild(sc); }));
+  const load = c => (window.KIM && window.KIM[c]) ? Promise.resolve() : (P[c] = P[c] || new Promise((ok, no) => { const sc = document.createElement("script"); sc.src = "data/kim" + c + ".js?v=2"; sc.onload = ok; sc.onerror = () => { P[c] = null; no(new Error("Yuklanmadi. Internetni tekshiring.")); }; document.head.appendChild(sc); }));
   const bank = () => ((window.KIM || {})[S.c] || []);
   const shuf = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
   const me = () => ACCT.cur, full = c => ((c.f || "") + " " + (c.l || "")).trim();
@@ -6018,14 +6019,17 @@ const KIMG = (() => {
   }
   async function menu() {
     const B = bank();
-    $("tz").innerHTML = head("🕵️ Kim bu?", S.c + "-sinf · O‘zbekiston tarixi") +
+    $("tz").innerHTML = head("🕵️ Kim bu?", GR(S.c) + "-sinf · " + SUBJ(S.c)) +
       `<div class="km-hero"><span class="km-hi">🕵️</span><b>Ishoralarga qarab shaxsni toping</b><small>Kam ishora — ko‘p ball! ${RN} ta shaxs.</small></div>
-      <div class="jf-lb">SINF</div><div class="jf-cls">${CL.map(c => `<button data-c="${c}"${c === S.c ? ' class="on"' : ""}${HAS.includes(c) ? "" : " disabled"}>${c}-sinf${HAS.includes(c) ? "" : " · tez kunda"}</button>`).join("")}</div>
+      <div class="jf-lb">SINF</div><div class="jf-cls">${CL.map(c => `<button data-c="${c}"${c === GR(S.c) ? ' class="on"' : ""}>${c}-sinf</button>`).join("")}</div>
+      ${GR(S.c) !== "6" ? `<div class="jf-lb">FAN</div><div class="jf-cls">${[[GR(S.c), "O‘zbekiston tarixi"], [GR(S.c) + "j", "Jahon tarixi"]].map(([k, n]) => `<button data-v="${k}"${k === S.c ? ' class="on"' : ""}>${n}</button>`).join("")}</div>` : ""}
       <div class="jf-lb">QOIDALAR</div><div class="card km-rule">🔎 Avval <b>1 ta ishora</b> ochiq. Topa olmasangiz — keyingisini oching.<br>⭐ Ball: 1 ishora — <b>10</b>, 2 — <b>7</b>, 3 — <b>5</b>, 4 — <b>3</b><br>❌ Xato javob — variant o‘chadi, yangi ishora ochiladi. 4-ishoradan keyingi xato — shaxs topilmadi.</div>
       <div class="xr-rc"><div><b>${B.length}</b><small>shaxs bazada</small></div><div><b id="kmBest">—</b><small>eng yaxshi ball</small></div><div><b>${RN}</b><small>shaxs o‘yinda</small></div></div>
       <button class="btn" id="kmGo" style="margin-top:14px"${B.length >= 6 ? "" : " disabled"}>▶ Boshlash</button>
-      <div class="ah">🏆 Haftaning eng yaxshi tergovchilari · ${esc(S.c)}-sinf</div><div class="card" style="padding:6px 12px" id="kmL"><div class="sub" style="text-align:center;margin:12px 0">Yuklanmoqda…</div></div>`;
-    $("tz").querySelectorAll("[data-c]").forEach(b => b.onclick = async () => { S.c = b.dataset.c; save(); try { await load(S.c); } catch (e) {} menu(); });
+      <div class="ah">🏆 Haftaning eng yaxshi tergovchilari · ${esc(GR(S.c))}-sinf · ${esc(SUBJ(S.c))}</div><div class="card" style="padding:6px 12px" id="kmL"><div class="sub" style="text-align:center;margin:12px 0">Yuklanmoqda…</div></div>`;
+    const sw = async c => { S.c = c; save(); try { await load(S.c); } catch (e) {} menu(); };
+    $("tz").querySelectorAll("[data-c]").forEach(b => b.onclick = () => { if (GR(S.c) === b.dataset.c) return; sw(b.dataset.c === "6" ? "6" : b.dataset.c + (/j$/.test(S.c) ? "j" : "")); });
+    $("tz").querySelectorAll("[data-v]").forEach(b => b.onclick = () => sw(b.dataset.v));
     $("kmGo").onclick = start;
     const k0 = S.c; const { list, best } = await board(); if (!$("kmL") || k0 !== S.c) return;
     $("kmL").innerHTML = lbHtml(list, (me() || {}).uid); if ($("kmBest")) $("kmBest").textContent = best || "—";
@@ -6042,7 +6046,7 @@ const KIMG = (() => {
   }
   function draw() {
     if (!G) return; const c = G.cur, p = c.p, n = G.P.length;
-    $("tz").innerHTML = `<div class="xr-bar"><button class="adh-b" onclick="KIMG.quit()" title="Chiqish">✕</button><div class="xr-m">Shaxs <b>${G.r + 1}</b> / ${n}<small>${S.c}-sinf · O‘zbekiston tarixi</small></div><span class="xr-sc">⭐ ${G.pts}${c.done && c.got ? ` <em>+${c.got}</em>` : ""}</span></div>
+    $("tz").innerHTML = `<div class="xr-bar"><button class="adh-b" onclick="KIMG.quit()" title="Chiqish">✕</button><div class="xr-m">Shaxs <b>${G.r + 1}</b> / ${n}<small>${GR(S.c)}-sinf · ${SUBJ(S.c)}</small></div><span class="xr-sc">⭐ ${G.pts}${c.done && c.got ? ` <em>+${c.got}</em>` : ""}</span></div>
       <div class="fq-seg xr-seg">${G.P.map((_, i) => `<i class="${i < G.r ? "d" : i === G.r ? "c" : ""}"></i>`).join("")}</div>
       ${c.done ? `<div class="km-rv${c.got ? "" : " no"}"><span class="km-av">${c.got ? esc(p.i || "👤") : "🔍"}</span><b>${esc(p.n)}</b><small>${c.got ? `${c.sh} ta ishora bilan topdingiz · +${c.got} ball` : "Bu safar topilmadi — ishoralarni o‘qib, eslab qoling"}</small></div><div class="jf-lb">BARCHA ISHORALAR</div>`
         : `<div class="km-who"><span class="km-q">❓</span><div><b>Bu kim?</b><small>${c.out.size ? `❌ ${c.out.size} ta xato` : "Ishoralarni o‘qing"}</small></div><div class="km-pt"><b>${PTS[c.sh - 1]}</b><small>ball qoldi</small></div></div>`}
@@ -6070,14 +6074,14 @@ const KIMG = (() => {
   async function finish() {
     if (!G) return; const g = G; stop();
     const u = me(), k = S.c, wk = GAME.wk(), t = Date.now() - g.t0, n = g.P.length, pts = Math.round(g.pts / (n * 10) * 100);
-    $("tz").innerHTML = head("🕵️ Natija", S.c + "-sinf", "KIMG.open()") + `<div class="sub" style="text-align:center;margin:30px 0">Saqlanmoqda…</div>`;
+    $("tz").innerHTML = head("🕵️ Natija", GR(S.c) + "-sinf", "KIMG.open()") + `<div class="sub" style="text-align:center;margin:30px 0">Saqlanmoqda…</div>`;
     let wOld = null, aOld = null; try { [wOld, aOld] = await Promise.all([DBA.get(`lb/km${wk}/${u.uid}/${k}`), DBA.get(`lb/kmall/${u.uid}/${k}`)]); } catch (e) {}
     const better = o => pts > 0 && (!o || pts > (o.p || 0) || (pts === o.p && t < (o.t || 9e9)));
     const rec = { n: full(u), p: pts, t, at: DBA.now() }, isRec = !!(aOld && aOld.p) && better(aOld);
     try { if (better(wOld)) await DBA.set(`lb/km${wk}/${u.uid}/${k}`, rec); if (better(aOld)) await DBA.set(`lb/kmall/${u.uid}/${k}`, rec); } catch (e) {}
     const msg = pts >= 85 ? "Ajoyib tergovchi! 🔥" : pts >= 65 ? "Zo‘r natija!" : pts >= 45 ? "Yaxshi! Yana bir oz mashq qiling." : "Hech qisi yo‘q — qayta urinib ko‘ring! 💪";
     const avg = g.found ? (g.cl / n).toFixed(1).replace(".", ",") : "—";
-    $("tz").innerHTML = head("🕵️ Natija", S.c + "-sinf · O‘zbekiston tarixi", "KIMG.open()") +
+    $("tz").innerHTML = head("🕵️ Natija", GR(S.c) + "-sinf · " + SUBJ(S.c), "KIMG.open()") +
       `<div class="card xr-res">${isRec ? `<div class="bz-badge">🏅 YANGI REKORD!</div>` : ""}<div class="xr-big">🕵️</div><h1 style="margin:4px 0">${msg}</h1>
         <div class="xr-ring" style="--p:${pts}"><div><b>${pts}</b><small>100 balldan</small></div></div>
         <div class="xr-rc"><div><b style="color:#4ade80">${g.found}</b><small>topildi / ${n}</small></div><div><b style="color:#F2C14E">${g.first}</b><small>1-ishorada</small></div><div><b style="color:#67E8F9">${avg}</b><small>o‘rtacha ishora</small></div></div></div>
