@@ -5358,7 +5358,7 @@ const BOSS = (() => {
 const JUFTG = (() => {
   const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const TY = { s: ["Shaxslar va ishlari", "SHAXS", "ISHI", "👤", "#E2B54C"], d: ["Sanalar va voqealar", "SANA", "VOQEA", "📅", "#22D3EE"], j: ["Davlatlar va joylar", "NOMI", "JOYI", "📍", "#F472B6"], t: ["Atamalar va ma’nolari", "ATAMA", "MA’NOSI", "📖", "#34D399"] };
-  const LV = [[6, "Oson"], [8, "O‘rta"], [10, "Qiyin"]], CL = ["6", "7", "8", "9", "10", "11"], HAS = ["6"];
+  const LV = [[6, "Oson"], [8, "O‘rta"], [10, "Qiyin"]], CL = ["6", "7", "8", "9", "10", "11"], HAS = ["6", "7"], SUBJ = { "6": "Qadimgi dunyo tarixi", "7": "O‘zbekiston tarixi" };
   const B = "#60A5FA";
   let S = { c: "6", k: "s", l: 1 }, G = null, P = {};
   try { Object.assign(S, JSON.parse(localStorage.getItem("zm_jf") || "{}")); } catch (e) {}
@@ -5382,7 +5382,7 @@ const JUFTG = (() => {
   }
   function menu() {
     const n = LV[S.l][0], L = list(), b = best(n), cnt = k => ((window.JUFT || {})[S.c] || []).filter(x => x.k === k).length;
-    $("tz").innerHTML = head("🧩 Juftini top", "Moslarini toping") +
+    $("tz").innerHTML = head("🧩 Juftini top", S.c + "-sinf · " + (SUBJ[S.c] || "Moslarini toping")) +
       `<div class="jf-cls">${CL.map(c => `<button data-c="${c}"${c === S.c ? ' class="on"' : ""}${HAS.includes(c) ? "" : " disabled"}>${c}-sinf${HAS.includes(c) ? "" : " · tez kunda"}</button>`).join("")}</div>
       <div class="jf-lb">JUFTLAR TURI</div><div class="jf-ty">${Object.entries(TY).map(([k, t]) => `<button data-k="${k}"${k === S.k ? ' class="on"' : ""}><i style="background:${t[4]}26;color:${t[4]}">${t[3]}</i><span style="flex:1"><b>${t[0]}</b><small>${cnt(k)} ta juft</small></span></button>`).join("")}</div>
       <div class="jf-lb">DARAJA</div><div class="jf-lv">${LV.map((v, i) => `<button data-l="${i}"${i === S.l ? ' class="on"' : ""}>${v[1]}<small>${v[0]} juft${v[0] > 6 ? " · 2 bosqich" : ""}</small></button>`).join("")}</div>
