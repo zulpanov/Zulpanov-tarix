@@ -260,8 +260,22 @@ function zoomTo(q){let [x0,y0,x1,y1]=q.b;let w=Math.max(x1-x0,70)*3,h=Math.max(y
   w=Math.min(w,1000);h=Math.min(h,760);let cx=(x0+x1)/2,cy=(y0+y1)/2;if(q.big<4000){cx=q.x;cy=q.y}
   let x=Math.max(0,Math.min(1000-w,cx-w/2)),y=Math.max(0,Math.min(760-h,cy-h/2));setVB([x,y,w,h])}
 
-function ask(){answered=false;usedHint=false;zoomed=false;let hop="";
-  if(list[i].k!==K){K=list[i].k;prevQ=null;hop="✈️ "+XMAP[K].n+"ga uchdik!";const m=$("map");m.style.transition="none";m.style.opacity="0";drawBase();requestAnimationFrame(()=>{m.style.transition="opacity .5s";m.style.opacity="1"})}
+// Qit'adan qit'aga: samolyot eski xaritadan chiqib ketadi, yangisiga kirib keladi
+const CPOS={E:[.52,.28],A:[.74,.34],F:[.53,.6],N:[.2,.3],S:[.31,.72],O:[.87,.76]};
+async function exitHop(from,dx,dy){const id=++flying,ov=$("ov"),a=[from.x,from.y],b=[from.x+dx*1100,from.y+dy*1100],mx=(a[0]+b[0])/2,my=(a[1]+b[1])/2-120;
+  ov.insertAdjacentHTML("afterbegin",`<path id="flyP" class="fly" d="M${a[0].toFixed(1)} ${a[1].toFixed(1)} Q${mx.toFixed(1)} ${my.toFixed(1)} ${b[0].toFixed(1)} ${b[1].toFixed(1)}"/><text id="plane" class="plane" text-anchor="middle" dominant-baseline="central">✈️</text>`);
+  const P=$("flyP"),pl=$("plane"),L=P.getTotalLength(),T=1300,t0=performance.now();
+  const mv=now=>{if(id!==flying||!$("plane"))return;const p=Math.min(1,(now-t0)/T),e=p*p,l=L*e,pt=P.getPointAtLength(l),pn=P.getPointAtLength(Math.min(L,l+1)),ang=Math.atan2(pn.y-pt.y,pn.x-pt.x)*180/Math.PI;
+    pl.setAttribute("font-size",(VB[2]*.06).toFixed(1));pl.setAttribute("transform",`translate(${pt.x.toFixed(1)} ${pt.y.toFixed(1)}) rotate(${(ang+45).toFixed(1)})`);if(p<1)requestAnimationFrame(mv)};
+  requestAnimationFrame(mv);await setVBp(fit(0,0,1000,760),T);
+  const m=$("map");m.style.transition="opacity .3s";m.style.opacity="0";await new Promise(r=>setTimeout(r,320))}
+async function ask(){answered=false;usedHint=false;zoomed=false;let hop="";
+  if(list[i].k!==K){const oK=K,nK=list[i].k,c0=CPOS[oK]||[.5,.5],c1=CPOS[nK]||[.5,.5];let dx=c1[0]-c0[0],dy=c1[1]-c0[1];const dl=Math.hypot(dx,dy)||1;dx/=dl;dy/=dl;
+    answered=true;$("opts").innerHTML="";$("fb").className="fb";$("hint").textContent="✈️ "+XMAP[oK].n+" → "+XMAP[nK].n+" — uchyapmiz…";
+    if(prevQ)await exitHop(prevQ,dx,dy);
+    K=nK;hop="✈️ "+XMAP[K].n+"ga uchdik!";const m=$("map");m.style.transition="none";m.style.opacity="0";drawBase();
+    const tq=XMAP[K].q[list[i].t];prevQ={x:tq.x-dx*700,y:tq.y-dy*700};
+    requestAnimationFrame(()=>{m.style.transition="opacity .45s";m.style.opacity="1"});answered=false}
   const t=list[i].t,c=XMAP[K],q=c.q[t];
   $("hN").textContent=`${i+1}/${list.length}`;$("hB").style.width=(i/list.length*100)+"%";$("hS").textContent="⭐ "+score;$("hK").textContent="🔥 "+streak;
   document.querySelectorAll("#map path.tg").forEach(p=>p.setAttribute("class","l1"+(p.dataset.c!=null?" c"+p.dataset.c:"")));
