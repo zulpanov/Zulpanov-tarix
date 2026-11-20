@@ -248,25 +248,31 @@ async function fly(q){const id=++flying,to=cam(q),ov=$("ov");
   if(d<8){await setVBp(to,600);return}
   // yo'l: punktir yoy va samolyot
   const mx=(a[0]+b[0])/2,my=(a[1]+b[1])/2,lift=Math.min(160,d*.35),cpx=mx+(b[1]-a[1])/d*lift*-.25,cpy=my-lift;
-  ov.insertAdjacentHTML("afterbegin",`<path id="flyP" class="fly" d="M${a[0].toFixed(1)} ${a[1].toFixed(1)} Q${cpx.toFixed(1)} ${cpy.toFixed(1)} ${b[0].toFixed(1)} ${b[1].toFixed(1)}"/><text id="plane" class="plane" text-anchor="middle" dominant-baseline="central">✈️</text>`);
+  ov.insertAdjacentHTML("afterbegin",`<path id="flyP" class="fly" d="M${a[0].toFixed(1)} ${a[1].toFixed(1)} Q${cpx.toFixed(1)} ${cpy.toFixed(1)} ${b[0].toFixed(1)} ${b[1].toFixed(1)}"/>${PLANE}`);
   const P=$("flyP"),pl=$("plane"),L=P.getTotalLength();
   const x0=Math.min(VB[0],to[0],Math.min(a[0],b[0],cpx)-40),y0=Math.min(VB[1],to[1],cpy-30),x1=Math.max(VB[0]+VB[2],to[0]+to[2],Math.max(a[0],b[0])+40),y1=Math.max(VB[1]+VB[3],to[1]+to[3]);
   const mid=fit(x0,y0,x1-x0,y1-y0),T1=d>250?850:650,T2=900,t0=performance.now();
   const mv=now=>{if(id!==flying||!$("plane"))return;const p=Math.min(1,(now-t0)/(T1+T2*.75)),e=p<.5?2*p*p:1-Math.pow(-2*p+2,2)/2,l=L*e,pt=P.getPointAtLength(l),pn=P.getPointAtLength(Math.min(L,l+1)),ang=Math.atan2(pn.y-pt.y,pn.x-pt.x)*180/Math.PI;
-    const fs=VB[2]*.055;pl.setAttribute("font-size",fs.toFixed(1));pl.setAttribute("transform",`translate(${pt.x.toFixed(1)} ${pt.y.toFixed(1)}) rotate(${(ang+45).toFixed(1)})`);if(p<1)requestAnimationFrame(mv);else{pl.remove();P.classList.add("out");setTimeout(()=>P.remove(),700)}};
+    setPlane(pl,pt.x,pt.y,ang,Math.sin(Math.PI*e));if(p<1)requestAnimationFrame(mv);else{pl.remove();P.classList.add("out");setTimeout(()=>P.remove(),700)}};
   requestAnimationFrame(mv);
   await setVBp(mid,T1);if(id!==flying)return;await setVBp(to,T2)}
 function zoomTo(q){let [x0,y0,x1,y1]=q.b;let w=Math.max(x1-x0,70)*3,h=Math.max(y1-y0,54)*3;if(w/h>1000/760)h=w*760/1000;else w=h*1000/760;
   w=Math.min(w,1000);h=Math.min(h,760);let cx=(x0+x1)/2,cy=(y0+y1)/2;if(q.big<4000){cx=q.x;cy=q.y}
   let x=Math.max(0,Math.min(1000-w,cx-w/2)),y=Math.max(0,Math.min(760-h,cy-h/2));setVB([x,y,w,h])}
 
+// Samolyot: havoda uchadi, pastda xaritada soyasi siljiydi (balandlik — parvoz o'rtasida eng katta)
+const PSH="M-20 -3 L18 -3 Q26 0 18 3 L-20 3Z M-2 -3 L-8 -18 L0 -18 L10 -3Z M-2 3 L-8 18 L0 18 L10 3Z M-16 -3 L-20 -10 L-15 -10 L-11 -3Z M-16 3 L-20 10 L-15 10 L-11 3Z";
+const PLANE=`<g id="plane" class="plane" visibility="hidden"><path class="psh" d="${PSH}" fill="#000" opacity=".32"/><g class="pbd"><path d="${PSH}" fill="#e2e8f0" stroke="#475569" stroke-width="1"/><circle cx="12" cy="0" r="2" fill="#38bdf8"/></g></g>`;
+function setPlane(pl,x,y,ang,alt){pl.removeAttribute("visibility");const s=VB[2]*.085/44,o=VB[2]*(.006+.03*alt);
+  pl.querySelector(".psh").setAttribute("transform",`translate(${(x+o*.45).toFixed(1)} ${(y+o).toFixed(1)}) rotate(${ang.toFixed(1)}) scale(${(s*.95).toFixed(4)})`);
+  pl.querySelector(".pbd").setAttribute("transform",`translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${ang.toFixed(1)}) scale(${(s*(1.05+.25*alt)).toFixed(4)})`)}
 // Qit'adan qit'aga: samolyot eski xaritadan chiqib ketadi, yangisiga kirib keladi
 const CPOS={E:[.52,.28],A:[.74,.34],F:[.53,.6],N:[.2,.3],S:[.31,.72],O:[.87,.76]};
 async function exitHop(from,dx,dy){const id=++flying,ov=$("ov"),a=[from.x,from.y],b=[from.x+dx*1100,from.y+dy*1100],mx=(a[0]+b[0])/2,my=(a[1]+b[1])/2-120;
-  ov.insertAdjacentHTML("afterbegin",`<path id="flyP" class="fly" d="M${a[0].toFixed(1)} ${a[1].toFixed(1)} Q${mx.toFixed(1)} ${my.toFixed(1)} ${b[0].toFixed(1)} ${b[1].toFixed(1)}"/><text id="plane" class="plane" text-anchor="middle" dominant-baseline="central">✈️</text>`);
+  ov.insertAdjacentHTML("afterbegin",`<path id="flyP" class="fly" d="M${a[0].toFixed(1)} ${a[1].toFixed(1)} Q${mx.toFixed(1)} ${my.toFixed(1)} ${b[0].toFixed(1)} ${b[1].toFixed(1)}"/>${PLANE}`);
   const P=$("flyP"),pl=$("plane"),L=P.getTotalLength(),T=1300,t0=performance.now();
   const mv=now=>{if(id!==flying||!$("plane"))return;const p=Math.min(1,(now-t0)/T),e=p*p,l=L*e,pt=P.getPointAtLength(l),pn=P.getPointAtLength(Math.min(L,l+1)),ang=Math.atan2(pn.y-pt.y,pn.x-pt.x)*180/Math.PI;
-    pl.setAttribute("font-size",(VB[2]*.06).toFixed(1));pl.setAttribute("transform",`translate(${pt.x.toFixed(1)} ${pt.y.toFixed(1)}) rotate(${(ang+45).toFixed(1)})`);if(p<1)requestAnimationFrame(mv)};
+    setPlane(pl,pt.x,pt.y,ang,Math.min(1,.5+e));if(p<1)requestAnimationFrame(mv)};
   requestAnimationFrame(mv);await setVBp(fit(0,0,1000,760),T);
   const m=$("map");m.style.transition="opacity .3s";m.style.opacity="0";await new Promise(r=>setTimeout(r,320))}
 async function ask(){answered=false;usedHint=false;zoomed=false;let hop="";
