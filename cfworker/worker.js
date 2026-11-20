@@ -818,7 +818,7 @@ export default {
     if (url.pathname === "/wp") { // saytda login-parol: server tekshiradigan (botdan kelgan) hisoblar uchun
       try {
         if (req.method !== "POST") {
-          if ((await db(env, "GET", "c/pm/tarV").catch(() => null)) !== 2) { await db(env, "PUT", "c/pm/tar", [{ n: "1 oy", d: 30, p: "69 000 so‘m" }, { n: "3 oy", d: 90, p: "150 000 so‘m" }]); await db(env, "PUT", "c/pm/tarV", 2); }
+          if ((await db(env, "GET", "c/pm/tarV").catch(() => null)) !== 3) { await db(env, "PUT", "c/pm/tar", [{ n: "1 oy", d: 30, p: "69 000 so‘m", p1: "39 000 so‘m" }, { n: "3 oy", d: 90, p: "150 000 so‘m" }]); await db(env, "PUT", "c/pm/tarV", 3); }
           let sa = "yo‘q"; try { await saAccess(env); sa = "ishlayapti"; } catch (e) { sa = String(e.message || e); } return json({ ok: true, sa }); }
         const b = await req.json(), login = String(b.login || "").toLowerCase().trim(), pw = String(b.pw || "");
         if (!LOGIN_RE.test(login) || !pw) throw new Error("Login yoki parol noto‘g‘ri");

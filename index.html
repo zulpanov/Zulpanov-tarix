@@ -453,6 +453,7 @@ body.tchm #bnav{display:none!important}body.tchm .wrap{padding-bottom:110px}body
 .pm-sum{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center}.pm-sum div{padding:10px 4px;border-radius:12px;background:var(--card2);border:1px solid var(--line)}.pm-sum b{display:block;font-size:20px}.pm-sum span{font-size:11px;color:var(--mu)}
 .pma-r{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}.pma-r span{flex:1;font-size:14px}.pma-h{margin:10px 0 2px;font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--ac2)}
 .pma-d{margin-top:10px;border:1px solid var(--line);border-radius:12px;padding:8px 12px;background:var(--card2)}.pma-d summary{cursor:pointer;font-weight:700;font-size:14px;padding:4px 0}
+.pma-t .tp1{max-width:120px}
 .pma-t{display:flex;gap:6px;margin-bottom:6px}.pma-t input{min-width:0}.pma-t .tn{flex:2}.pma-t .td{flex:1;max-width:70px}.pma-t .tp{flex:2}
 .pma-u{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:9px 0;border-bottom:1px solid var(--line)}.pma-un{flex:1;min-width:150px;display:flex;flex-direction:column;gap:1px}.pma-un small{color:var(--mu);font-size:12px}.pma-x.on{color:#c084fc}.pma-x.low{color:#fb7185}.pma-ub{display:flex;gap:4px;flex-wrap:wrap}.pma-ub .btn{padding:6px 9px;margin:0}
 .anav{display:none}body.adm .anav{display:grid}body.adm #bnav{display:none!important}body.adm .wrap{padding-bottom:110px}
@@ -816,7 +817,7 @@ html[data-th="tong"] .clsc,html[data-th="vodiy"] .clsc{background:var(--card);bo
 @media (min-width:1024px){.jc-g{grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}.ju-it.jc{min-height:110px;font-size:15px}.ju-it.jc.r{font-size:14px}}
 .pm-al{text-align:left;margin:10px 0}.pm-how{margin:6px 0 4px;font-size:13px}
 .pm-pay .pm-s{color:var(--mu);font-size:13px;margin:12px 0 6px}.pm-pay .pm-s:first-child{margin-top:0}.pm-gold{color:var(--ac)}
-.pm-tp{display:flex;width:100%;justify-content:space-between;align-items:center;gap:8px;padding:12px 14px;margin-top:8px;border:1px solid var(--line);border-radius:14px;background:var(--card2);color:var(--tx);font-weight:600;font-size:14.5px;font-family:inherit;cursor:pointer}.pm-tp small{color:var(--mu);font-weight:500}.pm-tp b{color:var(--ac)}.pm-tp.on{border:2px solid var(--ac);background:rgba(226,181,76,.1)}
+.pm-tp{display:flex;width:100%;justify-content:space-between;align-items:center;gap:8px;padding:12px 14px;margin-top:8px;border:1px solid var(--line);border-radius:14px;background:var(--card2);color:var(--tx);font-weight:600;font-size:14.5px;font-family:inherit;cursor:pointer}.pm-tp small{color:var(--mu);font-weight:500}.pm-tp s{color:var(--mu);font-weight:500;font-size:12.5px;margin-right:4px}.pm-dc{display:block;font-style:normal;font-size:11.5px;color:#4ade80;font-weight:700;margin-top:2px}.pm-tp span{text-align:left}.pm-tp b{color:var(--ac)}.pm-tp.on{border:2px solid var(--ac);background:rgba(226,181,76,.1)}
 .pm-cc.c2{margin-top:8px;background:linear-gradient(135deg,#7c3aed,#0e7490)}.pm-cc{background:linear-gradient(135deg,#1d4ed8,#0e7490);color:#fff;border-radius:18px;padding:14px 16px}.pm-cc-h{display:flex;justify-content:space-between;align-items:center}.pm-cc small{opacity:.85;font-size:11.5px;letter-spacing:.04em}.pm-cn{font:700 21px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:1.5px;margin:10px 0 6px}.pm-cp{border:0;background:rgba(255,255,255,.2);color:#fff;border-radius:10px;padding:5px 10px;font-weight:600;font-size:12.5px;font-family:inherit;cursor:pointer}
 .pm-up{display:flex;flex-direction:column;align-items:center;gap:8px;border:2px dashed rgba(226,181,76,.55);border-radius:16px;padding:16px;text-align:center;color:var(--ac);font-weight:600;font-size:14px;cursor:pointer;margin:0}.pm-up small{display:block;color:var(--mu);font-weight:500;font-size:12px;margin-top:2px}.pm-up img{max-height:180px;max-width:100%;border-radius:10px}
 .pm-pst{border-radius:16px;padding:12px 14px;margin-bottom:10px;font-size:14px}.pm-pst small{display:block;color:var(--mu);margin-top:3px;font-size:12.5px}.pm-pst.w{background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.45)}.pm-pst.y{background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.5)}.pm-pst.n{background:rgba(244,63,94,.1);border:1px solid rgba(244,63,94,.45)}
@@ -3494,7 +3495,7 @@ const PM = (() => {
   function gate(k, fn) { watch(); if (is() || !f(k)) return fn(); const x = FEAT.find(z => z[0] === k); wall(x ? x[1] + " «" + x[2] + "»" : ""); }
   function wall(t) { ask(typeof t === "string" ? t : ""); }
   // Qulflangan bo'lim/mavzu bosilganda: nega Premium, nimalar ochiladi, qanday olinadi
-  const priceMin = () => { const v = tars().map(t => +String(t.p || "").replace(/\D/g, "")).filter(Boolean); return v.length ? Math.min(...v) : 0; };
+  const priceMin = () => { const v = tars().map(t => +String((t.p1 && (!me || me.src === "trial" || me.src === "ref") ? t.p1 : t.p) || "").replace(/\D/g, "")).filter(Boolean); return v.length ? Math.min(...v) : 0; };
   const som = n => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, " ") + " so‘m";
   function ask(t) {
     const o0 = document.querySelector(".pm-ask"); if (o0) o0.remove();
@@ -3580,13 +3581,16 @@ const PM = (() => {
   }
   // 💳 To'lov: tarif → karta → chek rasmi → ustozga
   let selT = 0, imgData = "";
+  const first = () => !me || me.src === "trial" || me.src === "ref"; // hali to'lab Premium olmagan
+  const priceOf = t => (t.p1 && first() ? t.p1 : t.p) || "";
   const cardFmt = n => String(n || "").replace(/\D/g, "").replace(/(\d{4})(?=\d)/g, "$1 ");
   function payBox(T) {
     if (selT >= T.length) selT = 0; const t = T[selT], C = cfg.card;
     return `<div id="pmBuy"><div class="hsec-t">💳 Premium olish</div><div id="pmPs"></div>
       <div class="card pm-pay" id="pmPf"><div class="pm-s">1) Tarifni tanlang</div>
-        ${T.map((x, i) => `<button class="pm-tp${i === selT ? " on" : ""}" data-tp="${i}"><span>${esc(x.n)} <small>· ${+x.d || 0} kun</small></span><b>${esc(x.p || "")}</b></button>`).join("")}
-        <div class="pm-s">2) Shu kartaga <b class="pm-gold">${esc(t.p || "")}</b> o‘tkazing</div>
+        ${T.map((x, i) => `<button class="pm-tp${i === selT ? " on" : ""}" data-tp="${i}"><span>${esc(x.n)} <small>· ${+x.d || 0} kun</small>${x.p1 && first() ? `<em class="pm-dc">🎁 1-oy chegirmasi</em>` : ""}</span><b>${x.p1 && first() ? `<s>${esc(x.p || "")}</s> ` : ""}${esc(priceOf(x))}</b></button>`).join("")}
+        ${T.some(x => x.p1) && first() ? `<div class="sub" style="margin:6px 0 0">🎁 Birinchi oy sinov uchun chegirma narxda. Keyingi oylar — odatdagi narxda.</div>` : ""}
+        <div class="pm-s">2) Shu kartaga <b class="pm-gold">${esc(priceOf(t))}</b> o‘tkazing</div>
         ${[[C.n, C.b], [C.n2, C.b2]].filter(x => x[0]).map(([n, b], k) => `<div class="pm-cc${k ? " c2" : ""}"><div class="pm-cc-h"><small>${esc(b || "Karta")} · karta raqami</small><button class="pm-cp" data-cp="${esc(String(n).replace(/\D/g, ""))}">📋 Nusxa</button></div><div class="pm-cn">${esc(cardFmt(n))}</div><small>${esc(C.h || "")}</small></div>`).join("")}${C.n2 ? `<div class="sub" style="margin:6px 0 0;text-align:center">Ikkala kartadan istalganiga to‘lashingiz mumkin</div>` : ""}
         <div class="pm-s">3) To‘lov chekini (skrinshot) yuklang</div>
         <label class="pm-up"><input type="file" accept="image/*" id="pmFile" hidden><img id="pmPrev" class="hide" alt=""><span id="pmUpT">📎 Chek rasmini tanlang<small>Click, Payme yoki bank ilovasidan skrinshot</small></span></label>
@@ -3617,7 +3621,7 @@ const PM = (() => {
     $("pmSend").onclick = async () => {
       if (!imgData) return; const t = T[selT], b = $("pmSend"); b.disabled = true; b.textContent = "⏳ Yuborilmoqda…"; $("pmPe").textContent = "";
       const id = Date.now().toString(36) + Math.random().toString(36).slice(2, 8), pc = await savePromo();
-      const x = { uid: c.uid, f: c.f || "", l: c.l || "", g: c.g || "", login: c.login || "", tn: t.n, d: +t.d || 30, p: t.p || "", pc: pc || "", img: imgData, at: now(), st: "new" };
+      const x = { uid: c.uid, f: c.f || "", l: c.l || "", g: c.g || "", login: c.login || "", tn: t.n + (t.p1 && first() ? " (1-oy chegirma)" : ""), d: +t.d || 30, p: priceOf(t), pc: pc || "", img: imgData, at: now(), st: "new" };
       try {
         await DBA.set("pay/" + id, x); await DBA.set("payu/" + c.uid, id);
         imgData = ""; FX.toast("📤 Chek ustozga yuborildi!", "up");
@@ -3771,10 +3775,10 @@ const PMADM = (() => {
   }
   function drawTar(L) {
     const el = $("pmaT"); if (!el) return;
-    el.innerHTML = L.length ? L.map((t, i) => `<div class="pma-t" data-i="${i}"><input class="tn" placeholder="Nomi (1 oy)" value="${esc(t.n || "")}"><input class="td" type="number" min="1" placeholder="Kun" value="${+t.d || ""}"><input class="tp" placeholder="Narxi (100 000 so‘m)" value="${esc(t.p || "")}"><button class="btn sm ghost" data-del="${i}" title="O‘chirish">🗑</button></div>`).join("") : `<div class="sub" style="margin:0">Hali tarif yo‘q. «Tarif qo‘shish» ni bosing.</div>`;
+    el.innerHTML = L.length ? L.map((t, i) => `<div class="pma-t" data-i="${i}"><input class="tn" placeholder="Nomi (1 oy)" value="${esc(t.n || "")}"><input class="td" type="number" min="1" placeholder="Kun" value="${+t.d || ""}"><input class="tp" placeholder="Narxi (100 000 so‘m)" value="${esc(t.p || "")}"><input class="tp1" placeholder="1-marta (chegirma)" title="Birinchi marta oluvchilar uchun chegirma narx — bo‘sh qolsa chegirma yo‘q" value="${esc(t.p1 || "")}"><button class="btn sm ghost" data-del="${i}" title="O‘chirish">🗑</button></div>`).join("") : `<div class="sub" style="margin:0">Hali tarif yo‘q. «Tarif qo‘shish» ni bosing.</div>`;
     el.querySelectorAll("[data-del]").forEach(b => b.onclick = () => { const L2 = readTar(); L2.splice(+b.dataset.del, 1); drawTar(L2); });
   }
-  const readTar = () => [...document.querySelectorAll("#pmaT .pma-t")].map(r => ({ n: r.querySelector(".tn").value.trim().slice(0, 40), d: Math.max(1, parseInt(r.querySelector(".td").value) || 30), p: r.querySelector(".tp").value.trim().slice(0, 40) }));
+  const readTar = () => [...document.querySelectorAll("#pmaT .pma-t")].map(r => ({ n: r.querySelector(".tn").value.trim().slice(0, 40), d: Math.max(1, parseInt(r.querySelector(".td").value) || 30), p: r.querySelector(".tp").value.trim().slice(0, 40), p1: (r.querySelector(".tp1") || { value: "" }).value.trim().slice(0, 40) || null }));
   function st(uid) { const v = pms[uid]; if (!v || !v.e) return `<small class="pma-x">Premium yo‘q</small>`; const l = v.e - now(); return l > 0 ? `<small class="pma-x on${l <= 3 * DAY ? " low" : ""}">💎 ${Math.ceil(l / DAY)} kun · ${dt(v.e)} gacha${v.src === "trial" ? " · sinov" : v.src === "ref" ? " · bonus" : ""}</small>` : `<small class="pma-x">Tugagan: ${dt(v.e)}</small>`; }
   function row(uid) {
     const x = users[uid] || {};
