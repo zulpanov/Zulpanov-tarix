@@ -6302,7 +6302,7 @@ const CHAMP = (() => {
   const wkStart = ms => { const d = new Date(ms); const w = (d.getDay() + 6) % 7; d.setHours(0, 0, 0, 0); d.setDate(d.getDate() - w); return d; };
   const key = d => "w" + d.getFullYear() + z(d.getMonth() + 1) + z(d.getDate());
   const lbl = d => { const e = new Date(d.getTime() + 6 * 864e5); return `${z(d.getDate())}.${z(d.getMonth() + 1)}–${z(e.getDate())}.${z(e.getMonth() + 1)}`; };
-  const TT = ["👑 HAFTA CHEMPIONI", "🥈 HAFTA KUMUSHI", "🥉 HAFTA BRONZASI"];
+  const TT = ["👑 O‘TGAN HAFTA CHEMPIONI", "🥈 O‘TGAN HAFTA KUMUSHI", "🥉 O‘TGAN HAFTA BRONZASI"];
   let M = {}, info = null, ready = null, seen = {};
   const top3 = L => Object.entries(L || {}).filter(([k, v]) => v && v.n && v.xp > 0).map(([k, v]) => ({ k, n: v.n, xp: v.xp, at: v.at || 0 })).sort((a, b) => b.xp - a.xp || a.at - b.at).slice(0, 3);
   async function week(d, cache) {
@@ -6311,15 +6311,12 @@ const CHAMP = (() => {
     if (!t) { const L = await DBA.get("lb/" + k); t = top3(L).map(({ k, n, xp }) => ({ k, n, xp })); try { localStorage.setItem("zm_ch_" + k, JSON.stringify(t)); } catch (e) {} }
     return { k, d, t };
   }
-  // Hafta g'oliblari = shu haftaning umumiy reytingidagi 1–3-o'rinlar (jonli). Hafta boshida hali hech kim bo'lmasa — o'tgan hafta g'oliblari.
-  let at = 0;
+  // Chempionlar har dushanba yangilanadi: o'tgan (yakunlangan) haftaning umumiy reytingidagi 1–3-o'rinlar butun hafta davomida
   function set(t, d) { info = { k: key(d), d, t }; M = {}; t.forEach((p, i) => M[p.k] = i + 1); apply(); }
-  function live(L) { const t = top3(L).map(({ k, n, xp }) => ({ k, n, xp })); if (t.length) { set(t, wkStart(DBA.now())); at = Date.now(); } }
+  function live() {}
   function load() {
-    if (typeof ACCT === "undefined" || !ACCT.cur) return ready;
-    if (ready && Date.now() - at < 5 * 60e3) return ready;
-    at = Date.now();
-    ready = DBA.get("lb/" + key(wkStart(DBA.now()))).then(async L => { const t = top3(L).map(({ k, n, xp }) => ({ k, n, xp })); if (t.length) set(t, wkStart(DBA.now())); else { const w = await week(wkStart(DBA.now() - 7 * 864e5), true); set(w.t, w.d); } return info; }).catch(() => { ready = null; return null; });
+    if (ready || typeof ACCT === "undefined" || !ACCT.cur) return ready;
+    ready = week(wkStart(DBA.now() - 7 * 864e5), true).then(w => { set(w.t, w.d); return info; }).catch(() => { ready = null; return null; });
     return ready;
   }
   const rank = uid => M[uid] || 0;
@@ -6332,7 +6329,7 @@ const CHAMP = (() => {
   // Turnirga g'olib qo'shilganda — hammaga e'lon (har turnirda bir marta)
   function announce(players, code) {
     if (!info) return; const s = seen[code] = seen[code] || new Set(), my = ACCT.cur && ACCT.cur.uid;
-    Object.entries(players || {}).forEach(([k, p]) => { const r = M[k]; if (!r || !p || !p.n || s.has(k)) return; s.add(k); if (k === my) return; FX.toast(`${["👑 Hafta chempioni", "🥈 Hafta kumushi", "🥉 Hafta bronzasi"][r - 1]} <b>${esc(p.n)}</b> qo‘shildi!`, "up"); });
+    Object.entries(players || {}).forEach(([k, p]) => { const r = M[k]; if (!r || !p || !p.n || s.has(k)) return; s.add(k); if (k === my) return; FX.toast(`${["👑 O‘tgan hafta chempioni", "🥈 O‘tgan hafta kumushi", "🥉 O‘tgan hafta bronzasi"][r - 1]} <b>${esc(p.n)}</b> qo‘shildi!`, "up"); });
   }
   // Oltin effekt (to'g'ri javobda)
   function spark(el) {
@@ -6347,7 +6344,7 @@ const CHAMP = (() => {
   // 🏛 Shon-sharaf zali — oxirgi 8 hafta g'oliblari
   async function hall() {
     const m = document.createElement("div"); m.className = "lbx-sh";
-    m.innerHTML = `<div class="lbx-sb"><div class="gr"></div><h3>🏛 Shon-sharaf zali</h3><p class="sub" style="margin:0 0 8px">Har hafta eng ko‘p XP to‘plagan 3 kishi. Shu haftaning 1–3-o‘rindagilari oltin, kumush va bronza ramka hamda unvon bilan ajralib turadi.</p><div id="chH"><div class="sub" style="text-align:center;margin:16px 0">Yuklanmoqda…</div></div><button class="btn" style="margin-top:12px" id="chOk">Yopish</button></div>`;
+    m.innerHTML = `<div class="lbx-sb"><div class="gr"></div><h3>🏛 Shon-sharaf zali</h3><p class="sub" style="margin:0 0 8px">Har hafta eng ko‘p XP to‘plagan 3 kishi. Har dushanba o‘tgan hafta g‘oliblari chempion bo‘ladi va butun hafta oltin, kumush va bronza ramka hamda unvon bilan ajralib turadi.</p><div id="chH"><div class="sub" style="text-align:center;margin:16px 0">Yuklanmoqda…</div></div><button class="btn" style="margin-top:12px" id="chOk">Yopish</button></div>`;
     document.body.appendChild(m);
     m.onclick = e => { if (e.target === m || e.target.id === "chOk") m.remove(); };
     const now = DBA.now(), W = [];
@@ -6355,7 +6352,7 @@ const CHAMP = (() => {
     const R = await Promise.all(W.map((d, i) => week(d, i > 0).catch(() => ({ d, t: [] }))));
     const el = m.querySelector("#chH"); if (!el) return;
     const rows = R.filter(w => w.t && w.t.length);
-    el.innerHTML = rows.length ? rows.map((w, i) => `<div class="ch-hr${w.k === key(wkStart(now)) ? " now" : ""}"><div class="ch-hd"><b>${lbl(w.d)}</b>${w.k === key(wkStart(now)) ? `<span>shu hafta · jonli</span>` : ""}</div>${w.t.map((p, j) => `<div class="ch-hp">${AV.html(p.k, p.n, "sm")}<span>${["🥇", "🥈", "🥉"][j]} ${esc(p.n)}</span><em>${p.xp} XP</em></div>`).join("")}</div>`).join("") : `<p class="sub" style="text-align:center">Hali yakunlangan hafta yo‘q. Birinchi g‘olib siz bo‘ling! 🏆</p>`;
+    el.innerHTML = rows.length ? rows.map((w, i) => `<div class="ch-hr${w.k === key(wkStart(now - 7 * 864e5)) ? " now" : ""}"><div class="ch-hd"><b>${lbl(w.d)}</b>${w.k === key(wkStart(now)) ? `<span style="color:var(--mu)">shu hafta · hali yakunlanmagan</span>` : w.k === key(wkStart(now - 7 * 864e5)) ? `<span>👑 hozirgi chempionlar</span>` : ""}</div>${w.t.map((p, j) => `<div class="ch-hp">${AV.html(p.k, p.n, "sm")}<span>${["🥇", "🥈", "🥉"][j]} ${esc(p.n)}</span><em>${p.xp} XP</em></div>`).join("")}</div>`).join("") : `<p class="sub" style="text-align:center">Hali yakunlangan hafta yo‘q. Birinchi g‘olib siz bo‘ling! 🏆</p>`;
   }
   const curInfo = () => info;
   return { load, live, rank, me, apply, tag, announce, spark, hall, info: curInfo, label: lbl };
