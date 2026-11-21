@@ -1097,7 +1097,7 @@ html[data-th="tong"] .km-pt b,html[data-th="vodiy"] .km-pt b,html[data-th="tong"
 .uav[data-ch="1"]{box-shadow:0 0 0 2.5px #F5C84C,0 0 12px 2px rgba(245,200,76,.75)}.uav[data-ch="2"]{box-shadow:0 0 0 2.5px #CBD5E1,0 0 10px 2px rgba(203,213,225,.6)}.uav[data-ch="3"]{box-shadow:0 0 0 2.5px #D08A4B,0 0 10px 2px rgba(208,138,75,.6)}
 .uav[data-ch]::before{position:absolute;right:-6px;top:-7px;font-size:14px;line-height:1;filter:drop-shadow(0 1px 2px rgba(0,0,0,.5));z-index:1}.uav[data-ch="1"]::before{content:"🥇"}.uav[data-ch="2"]::before{content:"🥈"}.uav[data-ch="3"]::before{content:"🥉"}.uav.sm[data-ch]::before{font-size:11px;right:-5px;top:-5px}.uav.lg[data-ch]::before,.uav.xl[data-ch]::before{font-size:20px}
 .uav[data-ch="1"]{animation:chGlow 2.4s ease-in-out infinite}@keyframes chGlow{50%{box-shadow:0 0 0 2.5px #FFE08A,0 0 20px 5px rgba(245,200,76,.9)}}
-.chtt{display:inline-block;font-size:9.5px;font-weight:800;letter-spacing:.2px;padding:2px 6px;border-radius:7px;margin:2px 0 0 4px;vertical-align:middle;white-space:nowrap;line-height:1.4}.chtt1{background:linear-gradient(90deg,#F5C84C,#FFE08A);color:#3a2a00}.chtt2{background:linear-gradient(90deg,#CBD5E1,#F1F5F9);color:#1e293b}.chtt3{background:linear-gradient(90deg,#D08A4B,#F0B27A);color:#2a1300}
+.tr-n{min-width:0}.tr-n .st-s{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.chtt{max-width:100%;overflow:hidden;text-overflow:ellipsis;display:inline-block;font-size:9.5px;font-weight:800;letter-spacing:.2px;padding:2px 6px;border-radius:7px;margin:2px 4px 0 0;vertical-align:middle;white-space:nowrap;line-height:1.4}.chtt1{background:linear-gradient(90deg,#F5C84C,#FFE08A);color:#3a2a00}.chtt2{background:linear-gradient(90deg,#CBD5E1,#F1F5F9);color:#1e293b}.chtt3{background:linear-gradient(90deg,#D08A4B,#F0B27A);color:#2a1300}
 body.champ .fq-card{border-color:#F5C84C!important;box-shadow:0 0 0 1px #F5C84C,0 0 22px rgba(245,200,76,.35)!important}
 body.champ #tg::before{content:"👑 Chempion rejimi";display:block;font-size:11px;font-weight:800;color:#F5C84C;letter-spacing:.3px;margin-bottom:2px}
 .ch-sp{position:fixed;pointer-events:none;z-index:9999;color:#FFD84A;text-shadow:0 0 8px rgba(255,216,74,.9);animation:chSp 1.1s ease-out forwards;transform:translate(-50%,-50%)}@keyframes chSp{0%{opacity:0;transform:translate(-50%,-50%) scale(.4)}15%{opacity:1}100%{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(1.1)}}
@@ -2506,7 +2506,7 @@ const HOMEX=(()=>{
     let ne=0;try{ne=GAME.errList().length}catch(e){}
     const tch=(()=>{try{return TCH.is()}catch(e){return false}})();
     const it=(fn,ic,col,t,s)=>`<button onclick="${fn}"><i style="background:${col}26;color:${col}">${sv(ic,18)}</i><span><b>${t}</b><small>${s}</small></span><u>${sv(IC.chev,16)}</u></button>`;
-    $("tz").innerHTML=`<div class="card hm-pf"><div class="avatar" style="width:64px;height:64px">${AV.html(c.uid,c.f+" "+c.l,"fill")}</div><div style="flex:1;min-width:0"><b>${esc(c.f+" "+c.l)}</b>${CHAMP.tag(c.uid)}<small>@${esc(c.login||"")}${c.g?" · "+esc(c.g):""}</small></div></div>
+    $("tz").innerHTML=`<div class="card hm-pf"><div class="avatar" style="width:64px;height:64px">${AV.html(c.uid,c.f+" "+c.l,"fill")}</div><div style="flex:1;min-width:0"><b>${esc(c.f+" "+c.l)}</b>${CHAMP.tag(c.uid, 1)}<small>@${esc(c.login||"")}${c.g?" · "+esc(c.g):""}</small></div></div>
       <div class="card" id="vtC" style="margin-top:12px"></div>
       <div class="amg-t">Natijalar</div><div class="amg">${it("ACCT.history()",IC.chart,"#34D399","Statistika","Natijalar, daraja va nishonlar")}${it("GAME.startErrors()",IC.repeat,"#F43F5E","Xatolarim",ne?ne+" ta xato savol":"Xato yo'q")}${it("GAME.board()",IC.trophy,"#FBBF24","Haftalik reyting","Guruh va barcha o'quvchilar")}</div>
       <div class="amg-t">Hisob</div><div class="amg">${it("PM.open()",IC.gem,"#C084FC","Premium",PM.is()?"Faol":"Barcha imkoniyatlarni oching")}${it("PRF.open()",IC.gear,"#A7A3D6","Profil sozlamalari","Ism, rasm, guruh")}${it("LINK.open()",IC.gear,"#38BDF8","Kirish usullari","Telegram va saytdagi login-parol")}${it("THEME.open()",IC.gem,"#22C55E","Mavzu (tema)",(THEME.L.find(x=>x[0]===THEME.get())||[,""])[1])}${tch?it("TCH.open()",IC.teach,"#22D3EE","Ustoz paneli","Guruhlarim, vazifalar"):it("TCH.apply()",IC.teach,"#22D3EE","Ustozmisiz?","O'z guruhingiz bilan foydalaning")}</div>
@@ -6325,7 +6325,8 @@ const CHAMP = (() => {
     document.querySelectorAll("[data-uav]").forEach(el => { const r = M[el.dataset.uav]; if (r) { if (el.dataset.ch !== String(r)) el.dataset.ch = r; } else if (el.dataset.ch) delete el.dataset.ch; });
     document.body.classList.toggle("champ", !!me());
   }
-  const tag = uid => { const r = M[uid]; return r ? `<span class="chtt chtt${r}">${TT[r - 1]}</span>` : ""; };
+  const TS = ["👑 CHEMPION", "🥈 KUMUSH", "🥉 BRONZA"];
+  const tag = (uid, long) => { const r = M[uid]; return r ? `<span class="chtt chtt${r}" title="${TT[r - 1]}">${(long ? TT : TS)[r - 1]}</span>` : ""; };
   // Turnirga g'olib qo'shilganda — hammaga e'lon (har turnirda bir marta)
   function announce(players, code) {
     if (!info) return; const s = seen[code] = seen[code] || new Set(), my = ACCT.cur && ACCT.cur.uid;
