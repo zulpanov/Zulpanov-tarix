@@ -1172,6 +1172,7 @@ body.champ #tg::before{content:"👑 Chempion rejimi";display:block;font-size:11
 .ar-mb{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}.ar-mb .btn{margin:0;flex:1;padding:8px}
 .ar-ms{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--line);font-size:13px;flex-wrap:wrap}.ar-ms:last-child{border:0}.ar-ms small{flex-basis:100%;padding-left:32px;color:var(--mu);font-size:11.5px}.ar-ms em{margin-left:auto;font-style:normal;color:#4ade80;font-size:12px}
 .ar-tbl{padding:6px;overflow-x:auto}.ar-tbl table{width:100%;border-collapse:collapse;font-size:12.5px}.ar-tbl th{color:var(--mu);font-weight:600;text-align:left;padding:6px}.ar-tbl td{padding:7px 6px;border-top:1px solid var(--line)}.ar-tbl tr.f td{color:#fde68a}
+.ar-map{margin:8px 0 10px;border-radius:16px;overflow:hidden;background:#0d2a4a;border:1px solid var(--line)}.ar-map svg{display:block;width:100%;height:auto}
 .ar-pc{display:flex;gap:14px;align-items:center;margin-bottom:12px}.ar-pcx b{display:block;font-family:Cinzel,serif;color:#fbbf24}.ar-pcx small{color:var(--mu);font-size:12.5px}
 /* 👑 Chempion kartasi — C: olovli qalqon */
 .arc{--w:270px;width:var(--w);height:calc(var(--w)*1.47);display:inline-block;position:relative;border-radius:calc(var(--w)*.08);padding:4px;background:linear-gradient(160deg,#fca5a5,#7f1d1d 30%,#fde68a 50%,#7f1d1d 70%,#fca5a5);background-size:200% 200%;box-shadow:0 0 50px rgba(220,38,38,.55);animation:arcBr 3.2s ease-in-out infinite,arcBg 6s linear infinite;overflow:hidden;text-align:center;font-family:inherit;vertical-align:top}
@@ -5700,7 +5701,7 @@ const ACC = (() => {
 const ADM_SEC = { dash: ["🏠", "Boshqaruv paneli"], tur: ["🏆", "Turnirlar"], acc: ["👥", "O'quvchilar"], hw: ["📝", "Vazifalar"], cq: ["✏️", "Savollar"], ms: ["🎓", "Sertifikat"], pm: ["💎", "Premium"], tch: ["👨‍🏫", "Ustozlar"], stat: ["📊", "Statistika"], bot: ["🤖", "Telegram bot"], pw: ["🔑", "Parol"], boss: ["🏰", "Boss jangi"], vt: ["⏱", "Saytdagi vaqt"] };
 function adminGo(k) {
   $("amore").classList.add("hide");
-  const f = { dars: () => DARS.open(), dash: () => ADASH.open(), tur: () => T.openHost(), acc: () => ACC.open(), hw: () => HW.open(), cq: () => CQ.open(), ms: () => MSADM.open(), pm: () => PMADM.open(), tch: () => TCHADM.open(), stat: () => STAT.open(), bot: () => BOTP.open(), pw: () => ADMPW.open(), boss: () => BOSS.setup(), vt: () => VTADM.open(), nm: () => NEWM.open(), out: () => adminLogout(), more: () => MORE.open() }[k];
+  const f = { dars: () => DARS.open(), dash: () => ADASH.open(), tur: () => T.openHost(), acc: () => ACC.open(), hw: () => HW.open(), cq: () => CQ.open(), ms: () => MSADM.open(), pm: () => PMADM.open(), tch: () => TCHADM.open(), stat: () => STAT.open(), bot: () => BOTP.open(), pw: () => ADMPW.open(), boss: () => BOSS.setup(), ar: () => ARENA.tch(), vt: () => VTADM.open(), nm: () => NEWM.open(), out: () => adminLogout(), more: () => MORE.open() }[k];
   if (f) f();
 }
 function adminNav(active) {
@@ -5974,7 +5975,7 @@ const VTADM = (() => {
 })();
 const MORE = (() => {
   const G = [["O'quvchilar", [["acc", "users", "#22D3EE", "O'quvchilar", "Ro'yxat, natijalar, bloklash"], ["hw", "task", "#22C55E", "Guruhlar va vazifalar", "Kod, havola, uy vazifasi"], ["nm", "users", "#F2C14E", "Yangi a'zolar", "Bugun, hafta, oy · Telegramga yozish"], ["vt", "clock", "#38BDF8", "Saytdagi vaqt", "Kim qancha shug'ullanyapti"]]],
-    ["O'yin va kontent", [["tur", "trophy", "#F472B6", "Turnirlar", "Jonli o'yinlar, natijalar"], ["boss", "castle", "#FB923C", "Boss jangi", "Butun sinf birgalikda"], ["cq", "edit", "#A78BFA", "Savollar", "Testlarni tahrirlash"], ["ms", "cert", "#F2C14E", "Milliy sertifikat", "Variantlar va ruxsatlar"], ["stat", "chart", "#34D399", "Statistika", "Faollik, natijalar, xatolar"]]],
+    ["O'yin va kontent", [["tur", "trophy", "#F472B6", "Turnirlar", "Jonli o'yinlar, natijalar"], ["boss", "castle", "#FB923C", "Boss jangi", "Butun sinf birgalikda"], ["ar", "trophy", "#F97316", "⚔️ Arena yo‘li", "Bosqichli marafon · chempion kartasi"], ["cq", "edit", "#A78BFA", "Savollar", "Testlarni tahrirlash"], ["ms", "cert", "#F2C14E", "Milliy sertifikat", "Variantlar va ruxsatlar"], ["stat", "chart", "#34D399", "Statistika", "Faollik, natijalar, xatolar"]]],
     ["Daromad", [["pm", "gem", "#FBBF24", "Premium", "Tariflar, o'quvchilar, bo'limlar"], ["tch", "teach", "#22D3EE", "Ustozlar va hamkorlar", "Arizalar, Pro, to'lovlar"]]],
     ["Tizim", [["bot", "bot", "#A7A3D6", "Telegram bot va xabarlar", "Xabar, hisobot, zaxira"], ["pw", "key", "#A7A3D6", "Parol", "Admin kirishi"], ["out", "out", "#F43F5E", "Chiqish", "Admin paneldan chiqish"]]]];
   let bd = {}, st = null, q = "";
@@ -6586,10 +6587,11 @@ const ARENA = (() => {
     jf: { n: "Juftini top", i: "🧩", src: "jf", L: [6, 8, 10], LT: "juft", nd: [3, 3, 3], u: "ko‘pi bilan {n} ta xato", ge: 0, max: 30 },
     km: { n: "Kim bu?", i: "🕵️", src: "km", L: [6, 8, 10], LT: "shaxs", nd: [60, 60, 60], u: "kamida {n}% ball", ge: 1, max: 100 },
     zn: { n: "Bilimlar zinapoyasi", i: "🪜", src: "set", L: [3, 1, 0], LT: "yordam", nd: [10, 10, 10], u: "kamida {n}-pog‘ona", ge: 1, max: 15 },
-    ts: { n: "Mavzu testi", i: "📝", src: "set", L: [10, 20, 30], LT: "savol", nd: [80, 80, 80], u: "kamida {n}% to‘g‘ri", ge: 1, max: 100 }
+    ts: { n: "Mavzu testi", i: "📝", src: "set", L: [10, 20, 30], LT: "savol", nd: [80, 80, 80], u: "kamida {n}% to‘g‘ri", ge: 1, max: 100 },
+    mp: { n: "Xarita o‘yini", i: "🗺", src: "mp", L: [10, 15, 20], LT: "davlat", nd: [70, 70, 70], u: "kamida {n}% to‘g‘ri", ge: 1, max: 100 }
   };
   const LVN = ["🙂 Oson", "😎 O‘rta", "🔥 Qiyin"], JTY = { s: "👤 Shaxslar", d: "📅 Sanalar", j: "📍 Joylar", t: "📖 Atamalar" };
-  const FANS = { u: "O‘zbekiston tarixi", j: "Jahon tarixi", a: "Aralash" };
+  const FANS = { u: "O‘zbekiston tarixi", j: "Jahon tarixi", a: "Aralash" }, QIT = { E: "🇪🇺 Yevropa", A: "🌏 Osiyo", F: "🌍 Afrika", N: "🌎 Shimoliy Amerika", S: "🌎 Janubiy Amerika", mix: "🌐 Aralash" };
   const WD = ["yakshanba", "dushanba", "seshanba", "chorshanba", "payshanba", "juma", "shanba"];
   const now = () => DBA.now(), me = () => ACCT.cur;
   const when = ms => { const d = new Date(ms); return `${WD[d.getDay()]}, ${d2(d.getDate())}.${d2(d.getMonth() + 1)} ${d2(d.getHours())}:${d2(d.getMinutes())}`; };
@@ -6599,7 +6601,7 @@ const ARENA = (() => {
   const state = x => now() < x.a ? "soon" : now() < x.e ? "live" : "end";
   const cond = st => GM[st.k].u.replace("{n}", st.nd);
   const setsOf = c => SETS.filter(s => s.qs && !s.ms && clsOf(s.g) === c + "-sinf");
-  const stTxt = st => { const g = GM[st.k]; let src = ""; if (g.src === "set") src = st.ids && st.ids.length ? st.ids.length + " mavzu" : "barcha mavzular"; else if (g.src === "jf") src = (st.f === "j" ? "Jahon" : "O‘zb.") + " · " + (JTY[st.y] || "").replace(/^\S+ /, ""); else src = st.f === "j" ? "Jahon tarixi" : st.f === "a" ? "Aralash" : "O‘zbekiston tarixi"; return `${src} · ${LVN[st.l].replace(/^\S+ /, "")} · ${cond(st)}`; };
+  const stTxt = st => { const g = GM[st.k]; let src = ""; if (g.src === "set") src = st.ids && st.ids.length ? st.ids.length + " mavzu" : "barcha mavzular"; else if (g.src === "jf") src = (st.f === "j" ? "Jahon" : "O‘zb.") + " · " + (JTY[st.y] || "").replace(/^\S+ /, ""); else if (g.src === "mp") src = (QIT[st.m] || QIT.mix).replace(/^\S+ /, ""); else src = st.f === "j" ? "Jahon tarixi" : st.f === "a" ? "Aralash" : "O‘zbekiston tarixi"; return `${src} · ${LVN[st.l].replace(/^\S+ /, "")} · ${cond(st)}`; };
   const rankOf = L => Object.entries(L || {}).filter(([u, p]) => p && p.n).map(([u, p]) => ({ u, ...p, e: p.e || 0, s: p.s || 0 }))
     .sort((a, b) => (b.f ? 1 : 0) - (a.f ? 1 : 0) || (a.f && b.f ? a.e - b.e || a.f - b.f : b.s - a.s || a.e - b.e || (a.at || 0) - (b.at || 0)));
   const winOf = (x, L) => { const r = rankOf(L).filter(p => p.f && p.f <= x.e + 6e4); return r[0] || null; };
@@ -6612,7 +6614,7 @@ const ARENA = (() => {
   // ---------- 🎮 O‘yinlar sahifasidagi kartochka ----------
   function hero(el) {
     if (!el) return; watch(); const L = mine().slice(0, 2);
-    if (!L.length) { el.innerHTML = ""; return; }
+    if (!L.length) { const t = (() => { try { return TCH.is() || adm(); } catch (e) { return false; } })(); el.innerHTML = `<button class="ar-hero end" onclick="${t ? "ARENA.tch()" : "FX.toast('⚔️ Ustozingiz marafon ochganda shu yerda paydo bo‘ladi')"}"><span class="ar-hr"><span class="ar-hi">⚔️</span><span><b>ARENA YO‘LI</b><small>${t ? "Bosqichli marafon oching — g‘olib ARENA CHEMPIONI kartasini oladi" : "Hozircha faol arena yo‘q. Ustozingiz ochganda shu yerda paydo bo‘ladi"}</small></span></span>${t ? `<span class="ar-hf"><span>Ustoz uchun</span><em>Arena ochish ▶</em></span>` : ""}</button>`; return; }
     el.innerHTML = L.map(x => { const s = state(x), p = MY[x.id], n = x.st.length, w = s === "end" && x.w;
       return `<button class="ar-hero ${s}" onclick="ARENA.open('${x.id}')"><span class="ar-pill">${s === "live" ? `🔴 JONLI · tugashiga ${leftTxt(x.e - now())}` : s === "soon" ? `⏳ ${leftTxt(x.a - now())} dan keyin boshlanadi` : "🏁 YAKUNLANDI"}</span>
         <span class="ar-hr"><span class="ar-hi">⚔️</span><span><b>ARENA YO‘LI</b><small>«${esc(x.n)}» · ${n} bosqich</small></span></span>
@@ -6659,7 +6661,7 @@ const ARENA = (() => {
   }
 
   // ---------- ▶ Bosqichni o‘ynash ----------
-  async function play(id, i) {
+  async function play(id, i, again) {
     const u = me(), x = A[id]; if (!u || !x) return;
     if (state(x) !== "live") return FX.toast(state(x) === "soon" ? "⏳ Arena hali boshlanmadi" : "🏁 Arena yakunlangan");
     let p = await myP(id, true);
@@ -6667,8 +6669,8 @@ const ARENA = (() => {
     if (p.f) return FX.toast("🏁 Siz allaqachon marraga yetgansiz");
     if (i !== (p.s || 0)) return FX.toast("🔒 Avval oldingi bosqichdan o‘ting");
     const st = x.st[i], g = GM[st.k], cls = x.c + "-sinf";
-    p.ti = (p.ti || 0) + 1; p.tr = (p.tr || 0) + 1; try { await DBA.update(`arp/${id}/${u.uid}`, { ti: p.ti, tr: p.tr, at: now() }); } catch (e) {}
-    CUR = { id, i, e0: p.e || 0 };
+    if (!again) { p.ti = (p.ti || 0) + 1; p.tr = (p.tr || 0) + 1; try { await DBA.update(`arp/${id}/${u.uid}`, { ti: p.ti, tr: p.tr, at: now() }); } catch (e) {} }
+    CUR = { id, i, e0: p.e || 0 }; mark(CUR); clearTimeout(autoT);
     const o = { cls, ids: st.ids || [], l: st.l, n: g.L[st.l], c: x.c, f: st.f, y: st.y };
     try { FX.toast(`${g.i} ${i + 1}-bosqich: ${g.n} · shart: ${cond(st)}`, "up"); } catch (e) {}
     try {
@@ -6678,13 +6680,53 @@ const ARENA = (() => {
       else if (st.k === "xr") await XRON.arena(o);
       else if (st.k === "jf") await JUFTG.arena({ ...o, c: st.f === "j" ? x.c + "j" : x.c });
       else if (st.k === "km") await KIMG.arena({ ...o, c: st.f === "j" ? x.c + "j" : x.c });
+      else if (st.k === "mp") await mapGame({ ...o, m: st.m || "mix" });
       else if (st.k === "ts") {
         let pool = SETS.filter(s => s.qs && !s.ms && clsOf(s.g) === cls && (!o.ids.length || o.ids.includes(s.id))).flatMap(s => s.qs);
         for (let k = pool.length - 1; k > 0; k--) { const j = Math.floor(Math.random() * (k + 1)); [pool[k], pool[j]] = [pool[j], pool[k]]; }
         pool = pool.slice(0, o.n); if (pool.length < 5) throw new Error("Tanlangan mavzularda savol yetarli emas");
         set = { id: "ar_" + id, ar: 1, n: "Arena", title: "⚔️ " + x.n + " · " + (i + 1) + "-bosqich", qs: pool, g: cls + " · Arena" }; HWNEXT = null; start();
       }
-    } catch (e) { CUR = null; FX.toast("⚠️ " + ((e && e.message) || e)); open(id); }
+    } catch (e) { CUR = null; mark(null); FX.toast("⚠️ " + ((e && e.message) || e)); open(id); }
+  }
+  // 🗺 Xarita o‘yini (yakka): belgilangan davlatni topish — qit’ani ustoz tanlaydi
+  let MG = null;
+  async function mapGame(o) {
+    await MAPQ.load();
+    const Q = MAPQ.build({ map: { k: o.m }, n: o.n }, Math.random);
+    if (Q.length < 5) throw new Error("Bu qit’a uchun savol yetarli emas");
+    MG = { Q, i: 0, ok: 0, w: 0, lock: false }; show("tz"); setNav(null); BK(null); document.body.classList.add("dlm"); mq();
+  }
+  function mq() {
+    const g = MG; if (!g) return; const q = g.Q[g.i], perm = shuffle([0, 1, 2, 3]); g.lock = false; document.body.classList.add("dlm");
+    $("tz").innerHTML = `<div class="xr-bar"><button class="adh-b" onclick="ARENA.mquit()" title="Chiqish">✕</button><div class="xr-m">Davlat <b>${g.i + 1}</b> / ${g.Q.length}<small>${esc(q.t)}</small></div><span class="xr-sc">✅ ${g.ok} · <span style="color:#f87171">❌ ${g.w}</span></span></div>
+      <div class="fq-seg xr-seg">${g.Q.map((_, k) => `<i class="${k < g.i ? "d" : k === g.i ? "c" : ""}"></i>`).join("")}</div>
+      <div class="tmap ar-map" id="mgM">${MAPQ.svg(q.map.k, q.map.i)}</div><div class="kh-q"><div class="q">${esc(q.q)}</div></div><div class="kh-g" id="mgO"></div><div id="mgF"></div>`;
+    perm.forEach((oi, k) => { const b = document.createElement("button"); b.className = "opt kh-o k" + k; b.innerHTML = `<span class="sh">${"ABCD"[k]}</span><span></span>`; b.lastChild.textContent = q.o[oi]; b.onclick = () => mans(oi, b, perm); $("mgO").appendChild(b); });
+    window.scrollTo(0, 0);
+  }
+  function mans(oi, b, perm) {
+    const g = MG; if (!g || g.lock) return; g.lock = true; const q = g.Q[g.i], ok = oi === q.a; $("mgO").classList.add("done");
+    b.classList.add(ok ? "okk" : "bad"); const tg = $("mgM").querySelector(".tg"); if (tg) tg.classList.add(ok ? "okc" : "badc");
+    if (ok) { g.ok++; try { FX.correct(b, "+1"); } catch (e) {} } else { g.w++; err(); [...$("mgO").children][perm.indexOf(q.a)].classList.add("okk"); try { FX.wrong(); } catch (e) {} }
+    $("mgF").innerHTML = `<div class="xr-fb${ok ? " ok" : ""}">${ok ? "✅" : "❌"} <b>${esc(q.o[q.a])}</b>${q.cap ? ` · poytaxti: ${esc(q.cap)}` : ""}${q.e ? `<div style="margin-top:4px">💡 ${esc(q.e)}</div>` : ""}</div>`;
+    setTimeout(() => { if (MG !== g) return; g.i++; if (g.i >= g.Q.length) { MG = null; return done({ sc: Math.round(g.ok / g.Q.length * 100) }); } mq(); }, ok ? 1100 : 2000);
+  }
+  function mquit() { if (MG && MG.i > 0 && !confirm("O‘yindan chiqasizmi? Natija saqlanmaydi, xatolar hisobda qoladi.")) return; MG = null; back(); }
+  // 🔄 Sahifa yangilansa ham o‘yinga qaytish
+  const LS = "zm_arcur";
+  function mark(c) { try { if (c && me()) localStorage.setItem(LS, JSON.stringify({ id: c.id, i: c.i, u: me().uid, t: Date.now() })); else localStorage.removeItem(LS); } catch (e) {} }
+  function pending() { try { const o = JSON.parse(localStorage.getItem(LS) || "null"); return o && me() && o.u === me().uid && Date.now() - o.t < 6 * 3600e3 ? o : null; } catch (e) { return null; } }
+  async function resume() {
+    const o = pending(); if (!o) return false; mark(null);
+    await open(o.id); const x = A[o.id], p = MY[o.id];
+    if (x && state(x) === "live" && p && !p.f && (p.s || 0) === o.i) { try { FX.toast("⚔️ Arenadagi o‘yiningizga qaytdingiz — bosqich qaytadan boshlandi", "up"); } catch (e) {} play(o.id, o.i, true); }
+    return true;
+  }
+  let autoT = 0;
+  function auto(id, i) {
+    let n = 4; const tk = () => { const el = $("arAuto"); if (!el) return; if (--n <= 0) return play(id, i); el.querySelector("b").textContent = n; autoT = setTimeout(tk, 1000); };
+    clearTimeout(autoT); autoT = setTimeout(tk, 1000);
   }
   // Xato — darhol hisobga (o‘yindan chiqib ketish xatoni o‘chirmaydi)
   function err(k = 1) {
@@ -6692,7 +6734,7 @@ const ARENA = (() => {
     p.e = (p.e || 0) + k; clearTimeout(errT); errT = setTimeout(() => { DBA.set(`arp/${c.id}/${u.uid}/e`, p.e).catch(() => {}); }, 900);
   }
   async function done(r) {
-    const c = CUR, u = me(); CUR = null; if (!c || !u) return goHome();
+    const c = CUR, u = me(); CUR = null; mark(null); if (!c || !u) return goHome();
     clearTimeout(errT);
     const x = A[c.id], p = MY[c.id]; if (!x || !p) return open(c.id);
     if (r.e) p.e = (p.e || 0) + r.e;
@@ -6706,17 +6748,18 @@ const ARENA = (() => {
     show("tz"); setNav("games"); BK(() => open(c.id)); document.body.classList.add("dlm");
     $("tz").innerHTML = head(`⚔️ ${c.i + 1}-bosqich`, g.n + " · " + cond(st)) + `<div class="sub" style="text-align:center;margin:30px 0">Saqlanmoqda…</div>`;
     let ok = true; try { await DBA.update(`arp/${c.id}/${u.uid}`, up); } catch (e) { ok = false; }
-    const sc = st.k === "jf" ? `${r.sc} ta xato` : st.k === "zn" ? `${r.sc}-pog‘ona` : st.k === "bz" ? `${r.sc} ta to‘g‘ri` : st.k === "km" || st.k === "ts" ? `${r.sc}%` : `${r.sc} ball`;
+    const sc = st.k === "jf" ? `${r.sc} ta xato` : st.k === "zn" ? `${r.sc}-pog‘ona` : st.k === "bz" ? `${r.sc} ta to‘g‘ri` : st.k === "km" || st.k === "ts" || st.k === "mp" ? `${r.sc}%` : `${r.sc} ball`;
     const fin = pass && !late && p.f && p.s >= n;
     $("tz").innerHTML = head(`⚔️ ${c.i + 1}-bosqich`, g.n + " · " + cond(st)) + (late ? `<div class="card ar-res bad"><div class="ar-em">⏰</div><h2>Vaqt tugadi</h2><p class="sub">Arena yakunlangan — natija qabul qilinmadi.</p></div>`
       : fin ? `<div class="card ar-res fin"><div class="ar-em">🏁</div><h2>MARRA!</h2><p class="sub">Barcha ${n} bosqichdan o‘tdingiz!<br>Jami xato: <b style="color:#fff">${p.e || 0}</b> · Vaqt: <b style="color:#fff">${dur(p.f - (p.j || x.a))}</b></p><p class="sub">G‘olib arena tugagach aniqlanadi: eng kam xato qilgan yutadi.</p><button class="btn" onclick="ARENA.open('${c.id}')">🏆 Reytingni ko‘rish</button></div>`
-      : pass ? `<div class="card ar-res ok"><div class="ar-em">🔓</div><h2>Bosqich o‘tildi!</h2><p class="sub">Natija: <b style="color:#fff">${sc}</b> · bu urinishda ${ae} xato</p><button class="btn" onclick="ARENA.play('${c.id}',${c.i + 1})">➡ ${c.i + 2}-bosqich: ${esc(GM[x.st[c.i + 1].k].n)}</button><button class="btn ghost" style="margin-top:8px" onclick="ARENA.open('${c.id}')">⚔️ Arena yo‘li</button></div>`
+      : pass ? `<div class="card ar-res ok"><div class="ar-em">🔓</div><h2>Bosqich o‘tildi!</h2><p class="sub">Natija: <b style="color:#fff">${sc}</b> · bu urinishda ${ae} xato</p><button class="btn" onclick="ARENA.play('${c.id}',${c.i + 1})">➡ ${c.i + 2}-bosqich: ${esc(GM[x.st[c.i + 1].k].n)}</button><p class="sub" id="arAuto" style="margin:8px 0 0">⏩ <b>4</b> soniyadan keyin keyingi o‘yin avtomatik ochiladi · <a href="#" onclick="clearTimeout(ARENA._at());this.parentNode.remove();return false" style="color:var(--ac2)">to‘xtatish</a></p><button class="btn ghost" style="margin-top:8px" onclick="ARENA.open('${c.id}')">⚔️ Arena yo‘li</button></div>`
       : `<div class="card ar-res bad"><div class="ar-em">😤</div><h2>O‘tolmadingiz</h2><p class="sub">Natija: <b style="color:#fff">${sc}</b> · kerak: ${esc(cond(st))}<br>Xatolar hisobingizga qo‘shildi: <b style="color:#f87171">+${ae}</b> (jami ${p.e || 0})</p><button class="btn" onclick="ARENA.play('${c.id}',${c.i})">🔁 Qayta urinish</button><button class="btn ghost" style="margin-top:8px" onclick="ARENA.open('${c.id}')">⚔️ Arena yo‘li</button><p class="sub" style="margin-top:10px">${c.i + 2 <= n ? `${c.i + 2}-bosqich hali yopiq 🔒` : "Final hali o‘tilmadi 🔒"}</p></div>`)
       + (ok ? "" : `<p class="sub" style="text-align:center;color:#f87171">⚠️ Natija saqlanmadi — internetni tekshiring.</p>`);
     try { if (fin) { FX.rain(260); FX.S.win(); } else if (pass) { FX.rain(90); FX.S.ok(); } else FX.wrong(); } catch (e) {}
+    if (pass && !late && !fin && ok) auto(c.id, c.i + 1);
     const h = $("arHero"); if (h) hero(h);
   }
-  const back = () => { const c = CUR; CUR = null; if (c) open(c.id); else HOMEX.games(); };
+  const back = () => { const c = CUR; CUR = null; mark(null); if (c) open(c.id); else HOMEX.games(); };
 
   // ---------- 👑 ARENA CHEMPIONI kartasi (C: olovli qalqon) ----------
   function card(w, x, sm) {
@@ -6739,13 +6782,13 @@ const ARENA = (() => {
   const adm = () => { try { return isAdmin(); } catch (e) { return false; } };
   const thead = (t, sub, fn) => `<div class="dl-h"><button class="adh-b" onclick="${fn || "ARENA.tch()"}" title="Orqaga">‹</button><div class="adh-t"><small>${esc(sub || "Ustoz paneli")}</small><b>${t}</b></div></div>`;
   async function tch() {
-    leave(); show("tz"); setNav(null); BK(() => TCH.open()); document.body.classList.add("dlm");
+    leave(); show("tz"); setNav(null); const bk = adm() && !(TCH.is && TCH.is()) ? "ADASH.open()" : "TCH.open()"; BK(bk === "TCH.open()" ? () => TCH.open() : () => ADASH.open()); document.body.classList.add("dlm");
     const uid = tUid(); if (!uid) return;
-    $("tz").innerHTML = thead("⚔️ Arena yo‘li", "Ustoz paneli", "TCH.open()") + `<div class="sub" style="text-align:center;margin:30px 0">Yuklanmoqda…</div>`;
+    $("tz").innerHTML = thead("⚔️ Arena yo‘li", "Ustoz paneli", bk) + `<div class="sub" style="text-align:center;margin:30px 0">Yuklanmoqda…</div>`;
     let all = {}; try { all = (adm() ? await DBA.get("ar") : await DBA.eq("ar", "t", uid)) || {}; } catch (e) {}
     const L = Object.entries(all).filter(([k, x]) => x && x.st && (adm() || x.t === uid)).map(([k, x]) => ({ id: k, ...x })).sort((a, b) => b.at - a.at).slice(0, 30);
     const cnt = await Promise.all(L.map(x => DBA.get("arp/" + x.id).then(v => Object.keys(v || {}).length).catch(() => 0)));
-    $("tz").innerHTML = thead("⚔️ Arena yo‘li", "Ustoz paneli", "TCH.open()") +
+    $("tz").innerHTML = thead("⚔️ Arena yo‘li", "Ustoz paneli", bk) +
       `<div class="card ar-intro"><b>Bosqichma-bosqich marafon</b><p class="sub" style="margin:4px 0 0">O‘yinlardan bosqichlar tuzasiz, har biriga mavzu, qiyinlik va o‘tish shartini qo‘yasiz. Bosqichdan o‘tolmagan o‘quvchiga keyingisi ochilmaydi. Oxirigacha yetganlar ichida <b>eng kam xato</b> qilgan g‘olib (teng bo‘lsa — kim oldin). G‘olibga 👑 ARENA CHEMPIONI kartasi beriladi.</p></div>
       <button class="btn" onclick="ARENA.edit()">＋ Yangi arena yaratish</button>
       <div class="ah">Mening arenalarim</div>${L.length ? L.map((x, i) => { const s = state(x); return `<div class="card ar-tl"><div><span class="ar-pill ${s}">${s === "live" ? "🔴 Jonli" : s === "soon" ? "⏳ Kutilmoqda" : "🏁 Yakunlangan"}</span><b>«${esc(x.n)}»</b><small>${esc(x.g === "*" ? "Barcha o‘quvchilar" : x.g)} · ${x.st.length} bosqich · ${cnt[i]} qatnashchi<br>${when(x.a)} → ${when(x.e)}</small>${x.w ? `<small>👑 Chempion: <b>${esc(x.w.n)}</b></small>` : ""}</div><div class="ar-tb"><button class="btn sm" onclick="ARENA.mon('${x.id}')">📊 Kuzatish</button>${s === "soon" ? `<button class="btn sm ghost" onclick="ARENA.edit('${x.id}')">✏️</button>` : ""}<button class="btn sm ghost" onclick="ARENA.del('${x.id}')">🗑</button></div></div>`; }).join("") : `<p class="sub" style="text-align:center">Hali arena yaratilmagan.</p>`}`;
@@ -6754,14 +6797,16 @@ const ARENA = (() => {
   const dtl = ms => { const d = new Date(ms); return `${d.getFullYear()}-${d2(d.getMonth() + 1)}-${d2(d.getDate())}T${d2(d.getHours())}:${d2(d.getMinutes())}`; };
   async function edit(id) {
     leave(); show("tz"); setNav(null); BK(() => tch()); document.body.classList.add("dlm");
-    const grps = (() => { try { return TCH.grps(); } catch (e) { return []; } })();
+    if (adm()) { try { const all = (await DBA.get("grp")) || {}; AG = Object.values(all).filter(g => g && g.n).map(g => ({ n: g.n })).sort((a, b) => a.n.localeCompare(b.n)); } catch (e) {} }
+    const grps = gList();
     if (id) { let x = null; try { x = await DBA.get("ar/" + id); } catch (e) {} if (!x) return tch(); E = { id, ...JSON.parse(JSON.stringify(x)) }; E.st.forEach(st => st.ids = st.ids || []); }
     else { const g0 = grps[0] ? grps[0].n : (adm() ? "*" : ""), c0 = (String(g0).match(/\d+/) || ["9"])[0]; E = { n: "", g: g0, c: ["6", "7", "8", "9", "10", "11"].includes(c0) ? c0 : "9", a: Math.ceil(now() / 300000) * 300000, e: TW.end(now()), st: [mk("bz"), mk("xr"), mk("ts")] }; }
     EX = id ? -1 : 0; draw2();
   }
-  const mk = k => ({ k, ids: [], f: "u", y: "s", l: 1, nd: GM[k].nd[1] });
+  let AG = null; const gList = () => { let L = []; try { L = TCH.grps(); } catch (e) {} if (adm() && AG) { const h = new Set(L.map(g => nk(g.n))); L = L.concat(AG.filter(g => !h.has(nk(g.n)))); } return L; };
+  const mk = k => ({ k, ids: [], f: "u", y: "s", m: "mix", l: 1, nd: GM[k].nd[1] });
   function draw2() {
-    const grps = (() => { try { return TCH.grps(); } catch (e) { return []; } })(), S = setsOf(E.c);
+    const grps = gList(), S = setsOf(E.c);
     const gOpt = grps.map(g => `<option value="${esc(g.n)}"${nk(g.n) === nk(E.g) ? " selected" : ""}>${esc(g.n)}</option>`).join("") + (adm() ? `<option value="*"${E.g === "*" ? " selected" : ""}>🌍 Barcha o‘quvchilar</option>` : "");
     const stH = E.st.map((st, i) => { const g = GM[st.k];
       if (i !== EX) return `<div class="ar-es" data-i="${i}"><span class="ar-k">${i + 1}</span><span class="ar-en">${g.i} <b>${esc(g.n)}</b><small>${esc(stTxt(st))}</small></span><span class="ar-eb"><button data-a="up"${i ? "" : " disabled"}>↑</button><button data-a="dn"${i < E.st.length - 1 ? "" : " disabled"}>↓</button><button data-a="x">✕</button></span></div>`;
@@ -6769,6 +6814,7 @@ const ARENA = (() => {
       return `<div class="ar-es on" data-i="${i}"><div class="ar-eh"><span class="ar-k">${i + 1}</span><b>${g.i} ${esc(g.n)}</b><button class="ar-ec" data-a="cl">▴</button></div>
         <label class="ar-lb2">O‘yin</label><select id="aeK">${Object.entries(GM).map(([k, v]) => `<option value="${k}"${k === st.k ? " selected" : ""}>${v.i} ${v.n}</option>`).join("")}</select>
         ${g.src === "set" ? `<label class="ar-lb2">Mavzular (${E.c}-sinf) <small>— hech biri tanlanmasa, hammasidan</small></label><div class="ar-chips" id="aeT">${[...new Set(S.map(s => fanOf(s.g)))].map(f => `<div class="ar-cg">${esc(f)}</div>` + S.filter(s => fanOf(s.g) === f).map(s => `<button data-id="${s.id}" class="${st.ids.includes(s.id) ? "on" : ""}">${st.ids.includes(s.id) ? "✓ " : ""}<b>${esc(s.n || "")}</b> ${esc((t => t.length > 40 ? t.slice(0, 38) + "…" : t)(String(s.sub || s.title).split(" · ")[0]))}</button>`).join("")).join("") || `<span class="sub">Bu sinf uchun test topilmadi</span>`}</div><small class="sub">Bazada ${nq} ta savol</small>`
+        : g.src === "mp" ? `<label class="ar-lb2">Qit’a</label><div class="ar-seg" id="aeM">${Object.entries(QIT).map(([m, t]) => `<button data-m="${m}" class="${(st.m || "mix") === m ? "on" : ""}">${t}</button>`).join("")}</div>`
         : `<label class="ar-lb2">Fan</label><div class="ar-seg" id="aeF">${(st.k === "xr" ? ["u", "j", "a"] : ["u", "j"]).map(f => `<button data-f="${f}" class="${st.f === f ? "on" : ""}">${FANS[f]}</button>`).join("")}</div>
           ${st.k === "jf" ? `<label class="ar-lb2">Juftlar turi</label><div class="ar-seg" id="aeY">${Object.entries(JTY).map(([y, t]) => `<button data-y="${y}" class="${st.y === y ? "on" : ""}">${t}</button>`).join("")}</div>` : ""}`}
         <label class="ar-lb2">Qiyinlik</label><div class="ar-seg" id="aeL">${LVN.map((t, l) => `<button data-l="${l}" class="${st.l === l ? "on" : ""}">${t}<small>${g.L[l]} ${g.LT}</small></button>`).join("")}</div>
@@ -6793,7 +6839,7 @@ const ARENA = (() => {
       if (i !== EX) { EX = i; return draw2(); }
       if (!b) return;
       if (b.dataset.id) { const k = b.dataset.id; st.ids = st.ids.includes(k) ? st.ids.filter(x => x !== k) : st.ids.concat(k); }
-      else if (b.dataset.f) st.f = b.dataset.f; else if (b.dataset.y) st.y = b.dataset.y;
+      else if (b.dataset.f) st.f = b.dataset.f; else if (b.dataset.y) st.y = b.dataset.y; else if (b.dataset.m) st.m = b.dataset.m;
       else if (b.dataset.l) { const l = +b.dataset.l; if (st.nd === g.nd[st.l]) st.nd = g.nd[l]; st.l = l; }
       else if (b.dataset.d) { const step = g.max >= 100 ? 5 : 1; st.nd = Math.max(g.ge ? 1 : 0, Math.min(g.max, st.nd + step * +b.dataset.d)); }
       draw2();
@@ -6812,7 +6858,7 @@ const ARENA = (() => {
     const S = setsOf(E.c);
     for (let i = 0; i < E.st.length; i++) { const st = E.st[i], g = GM[st.k]; if (g.src === "set") { const nq = S.filter(s => !st.ids.length || st.ids.includes(s.id)).reduce((a, s) => a + (st.k === "hy" ? HAYOQ._elig(s).length : s.qs.length), 0); if (nq < Math.min(g.L[st.l] || 10, 10)) return er(`${i + 1}-bosqich: tanlangan mavzularda savol yetarli emas (${nq} ta).`); } }
     $("aeGo").disabled = true; er("");
-    const uid = tUid(), M = (() => { try { return TCH.meV(); } catch (e) { return {}; } })(), x = { t: uid, tn: String((M && M.n) || ((me() && ((me().f || "") + " " + (me().l || "")).trim())) || "").slice(0, 60), g: E.g, n: E.n, c: E.c, a: E.a, e: E.e, at: E.at || now(), st: E.st.map(st => { const o = { k: st.k, l: st.l, nd: st.nd }; if (GM[st.k].src === "set") o.ids = st.ids.slice(0, 40); else { o.f = st.f || "u"; if (st.k === "jf") o.y = st.y || "s"; } return o; }) };
+    const uid = tUid(), M = (() => { try { return TCH.meV(); } catch (e) { return {}; } })(), x = { t: uid, tn: String((M && M.n) || ((me() && ((me().f || "") + " " + (me().l || "")).trim())) || "").slice(0, 60), g: E.g, n: E.n, c: E.c, a: E.a, e: E.e, at: E.at || now(), st: E.st.map(st => { const o = { k: st.k, l: st.l, nd: st.nd }; if (GM[st.k].src === "set") o.ids = st.ids.slice(0, 40); else if (st.k === "mp") o.m = st.m || "mix"; else { o.f = st.f || "u"; if (st.k === "jf") o.y = st.y || "s"; } return o; }) };
     try { const id = E.id || ("a" + now().toString(36)); await DBA.set("ar/" + id, x); FX.toast(E.id ? "💾 Saqlandi" : "⚔️ Arena yaratildi!", "up"); E = null; mon(id); }
     catch (e) { $("aeGo").disabled = false; er("⚠️ " + ((e && e.message) || e)); }
   }
@@ -6835,7 +6881,7 @@ const ARENA = (() => {
     }
     paint();
   }
-  return { hero, open, play, err, done, back, leave, card, pfill, tch, edit, del, mon, watch, _rank: rankOf, _st: () => A, _set: (id, x) => { A[id] = x; } };
+  return { hero, open, play, err, done, back, leave, card, pfill, tch, edit, del, mon, watch, mquit, pending, resume, _at: () => autoT, _rank: rankOf, _st: () => A, _set: (id, x) => { A[id] = x; } };
 })();
 const GAME = (() => {
   const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -8208,6 +8254,7 @@ const T = (() => {
     if ((window.IN_TG ? window.TG_START === "kun" : location.hash === "#kun")) { try { if (!window.IN_TG) history.replaceState(null, "", location.pathname + location.search); } catch (e) {} KUN.go(); return; }
     const km = (window.IN_TG ? "#" + (window.TG_START || "") : location.hash).match(/^#kt-(\d{5})$/);
     if (km) { try { if (!window.IN_TG) history.replaceState(null, "", location.pathname + location.search); } catch (e) {} return KT.join(km[1]); }
+    if (ACCT.cur && ARENA.pending()) { ARENA.resume(); return; }
     const arm = (window.IN_TG ? "#" + (window.TG_START || "") : location.hash).match(/^#ar-([a-z0-9]{4,20})$/);
     if (arm) { try { if (!window.IN_TG) history.replaceState(null, "", location.pathname + location.search); } catch (e) {} if (ACCT.cur) return ARENA.open(arm[1]); }
     const gm = (window.IN_TG ? "#" + (window.TG_START || "") : location.hash).match(/^#g-([A-Za-z0-9]{6,8})$/);
