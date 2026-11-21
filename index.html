@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="manifest" href="manifest.webmanifest">
-<meta name="theme-color" content="#0A1830">
+<meta name="theme-color" content="#070B18">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -66,10 +66,10 @@ window.TG_APP = "";   // BotFather /newapp da berilgan qisqa nom, masalan: app
 @font-face{font-family:'Cinzel';font-style:normal;font-weight:700;font-display:swap;src:url(fonts/cinzel-latin-ext-700-normal.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
 @font-face{font-family:'Cinzel';font-style:normal;font-weight:700;font-display:swap;src:url(fonts/cinzel-latin-700-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
 </style>
-<script>(function(){var t="arena";try{t=localStorage.getItem("zm_th2")||"arena"}catch(e){}if(["arena","tun","tong","vodiy"].indexOf(t)<0)t="arena";try{if(+localStorage.getItem("zm_chth")>Date.now())t="registon"}catch(e){}document.documentElement.setAttribute("data-th",t)})();
+<script>(function(){var t="imperiya";try{t=localStorage.getItem("zm_th2")||"imperiya"}catch(e){}if(["arena","imperiya","tun","tong","vodiy"].indexOf(t)<0)t="imperiya";try{if(+localStorage.getItem("zm_chth")>Date.now())t="registon"}catch(e){}document.documentElement.setAttribute("data-th",t)})();
 // Mavzu (tema): arena — lojuvard-oltin (asosiy), tun — qorong'i, tong — oq, vodiy — yashil (asosiy)
-window.THEME={L:[["arena","🏛 Arena tun","To‘q lojuvard va oltin — TARIX ARENA uslubi","#0A1830","#D4A63A","#F3D27A"],["vodiy","🌿 Yashil vodiy","Yumshoq yalpiz rangi — tinch, diqqatni jamlaydi","#EEF7F1","#16A34A","#0EA5A4"],["tong","☀️ Oq tong","Toza oq fon, ko‘k urg‘u — kunduzi qulay","#F5F7FB","#4F46E5","#06B6D4"],["tun","🌙 Tun","Qorong‘i binafsha — kechqurun ko‘zni charchatmaydi","#0A0720","#8B5CF6","#22D3EE"],["registon","👑 Registon moviy","Chempion mavzusi — lojuvard, feruza va oltin","#061A33","#14B8A6","#F2C14E"]],
- get:function(){return document.documentElement.getAttribute("data-th")||"arena"},
+window.THEME={L:[["imperiya","👑 Oltin imperiya","Kechki Rim va Samarqand — oltin hoshiya, nurli kartalar","#070B18","#B8861F","#F7D27A"],["arena","🏛 Arena tun","To‘q lojuvard va oltin — TARIX ARENA uslubi","#0A1830","#D4A63A","#F3D27A"],["vodiy","🌿 Yashil vodiy","Yumshoq yalpiz rangi — tinch, diqqatni jamlaydi","#EEF7F1","#16A34A","#0EA5A4"],["tong","☀️ Oq tong","Toza oq fon, ko‘k urg‘u — kunduzi qulay","#F5F7FB","#4F46E5","#06B6D4"],["tun","🌙 Tun","Qorong‘i binafsha — kechqurun ko‘zni charchatmaydi","#0A0720","#8B5CF6","#22D3EE"],["registon","👑 Registon moviy","Chempion mavzusi — lojuvard, feruza va oltin","#061A33","#14B8A6","#F2C14E"]],
+ get:function(){return document.documentElement.getAttribute("data-th")||"imperiya"},
  bg:function(){var t=this.L.find(function(x){return x[0]===THEME.get()});return t?t[3]:"#0A0720"},
  tg:function(){try{var w=Telegram.WebApp,c=this.bg();w.setHeaderColor&&w.setHeaderColor(c);w.setBackgroundColor&&w.setBackgroundColor(c)}catch(e){}try{var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute("content",this.bg())}catch(e){}},
  set:function(t){document.documentElement.setAttribute("data-th",t);try{if(t==="registon"){localStorage.removeItem("zm_chth_off")}else{localStorage.setItem("zm_th2",t);if(+localStorage.getItem("zm_chth")>Date.now()){localStorage.setItem("zm_chth_off",localStorage.getItem("zm_chth"));localStorage.removeItem("zm_chth")}}}catch(e){}this.tg()},
@@ -754,6 +754,24 @@ body.dlm #bkb{display:none!important}
 .arg .tgbtn:not(.tgsm) svg{stroke:#111}.arg .tgbtn:not(.tgsm) .arg-xp{background:#111;color:#ffd75e}
 .arg .tgbtn:not(.tgsm):after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.6) 48%,transparent 62%);transform:translateX(-120%);animation:argSh 3.8s ease-in-out infinite}
 .arg-city{position:absolute;left:0;right:0;bottom:0;width:100%;height:70px;pointer-events:none}
+/* Kirish: bitta ekranga sig'adi (telefon) */
+@media (max-width:899px){
+body:has(#auth:not(.hide)) .wrap{padding-bottom:8px}
+.arg{display:flex!important;flex-direction:column;min-height:calc(100dvh - 94px);padding:0 14px 40px!important}
+.arg-l{display:flex!important;flex-direction:column;align-items:center}
+.arg-hero{margin:0 -14px!important;width:calc(100% + 28px);aspect-ratio:auto!important;height:clamp(110px,30dvh,290px)}
+.arg-hero img{object-position:50% 42%}
+.arg h2{font-size:clamp(20px,3.2dvh,28px)!important;line-height:1.15;margin:2px 0 2px!important}
+.arg-l>p{font-size:13px;margin:0!important}
+.arg-dv{margin:4px 0 0}.arg-dv span{font-size:13px}
+.arg .arg-ch{margin:6px 0 0!important}
+.arg .kunbtn{margin:8px 0 0!important;padding:8px 12px!important;min-height:0!important}.arg .kunbtn small{font-size:11.5px!important}
+.arg .tgbtn{min-height:50px!important;margin-top:8px!important}
+.arg .xpmv{padding:4px;font-size:11.5px;line-height:1.3}
+.arg-city{height:36px}
+.arg>.arg-l{flex:1 1 auto}
+@media (max-height:700px){.arg-hero{height:clamp(96px,22dvh,200px)}.arg-dv{display:none!important}.arg .kunbtn small{display:none!important}.arg .kunbtn{padding:6px 12px!important}.arg h2{font-size:20px!important}.arg .arg-ch{margin:5px 0 0!important}.arg{padding-bottom:30px!important}.arg-city{height:26px}}
+}
 @keyframes argKb{from{transform:scale(1)}to{transform:scale(1.09) translateY(-1.5%)}}
 @keyframes argSp{0%,100%{opacity:0;transform:scale(.4)}50%{opacity:1;transform:scale(1.2)}}
 @keyframes argSh{0%,45%{transform:translateX(-120%)}80%,100%{transform:translateX(120%)}}
@@ -945,6 +963,45 @@ html[data-th="vodiy"]{--mu:#47604F;--gr:linear-gradient(135deg,#15803D,#0F766E)}
 html[data-th="tong"]{--mu:#525977}
 html[data-th="arena"] .btn:not(.ghost):not([style*="background"]),html[data-th="arena"] .bnav button.on,html[data-th="arena"] .seg button.on,html[data-th="arena"] .sttabs button.on,html[data-th="arena"] .acctabs button.on,html[data-th="arena"] .dl-cls button.on,html[data-th="arena"] .jf-cls button.on,html[data-th="arena"] .tgt button.on,html[data-th="arena"] .contc .go,html[data-th="arena"] .hm-gb,html[data-th="arena"] .hbb{color:#0A1830!important}
 html[data-th="arena"] .bnav button.on span{color:#0A1830!important}
+/* 🏛 Oltin imperiya — kechki Rim va Samarqand: oltin hoshiya, nurli shisha kartalar */
+html[data-th="imperiya"]{--bg:#070B18;--card:#111A35;--card2:#18244A;--line:rgba(212,166,58,.34);--tx:#F7F1E1;--mu:#A9B3CF;--ac:#E8B23A;--ac2:#F7D27A;--ok:#22C55E;--bad:#F43F5E;--gr:linear-gradient(135deg,#B8861F,#F7D27A);--w:255,255,255;--sel:#16224a;--acr:232,178,58;--ac2r:247,210,122;--bgr:7,11,24;--cardr:17,26,53;--okr:34,197,94}
+html[data-th="imperiya"] body{background:radial-gradient(800px 420px at 50% -8%,rgba(40,64,128,.55),transparent 70%),radial-gradient(600px 400px at 110% 60%,rgba(232,178,58,.06),transparent 70%),#070B18;background-attachment:fixed}
+html[data-th="imperiya"] body::before{content:"";position:fixed;left:0;right:0;top:0;height:300px;background:url(img/brand/login-hero.jpg?v=1) center 30%/cover no-repeat;opacity:.22;-webkit-mask:linear-gradient(180deg,#000 0,rgba(0,0,0,.5) 35%,transparent 85%);mask:linear-gradient(180deg,#000 0,rgba(0,0,0,.5) 35%,transparent 85%);pointer-events:none;z-index:-1;filter:saturate(.85)}
+html[data-th="imperiya"] body::after{content:"";position:fixed;left:-30px;top:40px;width:260px;height:200px;background:url(img/th/swoosh.svg) 0 0/contain no-repeat;opacity:.75;pointer-events:none;z-index:-1}
+html[data-th="imperiya"] .brand{background:linear-gradient(180deg,rgba(14,22,46,.86),rgba(9,14,30,.8));border-bottom:1px solid rgba(232,178,58,.35);box-shadow:0 6px 24px rgba(0,0,0,.35)}
+html[data-th="imperiya"] .brand b{font-family:Cinzel,Georgia,serif;letter-spacing:.6px;color:#F7D27A;text-shadow:0 0 14px rgba(247,210,122,.25)}
+html[data-th="imperiya"] .card,html[data-th="imperiya"] .clsc,html[data-th="imperiya"] .ar-tx,html[data-th="imperiya"] .bz-r,html[data-th="imperiya"] .kunbtn{background:linear-gradient(180deg,rgba(26,38,78,.82),rgba(10,16,36,.9))!important;border:1px solid rgba(212,166,58,.38)!important;box-shadow:inset 0 1px 0 rgba(255,226,150,.28),0 10px 30px rgba(0,0,0,.45),0 0 22px rgba(232,178,58,.08)}
+html[data-th="imperiya"] .card{border-radius:22px}
+html[data-th="imperiya"] .clsc::before{opacity:.12}
+/* Bosh sahifa: salomlashish kartasi */
+html[data-th="imperiya"] #home>.hm-top{padding:14px;border-radius:22px;background:linear-gradient(120deg,rgba(26,38,78,.85),rgba(10,16,36,.92));border:1px solid rgba(212,166,58,.42);box-shadow:inset 0 1px 0 rgba(255,226,150,.3),0 10px 28px rgba(0,0,0,.45)}
+html[data-th="imperiya"] .hp-ring{filter:drop-shadow(0 0 10px rgba(247,210,122,.45))}
+html[data-th="imperiya"] .wl-n{font-weight:800;font-size:20px}
+html[data-th="imperiya"] .hm-st{background:rgba(232,178,58,.14);border:1px solid rgba(232,178,58,.45);color:#FDE6A8}
+html[data-th="imperiya"] .hbp{border-color:rgba(232,178,58,.6)!important;background:url(img/th/quill.svg) right 10px bottom 6px/120px auto no-repeat,linear-gradient(180deg,rgba(26,38,78,.85),rgba(10,16,36,.92))!important;box-shadow:inset 0 1px 0 rgba(255,226,150,.35),0 0 26px rgba(232,178,58,.18),0 10px 30px rgba(0,0,0,.45)!important}
+html[data-th="imperiya"] .hbh b::before{content:"🎯 "}
+html[data-th="imperiya"] .hb-ring{filter:drop-shadow(0 0 8px rgba(34,197,94,.45))}
+html[data-th="imperiya"] .hsec-t{display:flex;align-items:center;gap:10px;font-size:17px}
+html[data-th="imperiya"] .hsec-t::before{content:"⚡";color:#F7D27A;filter:drop-shadow(0 0 6px rgba(247,210,122,.6))}
+html[data-th="imperiya"] .hsec-t::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,rgba(232,178,58,.7),transparent)}
+html[data-th="imperiya"] .hbq button>i{width:62px!important;height:62px!important;border-radius:18px!important;border:1px solid currentColor;box-shadow:0 0 16px -2px currentColor,inset 0 0 18px rgba(255,255,255,.06);background:linear-gradient(160deg,rgba(255,255,255,.12),rgba(0,0,0,.25))!important}
+html[data-th="imperiya"] .hbq button>span{color:#F7F1E1;font-weight:600}
+html[data-th="imperiya"] .hm-lv{border-color:rgba(232,178,58,.6)!important;position:relative;background:url(img/th/city.svg) right bottom/62% auto no-repeat,linear-gradient(180deg,rgba(26,38,78,.85),rgba(10,16,36,.92))!important;box-shadow:inset 0 1px 0 rgba(255,226,150,.35),0 0 26px rgba(232,178,58,.18),0 10px 30px rgba(0,0,0,.45)!important}
+html[data-th="imperiya"] .lvic{font-size:0!important;width:76px!important;height:76px!important;flex:none;background:url(img/th/laurel.svg) center/contain no-repeat!important;border:0!important;box-shadow:none!important;filter:drop-shadow(0 0 10px rgba(247,210,122,.45))}
+html[data-th="imperiya"] .lvn b{font-size:19px;color:#FFF6DE}html[data-th="imperiya"] .lvbar{background:rgba(0,0,0,.45)!important}html[data-th="imperiya"] .lvbar i{background:linear-gradient(90deg,#B8861F,#FFD978)!important;box-shadow:0 0 10px rgba(255,217,120,.5)}
+html[data-th="imperiya"] .wl-stats>div,html[data-th="imperiya"] .stc{background:rgba(7,11,24,.6)!important;border:1px solid rgba(212,166,58,.3)!important;border-radius:16px}
+html[data-th="imperiya"] .wl-stats b,html[data-th="imperiya"] .stc b{color:#F7D27A;text-shadow:0 0 12px rgba(247,210,122,.35)}
+/* Tugmalar, yorliqlar, menyu */
+html[data-th="imperiya"] .btn:not(.ghost):not([style*="background"]),html[data-th="imperiya"] .seg button.on,html[data-th="imperiya"] .sttabs button.on,html[data-th="imperiya"] .tabs button.on{background:linear-gradient(180deg,#FFD978,#E2A82A)!important;color:#1A1203!important;border-color:transparent!important;box-shadow:0 0 18px rgba(232,178,58,.35),inset 0 1px 0 rgba(255,255,255,.5)}
+html[data-th="imperiya"] .btn.ghost,html[data-th="imperiya"] .adh-b{border-color:rgba(212,166,58,.4)!important;background:rgba(14,22,46,.7)!important}
+html[data-th="imperiya"] .bnav{background:linear-gradient(180deg,rgba(18,28,58,.92),rgba(8,12,28,.94))!important;border:1px solid rgba(232,178,58,.45)!important;box-shadow:0 -2px 0 rgba(255,226,150,.06) inset,0 12px 34px rgba(0,0,0,.6),0 0 24px rgba(232,178,58,.12)}
+html[data-th="imperiya"] .bnav button.on{background:linear-gradient(180deg,#FFD978,#E2A82A)!important;color:#1A1203!important;box-shadow:0 0 16px rgba(232,178,58,.45)}
+html[data-th="imperiya"] .bnav button.on span,html[data-th="imperiya"] .bnav button.on svg{color:#1A1203!important;stroke:#1A1203}
+html[data-th="imperiya"] .ah,html[data-th="imperiya"] .amg-t{color:#E8C670}
+html[data-th="imperiya"] .adh-t b,html[data-th="imperiya"] h1{color:#FFF6DE}
+html[data-th="imperiya"] .gm-c{border-color:rgba(212,166,58,.42)!important;box-shadow:inset 0 1px 0 rgba(255,226,150,.25),0 10px 26px rgba(0,0,0,.45)}
+html[data-th="imperiya"] .gm-hero{box-shadow:0 0 26px rgba(232,178,58,.2)}
+html[data-th="imperiya"] .uav,html[data-th="imperiya"] .avatar{box-shadow:0 0 0 2px #E8B23A,0 0 14px rgba(232,178,58,.4)}
 html[data-th="registon"]{--bg:#061A33;--card:#0D3561;--card2:#124476;--line:#1F6FA8;--tx:#EAF6FF;--mu:#9CC8E8;--ac:#14B8A6;--ac2:#F2C14E;--ok:#22C55E;--bad:#F43F5E;--gr:linear-gradient(135deg,#14B8A6,#38BDF8);--w:255,255,255;--sel:#0F4C81;--acr:20,184,166;--ac2r:242,193,78;--bgr:6,26,51;--cardr:13,53,97;--okr:34,197,94;--k:0,0,0;--ka:1}
 html[data-th="registon"] body{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Cpath d='M32 6l7 16 16 7-16 7-7 16-7-16-16-7 16-7z' fill='none' stroke='%235EEAD4' stroke-opacity='.10' stroke-width='1.3'/%3E%3Cpath d='M0 0l8 8M64 0l-8 8M0 64l8-8M64 64l-8-8' stroke='%23F2C14E' stroke-opacity='.10'/%3E%3C/svg%3E"),radial-gradient(900px 520px at 110% -10%,rgba(15,76,129,.95),transparent 65%),radial-gradient(700px 500px at -20% 35%,rgba(242,193,78,.08),transparent 65%),#061A33!important}
 html[data-th="registon"] .card{border-color:rgba(242,193,78,.22)}
@@ -6473,7 +6530,7 @@ const CHAMP = (() => {
       if (cur !== until) setTimeout(() => FX.toast("👑 Tabriklaymiz! Siz o‘tgan hafta chempionisiz — «Registon moviy» mavzusi ochildi", "up"), 600);
     } else if (h.getAttribute("data-th") === "registon" || cur) {
       try { localStorage.removeItem("zm_chth"); } catch (e) {}
-      let t = "arena"; try { t = localStorage.getItem("zm_th2") || "arena"; } catch (e) {}
+      let t = "imperiya"; try { t = localStorage.getItem("zm_th2") || "imperiya"; } catch (e) {}
       if (h.getAttribute("data-th") === "registon") { h.setAttribute("data-th", t); THEME.tg(); }
     }
   }
