@@ -5,11 +5,11 @@
 <meta name="color-scheme" content="only light">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>TARIX ARENA · by Alimqul Zulpanov</title>
-<meta name="description" content="Tarixdan 5 700 dan ortiq test, Milliy sertifikat variantlari, turnir va duellar. Telegram orqali bir bosishda kirish — login va parol kerak emas.">
+<meta name="description" content="Tarixdan 6 300 dan ortiq test, Milliy sertifikat variantlari, turnir va duellar. Telegram orqali bir bosishda kirish — login va parol kerak emas.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="TARIX ARENA">
 <meta property="og:title" content="TARIX ARENA — tarixdan testlar, turnirlar va o‘yinlar">
-<meta property="og:description" content="5 700+ test, Milliy sertifikat variantlari, turnir va duellar. Telegram orqali bir bosishda kirish.">
+<meta property="og:description" content="6 300+ test, Milliy sertifikat variantlari, turnir va duellar. Telegram orqali bir bosishda kirish.">
 <meta property="og:url" content="https://tarixarena.uz/">
 <meta property="og:image" content="https://tarixarena.uz/og.jpg?v=2">
 <meta property="og:image:width" content="1200">
@@ -741,6 +741,23 @@ body.dlm #bkb{display:none!important}
 .arg .kunbtn{background:rgba(255,255,255,.06)!important;border-color:rgba(243,210,122,.35)!important}.arg .kunbtn b{color:#fff!important}.arg .kunbtn small{color:#B9C2DD!important}
 .arg-ch{flex-wrap:nowrap!important;gap:6px!important}.arg-ch span{padding:6px 8px!important;font-size:11.5px!important;white-space:nowrap}
 .arg .tgbtn{font-size:16px;gap:10px;white-space:nowrap;padding:0 14px}.arg-xp{font-style:normal;background:linear-gradient(135deg,#F3D27A,#D4A63A);color:#0A1830;border-radius:10px;padding:3px 8px;font:800 12px Inter,sans-serif}
+/* Kirish: «Jonli afisha» (C) */
+.arg{position:relative;overflow:hidden;padding-bottom:70px!important}
+.arg-hero{position:relative;margin:-26px -18px 0;aspect-ratio:900/611;overflow:hidden;-webkit-mask:linear-gradient(180deg,#000 72%,transparent);mask:linear-gradient(180deg,#000 72%,transparent)}
+.arg-hero img{width:100%;height:100%;object-fit:cover;display:block;animation:argKb 16s ease-in-out infinite alternate;transform-origin:50% 45%}
+.arg-hero i{position:absolute;width:5px;height:5px;border-radius:50%;background:#ffe48a;box-shadow:0 0 10px 3px #f5c542;animation:argSp 3.2s ease-in-out infinite;opacity:0}
+.arg h2{font-size:28px!important;text-align:center;position:relative;margin-top:-4px!important}.arg h2 em{font-style:normal;color:#f5c542}
+.arg-l>p{text-align:center;margin:6px 0 0!important}.arg .arg-ch{margin:10px 0 14px!important}
+.arg-dv{display:flex;align-items:center;gap:10px;justify-content:center;margin:10px 0 2px}.arg-dv i{height:1px;width:96px;background:linear-gradient(90deg,transparent,#d4a63a)}.arg-dv i:last-child{transform:scaleX(-1)}.arg-dv span{color:#d4a63a;font-size:15px}
+.arg .arg-ch span{border-radius:20px!important;border-color:rgba(212,166,58,.5)!important;background:rgba(255,255,255,.04)!important}
+.arg .tgbtn:not(.tgsm){background:linear-gradient(180deg,#ffd75e,#f2b51f)!important;color:#111!important;border-radius:30px!important;box-shadow:0 0 26px rgba(245,197,66,.45),inset 0 1px 0 rgba(255,255,255,.5);position:relative;overflow:hidden;font-weight:800}
+.arg .tgbtn:not(.tgsm) svg{stroke:#111}.arg .tgbtn:not(.tgsm) .arg-xp{background:#111;color:#ffd75e}
+.arg .tgbtn:not(.tgsm):after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.6) 48%,transparent 62%);transform:translateX(-120%);animation:argSh 3.8s ease-in-out infinite}
+.arg-city{position:absolute;left:0;right:0;bottom:0;width:100%;height:70px;pointer-events:none}
+@keyframes argKb{from{transform:scale(1)}to{transform:scale(1.09) translateY(-1.5%)}}
+@keyframes argSp{0%,100%{opacity:0;transform:scale(.4)}50%{opacity:1;transform:scale(1.2)}}
+@keyframes argSh{0%,45%{transform:translateX(-120%)}80%,100%{transform:translateX(120%)}}
+@media (prefers-reduced-motion:reduce){.arg-hero img,.arg-hero i,.arg .tgbtn:after{animation:none}}
 .xpmv{color:#9fb0d0}.arg .xpmv u{color:#F3D27A}.arg .sub{color:#9fb0d0!important}
 .xpmv{background:none;border:0;color:var(--mu);font:500 13px Inter,sans-serif;cursor:pointer;padding:10px}
 .tgmv{width:100%;text-align:left;border-top:1px solid var(--line);padding-top:14px}
@@ -829,6 +846,7 @@ html[data-th="tong"] .clsc,html[data-th="vodiy"] .clsc{background:var(--card);bo
   .arg>*{grid-column:2}
   .arg>.arg-l{display:block;grid-column:1;grid-row:1/span 12;align-self:center;position:sticky;top:90px}
   .arg-l .arg-lg{width:240px;height:240px}
+  .arg-hero{margin:0;border-radius:22px;-webkit-mask:none;mask:none}
   .arg-l h2{text-align:center;font-size:30px}.arg-l>p{text-align:center}
   .arg>.kunbtn,.arg>#kunCard{align-self:end}
   #auth .sky{display:none}
@@ -2539,7 +2557,7 @@ const KUN=(()=>{
     box.innerHTML=`<div class="card" style="margin:0 0 14px;text-align:left;background:rgba(124,58,237,.12)">
       <b>📅 Ertaga yangi 10 ta savol!</b><div class="st-s" style="margin:4px 0 10px">Do'stlaringizni ham sinab ko'ring — kim ko'proq topadi?</div>
       <a class="btn" href="${share}" target="_blank" rel="noopener" style="display:block;text-align:center;text-decoration:none">✈️ Do'stlarimga yuborish</a>
-      ${ACCT.cur?"":`<div class="st-s" style="margin:12px 0 8px">Natijangiz saqlanishi, XP to'plash, 5 700+ test va reytingga chiqish uchun kiring:</div>
+      ${ACCT.cur?"":`<div class="st-s" style="margin:12px 0 8px">Natijangiz saqlanishi, XP to'plash, 6 300+ test va reytingga chiqish uchun kiring:</div>
       ${window.IN_TG?`<button class="btn ghost" id="kunIn" style="width:100%">✈️ Telegram orqali kirish (+50 XP)</button>`:`<button class="btn ghost" id="kunW" style="width:100%">✈️ Telegram orqali kirish (+50 XP)</button>`}`}</div>`;
     if($("kunIn"))$("kunIn").onclick=()=>goHome();
     if($("kunW"))$("kunW").onclick=()=>{TGW_.go().catch(e=>FX.toast("⚠️ "+((e&&e.message)||"Xatolik")))};
@@ -5380,10 +5398,11 @@ const ACCT = (() => {
     const inTg = AUTH.FB && TGB.on();
     const tgIc = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 4L3 11l6 2 2 6 3-4 5 4z"></path><path d="M9 13l12-9"></path></svg>`;
     box.innerHTML = `<div class="xpin arg">
-        <div class="arg-l"><img class="arg-lg" src="img/brand/emblem-400.jpg?v=2" alt="TARIX ARENA" width="200" height="200">
-        <h2>Tarixni o‘yin bilan o‘rgan!</h2>
+        <div class="arg-l"><div class="arg-hero"><img src="img/brand/login-hero.jpg?v=1" alt="TARIX ARENA" width="900" height="610" fetchpriority="high"><i style="left:16%;top:22%"></i><i style="right:18%;top:40%;animation-delay:1.1s"></i><i style="left:49%;top:9%;animation-delay:2s"></i><i style="left:28%;top:62%;animation-delay:.6s"></i></div>
+        <h2>Tarixni <em>o‘yin</em> bilan<br>o‘rgan!</h2>
         <p>Test, turnir va xarita janglari — bir joyda</p>
-        <div class="arg-ch"><span>📚 5 700+ test</span><span>🎓 Sertifikat</span><span>🗺 Xarita jangi</span></div></div>
+        <div class="arg-dv"><i></i><span>🏛</span><i></i></div>
+        <div class="arg-ch"><span>🏆 6 300+ test</span><span>⚡ Sertifikat</span><span>🗺 Xarita jangi</span></div></div>
         ${KUN.card()}
         ${inTg ? `<button class="tgbtn" id="aTg">${tgIc}<span>Telegram bilan kirish</span><em class="arg-xp">+50 XP</em></button>`
                : `<div class="lpw"><div class="seg lpw-seg"><button data-m="up">📝 Ro‘yxatdan o‘tish</button><button data-m="in">🔑 Kirish</button></div><div id="accF"></div></div>
@@ -5392,6 +5411,7 @@ const ACCT = (() => {
                  <a class="tgapp" href="https://t.me/${window.TG_BOT}?startapp${(x => x ? "=" + x : "")(ST.tg(HW.pend() ? "g-" + HW.pend() : ""))}">📲 Telegram ilovasida (bot orqali) ochish</a>`}
         ${inTg ? `<div class="accerr" id="aE" style="text-align:center"></div>` : ""}
         ${inTg ? `<button class="xpmv" id="aMvL">Avval login bilan ro'yxatdan o'tganmisiz? <u>Hisobni ko'chirish</u></button><div id="aMove"></div>` : ""}
+        <svg class="arg-city" viewBox="0 0 390 90" preserveAspectRatio="none" aria-hidden="true"><path d="M-10 70 Q120 40 400 88" stroke="#f3d27a" stroke-width="4" fill="none" opacity=".85"/><path d="M0 90 V72 h20 v-8 h6 v8 h30 q6-14 12 0 h40 v-12 h4 v12 h50 q10-20 20 0 h40 v-16 h5 v16 h60 q8-14 16 0 h50 V90Z" fill="#0d1d40"/></svg>
       </div>`;
     if ($("aTg")) $("aTg").onclick = tgGo; KUN.bind();
     if ($("aTgW")) $("aTgW").onclick = async () => { const b = $("aTgW"); b.disabled = true; b.querySelector("span").textContent = "Telegram ochilmoqda…"; try { await TGW_.go(); } catch (e) { b.disabled = false; b.querySelector("span").textContent = "Telegram orqali kirish"; $("aE").textContent = "⚠️ " + ((e && e.message) || "Internetni tekshiring"); } };
@@ -5838,7 +5858,7 @@ const ADASH = (() => { // B: «Bugungi ishlar oldinda» — ishlar shu yerning o
 const NEWM = (() => { // 🆕 Yangi a'zolar (faqat admin)
   let U = null, TG = {}, WL = {}, RC = {}, tab = "d", sel = new Set(), wt = "", alive = 0;
   const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-  const DEF = "🎉 Assalomu alaykum, {ism}!\n\nTARIX ARENA’ga xush kelibsiz! Bu yerda 5 700+ test, Kun testi, turnirlar va tarixiy o‘yinlar sizni kutmoqda.\n\n👉 Har kuni «Kun testi»ni ishlang — XP to‘plang va reytingda ko‘tariling!\n\nSavollar bo‘lsa, bemalol yozing. Omad! 🚀";
+  const DEF = "🎉 Assalomu alaykum, {ism}!\n\nTARIX ARENA’ga xush kelibsiz! Bu yerda 6 300+ test, Kun testi, turnirlar va tarixiy o‘yinlar sizni kutmoqda.\n\n👉 Har kuni «Kun testi»ni ishlang — XP to‘plang va reytingda ko‘tariling!\n\nSavollar bo‘lsa, bemalol yozing. Omad! 🚀";
   const z = n => String(n).padStart(2, "0");
   const d0 = () => { const d = new Date(DBA.now()); d.setHours(0, 0, 0, 0); return d.getTime(); };
   const m0 = () => { const d = new Date(DBA.now()); d.setHours(0, 0, 0, 0); d.setDate(1); return d.getTime(); };

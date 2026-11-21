@@ -22,10 +22,10 @@ const ADMIN_TG = ["zulpanov_methods"];            // ustozning Telegram username
 const CONTACT = "@ZULPANOV_METHODS";
 const CONTACT_URL = "https://t.me/ZULPANOV_METHODS";
 const MAP_URL = "https://maps.app.goo.gl/dxLox5nZ6H4HQn6y5";
-const BOT_ABOUT = "Tarixdan 5 700+ test, Milliy sertifikat variantlari, turnir va duellar. Bir bosishda kirish. Muallif: Alimqul Zulpanov";
+const BOT_ABOUT = "Tarixdan 6 300+ test, Milliy sertifikat variantlari, turnir va duellar. Bir bosishda kirish. Muallif: Alimqul Zulpanov";
 const BOT_DESC = `🏛 TARIX ARENA — tarixni o‘yin va testlar bilan o‘rganing!
 
-✅ 5 700+ mavzulashgan test (5–11-sinf)
+✅ 6 300+ mavzulashgan test (5–11-sinf)
 🎓 Milliy sertifikat namunasidagi variantlar
 📅 Har kuni yangi «Kun testi»
 🏆 Turnirlar, duellar, XP va reyting
@@ -247,7 +247,7 @@ async function sendBatch(env, list, from, build) {
   return { sent, failed, next, total: list.length };
 }
 // 👋 Xush kelibsiz xabari (matnni admin panelda o'zgartirish mumkin: c/wel)
-const DEF_WEL = "🎉 Assalomu alaykum, {ism}!\n\nTARIX ARENA’ga xush kelibsiz! Bu yerda 5 700+ test, Kun testi, turnirlar va tarixiy o‘yinlar sizni kutmoqda.\n\n👉 Har kuni «Kun testi»ni ishlang — XP to‘plang va reytingda ko‘tariling!\n\nSavollar bo‘lsa, bemalol yozing. Omad! 🚀";
+const DEF_WEL = "🎉 Assalomu alaykum, {ism}!\n\nTARIX ARENA’ga xush kelibsiz! Bu yerda 6 300+ test, Kun testi, turnirlar va tarixiy o‘yinlar sizni kutmoqda.\n\n👉 Har kuni «Kun testi»ni ishlang — XP to‘plang va reytingda ko‘tariling!\n\nSavollar bo‘lsa, bemalol yozing. Omad! 🚀";
 async function sendWel(env, list, from) {
   const c = await db(env, "GET", "c/wel").catch(() => null), tpl = String((c && c.t) || DEF_WEL);
   const r = await sendBatch(env, list, from, to => ({ text: esc(tpl).replace(/\{ism\}/g, "<b>" + esc(String(to.name || "do‘stim").slice(0, 40)) + "</b>"), parse_mode: "HTML", reply_markup: { inline_keyboard: [[{ text: "📅 Kun testini ishlash", url: appLink() }]] } }));
