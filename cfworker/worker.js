@@ -602,8 +602,31 @@ function check(v, acc) { if (!String(v || "").trim()) return false; return acc.s
 const lvOf = p => p >= 70 ? "A+" : p >= 65 ? "A" : p >= 60 ? "B+" : p >= 55 ? "B" : p >= 50 ? "C+" : p >= 45 ? "C" : "";
 const xpOf = r => (r.ok || 0) * 10 + (r.lv ? 20 : 0) + (r.mode === "turnir" ? (r.rank === 1 ? 50 : r.rank === 2 ? 30 : r.rank === 3 ? 20 : 0) : 0);
 const UZ = 5 * 3600e3; // Toshkent vaqti
-function weekStart(ms) { const d = new Date(ms + UZ), w = (d.getUTCDay() + 6) % 7; return Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate() - w) - UZ; }
-const weekKey = ms => { const d = new Date(weekStart(ms) + UZ); return "w" + d.getUTCFullYear() + String(d.getUTCMonth() + 1).padStart(2, "0") + String(d.getUTCDate()).padStart(2, "0"); };
+// Hafta chegarasi: yakshanba 20:00 (Toshkent) — sayt (TW) bilan bir xil: +9 soat siljitib dushanba 00:00 deb hisoblanadi
+const WOFF = UZ + 4 * 3600e3;
+// 🏆 Yakshanba 20:00 — hafta g'oliblari: Shon-sharaf zaliga (hof/<hafta>) yozish va botda sertifikat bilan tabrik
+async function weeklyAwards(env) {
+  const now = Date.now(), ws = weekStart(now);
+  if (now - ws > 6 * 3600e3) return;                       // faqat chegaradan keyingi ~6 soat ichida
+  const k = weekKey(ws - 864e5); if (await db(env, "GET", `hof/${k}/sn`).catch(() => null)) return;
+  const [L, V] = await Promise.all([db(env, "GET", "lb/" + k).catch(() => null), db(env, "GET", "vw/" + k).catch(() => null)]);
+  const xp = Object.entries(L || {}).filter(([u, x]) => x && x.xp > 0).sort((a, b) => b[1].xp - a[1].xp || (a[1].at || 0) - (b[1].at || 0)).slice(0, 3).map(([u, x]) => ({ k: u, n: str(x.n, 80), g: str(x.g || "", 30), xp: x.xp }));
+  const tm = Object.entries(V || {}).filter(([u, x]) => x && x.g && x.s > 0).sort((a, b) => b[1].s - a[1].s).slice(0, 3).map(([u, x]) => ({ k: u, n: str(x.n, 80), g: str(x.g || "", 30), s: x.s }));
+  await db(env, "PUT", "hof/" + k, { xp, tm, at: now, sn: 1 });
+  const hm = s => { const h = Math.floor(s / 3600), m = Math.round(s % 3600 / 60); return h ? `${h} soat ${m} daqiqa` : `${m} daqiqa`; };
+  const XT = ["👑 HAFTA CHEMPIONI", "🥈 HAFTA KUMUSHI", "🥉 HAFTA BRONZASI"], TT = ["💠 PLATINUM KARTA", "⭐ GOLD KARTA", "✦ SILVER KARTA"];
+  const XR = ["Bir hafta davomida profilingizda 👑 toj, testlarda oltin halqa va «Registon» premium mavzusi!", "Bir hafta davomida profilingizda 🥈 kumush nishon va halqa!", "Bir hafta davomida profilingizda 🥉 bronza nishon va halqa!"];
+  const TR = ["Bir hafta davomida 💠 Platinum karta — profilda yorqin nur va kartalar jangida +1 sandiq!", "Bir hafta davomida ⭐ Gold karta va kartalar jangida +1 sandiq!", "Bir hafta davomida ✦ Silver karta profilingizda!"];
+  const send = async (p, i, img, title, val, rew) => {
+    const id = await studentChat(env, p.k).catch(() => null); if (!id) return;
+    const caption = `🎉 <b>Tabriklaymiz, ${esc(p.n || "do‘stim")}!</b>\n\n${title} — <b>${i + 1}-o‘rin</b>\n${val}\n\n🎁 ${rew}\n\n🏛 Ismingiz Shon-sharaf zaliga abadiy yozildi. Yangi hafta boshlandi — unvonni qo‘ldan bermang! 💪`;
+    await tg(env, "sendPhoto", { chat_id: id, photo: SITE + "img/" + img + ".jpg", caption, parse_mode: "HTML", reply_markup: { inline_keyboard: [[{ text: "🏛 Shon-sharaf zalini ochish", url: appLink("") }]] } }).catch(() => {});
+  };
+  for (let i = 0; i < xp.length; i++) await send(xp[i], i, "aw-x" + (i + 1), XT[i], `⚡ ${xp[i].xp} XP`, XR[i]);
+  for (let i = 0; i < tm.length; i++) await send(tm[i], i, "aw-t" + (i + 1), TT[i], `⏱ Saytda ${hm(tm[i].s)}`, TR[i]);
+}
+function weekStart(ms) { const d = new Date(ms + WOFF), w = (d.getUTCDay() + 6) % 7; return Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate() - w) - WOFF; }
+const weekKey = ms => { const d = new Date(weekStart(ms) + WOFF); return "w" + d.getUTCFullYear() + String(d.getUTCMonth() + 1).padStart(2, "0") + String(d.getUTCDate()).padStart(2, "0"); };
 const str = (v, n) => String(v == null ? "" : v).slice(0, n);
 
 async function syncLb(env, uid, user) {
@@ -820,6 +843,7 @@ const json = (o, st = 200) => new Response(JSON.stringify(o), { status: st, head
 
 export default {
   async scheduled(event, env, ctx) {
+    if (event.cron !== "0 4 * * SUN") ctx.waitUntil(weeklyAwards(env).catch(e => console.error("awards", e && e.stack || e)));
     if (event.cron === "0 4 * * SUN") ctx.waitUntil(backup(env).catch(e => console.error("backup", e && e.stack || e)).then(() => cleanup(env)).catch(e => console.error("cleanup", e && e.stack || e)));
     else ctx.waitUntil(hwRemind(env).catch(e => console.error("hwRemind", e && e.stack || e)));
   },

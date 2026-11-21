@@ -1122,6 +1122,7 @@ body.champ #tg::before{content:"👑 Chempion rejimi";display:block;font-size:11
 .chttp.au{background:linear-gradient(110deg,#b8860b,#ffe08a 30%,#fff3c4 45%,#d4a72c 60%,#b8860b);background-size:200% 100%;color:#2a1a00}.chttp.ag{background:linear-gradient(110deg,#94a3b8,#f1f5f9 35%,#ffffff 45%,#cbd5e1 60%,#94a3b8);background-size:200% 100%;color:#0f172a}
 .ptc.au{background:linear-gradient(125deg,#7a5410,#e9c25a 30%,#fff1b8 45%,#d6a531 60%,#8a5f12);background-size:200% 200%;color:#2a1a00;box-shadow:0 10px 30px rgba(245,200,76,.25)}.ptc.au .ptc-chip{background:linear-gradient(135deg,#fde68a,#b45309)}
 .ptc.ag{background:linear-gradient(125deg,#5b6472,#cbd5e1 30%,#f8fafc 45%,#94a3b8 65%,#475569);background-size:200% 200%;color:#0f172a;box-shadow:0 10px 30px rgba(148,163,184,.25)}.ptc.ag .ptc-chip{background:linear-gradient(135deg,#f1f5f9,#64748b)}
+.wk-cd{font-size:12px;margin-top:4px;color:var(--mu)}.wk-cd b{color:var(--ac2)}.wk-cd.hot{color:#f87171;font-weight:700}.wk-cd.hot b{color:#fca5a5}
 .ch-hr{background:var(--card2);border-radius:14px;padding:8px 10px;margin-bottom:8px}.ch-hr.now{border:1.5px solid #F5C84C}.ch-hd{display:flex;justify-content:space-between;align-items:center;font-size:13px;margin-bottom:4px}.ch-hd span{font-size:11px;color:#F5C84C;font-weight:700}.ch-hp{display:flex;align-items:center;gap:8px;padding:4px 0;font-size:13px}.ch-hp>span:not(.uav){flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ch-hp em{font-style:normal;color:var(--mu);font-size:12px;font-weight:700}
 .lbx-hb{display:flex;flex-direction:column;gap:6px;margin-left:auto;align-self:center}.lbx-hb .lbx-ib{margin:0}
 </style>
@@ -6243,6 +6244,17 @@ const MS = (() => {
 })();
 
 // ================== SAYTDAGI VAQT: faol vaqtni hisoblash (vt/<uid>/<kun>, vw/<hafta>/<uid>) ==================
+// 🗓 Hafta chegarasi: yakshanba 20:00 (Toshkent). Hafta kaliti — o'sha haftaning dushanba sanasi (w20261116).
+const TW = (() => {
+  const OFF = 9 * 3600e3; // UTC+5 (Toshkent) va +4 soat: yakshanba 20:00 → «dushanba 00:00»
+  const p2 = n => String(n).padStart(2, "0");
+  const start = ms => { const d = new Date(ms + OFF), w = (d.getUTCDay() + 6) % 7; return Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate() - w) - OFF; };
+  const key = ms => { const d = new Date(start(ms) + OFF); return "w" + d.getUTCFullYear() + p2(d.getUTCMonth() + 1) + p2(d.getUTCDate()); };
+  const label = ms => { const a = new Date(start(ms) + OFF), b = new Date(start(ms) + OFF + 6 * 864e5); return `${p2(a.getUTCDate())}.${p2(a.getUTCMonth() + 1)} – ${p2(b.getUTCDate())}.${p2(b.getUTCMonth() + 1)}`; };
+  const end = ms => start(ms) + 7 * 864e5;
+  const left = ms => { const r = Math.max(0, end(ms) - ms), d = Math.floor(r / 864e5), h = Math.floor(r % 864e5 / 3600e3), m = Math.floor(r % 3600e3 / 60e3); return d ? `${d} kun ${h} soat` : h ? `${h} soat ${m} daqiqa` : `${m} daqiqa`; };
+  return { start, key, label, end, left };
+})();
 const VT = (() => {
   const IDLE = 180e3, TICK = 15e3, FL = 4 * 60e3;
   let last = Date.now(), prevT = Date.now(), lastFl = Date.now(), busy = false, mine = null, mineU = null;
@@ -6250,7 +6262,7 @@ const VT = (() => {
   const dk = ms => { const d = new Date(ms); return "" + d.getFullYear() + String(d.getMonth() + 1).padStart(2, "0") + String(d.getDate()).padStart(2, "0"); };
   const dOf = k => new Date(+k.slice(0, 4), +k.slice(4, 6) - 1, +k.slice(6, 8));
   const wkOf = k => { const d = dOf(k), w = (d.getDay() + 6) % 7; d.setDate(d.getDate() - w); return "w" + dk(d.getTime()); };
-  const curWk = () => wkOf(dk(Date.now()));
+  const curWk = () => TW.key(Date.now());
   const uid = () => { const c = typeof ACCT !== "undefined" && ACCT.cur; return c && c.uid ? c.uid : null; };
   const PK = u => "zm_vt_" + u;
   const pend = u => { try { return JSON.parse(localStorage.getItem(PK(u)) || "{}") || {}; } catch (e) { return {}; } };
@@ -6261,7 +6273,7 @@ const VT = (() => {
   function tick() {
     const now = Date.now(), dt = Math.min(now - prevT, TICK * 2); prevT = now;
     const u = uid(); if (!u || document.hidden || now - last > IDLE || dt <= 0) return;
-    const p = pend(u), k = dk(now); p[k] = Math.round((p[k] || 0) + dt / 1000); savePend(u, p);
+    const p = pend(u), k = dk(now), w = "@" + TW.key(now); p[k] = Math.round((p[k] || 0) + dt / 1000); p[w] = Math.round((p[w] || 0) + dt / 1000); savePend(u, p);
     if (now - lastFl > FL && DBA.online) flush();
   }
   setInterval(tick, TICK);
@@ -6269,11 +6281,12 @@ const VT = (() => {
     const u = uid(); if (!u || busy) return; const c = ACCT.cur;
     const p = pend(u), ks = Object.keys(p).filter(k => /^\d{8}$/.test(k) && p[k] > 0); if (!ks.length) return;
     busy = true; lastFl = Date.now(); savePend(u, {});
-    const up = {}, wk = {};
-    ks.forEach(k => { const v = Math.min(p[k], 86400); up[`vt/${u}/${k}`] = v; wk[wkOf(k)] = (wk[wkOf(k)] || 0) + v; });
+    const up = {}, wk = {}, wks = Object.keys(p).filter(k => /^@w\d{8}$/.test(k) && p[k] > 0);
+    ks.forEach(k => { const v = Math.min(p[k], 86400); up[`vt/${u}/${k}`] = v; if (!wks.length) wk[wkOf(k)] = (wk[wkOf(k)] || 0) + v; });
+    wks.forEach(k => { wk[k.slice(1)] = (wk[k.slice(1)] || 0) + Math.min(p[k], 604800); });
     Object.entries(wk).forEach(([w, v]) => { up[`vw/${w}/${u}/s`] = v; up[`vw/${w}/${u}/n`] = String(((c.f || "") + " " + (c.l || "")).trim() || c.login || "O'quvchi").slice(0, 60); up[`vw/${w}/${u}/g`] = String(c.g || "").slice(0, 40); });
     try { await DBA.addMany(up); if (mine && mineU === u) ks.forEach(k => mine[k] = (mine[k] || 0) + Math.min(p[k], 86400)); }
-    catch (e) { const q = pend(u); ks.forEach(k => q[k] = (q[k] || 0) + p[k]); savePend(u, q); }
+    catch (e) { const q = pend(u); [...ks, ...wks].forEach(k => q[k] = (q[k] || 0) + p[k]); savePend(u, q); }
     busy = false;
   }
   // ---- ko'rsatish ----
@@ -6305,7 +6318,7 @@ const VT = (() => {
     if (el.isConnected) el.innerHTML = html(merged());
   }
   async function mountFor(el, u) { if (!el) return; el.classList.add("vt-box"); el.innerHTML = `<div class="sub" style="margin:0">⏱ Vaqt yuklanmoqda…</div>`; let D = {}; try { D = (await DBA.get("vt/" + u)) || {}; } catch (e) { el.innerHTML = `<div class="sub" style="margin:0">⏱ Vaqtni yuklab bo'lmadi.</div>`; return; } if (el.isConnected) el.innerHTML = html(D, 1); }
-  const wkLabel = () => { const d = dOf(curWk().slice(1)), e = new Date(d); e.setDate(e.getDate() + 6); const f = x => String(x.getDate()).padStart(2, "0") + "." + String(x.getMonth() + 1).padStart(2, "0"); return f(d) + " – " + f(e); };
+  const wkLabel = () => TW.label(Date.now());
   async function mini(el) {
     if (!el) return; const u = uid(); if (!u || !matchMedia("(min-width:1024px)").matches) { el.innerHTML = ""; return; }
     if (!vis()) { await loadCfg(); if (!vis()) { el.innerHTML = ""; return; } }
@@ -6321,9 +6334,9 @@ const VT = (() => {
 const CHAMP = (() => {
   const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const z = n => String(n).padStart(2, "0");
-  const wkStart = ms => { const d = new Date(ms); const w = (d.getDay() + 6) % 7; d.setHours(0, 0, 0, 0); d.setDate(d.getDate() - w); return d; };
-  const key = d => "w" + d.getFullYear() + z(d.getMonth() + 1) + z(d.getDate());
-  const lbl = d => { const e = new Date(d.getTime() + 6 * 864e5); return `${z(d.getDate())}.${z(d.getMonth() + 1)}–${z(e.getDate())}.${z(e.getMonth() + 1)}`; };
+  const wkStart = ms => new Date(TW.start(ms));
+  const key = d => TW.key(d.getTime());
+  const lbl = d => TW.label(d.getTime());
   const TT = ["👑 O‘TGAN HAFTA CHEMPIONI", "🥈 O‘TGAN HAFTA KUMUSHI", "🥉 O‘TGAN HAFTA BRONZASI"];
   let M = {}, info = null, ready = null, seen = {}, PT = null, PTS = []; // PT: {k, n, s, d} — o'tgan hafta saytda eng ko'p vaqt o'tkazgan (💠 PLATINUM)
   const top3 = L => Object.entries(L || {}).filter(([k, v]) => v && v.n && v.xp > 0).map(([k, v]) => ({ k, n: v.n, xp: v.xp, at: v.at || 0 })).sort((a, b) => b.xp - a.xp || a.at - b.at).slice(0, 3);
@@ -6333,9 +6346,9 @@ const CHAMP = (() => {
     if (!t) { const L = await DBA.get("lb/" + k); t = top3(L).map(({ k, n, xp }) => ({ k, n, xp })); try { localStorage.setItem("zm_ch_" + k, JSON.stringify(t)); } catch (e) {} }
     return { k, d, t };
   }
-  // Chempionlar har dushanba yangilanadi: o'tgan (yakunlangan) haftaning umumiy reytingidagi 1–3-o'rinlar butun hafta davomida
+  // Chempionlar har yakshanba 20:00 da yangilanadi: o'tgan (yakunlangan) haftaning umumiy reytingidagi 1–3-o'rinlar butun hafta davomida
   function set(t, d) { info = { k: key(d), d, t }; M = {}; t.forEach((p, i) => M[p.k] = i + 1); apply(); theme(); }
-  // 👑 Chempion mavzusi «Registon moviy»: faqat 1-o'rin, dushanbadan keyingi dushanbagacha
+  // 👑 Chempion mavzusi «Registon moviy»: faqat 1-o'rin, yakshanba 20:00 dan keyingi yakshanba 20:00 gacha
   function theme() {
     const until = wkStart(DBA.now()).getTime() + 7 * 864e5, h = document.documentElement;
     let off = 0, cur = 0; try { off = +localStorage.getItem("zm_chth_off") || 0; cur = +localStorage.getItem("zm_chth") || 0; } catch (e) {}
@@ -6363,7 +6376,7 @@ const CHAMP = (() => {
   function live() {}
   function load() {
     if (ready || typeof ACCT === "undefined" || !ACCT.cur) return ready;
-    ready = week(wkStart(DBA.now() - 7 * 864e5), true).then(w => { set(w.t, w.d); return info; }).catch(() => { ready = null; return null; });
+    ready = week(wkStart(DBA.now() - 7 * 864e5), true).then(w => { set(w.t, w.d); finNote(w); return info; }).catch(() => { ready = null; return null; });
     platLoad();
     return ready;
   }
@@ -6399,8 +6412,18 @@ const CHAMP = (() => {
   function pcard(uid) {
     const P = ptOf(uid); if (!P) return "";
     setTimeout(async () => { const el = document.getElementById("ptDays"); if (!el) return; try { const D = (await DBA.get("vt/" + uid)) || {}; let n = 0; for (let i = 0; i < 7; i++) { const x = new Date(P.d.getTime() + i * 864e5), k = "" + x.getFullYear() + z(x.getMonth() + 1) + z(x.getDate()); if ((D[k] || 0) >= 60) n++; } if (n) el.textContent = `🔥 ${n} kun faol`; } catch (e) {} }, 50);
-    const w = P.live ? "Shu haftaning" : "O‘tgan haftaning", nx = P.live ? "Dushanbadan boshlab kartalar butun hafta uchun o‘tgan hafta g‘oliblariga beriladi." : "Keyingi dushanba yangi egasiga o‘tadi.";
+    const w = P.live ? "Shu haftaning" : "O‘tgan haftaning", nx = P.live ? "Yakshanba 20:00 dan boshlab kartalar butun hafta uchun o‘tgan hafta g‘oliblariga beriladi." : "Keyingi yakshanba 20:00 da yangi egasiga o‘tadi.";
     return `<div class="ptc ${PTC[P.t - 1]}"><div class="ptc-h"><b>TARIX ARENA</b><span>${PTI[P.t - 1]}</span></div><div class="ptc-chip"></div><div class="ptc-s">${P.t}-O‘RIN · ${PTN[P.t - 1]} A’ZO · ${lbl(P.d)}${P.live ? " · JONLI" : ""}</div><div class="ptc-n">${esc(P.n)}</div><div class="ptc-f"><span>⏱ ${hm(P.s)}</span><span id="ptDays"></span></div><div class="ptc-x">${w} tirishqoqlari ichida ${P.t}-o‘rin — saytda eng ko‘p vaqt o‘tkazganlardan. ${nx}</div></div>`;
+  }
+  // «Hafta yakunlandi» — g'olib bo'lmaganlarga o'z o'rni (har haftada bir marta)
+  async function finNote(w) {
+    const u = ACCT.cur && ACCT.cur.uid; if (!u || M[u]) return;
+    const sk = "zm_fin_" + w.k; try { if (localStorage.getItem(sk)) return; localStorage.setItem(sk, 1); } catch (e) { return; }
+    if (DBA.now() - TW.start(DBA.now()) > 3 * 864e5) return;
+    let L = null; try { L = await DBA.get("lb/" + w.k); } catch (e) { return; }
+    const a = Object.entries(L || {}).filter(([k, v]) => v && v.xp > 0).sort((x, y) => y[1].xp - x[1].xp || (x[1].at || 0) - (y[1].at || 0)), i = a.findIndex(([k]) => k === u);
+    if (i < 0) return;
+    setTimeout(() => FX.toast(`🏁 Hafta yakunlandi! Siz XP reytingida <b>${i + 1}-o‘rin</b>ni egalladingiz (${a[i][1].xp} XP). Yangi hafta boshlandi — omad! 💪`, "up"), 2500);
   }
   const rank = uid => M[uid] || 0;
   const me = () => (typeof ACCT !== "undefined" && ACCT.cur && M[ACCT.cur.uid]) || 0;
@@ -6429,18 +6452,29 @@ const CHAMP = (() => {
       document.body.appendChild(s); setTimeout(() => s.remove(), 1200);
     }
   }
-  // 🏛 Shon-sharaf zali — oxirgi 8 hafta g'oliblari
+  // 🏛 Shon-sharaf zali — oxirgi 8 hafta: 🏆 XP g'oliblari va ⏱ Tirishqoqlar (bot yakshanba 20:00 da hof/<hafta> ga yozadi)
   async function hall() {
-    const m = document.createElement("div"); m.className = "lbx-sh";
-    m.innerHTML = `<div class="lbx-sb"><div class="gr"></div><h3>🏛 Shon-sharaf zali</h3><p class="sub" style="margin:0 0 8px">Har hafta eng ko‘p XP to‘plagan 3 kishi. Har dushanba o‘tgan hafta g‘oliblari chempion bo‘ladi va butun hafta oltin, kumush va bronza ramka hamda unvon bilan ajralib turadi.</p><div id="chH"><div class="sub" style="text-align:center;margin:16px 0">Yuklanmoqda…</div></div><button class="btn" style="margin-top:12px" id="chOk">Yopish</button></div>`;
+    const m = document.createElement("div"); m.className = "lbx-sh"; let tab = "x";
+    m.innerHTML = `<div class="lbx-sb"><div class="gr"></div><h3>🏛 Shon-sharaf zali</h3><p class="sub" style="margin:0 0 8px">Har yakshanba soat 20:00 da hafta yakunlanadi. XP bo‘yicha 1–3-o‘rinlar unvon, saytda eng ko‘p vaqt o‘tkazgan 3 kishi esa Platinum, Gold, Silver kartalarini oladi.</p><div class="tabs kj-tabs" id="chT"><button data-t="x" class="on">🏆 XP g‘oliblari</button><button data-t="t">⏱ Tirishqoqlar</button></div><div id="chH"><div class="sub" style="text-align:center;margin:16px 0">Yuklanmoqda…</div></div><button class="btn" style="margin-top:12px" id="chOk">Yopish</button></div>`;
     document.body.appendChild(m);
-    m.onclick = e => { if (e.target === m || e.target.id === "chOk") m.remove(); };
+    m.onclick = e => { if (e.target === m || e.target.id === "chOk") m.remove(); const b = e.target.closest && e.target.closest("#chT [data-t]"); if (b) { tab = b.dataset.t; m.querySelectorAll("#chT button").forEach(x => x.classList.toggle("on", x === b)); draw(); } };
     const now = DBA.now(), W = [];
     for (let i = 0; i <= 8; i++) W.push(wkStart(now - i * 7 * 864e5));
-    const R = await Promise.all(W.map((d, i) => week(d, i > 0).catch(() => ({ d, t: [] }))));
-    const el = m.querySelector("#chH"); if (!el) return;
-    const rows = R.filter(w => w.t && w.t.length);
-    el.innerHTML = rows.length ? rows.map((w, i) => `<div class="ch-hr${w.k === key(wkStart(now - 7 * 864e5)) ? " now" : ""}"><div class="ch-hd"><b>${lbl(w.d)}</b>${w.k === key(wkStart(now)) ? `<span style="color:var(--mu)">shu hafta · hali yakunlanmagan</span>` : w.k === key(wkStart(now - 7 * 864e5)) ? `<span>👑 hozirgi chempionlar</span>` : ""}</div>${w.t.map((p, j) => `<div class="ch-hp">${AV.html(p.k, p.n, "sm")}<span>${["🥇", "🥈", "🥉"][j]} ${esc(p.n)}</span><em>${p.xp} XP</em></div>`).join("")}</div>`).join("") : `<p class="sub" style="text-align:center">Hali yakunlangan hafta yo‘q. Birinchi g‘olib siz bo‘ling! 🏆</p>`;
+    const cur = key(wkStart(now)), prev = key(wkStart(now - 7 * 864e5));
+    const topV = L => Object.entries(L || {}).filter(([u, x]) => x && x.g && x.s > 0).sort((a, b) => b[1].s - a[1].s).slice(0, 3).map(([u, x]) => ({ k: u, n: x.n, s: x.s }));
+    const R = await Promise.all(W.map(async (d, i) => {
+      const k = key(d); let h = null; if (i > 0) { try { h = await DBA.get("hof/" + k); } catch (e) {} }
+      if (h && (h.xp || h.tm)) return { k, d, x: h.xp || [], t: h.tm || [] };
+      const [x, v] = await Promise.all([week(d, i > 0).catch(() => ({ t: [] })), DBA.get("vw/" + k).catch(() => null)]);
+      return { k, d, x: x.t || [], t: topV(v) };
+    }));
+    const hm2 = sec => { const h = Math.floor(sec / 3600), mm = Math.round(sec % 3600 / 60); return h ? `${h} s ${mm} d` : `${mm} d`; };
+    function draw() {
+      const el = m.querySelector("#chH"); if (!el) return;
+      const rows = R.filter(w => (tab === "x" ? w.x : w.t).length);
+      el.innerHTML = rows.length ? rows.map(w => `<div class="ch-hr${w.k === prev ? " now" : ""}"><div class="ch-hd"><b>${lbl(w.d)}</b>${w.k === cur ? `<span style="color:var(--mu)">shu hafta · hali yakunlanmagan</span>` : w.k === prev ? `<span>${tab === "x" ? "👑 hozirgi chempionlar" : "💠 hozirgi karta egalari"}</span>` : ""}</div>${(tab === "x" ? w.x : w.t).map((p, j) => `<div class="ch-hp">${AV.html(p.k, p.n, "sm")}<span>${(tab === "x" ? ["🥇", "🥈", "🥉"] : ["💠", "⭐", "✦"])[j]} ${esc(p.n)}</span><em>${tab === "x" ? p.xp + " XP" : hm2(p.s)}</em></div>`).join("")}</div>`).join("") : `<p class="sub" style="text-align:center">Hali yakunlangan hafta yo‘q. Birinchi g‘olib siz bo‘ling! 🏆</p>`;
+    }
+    draw();
   }
   const curInfo = () => info;
   return { load, live, rank, me, apply, tag, announce, spark, hall, banner, thOn, pt, pt0: () => PT, pts: () => PTS, isPt, tier, ptTag, pcard, info: curInfo, label: lbl };
@@ -6454,8 +6488,8 @@ const GAME = (() => {
   const bonus = () => ((ACCT.cur || {}).bx || 0);
   const xpOf = r => (r.ok || 0) * 10 + (r.lv ? 20 : 0) + (r.mode === "turnir" ? (r.rank === 1 ? 50 : r.rank === 2 ? 30 : r.rank === 3 ? 20 : 0) : 0);
   const dayKey = ms => { const d = new Date(ms); return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate(); };
-  function weekStart(ms) { const d = new Date(ms); const w = (d.getDay() + 6) % 7; d.setHours(0, 0, 0, 0); d.setDate(d.getDate() - w); return d.getTime(); }
-  const weekKey = ms => { const d = new Date(weekStart(ms)); return "w" + d.getFullYear() + String(d.getMonth() + 1).padStart(2, "0") + String(d.getDate()).padStart(2, "0"); };
+  const weekStart = ms => TW.start(ms);
+  const weekKey = ms => TW.key(ms);
   function streak(rs) {
     const days = new Set(rs.map(r => dayKey(r.at))); let n = 0; const d = new Date();
     if (!days.has(dayKey(d.getTime()))) d.setDate(d.getDate() - 1);
@@ -6541,7 +6575,7 @@ const GAME = (() => {
       <div class="st-s" style="margin-top:10px">XP qanday beriladi: har bir to'g'ri javob — 10 XP, sertifikat — +20 XP, turnirda 1-o'rin — +50, 2-o'rin — +30, 3-o'rin — +20 XP.</div>`;
   }
   // ---- haftalik reyting ----
-  let lbTab = "g";
+  let lbTab = "g", cdT = 0;
   // Reyting: XP qoidalari (chiplar) + «Siz qayerdasiz?» kartasi
   function xpHelp(arr, c) { // B: pastda qotib turadigan «Siz» qatori
     const rs = ACCT.recs || [], ws = weekStart(DBA.now());
@@ -6556,7 +6590,7 @@ const GAME = (() => {
   function xpSheet() {
     const rs = ACCT.recs || [], total = rs.reduce((a, r) => a + xpOf(r), 0) + bonus(), lv = level(total);
     const m = document.createElement("div"); m.className = "lbx-sh";
-    m.innerHTML = `<div class="lbx-sb"><div class="gr"></div><h3>⭐ Reyting qanday ishlaydi?</h3><p class="sub" style="margin:0 0 6px">Haftalik reyting — shu hafta to‘plangan XP bo‘yicha. Har dushanba 00:00 da yangidan boshlanadi. Darajangiz esa umumiy XP bo‘yicha va hech qachon kamaymaydi.</p>
+    m.innerHTML = `<div class="lbx-sb"><div class="gr"></div><h3>⭐ Reyting qanday ishlaydi?</h3><p class="sub" style="margin:0 0 6px">Haftalik reyting — shu hafta to‘plangan XP bo‘yicha. Har yakshanba soat 20:00 da hafta yakunlanadi: g‘oliblar aniqlanadi va reyting noldan boshlanadi. Darajangiz esa umumiy XP bo‘yicha va hech qachon kamaymaydi.</p>
       <div class="lbx-r"><i>✅</i>Har bir to‘g‘ri javob (testlar, Kun testi, vazifa, turnir)<b>+10 XP</b></div>
       <div class="lbx-r"><i>🎓</i>Milliy sertifikat variantini yakunlab, daraja olish<b>+20 XP</b></div>
       <div class="lbx-r"><i>🏆</i>Turnirda 1 / 2 / 3-o‘rin<b>+50 / 30 / 20</b></div>
@@ -6572,11 +6606,12 @@ const GAME = (() => {
   function board() {
     const c = ACCT.cur; if (!c) { show("auth"); return; }
     show("tz"); setNav("rank"); BK(goHome);
-    const ws = weekStart(DBA.now()), we = new Date(ws + 6 * 86400e3), d0 = new Date(ws), f = d => String(d.getDate()).padStart(2, "0") + "." + String(d.getMonth() + 1).padStart(2, "0");
-    $("tz").innerHTML = `<div class="card welcome"><div class="wl-top"><div style="font-size:34px">🏅</div><div style="flex:1"><div class="wl-n">Haftalik reyting</div><div class="st-s">${f(d0)} – ${f(we)} · har dushanba yangilanadi</div></div><div class="lbx-hb"><button class="lbx-ib" id="lbxI">ⓘ XP qanday?</button><button class="lbx-ib" id="lbxH">🏛 Shon-sharaf</button></div></div></div>
+    $("tz").innerHTML = `<div class="card welcome"><div class="wl-top"><div style="font-size:34px">🏅</div><div style="flex:1"><div class="wl-n">Haftalik reyting</div><div class="st-s">${TW.label(DBA.now())} · yakshanba 20:00 da yakunlanadi</div><div class="wk-cd" id="wkCd"></div></div><div class="lbx-hb"><button class="lbx-ib" id="lbxI">ⓘ XP qanday?</button><button class="lbx-ib" id="lbxH">🏛 Shon-sharaf</button></div></div></div>
       <div class="sttabs" id="lbT">${c.g ? `<button data-t="g" class="${lbTab === "g" ? "on" : ""}">👥 Guruhim</button>` : ""}<button data-t="a" class="${lbTab === "a" ? "on" : ""}">🌍 Hammasi</button>${VT.vis() ? `<button data-t="v" class="${lbTab === "v" ? "on" : ""}">⏱ Tirishqoqlar</button>` : ""}</div>
       <div id="lbP"></div><div class="card" id="lbL"></div><div id="lbxS"></div>`;
     $("lbxI").onclick = xpSheet; $("lbxH").onclick = () => CHAMP.hall();
+    const cd = () => { const el = $("wkCd"); if (!el) return clearInterval(cdT); const r = TW.end(DBA.now()) - DBA.now(); el.innerHTML = r < 3600e3 ? `🔥 Oxirgi soat — <b>${TW.left(DBA.now())}</b> qoldi! O‘rningizni saqlab qoling` : `⏳ Hafta yakuniga: <b>${TW.left(DBA.now())}</b>`; el.classList.toggle("hot", r < 3600e3); };
+    clearInterval(cdT); cdT = setInterval(cd, 30e3); cd();
     try { CHAMP.load(); } catch (e) {}
     $("lbT").onclick = e => { const b = e.target.closest("button"); if (!b) return; lbTab = b.dataset.t; [...$("lbT").children].forEach(x => x.classList.toggle("on", x === b)); draw(); };
     let data = {}, vdat = null; if (!c.g && lbTab === "g") lbTab = "a"; if (lbTab === "v" && !VT.vis()) lbTab = "a";
