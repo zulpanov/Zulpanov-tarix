@@ -1093,6 +1093,7 @@ html[data-th="tong"] .km-pt b,html[data-th="vodiy"] .km-pt b,html[data-th="tong"
 .lbx-lv{display:flex;justify-content:space-between;margin:8px 0 4px}.lbx-lv span{display:flex;flex-direction:column;align-items:center;font-size:10px;color:var(--mu);gap:2px}.lbx-lv span em{font-style:normal;font-size:18px}.lbx-lv span.on{color:#F2C14E;font-weight:800}
 .lbx-no{background:rgba(244,63,94,.1);border:1px dashed rgba(244,63,94,.4);border-radius:12px;padding:8px 10px;font-size:12px;color:#fb7185;margin-top:10px}
 /* 🏆 Hafta g'oliblari */
+.podium .pd{flex:1 1 0;min-width:0}.podium .pd-n{max-width:100%;text-align:center;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;word-break:normal;overflow-wrap:anywhere;font-size:13.5px;line-height:1.25}.podium .chtt{margin:2px 0 3px;white-space:normal;text-align:center;max-width:100%}
 .uav[data-ch="1"]{box-shadow:0 0 0 2.5px #F5C84C,0 0 12px 2px rgba(245,200,76,.75)}.uav[data-ch="2"]{box-shadow:0 0 0 2.5px #CBD5E1,0 0 10px 2px rgba(203,213,225,.6)}.uav[data-ch="3"]{box-shadow:0 0 0 2.5px #D08A4B,0 0 10px 2px rgba(208,138,75,.6)}
 .uav[data-ch]::before{position:absolute;right:-6px;top:-7px;font-size:14px;line-height:1;filter:drop-shadow(0 1px 2px rgba(0,0,0,.5));z-index:1}.uav[data-ch="1"]::before{content:"🥇"}.uav[data-ch="2"]::before{content:"🥈"}.uav[data-ch="3"]::before{content:"🥉"}.uav.sm[data-ch]::before{font-size:11px;right:-5px;top:-5px}.uav.lg[data-ch]::before,.uav.xl[data-ch]::before{font-size:20px}
 .uav[data-ch="1"]{animation:chGlow 2.4s ease-in-out infinite}@keyframes chGlow{50%{box-shadow:0 0 0 2.5px #FFE08A,0 0 20px 5px rgba(245,200,76,.9)}}
@@ -6310,10 +6311,15 @@ const CHAMP = (() => {
     if (!t) { const L = await DBA.get("lb/" + k); t = top3(L).map(({ k, n, xp }) => ({ k, n, xp })); try { localStorage.setItem("zm_ch_" + k, JSON.stringify(t)); } catch (e) {} }
     return { k, d, t };
   }
-  // O'tgan (yakunlangan) haftaning 1–3-o'rinlari — shu hafta davomida «hafta g'oliblari»
+  // Hafta g'oliblari = shu haftaning umumiy reytingidagi 1–3-o'rinlar (jonli). Hafta boshida hali hech kim bo'lmasa — o'tgan hafta g'oliblari.
+  let at = 0;
+  function set(t, d) { info = { k: key(d), d, t }; M = {}; t.forEach((p, i) => M[p.k] = i + 1); apply(); }
+  function live(L) { const t = top3(L).map(({ k, n, xp }) => ({ k, n, xp })); if (t.length) { set(t, wkStart(DBA.now())); at = Date.now(); } }
   function load() {
-    if (ready || typeof ACCT === "undefined" || !ACCT.cur) return ready;
-    ready = week(wkStart(DBA.now() - 7 * 864e5), true).then(w => { info = w; M = {}; w.t.forEach((p, i) => M[p.k] = i + 1); apply(); return w; }).catch(() => { ready = null; return null; });
+    if (typeof ACCT === "undefined" || !ACCT.cur) return ready;
+    if (ready && Date.now() - at < 5 * 60e3) return ready;
+    at = Date.now();
+    ready = DBA.get("lb/" + key(wkStart(DBA.now()))).then(async L => { const t = top3(L).map(({ k, n, xp }) => ({ k, n, xp })); if (t.length) set(t, wkStart(DBA.now())); else { const w = await week(wkStart(DBA.now() - 7 * 864e5), true); set(w.t, w.d); } return info; }).catch(() => { ready = null; return null; });
     return ready;
   }
   const rank = uid => M[uid] || 0;
@@ -6341,18 +6347,18 @@ const CHAMP = (() => {
   // 🏛 Shon-sharaf zali — oxirgi 8 hafta g'oliblari
   async function hall() {
     const m = document.createElement("div"); m.className = "lbx-sh";
-    m.innerHTML = `<div class="lbx-sb"><div class="gr"></div><h3>🏛 Shon-sharaf zali</h3><p class="sub" style="margin:0 0 8px">Har hafta eng ko‘p XP to‘plagan 3 kishi. Ular keyingi hafta davomida oltin, kumush va bronza ramka hamda unvon bilan ajralib turadi.</p><div id="chH"><div class="sub" style="text-align:center;margin:16px 0">Yuklanmoqda…</div></div><button class="btn" style="margin-top:12px" id="chOk">Yopish</button></div>`;
+    m.innerHTML = `<div class="lbx-sb"><div class="gr"></div><h3>🏛 Shon-sharaf zali</h3><p class="sub" style="margin:0 0 8px">Har hafta eng ko‘p XP to‘plagan 3 kishi. Shu haftaning 1–3-o‘rindagilari oltin, kumush va bronza ramka hamda unvon bilan ajralib turadi.</p><div id="chH"><div class="sub" style="text-align:center;margin:16px 0">Yuklanmoqda…</div></div><button class="btn" style="margin-top:12px" id="chOk">Yopish</button></div>`;
     document.body.appendChild(m);
     m.onclick = e => { if (e.target === m || e.target.id === "chOk") m.remove(); };
     const now = DBA.now(), W = [];
-    for (let i = 1; i <= 8; i++) W.push(wkStart(now - i * 7 * 864e5));
-    const R = await Promise.all(W.map((d, i) => week(d, i > 0 || true).catch(() => ({ d, t: [] }))));
+    for (let i = 0; i <= 8; i++) W.push(wkStart(now - i * 7 * 864e5));
+    const R = await Promise.all(W.map((d, i) => week(d, i > 0).catch(() => ({ d, t: [] }))));
     const el = m.querySelector("#chH"); if (!el) return;
     const rows = R.filter(w => w.t && w.t.length);
-    el.innerHTML = rows.length ? rows.map((w, i) => `<div class="ch-hr${i === 0 ? " now" : ""}"><div class="ch-hd"><b>${lbl(w.d)}</b>${i === 0 ? `<span>hozirgi g‘oliblar</span>` : ""}</div>${w.t.map((p, j) => `<div class="ch-hp">${AV.html(p.k, p.n, "sm")}<span>${["🥇", "🥈", "🥉"][j]} ${esc(p.n)}</span><em>${p.xp} XP</em></div>`).join("")}</div>`).join("") : `<p class="sub" style="text-align:center">Hali yakunlangan hafta yo‘q. Birinchi g‘olib siz bo‘ling! 🏆</p>`;
+    el.innerHTML = rows.length ? rows.map((w, i) => `<div class="ch-hr${w.k === key(wkStart(now)) ? " now" : ""}"><div class="ch-hd"><b>${lbl(w.d)}</b>${w.k === key(wkStart(now)) ? `<span>shu hafta · jonli</span>` : ""}</div>${w.t.map((p, j) => `<div class="ch-hp">${AV.html(p.k, p.n, "sm")}<span>${["🥇", "🥈", "🥉"][j]} ${esc(p.n)}</span><em>${p.xp} XP</em></div>`).join("")}</div>`).join("") : `<p class="sub" style="text-align:center">Hali yakunlangan hafta yo‘q. Birinchi g‘olib siz bo‘ling! 🏆</p>`;
   }
   const curInfo = () => info;
-  return { load, rank, me, apply, tag, announce, spark, hall, info: curInfo, label: lbl };
+  return { load, live, rank, me, apply, tag, announce, spark, hall, info: curInfo, label: lbl };
 })();
 // ================== O'YINLASHTIRISH: XP, darajalar, nishonlar, xatolar, reyting ==================
 const GAME = (() => {
@@ -6511,7 +6517,7 @@ const GAME = (() => {
         + (me >= 30 ? `<div class="st-s" style="text-align:center;margin-top:8px">Siz: ${me + 1}-o'rin</div>` : "") + (me < 0 ? `<div class="st-s" style="text-align:center;margin-top:8px">Bu hafta hali test ishlamadingiz — birinchi testdan keyin reytingda paydo bo'lasiz.</div>` : "")
         : `<div style="text-align:center"><div style="font-size:36px">🏁</div><p class="sub" style="margin:6px 0 0">Bu hafta hali hech kim test ishlamagan. Birinchi bo'ling!</p></div>`;
     };
-    if (lbUn) lbUn(); lbUn = DBA.on("lb/" + weekKey(DBA.now()), v => { data = v || {}; draw(); });
+    if (lbUn) lbUn(); lbUn = DBA.on("lb/" + weekKey(DBA.now()), v => { data = v || {}; try { CHAMP.live(data); } catch (e) {} draw(); });
     draw();
   }
   function reg(qs) { qs.forEach(q => { if (q._k) KEYQ[q._k] = q; }); }
