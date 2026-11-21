@@ -1092,6 +1092,7 @@ html[data-th="tong"] .km-pt b,html[data-th="vodiy"] .km-pt b,html[data-th="tong"
 .lbx-sb .gr{width:46px;height:5px;border-radius:3px;background:var(--line);margin:0 auto 10px}.lbx-sb h3{margin:0 0 4px;font-size:17px}.lbx-r{display:flex;align-items:center;gap:10px;padding:9px 2px;border-bottom:1px solid var(--line);font-size:13.5px}.lbx-r:last-of-type{border:0}.lbx-r i{width:34px;height:34px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:18px;font-style:normal;background:var(--card2);flex:none}.lbx-r b{margin-left:auto;color:#F2C14E;white-space:nowrap}
 .lbx-lv{display:flex;justify-content:space-between;margin:8px 0 4px}.lbx-lv span{display:flex;flex-direction:column;align-items:center;font-size:10px;color:var(--mu);gap:2px}.lbx-lv span em{font-style:normal;font-size:18px}.lbx-lv span.on{color:#F2C14E;font-weight:800}
 .lbx-no{background:rgba(244,63,94,.1);border:1px dashed rgba(244,63,94,.4);border-radius:12px;padding:8px 10px;font-size:12px;color:#fb7185;margin-top:10px}
+.tlx{margin-top:8px}.tlx.low{color:#f87171;font-weight:700}.tlx:empty{display:none}
 /* 🏆 Hafta g'oliblari */
 .podium .pd{flex:1 1 0;min-width:0}.podium .pd-n{max-width:100%;text-align:center;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;word-break:normal;overflow-wrap:anywhere;font-size:13.5px;line-height:1.25}.podium .chtt{margin:2px 0 3px;white-space:normal;text-align:center;max-width:100%}
 .uav[data-ch="1"]{box-shadow:0 0 0 2.5px #F5C84C,0 0 12px 2px rgba(245,200,76,.75)}.uav[data-ch="2"]{box-shadow:0 0 0 2.5px #CBD5E1,0 0 10px 2px rgba(203,213,225,.6)}.uav[data-ch="3"]{box-shadow:0 0 0 2.5px #D08A4B,0 0 10px 2px rgba(208,138,75,.6)}
@@ -5419,7 +5420,7 @@ const ACCT = (() => {
     };
     hListeners.add(fill); hListeners.add(HW.renderStudent); hListeners.add(GAME.homeRender); fill(); HW.renderStudent(); GAME.homeRender();
     if (!annL) { annL = () => GAME.announce(recs()); hListeners.add(annL); }
-    if (!aUn) aUn = DBA.onSince("a", "c", DBA.now() - 6 * 3600e3, v => { const now = DBA.now(); const live = Object.values(v || {}).some(x => x && x.ph !== "end" && now - (x.c || 0) < 6 * 3600e3); if ($("tBadge")) $("tBadge").classList.toggle("hide", !live); try { HOMEX.live(live); } catch (e) {} });
+    if (!aUn) aUn = DBA.onSince("a", "c", DBA.now() - 6 * 3600e3, v => { const now = DBA.now(); const live = Object.values(v || {}).some(x => x && x.ph !== "end" && !(x.ph === "lobby" && String(x.code).length !== 5 && now - (x.c || 0) > 5 * 60e3) && now - (x.c || 0) < 6 * 3600e3); if ($("tBadge")) $("tBadge").classList.toggle("hide", !live); try { HOMEX.live(live); } catch (e) {} });
   }
   let aUn = null, annL = null;
   function history() {
@@ -7002,9 +7003,27 @@ const T = (() => {
   const ranked = () => Object.entries(st.players || {}).filter(([k, p]) => p && p.n).map(([k, p]) => ({ ...p, k }))
     .sort((a, b) => (b.s || 0) - (a.s || 0) || (a.t || 0) - (b.t || 0) || String(a.n).localeCompare(String(b.n)));
   const ppq = () => 100 / (st.meta ? st.meta.n : 20);
+  // ⏳ 5 daqiqa ichida boshlanmagan turnir avtomatik bekor bo'ladi
+  const LOBBY_MS = 5 * 60e3;
+  const lobbyLeft = m => (m && m.phase === "lobby" && !m.boss) ? (m.c || 0) + LOBBY_MS - DBA.now() : Infinity;
+  function cancelT(code) { DBA.update(`t/${code}/meta`, { phase: "end", cx: 1 }).catch(() => {}); DBA.set(`a/${code}`, null).catch(() => {}); }
+  function cxScreen() {
+    const host = st.role === "host" || amHost(), np = Object.keys(st.players || {}).length;
+    clear(); ls.del("zm_active"); if (st.role === "host") ls.del("zm_hostcode");
+    tz().innerHTML = `<div class="card" style="text-align:center"><div style="font-size:46px">⌛</div><h1>Turnir bekor qilindi</h1><p class="sub">${np ? "Turnir 5 daqiqa ichida boshlanmadi" : "5 daqiqa ichida hech kim qo‘shilmadi"}, shuning uchun avtomatik bekor qilindi.</p>
+      ${host ? `<button class="btn" onclick="${st.role === "host" ? "T.openHost()" : "goHome()"}">🔁 Yangi turnir ochish</button>` : ""}<button class="btn ghost" style="margin-top:8px" onclick="goHome()">🏠 Bosh sahifa</button></div>`;
+  }
+  function lobbyCheck() {
+    const m = st.meta; if (!m || m.phase !== "lobby" || m.boss) return false;
+    const left = lobbyLeft(m), el = $("tlx");
+    if (el && left > 0) { const sec = Math.ceil(left / 1000); el.innerHTML = `⏳ <b>${Math.floor(sec / 60)}:${String(sec % 60).padStart(2, "0")}</b> ichida boshlanmasa, turnir bekor qilinadi`; el.classList.toggle("low", sec <= 60); }
+    if (left > 0 || st.cxd) return left <= 0;
+    st.cxd = true; if (st.role === "host" || amHost() || (typeof isAdmin === "function" && isAdmin())) cancelT(st.code);
+    st.meta = { ...m, phase: "end", cx: 1 }; cxScreen(); return true;
+  }
   const pts = s => Math.round((s || 0) * ppq() * 10) / 10;
   const medal = i => i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : (i + 1);
-  function clear() { st.unsub.forEach(f => f()); st.unsub = []; clearInterval(st.timer); st.timer = null; if (st.proj) { st.proj = false; document.body.style.overflow = ""; const d = $("tproj"); if (d) d.remove(); } }
+  function clear() { st.cxd = st.cxShown = false; st.unsub.forEach(f => f()); st.unsub = []; clearInterval(st.timer); st.timer = null; if (st.proj) { st.proj = false; document.body.style.overflow = ""; const d = $("tproj"); if (d) d.remove(); } }
 
   // ---------- reyting jadvali (FLIP animatsiya bilan) ----------
   function board(el, list, { big = false, limit = 0, n = 20 } = {}) {
@@ -7072,6 +7091,7 @@ const T = (() => {
     FN = ac.f; LN = ac.l; name = FN + " " + LN;
     st.code = code; st.pid = ac.uid;
     const was = await DBA.get(`t/${code}/players/${st.pid}`);
+    if (!meta.boss && (meta.cx || lobbyLeft(meta) <= 0)) return giveUp("Bu turnir 5 daqiqa ichida boshlanmagani uchun bekor qilingan.");
     if (meta.phase === "end" && !was) return giveUp("Bu turnir allaqachon tugagan.");
     if (await DBA.get(`t/${code}/ban/${st.pid}`)) return giveUp("Siz bu turnirdan chiqarilgansiz.");
     if (meta.host && !was) { const ps = await DBA.get(`t/${code}/players`); if (Object.keys(ps || {}).length >= MY_MAX) return giveUp(`O'yin to'lgan (${MY_MAX} kishi).`); }
@@ -7091,6 +7111,8 @@ const T = (() => {
   function sRoute(changed) {
     const m = st.meta;
     if (m.phase === "lobby") return isTeam() ? sTeamLobby() : sLobby();
+    if (m.phase === "end" && m.cx) { if (!st.cxShown) { st.cxShown = true; cxScreen(); } return; }
+    if (m.phase === "lobby" && lobbyCheck()) return;
     if (m.phase === "end") { if (changed || !$("tmine")) { if (isTeam()) { if (myTm() != null) sTeamEnd(); else { ls.del("zm_active"); goHome(); } } else sEnd(); } return; }
     if (isTeam() && !st.players[st.pid]) return;
     if (isTeam() && myTm() == null) { if (changed || !$("tspec")) { ls.del("zm_active"); tz().innerHTML = `<div class="card" id="tspec" style="text-align:center"><div style="font-size:40px">⏱</div><h1>O'yin boshlandi</h1><p class="sub">Siz jamoa tanlamagan edingiz, shuning uchun bu turnirda qatnasha olmaysiz.</p><button class="btn" onclick="goHome()">Bosh sahifa</button></div>`; } return; }
@@ -7100,7 +7122,7 @@ const T = (() => {
   function sLobby() {
     tz().innerHTML = `<div class="card" style="text-align:center"><div style="font-size:44px">⏳</div><h1>${amHost() ? "O'yiningiz tayyor" : st.meta.host ? "Boshlanishini kuting" : "Ustoz boshlashini kuting"}</h1>
       <p class="sub"><b></b>, siz <b>${st.code}</b> turniriga qo'shildingiz. Test: ${esc(mTitle(st.meta))} · ${st.meta.n} savol · ${Math.round(st.meta.dur / 60000)} daqiqa</p>
-      <div class="tnote">Ishtirokchilar: <b id="tcnt">0</b></div></div>${myBar()}<div class="card" style="margin-top:12px"><div id="tbd"></div></div>`;
+      <div class="tnote">Ishtirokchilar: <b id="tcnt">0</b></div><div class="tnote tlx" id="tlx"></div></div>${myBar()}<div class="card" style="margin-top:12px"><div id="tbd"></div></div>`;
     tz().querySelector(".sub b").textContent = name; myBind(); sBoard();
   }
   function sPlay() {
@@ -7174,7 +7196,8 @@ const T = (() => {
     if (i >= 0 && st.meta && st.meta.phase === "run") { if (st.myRank && i + 1 < st.myRank) { FX.toast(i === 0 ? "👑 Siz birinchi o'rindasiz!" : `⬆ ${i + 1}-o'ringa ko'tarildingiz!`, "up"); FX.S.up(); } st.myRank = i + 1; }
   }
   function sTick() {
-    const m = st.meta; if (!m || m.phase !== "run") return;
+    const m = st.meta; if (m && m.phase === "lobby") { lobbyCheck(); return; }
+    if (!m || m.phase !== "run") return;
     const now = DBA.now();
     if (m.host && now > m.startAt) {
       const ps = Object.values(st.players || {}), all = ps.length && ps.every(p => p && p.d);
@@ -7513,7 +7536,8 @@ const T = (() => {
   function hActive(v) {
     const el = $("tactl"); if (!el) return;
     const now = DBA.now();
-    const arr = Object.values(v).filter(x => x && x.code && x.ph !== "end" && now - (x.c || 0) < 6 * 3600e3).sort((a, b) => b.c - a.c);
+    Object.values(v).forEach(x => { if (x && x.code && x.ph === "lobby" && String(x.code).length !== 5 && now - (x.c || 0) > LOBBY_MS + 30000) cancelT(x.code); });
+    const arr = Object.values(v).filter(x => x && x.code && x.ph !== "end" && !(x.ph === "lobby" && String(x.code).length !== 5 && now - (x.c || 0) > LOBBY_MS) && now - (x.c || 0) < 6 * 3600e3).sort((a, b) => b.c - a.c);
     if (!arr.length) { el.innerHTML = '<div class="sub" style="margin:0">Hozir faol turnir yo\'q. Quyida yangisini oching.</div>'; return; }
     el.innerHTML = "";
     arr.forEach(x => {
@@ -7566,12 +7590,14 @@ const T = (() => {
   function hRoute() {
     const m = st.meta, s = { title: mTitle(m) };
     DBA.set(`a/${st.code}`, m.phase === "end" ? null : { code: st.code, set: m.set, ttl: (m.team ? "👥 " : "") + s.title, ph: m.phase, c: m.c || DBA.now() });
+    if (m.phase === "end" && m.cx) { DBA.set(`a/${st.code}`, null).catch(() => {}); return cxScreen(); }
     if (m.phase === "end") return hEnd();
+    if (lobbyCheck()) return;
     tz().innerHTML = `<div class="card" style="text-align:center">
       <div class="sub" style="margin-bottom:4px">${esc(s.title)} · ${m.n} savol · ${Math.round(m.dur / 60000)} daqiqa</div>
       ${m.phase === "lobby" ? `<div class="sub" style="margin:0">Turnir kodi</div><div class="tcode">${st.code}</div>
         <div class="sub">O'quvchilar saytni ochib «Turnir rejimi»ni bosadi va shu kodni kiritadi.<br><span class="tlink"></span></div>
-        ${SHARE.html("thSh")}<button class="btn" id="thst" style="margin-top:10px">▶ Boshlash</button><button class="btn ghost" id="thend" style="margin-top:8px">✕ Turnirni bekor qilish</button>`
+        ${SHARE.html("thSh")}<button class="btn" id="thst" style="margin-top:10px">▶ Boshlash</button><button class="btn ghost" id="thend" style="margin-top:8px">✕ Turnirni bekor qilish</button><div class="tnote tlx" id="tlx" style="margin-top:10px"></div>`
       : `<div class="row" style="align-items:center"><div style="flex:1;text-align:left"><div class="sub" style="margin:0">Kod: <b>${st.code}</b> · Ishtirokchilar: <b id="tcnt">0</b> · Tugatganlar: <b id="tdn">0</b></div></div><div class="ttm" id="ttm" style="font-size:26px">--:--</div></div>
         <button class="btn" id="thend" style="margin-top:12px;background:var(--bad)">■ Turnirni yakunlash</button>`}
       ${m.team ? `<div id="thw" class="tnote" style="margin-top:12px"></div>` : ""}<button class="btn ghost" id="thpj" style="margin-top:10px">🖥 Katta ekran (proyektor)</button>
@@ -7603,6 +7629,7 @@ const T = (() => {
   let lastHB = 0;
   function hTick() {
     const m = st.meta; if (!m) return;
+    if (m.phase === "lobby" && lobbyCheck()) return;
     if (DBA.kind === "mqtt" && m.phase !== "end" && Date.now() - lastHB > 3000) { lastHB = Date.now(); DBA.update(`t/${st.code}/meta`, {}); }
     if (m.phase !== "run") return;
     const now = DBA.now(), left = now < m.startAt ? m.startAt - now : m.startAt + m.dur - now;
