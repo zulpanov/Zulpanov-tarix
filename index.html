@@ -6363,14 +6363,19 @@ const CHAMP = (() => {
   async function platLoad() {
     const d = wkStart(DBA.now() - 7 * 864e5), k = key(d); let p;
     try { p = JSON.parse(localStorage.getItem("zm_pt_" + k) || "null"); } catch (e) {}
-    if (!p) {
+    const best = L => { const b = Object.entries(L || {}).filter(([u, x]) => x && x.g && x.s > 0).sort((a, b) => b[1].s - a[1].s)[0]; return b ? { k: b[0], n: b[1].n, s: b[1].s } : null; };
+    let dd = d, live = false;
+    if (!p || !p.k) {
       let L = null; try { L = await DBA.get("vw/" + k); } catch (e) { return; }
-      const b = Object.entries(L || {}).filter(([u, x]) => x && x.g && x.s > 0).sort((a, b) => b[1].s - a[1].s)[0];
-      p = b ? { k: b[0], n: b[1].n, s: b[1].s } : { k: null };
-      try { localStorage.setItem("zm_pt_" + k, JSON.stringify(p)); } catch (e) {}
+      p = best(L);
+      if (p) { try { localStorage.setItem("zm_pt_" + k, JSON.stringify(p)); } catch (e) {} }
+      else { // o'tgan haftada vaqt ma'lumoti yo'q (bo'lim yangi) — vaqtincha shu haftaning yetakchisi
+        dd = wkStart(DBA.now()); live = true;
+        try { p = best(await DBA.get("vw/" + key(dd))); } catch (e) { p = null; }
+      }
     }
-    PT = p && p.k ? { ...p, d } : null; apply();
-    if (pt() && !seenPt(k)) setTimeout(() => FX.toast("💠 Tabriklaymiz! Siz PLATINUM darajadasiz — o‘tgan hafta saytda eng ko‘p vaqt o‘tkazdingiz", "up"), 1800);
+    PT = p && p.k ? { ...p, d: dd, live } : null; apply();
+    if (pt() && !seenPt(live ? key(dd) : k)) setTimeout(() => FX.toast("💠 Tabriklaymiz! Siz PLATINUM darajadasiz — o‘tgan hafta saytda eng ko‘p vaqt o‘tkazdingiz", "up"), 1800);
   }
   const seenPt = k => { try { if (localStorage.getItem("zm_pt_seen") === k) return true; localStorage.setItem("zm_pt_seen", k); } catch (e) {} return false; };
   const isPt = uid => !!(PT && PT.k === uid);
@@ -6380,7 +6385,7 @@ const CHAMP = (() => {
   function pcard(uid) {
     if (!isPt(uid)) return "";
     setTimeout(async () => { const el = document.getElementById("ptDays"); if (!el) return; try { const D = (await DBA.get("vt/" + uid)) || {}; let n = 0; for (let i = 0; i < 7; i++) { const x = new Date(PT.d.getTime() + i * 864e5), k = "" + x.getFullYear() + z(x.getMonth() + 1) + z(x.getDate()); if ((D[k] || 0) >= 60) n++; } if (n) el.textContent = `🔥 ${n} kun faol`; } catch (e) {} }, 50);
-    return `<div class="ptc"><div class="ptc-h"><b>TARIX ARENA</b><span>💠</span></div><div class="ptc-chip"></div><div class="ptc-s">PLATINUM A’ZO · ${lbl(PT.d)}</div><div class="ptc-n">${esc(PT.n)}</div><div class="ptc-f"><span>⏱ ${hm(PT.s)}</span><span id="ptDays"></span></div><div class="ptc-x">O‘tgan haftaning eng tirishqoq o‘quvchisi — saytda eng ko‘p vaqt o‘tkazgan. Keyingi dushanba yangi egasiga o‘tadi.</div></div>`;
+    return `<div class="ptc"><div class="ptc-h"><b>TARIX ARENA</b><span>💠</span></div><div class="ptc-chip"></div><div class="ptc-s">PLATINUM A’ZO · ${lbl(PT.d)}${PT.live ? " · JONLI" : ""}</div><div class="ptc-n">${esc(PT.n)}</div><div class="ptc-f"><span>⏱ ${hm(PT.s)}</span><span id="ptDays"></span></div><div class="ptc-x">${PT.live ? "Shu haftaning eng tirishqoq o‘quvchisi — saytda eng ko‘p vaqt o‘tkazyapti. Dushanbadan boshlab platina butun hafta uchun o‘tgan hafta g‘olibiga beriladi." : "O‘tgan haftaning eng tirishqoq o‘quvchisi — saytda eng ko‘p vaqt o‘tkazgan. Keyingi dushanba yangi egasiga o‘tadi."}</div></div>`;
   }
   const rank = uid => M[uid] || 0;
   const me = () => (typeof ACCT !== "undefined" && ACCT.cur && M[ACCT.cur.uid]) || 0;
@@ -6423,7 +6428,7 @@ const CHAMP = (() => {
     el.innerHTML = rows.length ? rows.map((w, i) => `<div class="ch-hr${w.k === key(wkStart(now - 7 * 864e5)) ? " now" : ""}"><div class="ch-hd"><b>${lbl(w.d)}</b>${w.k === key(wkStart(now)) ? `<span style="color:var(--mu)">shu hafta · hali yakunlanmagan</span>` : w.k === key(wkStart(now - 7 * 864e5)) ? `<span>👑 hozirgi chempionlar</span>` : ""}</div>${w.t.map((p, j) => `<div class="ch-hp">${AV.html(p.k, p.n, "sm")}<span>${["🥇", "🥈", "🥉"][j]} ${esc(p.n)}</span><em>${p.xp} XP</em></div>`).join("")}</div>`).join("") : `<p class="sub" style="text-align:center">Hali yakunlangan hafta yo‘q. Birinchi g‘olib siz bo‘ling! 🏆</p>`;
   }
   const curInfo = () => info;
-  return { load, live, rank, me, apply, tag, announce, spark, hall, banner, thOn, pt, isPt, pcard, info: curInfo, label: lbl };
+  return { load, live, rank, me, apply, tag, announce, spark, hall, banner, thOn, pt, pt0: () => PT, isPt, pcard, info: curInfo, label: lbl };
 })();
 // ================== O'YINLASHTIRISH: XP, darajalar, nishonlar, xatolar, reyting ==================
 const GAME = (() => {
@@ -6564,8 +6569,8 @@ const GAME = (() => {
     const drawV = () => {
       if (vdat === null) { $("lbP").innerHTML = ""; $("lbL").innerHTML = `<div class="sub" style="margin:0">Yuklanmoqda…</div>`; DBA.get("vw/" + VT.curWk()).then(v => { vdat = v || {}; if (lbTab === "v") draw(); }).catch(() => { vdat = {}; if (lbTab === "v") draw(); }); return; }
       const arr = Object.entries(vdat).filter(([k, v]) => v && v.n && v.s >= 60).map(([k, v]) => ({ k, ...v })).sort((a, b) => b.s - a.s), me = arr.findIndex(p => p.k === c.uid);
-      $("lbP").innerHTML = `<div class="tnote" style="margin-bottom:10px">⏱ <b>Haftaning eng tirishqoqlari</b> — saytda eng ko‘p faol vaqt o‘tkazganlar (${VT.wkLabel()}).</div>`;
-      $("lbL").innerHTML = arr.length ? arr.slice(0, 30).map((p, i) => `<div class="trow${p.k === c.uid ? " me" : ""}"><div class="tr-r">${i < 3 ? ["🥇", "🥈", "🥉"][i] : i + 1}</div>${AV.html(p.k, p.n)}<div class="tr-n"><div class="tr-nm">${esc(p.n)}${p.k === c.uid ? " (siz)" : ""}</div><div class="st-s">${p.g ? esc(p.g) : "&nbsp;"}</div></div><div class="tr-s" style="font-size:14px;white-space:nowrap">${VT.fmt(p.s)}</div></div>`).join("")
+      $("lbP").innerHTML = `<div class="tnote" style="margin-bottom:10px">⏱ <b>Haftaning eng tirishqoqlari</b> — saytda eng ko‘p faol vaqt o‘tkazganlar (${VT.wkLabel()}).${(()=>{const P=CHAMP.pt0&&CHAMP.pt0();return P?`<br>💠 <b>PLATINUM</b>: ${esc(P.n)} — ${P.live?"shu haftaning yetakchisi (dushanbadan o‘tgan hafta g‘olibiga beriladi)":"o‘tgan hafta g‘olibi"}.`:""})()}</div>`;
+      $("lbL").innerHTML = arr.length ? arr.slice(0, 30).map((p, i) => `<div class="trow${p.k === c.uid ? " me" : ""}"><div class="tr-r">${i < 3 ? ["🥇", "🥈", "🥉"][i] : i + 1}</div>${AV.html(p.k, p.n)}<div class="tr-n"><div class="tr-nm">${esc(p.n)}${p.k === c.uid ? " (siz)" : ""}</div><div class="st-s">${CHAMP.isPt(p.k) ? `<span class="chtt chttp">💠 PLATINUM</span> ` : ""}${p.g ? esc(p.g) : "&nbsp;"}</div></div><div class="tr-s" style="font-size:14px;white-space:nowrap">${VT.fmt(p.s)}</div></div>`).join("")
         + (me >= 30 ? `<div class="st-s" style="text-align:center;margin-top:8px">Siz: ${me + 1}-o'rin</div>` : "") + (me < 0 ? `<div class="st-s" style="text-align:center;margin-top:8px">Saytda shug‘ullanishni davom ettiring — vaqtingiz bir necha daqiqada ro‘yxatga qo‘shiladi.</div>` : "")
         : `<div style="text-align:center"><div style="font-size:36px">⏱</div><p class="sub" style="margin:6px 0 0">Bu hafta hali ma'lumot yo'q. Birinchi bo'ling!</p></div>`;
     };
