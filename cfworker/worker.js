@@ -604,6 +604,64 @@ const xpOf = r => (r.ok || 0) * 10 + (r.lv ? 20 : 0) + (r.mode === "turnir" ? (r
 const UZ = 5 * 3600e3; // Toshkent vaqti
 // Hafta chegarasi: yakshanba 20:00 (Toshkent) — sayt (TW) bilan bir xil: +9 soat siljitib dushanba 00:00 deb hisoblanadi
 const WOFF = UZ + 4 * 3600e3;
+// ⚔️ Arena yo'li: boshlanganda va oxirgi soatda guruhga xabar, tugaganda g'olibni aniqlash (kam xato, teng bo'lsa — oldin) va tabrik
+async function arenaCron(env) {
+  const now = Date.now();
+  const ar = await db(env, "GET", "ar", undefined, `&orderBy=%22e%22&startAt=${now - 2 * 864e5}`).catch(() => null) || {};
+  const groupTg = async (x, skip) => {
+    if (!x.g || x.g === "*") return [];
+    const [users, tgs] = await Promise.all([db(env, "GET", "users"), students(env)]);
+    const byL = {}; tgs.forEach(r => byL[low(r.login)] = r.tgId);
+    const seen = new Set(), list = [];
+    Object.entries(users || {}).forEach(([uid, u]) => { if (!u || low(u.g) !== low(x.g) || (skip && skip(uid))) return; const t = loginsOf({ uid, ...u }).map(l => byL[l]).find(Boolean); if (t && !seen.has(t)) { seen.add(t); list.push({ tgId: t }); } });
+    return list.sort((a, b) => a.tgId - b.tgId);
+  };
+  const kb = (id, t) => ({ inline_keyboard: [[{ text: t, url: appLink("ar-" + id) }]] });
+  for (const [id, x] of Object.entries(ar)) {
+    if (!x || !Array.isArray(x.st) || !x.n) continue;
+    const n = x.st.length;
+    if (!x.sn && x.a <= now && x.e > now + 10 * 60e3) {
+      const list = await groupTg(x);
+      const text = `⚔️ <b>ARENA YO‘LI boshlandi!</b>\n\n«${esc(x.n)}» — ${n} bosqich\n⏳ Tugash: <b>${tashDt(x.e)}</b>\n\nHar bosqichdan o‘tsangiz, keyingisi ochiladi. Oxirigacha yetganlar ichida <b>eng kam xato</b> qilgan — 👑 ARENA CHEMPIONI!`;
+      const r = await sendBatch(env, list, x.sni || 0, () => ({ text, parse_mode: "HTML", reply_markup: kb(id, "⚔️ Arenaga kirish") }));
+      await db(env, "PATCH", "ar/" + id, r.next == null ? { sn: true, sni: null } : { sni: r.next });
+      return;
+    }
+    if (!x.r1 && x.a <= now && x.e > now && x.e - now <= 3600e3) {
+      const P = await db(env, "GET", "arp/" + id).catch(() => null) || {};
+      const list = await groupTg(x, uid => P[uid] && P[uid].f);
+      const text = `🔥 <b>Arena yo‘li — oxirgi soat!</b>\n\n«${esc(x.n)}» soat <b>${tashDt(x.e).slice(-5)}</b> da yakunlanadi.\nHali marraga yetmadingiz — chempionlik uchun shoshiling! ⚔️`;
+      const r = await sendBatch(env, list, x.r1i || 0, () => ({ text, parse_mode: "HTML", reply_markup: kb(id, "⚔️ Davom etish") }));
+      await db(env, "PATCH", "ar/" + id, r.next == null ? { r1: true, r1i: null } : { r1i: r.next });
+      return;
+    }
+    if (!x.wd && x.e <= now) {
+      const P = await db(env, "GET", "arp/" + id).catch(() => null) || {};
+      const R = Object.entries(P).filter(([u, p]) => p && p.n && p.f && p.f <= x.e + 6e4).map(([u, p]) => ({ u, ...p, e: p.e || 0 })).sort((a, b) => a.e - b.e || a.f - b.f);
+      const w = R[0];
+      const up = { wd: true };
+      if (w) {
+        up.w = { k: w.u, n: str(w.n, 80), e: w.e, f: w.f, j: w.j || x.a };
+        await db(env, "PUT", `arc/${w.u}/${id}`, { n: str(x.n, 60), wn: str(w.n, 80), e: w.e, f: w.f, j: w.j || x.a, a: x.a, s: n, at: x.e });
+      }
+      await db(env, "PATCH", "ar/" + id, up);
+      const hm = ms => { const s = Math.round(ms / 1000), h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60); return h ? `${h} soat ${m} daqiqa` : `${m} daqiqa ${s % 60} soniya`; };
+      if (w) {
+        const chat = await studentChat(env, w.u).catch(() => null);
+        if (chat) await tg(env, "sendPhoto", { chat_id: chat, photo: SITE + "img/aw-arena.jpg", parse_mode: "HTML", reply_markup: kb(id, "👑 Kartamni ko‘rish"),
+          caption: `🔥 <b>Tabriklaymiz, ${esc(w.n)}!</b>\n\nSiz — <b>👑 ARENA CHEMPIONI!</b>\n⚔️ «${esc(x.n)}»\n🏁 ${n}/${n} bosqich · ❌ ${w.e} xato · ⏱ ${hm(w.f - (w.j || x.a))}\n\n🎁 Profilingizga «ARENA CHEMPIONI» kartasi qo‘shildi. Ustozingiz va sinfdoshlaringiz uni ko‘radi! 💪` }).catch(() => {});
+      }
+      const tc = x.t ? await studentChat(env, x.t).catch(() => null) : null;
+      if (tc) {
+        const all = Object.values(P).filter(p => p && p.n), fin = all.filter(p => p.f && p.f <= x.e + 6e4).sort((a, b) => (a.e || 0) - (b.e || 0) || a.f - b.f);
+        const lines = fin.slice(0, 10).map((p, i) => `${["🥇", "🥈", "🥉"][i] || (i + 1) + "."} ${esc(p.n)} — ${p.e || 0} xato`).join("\n");
+        await tg(env, "sendMessage", { chat_id: tc, parse_mode: "HTML", reply_markup: kb(id, "📊 Natijalar"),
+          text: `🏁 <b>Arena yakunlandi</b> — «${esc(x.n)}»\n\n👥 Qatnashdi: <b>${all.length}</b> · 🏁 Marraga yetdi: <b>${fin.length}</b>\n${w ? `👑 Chempion: <b>${esc(w.n)}</b> (${w.e} xato)` : "Hech kim marraga yetmadi."}${lines ? "\n\n" + lines : ""}` }).catch(() => {});
+      }
+      return;
+    }
+  }
+}
 // 🏆 Yakshanba 20:00 — hafta g'oliblari: Shon-sharaf zaliga (hof/<hafta>) yozish va botda sertifikat bilan tabrik
 async function weeklyAwards(env) {
   const now = Date.now(), ws = weekStart(now);
@@ -843,7 +901,7 @@ const json = (o, st = 200) => new Response(JSON.stringify(o), { status: st, head
 
 export default {
   async scheduled(event, env, ctx) {
-    if (event.cron !== "0 4 * * SUN") ctx.waitUntil(weeklyAwards(env).catch(e => console.error("awards", e && e.stack || e)));
+    if (event.cron !== "0 4 * * SUN") ctx.waitUntil(weeklyAwards(env).catch(e => console.error("awards", e && e.stack || e)).then(() => arenaCron(env)).catch(e => console.error("arena", e && e.stack || e)));
     if (event.cron === "0 4 * * SUN") ctx.waitUntil(backup(env).catch(e => console.error("backup", e && e.stack || e)).then(() => cleanup(env)).catch(e => console.error("cleanup", e && e.stack || e)));
     else ctx.waitUntil(hwRemind(env).catch(e => console.error("hwRemind", e && e.stack || e)));
   },
