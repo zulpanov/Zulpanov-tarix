@@ -6601,7 +6601,7 @@ const ARENA = (() => {
   const state = x => now() < x.a ? "soon" : now() < x.e ? "live" : "end";
   const cond = st => GM[st.k].u.replace("{n}", st.nd);
   const setsOf = c => SETS.filter(s => s.qs && !s.ms && clsOf(s.g) === c + "-sinf");
-  const stTxt = st => { const g = GM[st.k]; let src = ""; if (g.src === "set") src = st.ids && st.ids.length ? st.ids.length + " mavzu" : "barcha mavzular"; else if (g.src === "jf") src = (st.f === "j" ? "Jahon" : "O‘zb.") + " · " + (JTY[st.y] || "").replace(/^\S+ /, ""); else if (g.src === "mp") src = (QIT[st.m] || QIT.mix).replace(/^\S+ /, ""); else src = st.f === "j" ? "Jahon tarixi" : st.f === "a" ? "Aralash" : "O‘zbekiston tarixi"; return `${src} · ${LVN[st.l].replace(/^\S+ /, "")} · ${cond(st)}`; };
+  const stTxt = st => { const g = GM[st.k]; let src = ""; if (g.src === "set") src = st.ids && st.ids.length ? st.ids.length + " mavzu" : "barcha mavzular"; else if (g.src === "jf") src = (st.f === "j" ? "Jahon" : "O‘zb.") + " · " + (JTY[st.y] || "").replace(/^\S+ /, ""); else if (g.src === "mp") src = (QIT[st.m] || QIT.mix).replace(/^\S+ /, ""); else src = st.f === "j" ? "Jahon tarixi" : st.f === "a" ? "Aralash" : "O‘zbekiston tarixi"; return `${st.c && GM[st.k].src !== "mp" ? st.c + "-sinf · " : ""}${src} · ${LVN[st.l].replace(/^\S+ /, "")} · ${cond(st)}`; };
   const rankOf = L => Object.entries(L || {}).filter(([u, p]) => p && p.n).map(([u, p]) => ({ u, ...p, e: p.e || 0, s: p.s || 0 }))
     .sort((a, b) => (b.f ? 1 : 0) - (a.f ? 1 : 0) || (a.f && b.f ? a.e - b.e || a.f - b.f : b.s - a.s || a.e - b.e || (a.at || 0) - (b.at || 0)));
   const winOf = (x, L) => { const r = rankOf(L).filter(p => p.f && p.f <= x.e + 6e4); return r[0] || null; };
@@ -6649,7 +6649,7 @@ const ARENA = (() => {
     const path = x.st.map((st, i) => { const g = GM[st.k], done = p && i < cur, now_ = canPlay && i === cur, h = p && p.h && p.h[i];
       return `<div class="ar-st ${done ? "ok" : now_ ? "now" : "lk"}"${now_ ? ` onclick="ARENA.play('${id}',${i})"` : ""}><div class="ar-n">${done ? "✓" : g.i}</div><div class="ar-tx"><b>${i + 1}. ${i === n - 1 ? "FINAL: " : ""}${esc(g.n)}</b><small>${done ? `${h ? h.e : 0} xato · ${h ? h.tr : 1} urinish` : now_ ? `Shart: ${esc(cond(st))}${p && p.ti ? ` · ${p.ti + 1}-urinish` : ""}` : `🔒 ${esc(stTxt(st))}`}</small></div>${now_ ? `<span class="ar-go">▶ O‘yna</span>` : ""}</div>`; }).join("");
     $("tz").innerHTML = head("⚔️ Arena yo‘li", x.g === "*" ? "Barcha o‘quvchilar" : x.g) +
-      `<div class="card ar-top ${s}"><span class="ar-pill">${s === "live" ? `🔴 JONLI · ${R.length} kishi yo‘lda` : s === "soon" ? "⏳ Tez orada" : "🏁 YAKUNLANDI"}</span><div class="ar-ttl">«${esc(x.n)}»</div><div class="sub" style="margin:2px 0 0">${n} bosqich · ${x.c}-sinf · ${s === "soon" ? "Boshlanish: " + when(x.a) : "Tugash: " + when(x.e)}${x.tn ? " · Ustoz: " + esc(x.tn) : ""}</div>
+      `<div class="card ar-top ${s}"><span class="ar-pill">${s === "live" ? `🔴 JONLI · ${R.length} kishi yo‘lda` : s === "soon" ? "⏳ Tez orada" : "🏁 YAKUNLANDI"}</span><div class="ar-ttl">«${esc(x.n)}»</div><div class="sub" style="margin:2px 0 0">${n} bosqich · ${x.st.some(t => t.c && t.c !== x.c) ? "turli sinflar" : x.c + "-sinf"} · ${s === "soon" ? "Boshlanish: " + when(x.a) : "Tugash: " + when(x.e)}${x.tn ? " · Ustoz: " + esc(x.tn) : ""}</div>
         ${s === "end" ? "" : `<div class="ar-cd" id="arCd" data-s="${s}">${cdHtml(s === "soon" ? x.a - now() : x.e - now())}</div>`}</div>
       ${w ? `<div class="ar-wbox">${card({ n: w.n, e: w.e, f: w.f, a: x.a, s: n }, x)}${w.u === u.uid ? `<p class="ar-me">🎉 Tabriklaymiz! Siz — ARENA CHEMPIONI! Karta profilingizga qo‘shildi.</p>` : ""}</div>` : ""}
       ${s === "live" && !p ? `<button class="btn ar-join" onclick="ARENA.play('${id}',0)">⚔️ Arenaga qo‘shilish va boshlash</button>` : ""}
@@ -6668,18 +6668,18 @@ const ARENA = (() => {
     if (!p) { p = { n: ((u.f || "") + " " + (u.l || "")).trim(), g: u.g || "", s: 0, e: 0, f: 0, j: now(), at: now(), es: 0, ti: 0, tr: 0 }; try { await DBA.set(`arp/${id}/${u.uid}`, p); } catch (e) { return FX.toast("⚠️ Qo‘shilib bo‘lmadi: " + ((e && e.message) || e)); } MY[id] = p; }
     if (p.f) return FX.toast("🏁 Siz allaqachon marraga yetgansiz");
     if (i !== (p.s || 0)) return FX.toast("🔒 Avval oldingi bosqichdan o‘ting");
-    const st = x.st[i], g = GM[st.k], cls = x.c + "-sinf";
+    const st = x.st[i], g = GM[st.k], sc_ = st.c || x.c, cls = sc_ + "-sinf";
     if (!again) { p.ti = (p.ti || 0) + 1; p.tr = (p.tr || 0) + 1; try { await DBA.update(`arp/${id}/${u.uid}`, { ti: p.ti, tr: p.tr, at: now() }); } catch (e) {} }
     CUR = { id, i, e0: p.e || 0 }; mark(CUR); clearTimeout(autoT);
-    const o = { cls, ids: st.ids || [], l: st.l, n: g.L[st.l], c: x.c, f: st.f, y: st.y };
+    const o = { cls, ids: st.ids || [], l: st.l, n: g.L[st.l], c: sc_, f: st.f, y: st.y };
     try { FX.toast(`${g.i} ${i + 1}-bosqich: ${g.n} · shart: ${cond(st)}`, "up"); } catch (e) {}
     try {
       if (st.k === "bz") BLITZ.arena(o);
       else if (st.k === "hy") HAYOQ.arena(o);
       else if (st.k === "zn") LADDER.arena(o);
       else if (st.k === "xr") await XRON.arena(o);
-      else if (st.k === "jf") await JUFTG.arena({ ...o, c: st.f === "j" ? x.c + "j" : x.c });
-      else if (st.k === "km") await KIMG.arena({ ...o, c: st.f === "j" ? x.c + "j" : x.c });
+      else if (st.k === "jf") await JUFTG.arena({ ...o, c: st.f === "j" ? sc_ + "j" : sc_ });
+      else if (st.k === "km") await KIMG.arena({ ...o, c: st.f === "j" ? sc_ + "j" : sc_ });
       else if (st.k === "mp") await mapGame({ ...o, m: st.m || "mix" });
       else if (st.k === "ts") {
         let pool = SETS.filter(s => s.qs && !s.ms && clsOf(s.g) === cls && (!o.ids.length || o.ids.includes(s.id))).flatMap(s => s.qs);
@@ -6806,14 +6806,15 @@ const ARENA = (() => {
   let AG = null; const gList = () => { let L = []; try { L = TCH.grps(); } catch (e) {} if (adm() && AG) { const h = new Set(L.map(g => nk(g.n))); L = L.concat(AG.filter(g => !h.has(nk(g.n)))); } return L; };
   const mk = k => ({ k, ids: [], f: "u", y: "s", m: "mix", l: 1, nd: GM[k].nd[1] });
   function draw2() {
-    const grps = gList(), S = setsOf(E.c);
+    const grps = gList(), cOf = st => st.c || E.c;
     const gOpt = grps.map(g => `<option value="${esc(g.n)}"${nk(g.n) === nk(E.g) ? " selected" : ""}>${esc(g.n)}</option>`).join("") + (adm() ? `<option value="*"${E.g === "*" ? " selected" : ""}>🌍 Barcha o‘quvchilar</option>` : "");
     const stH = E.st.map((st, i) => { const g = GM[st.k];
       if (i !== EX) return `<div class="ar-es" data-i="${i}"><span class="ar-k">${i + 1}</span><span class="ar-en">${g.i} <b>${esc(g.n)}</b><small>${esc(stTxt(st))}</small></span><span class="ar-eb"><button data-a="up"${i ? "" : " disabled"}>↑</button><button data-a="dn"${i < E.st.length - 1 ? "" : " disabled"}>↓</button><button data-a="x">✕</button></span></div>`;
+      const S = setsOf(cOf(st)), CLS = st.k === "xr" ? ["7", "8", "9", "10", "11"] : ["6", "7", "8", "9", "10", "11"];
       const nq = g.src === "set" ? S.filter(s => !st.ids.length || st.ids.includes(s.id)).reduce((a, s) => a + s.qs.length, 0) : 0;
       return `<div class="ar-es on" data-i="${i}"><div class="ar-eh"><span class="ar-k">${i + 1}</span><b>${g.i} ${esc(g.n)}</b><button class="ar-ec" data-a="cl">▴</button></div>
-        <label class="ar-lb2">O‘yin</label><select id="aeK">${Object.entries(GM).map(([k, v]) => `<option value="${k}"${k === st.k ? " selected" : ""}>${v.i} ${v.n}</option>`).join("")}</select>
-        ${g.src === "set" ? `<label class="ar-lb2">Mavzular (${E.c}-sinf) <small>— hech biri tanlanmasa, hammasidan</small></label><div class="ar-chips" id="aeT">${[...new Set(S.map(s => fanOf(s.g)))].map(f => `<div class="ar-cg">${esc(f)}</div>` + S.filter(s => fanOf(s.g) === f).map(s => `<button data-id="${s.id}" class="${st.ids.includes(s.id) ? "on" : ""}">${st.ids.includes(s.id) ? "✓ " : ""}<b>${esc(s.n || "")}</b> ${esc((t => t.length > 40 ? t.slice(0, 38) + "…" : t)(String(s.sub || s.title).split(" · ")[0]))}</button>`).join("")).join("") || `<span class="sub">Bu sinf uchun test topilmadi</span>`}</div><small class="sub">Bazada ${nq} ta savol</small>`
+        <div class="ar-2"><div style="flex:2"><label class="ar-lb2">O‘yin</label><select id="aeK">${Object.entries(GM).map(([k, v]) => `<option value="${k}"${k === st.k ? " selected" : ""}>${v.i} ${v.n}</option>`).join("")}</select></div>${g.src === "mp" ? "" : `<div><label class="ar-lb2">Sinf</label><select id="aeSc">${CLS.map(c => `<option${c === cOf(st) ? " selected" : ""}>${c}</option>`).join("")}</select></div>`}</div>
+        ${g.src === "set" ? `<label class="ar-lb2">Mavzular (${cOf(st)}-sinf) <small>— hech biri tanlanmasa, hammasidan</small></label><div class="ar-chips" id="aeT">${[...new Set(S.map(s => fanOf(s.g)))].map(f => `<div class="ar-cg">${esc(f)}</div>` + S.filter(s => fanOf(s.g) === f).map(s => `<button data-id="${s.id}" class="${st.ids.includes(s.id) ? "on" : ""}">${st.ids.includes(s.id) ? "✓ " : ""}<b>${esc(s.n || "")}</b> ${esc((t => t.length > 40 ? t.slice(0, 38) + "…" : t)(String(s.sub || s.title).split(" · ")[0]))}</button>`).join("")).join("") || `<span class="sub">Bu sinf uchun test topilmadi</span>`}</div><small class="sub">Bazada ${nq} ta savol</small>`
         : g.src === "mp" ? `<label class="ar-lb2">Qit’a</label><div class="ar-seg" id="aeM">${Object.entries(QIT).map(([m, t]) => `<button data-m="${m}" class="${(st.m || "mix") === m ? "on" : ""}">${t}</button>`).join("")}</div>`
         : `<label class="ar-lb2">Fan</label><div class="ar-seg" id="aeF">${(st.k === "xr" ? ["u", "j", "a"] : ["u", "j"]).map(f => `<button data-f="${f}" class="${st.f === f ? "on" : ""}">${FANS[f]}</button>`).join("")}</div>
           ${st.k === "jf" ? `<label class="ar-lb2">Juftlar turi</label><div class="ar-seg" id="aeY">${Object.entries(JTY).map(([y, t]) => `<button data-y="${y}" class="${st.y === y ? "on" : ""}">${t}</button>`).join("")}</div>` : ""}`}
@@ -6821,13 +6822,13 @@ const ARENA = (() => {
         <label class="ar-lb2">O‘tish sharti</label><div class="ar-nd"><button data-d="-1">−</button><span>${esc(cond(st))}</span><button data-d="1">＋</button></div></div>`; }).join("");
     $("tz").innerHTML = thead(E.id ? "✏️ Arenani tahrirlash" : "⚔️ Arena yaratish") +
       `<label class="ar-lb2">Nomi</label><input id="aeN" maxlength="60" placeholder="Masalan: «Temuriylar davri» marafoni" value="${esc(E.n)}">
-      <div class="ar-2"><div><label class="ar-lb2">Guruh</label><select id="aeG">${gOpt || `<option value="">— guruh yo‘q —</option>`}</select></div><div><label class="ar-lb2">Sinf</label><select id="aeC">${["6", "7", "8", "9", "10", "11"].map(c => `<option${c === E.c ? " selected" : ""}>${c}</option>`).join("")}</select></div></div>
+      <div class="ar-2"><div><label class="ar-lb2">Guruh</label><select id="aeG">${gOpt || `<option value="">— guruh yo‘q —</option>`}</select></div><div><label class="ar-lb2">Asosiy sinf</label><select id="aeC">${["6", "7", "8", "9", "10", "11"].map(c => `<option${c === E.c ? " selected" : ""}>${c}</option>`).join("")}</select></div></div>
       <label class="ar-lb2">Bosqichlar <small>(${E.st.length} ta · 2–8 ta)</small></label><div id="aeS">${stH}</div>${E.st.length < 8 ? `<button class="ar-add" id="aeA">＋ Bosqich qo‘shish</button>` : ""}
       <div class="ar-2"><div><label class="ar-lb2">Boshlanish</label><input type="datetime-local" id="aeTa" value="${dtl(E.a)}"></div><div><label class="ar-lb2">Tugash</label><input type="datetime-local" id="aeTe" value="${dtl(E.e)}"></div></div>
       <p class="sub" id="aeE" style="color:#f87171;min-height:18px;margin:8px 0 0"></p>
       <button class="btn" id="aeGo">${E.id ? "💾 Saqlash" : "🚀 Arenani boshlash"}</button><p class="sub" style="text-align:center;margin-top:6px">Boshlanish vaqtida guruh o‘quvchilariga bot orqali xabar boradi.</p>`;
     const rd = () => { E.n = $("aeN").value; E.g = $("aeG").value; const a = new Date($("aeTa").value).getTime(), e = new Date($("aeTe").value).getTime(); if (a) E.a = a; if (e) E.e = e; };
-    $("aeC").onchange = () => { rd(); E.c = $("aeC").value; E.st.forEach(st => st.ids = []); draw2(); };
+    $("aeC").onchange = () => { rd(); E.c = $("aeC").value; E.st.forEach(st => { st.ids = []; st.c = undefined; }); draw2(); };
     $("aeG").onchange = () => { rd(); const c = (String(E.g).match(/\d+/) || [])[0]; if (c && ["6", "7", "8", "9", "10", "11"].includes(c) && c !== E.c) { E.c = c; E.st.forEach(st => st.ids = []); } draw2(); };
     if ($("aeA")) $("aeA").onclick = () => { rd(); E.st.push(mk("hy")); EX = E.st.length - 1; draw2(); };
     $("aeS").onclick = e => {
@@ -6844,7 +6845,8 @@ const ARENA = (() => {
       else if (b.dataset.d) { const step = g.max >= 100 ? 5 : 1; st.nd = Math.max(g.ge ? 1 : 0, Math.min(g.max, st.nd + step * +b.dataset.d)); }
       draw2();
     };
-    if ($("aeK")) $("aeK").onchange = () => { rd(); const st = E.st[EX], k = $("aeK").value; Object.assign(st, { k, nd: GM[k].nd[st.l], f: st.f === "a" && k !== "xr" ? "u" : st.f }); draw2(); };
+    if ($("aeSc")) $("aeSc").onchange = () => { rd(); const st = E.st[EX], c = $("aeSc").value; st.c = c === E.c ? undefined : c; st.ids = []; draw2(); };
+    if ($("aeK")) $("aeK").onchange = () => { rd(); const st = E.st[EX], k = $("aeK").value; Object.assign(st, { k, nd: GM[k].nd[st.l], f: st.f === "a" && k !== "xr" ? "u" : st.f }); if (k === "xr" && cOf(st) === "6") st.c = "7"; draw2(); };
     $("aeGo").onclick = save;
   }
   async function save() {
@@ -6855,10 +6857,9 @@ const ARENA = (() => {
     if (!E.a || !E.e || E.e <= E.a) return er("Tugash vaqti boshlanishdan keyin bo‘lsin.");
     if (E.e < now() + 10 * 60e3) return er("Tugash vaqti kamida 10 daqiqadan keyin bo‘lsin.");
     if (E.st.length < 2) return er("Kamida 2 ta bosqich kerak.");
-    const S = setsOf(E.c);
-    for (let i = 0; i < E.st.length; i++) { const st = E.st[i], g = GM[st.k]; if (g.src === "set") { const nq = S.filter(s => !st.ids.length || st.ids.includes(s.id)).reduce((a, s) => a + (st.k === "hy" ? HAYOQ._elig(s).length : s.qs.length), 0); if (nq < Math.min(g.L[st.l] || 10, 10)) return er(`${i + 1}-bosqich: tanlangan mavzularda savol yetarli emas (${nq} ta).`); } }
+    for (let i = 0; i < E.st.length; i++) { const st = E.st[i], g = GM[st.k], S = setsOf(st.c || E.c); if (st.k === "xr" && (st.c || E.c) === "6") return er(`${i + 1}-bosqich: Xronologiya 7–11-sinflar uchun.`); if (g.src === "set") { const nq = S.filter(s => !st.ids.length || st.ids.includes(s.id)).reduce((a, s) => a + (st.k === "hy" ? HAYOQ._elig(s).length : s.qs.length), 0); if (nq < Math.min(g.L[st.l] || 10, 10)) return er(`${i + 1}-bosqich: tanlangan mavzularda savol yetarli emas (${nq} ta).`); } }
     $("aeGo").disabled = true; er("");
-    const uid = tUid(), M = (() => { try { return TCH.meV(); } catch (e) { return {}; } })(), x = { t: uid, tn: String((M && M.n) || ((me() && ((me().f || "") + " " + (me().l || "")).trim())) || "").slice(0, 60), g: E.g, n: E.n, c: E.c, a: E.a, e: E.e, at: E.at || now(), st: E.st.map(st => { const o = { k: st.k, l: st.l, nd: st.nd }; if (GM[st.k].src === "set") o.ids = st.ids.slice(0, 40); else if (st.k === "mp") o.m = st.m || "mix"; else { o.f = st.f || "u"; if (st.k === "jf") o.y = st.y || "s"; } return o; }) };
+    const uid = tUid(), M = (() => { try { return TCH.meV(); } catch (e) { return {}; } })(), x = { t: uid, tn: String((M && M.n) || ((me() && ((me().f || "") + " " + (me().l || "")).trim())) || "").slice(0, 60), g: E.g, n: E.n, c: E.c, a: E.a, e: E.e, at: E.at || now(), st: E.st.map(st => { const o = { k: st.k, l: st.l, nd: st.nd }; if (st.c && st.c !== E.c && st.k !== "mp") o.c = st.c; if (GM[st.k].src === "set") o.ids = st.ids.slice(0, 40); else if (st.k === "mp") o.m = st.m || "mix"; else { o.f = st.f || "u"; if (st.k === "jf") o.y = st.y || "s"; } return o; }) };
     try { const id = E.id || ("a" + now().toString(36)); await DBA.set("ar/" + id, x); FX.toast(E.id ? "💾 Saqlandi" : "⚔️ Arena yaratildi!", "up"); E = null; mon(id); }
     catch (e) { $("aeGo").disabled = false; er("⚠️ " + ((e && e.message) || e)); }
   }
