@@ -66,14 +66,14 @@ window.TG_APP = "";   // BotFather /newapp da berilgan qisqa nom, masalan: app
 @font-face{font-family:'Cinzel';font-style:normal;font-weight:700;font-display:swap;src:url(fonts/cinzel-latin-ext-700-normal.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
 @font-face{font-family:'Cinzel';font-style:normal;font-weight:700;font-display:swap;src:url(fonts/cinzel-latin-700-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
 </style>
-<script>(function(){var t="arena";try{t=localStorage.getItem("zm_th2")||"arena"}catch(e){}if(["arena","tun","tong","vodiy"].indexOf(t)<0)t="arena";document.documentElement.setAttribute("data-th",t)})();
+<script>(function(){var t="arena";try{t=localStorage.getItem("zm_th2")||"arena"}catch(e){}if(["arena","tun","tong","vodiy"].indexOf(t)<0)t="arena";try{if(+localStorage.getItem("zm_chth")>Date.now())t="registon"}catch(e){}document.documentElement.setAttribute("data-th",t)})();
 // Mavzu (tema): arena — lojuvard-oltin (asosiy), tun — qorong'i, tong — oq, vodiy — yashil (asosiy)
-window.THEME={L:[["arena","🏛 Arena tun","To‘q lojuvard va oltin — TARIX ARENA uslubi","#0A1830","#D4A63A","#F3D27A"],["vodiy","🌿 Yashil vodiy","Yumshoq yalpiz rangi — tinch, diqqatni jamlaydi","#EEF7F1","#16A34A","#0EA5A4"],["tong","☀️ Oq tong","Toza oq fon, ko‘k urg‘u — kunduzi qulay","#F5F7FB","#4F46E5","#06B6D4"],["tun","🌙 Tun","Qorong‘i binafsha — kechqurun ko‘zni charchatmaydi","#0A0720","#8B5CF6","#22D3EE"]],
+window.THEME={L:[["arena","🏛 Arena tun","To‘q lojuvard va oltin — TARIX ARENA uslubi","#0A1830","#D4A63A","#F3D27A"],["vodiy","🌿 Yashil vodiy","Yumshoq yalpiz rangi — tinch, diqqatni jamlaydi","#EEF7F1","#16A34A","#0EA5A4"],["tong","☀️ Oq tong","Toza oq fon, ko‘k urg‘u — kunduzi qulay","#F5F7FB","#4F46E5","#06B6D4"],["tun","🌙 Tun","Qorong‘i binafsha — kechqurun ko‘zni charchatmaydi","#0A0720","#8B5CF6","#22D3EE"],["registon","👑 Registon moviy","Chempion mavzusi — lojuvard, feruza va oltin","#061A33","#14B8A6","#F2C14E"]],
  get:function(){return document.documentElement.getAttribute("data-th")||"arena"},
  bg:function(){var t=this.L.find(function(x){return x[0]===THEME.get()});return t?t[3]:"#0A0720"},
  tg:function(){try{var w=Telegram.WebApp,c=this.bg();w.setHeaderColor&&w.setHeaderColor(c);w.setBackgroundColor&&w.setBackgroundColor(c)}catch(e){}try{var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute("content",this.bg())}catch(e){}},
- set:function(t){document.documentElement.setAttribute("data-th",t);try{localStorage.setItem("zm_th2",t)}catch(e){}this.tg()},
- open:function(){var self=this,d=document.createElement("div");d.className="amore";d.innerHTML='<div class="amore-s"><div class="amore-h"></div><b style="font-size:17px;display:block;margin:4px 2px 12px">🎨 Mavzu (tema)</b>'+self.L.map(function(x){return '<button class="thpk'+(x[0]===self.get()?' on':'')+'" data-t="'+x[0]+'"><i style="background:'+x[3]+'"><u style="background:linear-gradient(135deg,'+x[4]+','+x[5]+')"></u></i><span><b>'+x[1]+'</b><small>'+x[2]+'</small></span><em>✓</em></button>'}).join("")+'</div>';
+ set:function(t){document.documentElement.setAttribute("data-th",t);try{if(t==="registon"){localStorage.removeItem("zm_chth_off")}else{localStorage.setItem("zm_th2",t);if(+localStorage.getItem("zm_chth")>Date.now()){localStorage.setItem("zm_chth_off",localStorage.getItem("zm_chth"));localStorage.removeItem("zm_chth")}}}catch(e){}this.tg()},
+ open:function(){var self=this,d=document.createElement("div");d.className="amore";d.innerHTML='<div class="amore-s"><div class="amore-h"></div><b style="font-size:17px;display:block;margin:4px 2px 12px">🎨 Mavzu (tema)</b>'+self.L.filter(function(x){var c=0;try{c=CHAMP.me()}catch(e){}return x[0]!=="registon"||c===1}).map(function(x){return '<button class="thpk'+(x[0]===self.get()?' on':'')+'" data-t="'+x[0]+'"><i style="background:'+x[3]+'"><u style="background:linear-gradient(135deg,'+x[4]+','+x[5]+')"></u></i><span><b>'+x[1]+'</b><small>'+x[2]+'</small></span><em>✓</em></button>'}).join("")+'</div>';
   d.onclick=function(e){var b=e.target.closest("[data-t]");if(b){self.set(b.dataset.t);d.querySelectorAll(".thpk").forEach(function(x){x.classList.toggle("on",x===b)});setTimeout(function(){d.remove()},250);return}if(e.target===d)d.remove()};document.body.appendChild(d)}};</script>
 <style>
 :root{--bg:#0A0720;--card:#141033;--card2:#1c1745;--line:#2e2768;--tx:#EDEBFF;--mu:#A7A3D6;--ac:#8B5CF6;--ac2:#22D3EE;--ok:#22C55E;--bad:#F43F5E;--gr:linear-gradient(135deg,#7C3AED,#06B6D4);--w:255,255,255;--sel:#2a1f5c;--acr:139,92,246;--ac2r:34,211,238;--bgr:10,7,32;--cardr:20,16,51;--okr:34,197,94;--k:0,0,0;--ka:1}
@@ -926,6 +926,14 @@ html[data-th="vodiy"]{--mu:#47604F;--gr:linear-gradient(135deg,#15803D,#0F766E)}
 html[data-th="tong"]{--mu:#525977}
 html[data-th="arena"] .btn:not(.ghost):not([style*="background"]),html[data-th="arena"] .bnav button.on,html[data-th="arena"] .seg button.on,html[data-th="arena"] .sttabs button.on,html[data-th="arena"] .acctabs button.on,html[data-th="arena"] .dl-cls button.on,html[data-th="arena"] .jf-cls button.on,html[data-th="arena"] .tgt button.on,html[data-th="arena"] .contc .go,html[data-th="arena"] .hm-gb,html[data-th="arena"] .hbb{color:#0A1830!important}
 html[data-th="arena"] .bnav button.on span{color:#0A1830!important}
+html[data-th="registon"]{--bg:#061A33;--card:#0D3561;--card2:#124476;--line:#1F6FA8;--tx:#EAF6FF;--mu:#9CC8E8;--ac:#14B8A6;--ac2:#F2C14E;--ok:#22C55E;--bad:#F43F5E;--gr:linear-gradient(135deg,#14B8A6,#38BDF8);--w:255,255,255;--sel:#0F4C81;--acr:20,184,166;--ac2r:242,193,78;--bgr:6,26,51;--cardr:13,53,97;--okr:34,197,94;--k:0,0,0;--ka:1}
+html[data-th="registon"] body{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Cpath d='M32 6l7 16 16 7-16 7-7 16-7-16-16-7 16-7z' fill='none' stroke='%235EEAD4' stroke-opacity='.10' stroke-width='1.3'/%3E%3Cpath d='M0 0l8 8M64 0l-8 8M0 64l8-8M64 64l-8-8' stroke='%23F2C14E' stroke-opacity='.10'/%3E%3C/svg%3E"),radial-gradient(900px 520px at 110% -10%,rgba(15,76,129,.95),transparent 65%),radial-gradient(700px 500px at -20% 35%,rgba(242,193,78,.08),transparent 65%),#061A33!important}
+html[data-th="registon"] .card{border-color:rgba(242,193,78,.22)}
+html[data-th="registon"] .brand b{font-family:Cinzel,Georgia,serif;letter-spacing:.5px;color:#F7E3A6}
+html[data-th="registon"] .wl-stats b,html[data-th="registon"] .stc b{color:#F2C14E;text-shadow:0 0 12px rgba(242,193,78,.3)}
+html[data-th="registon"] .btn:not(.ghost):not([style*="background"]),html[data-th="registon"] .bnav button.on,html[data-th="registon"] .seg button.on,html[data-th="registon"] .sttabs button.on,html[data-th="registon"] .acctabs button.on,html[data-th="registon"] .dl-cls button.on,html[data-th="registon"] .jf-cls button.on,html[data-th="registon"] .tgt button.on,html[data-th="registon"] .contc .go,html[data-th="registon"] .hm-gb,html[data-th="registon"] .hbb{color:#04213A!important}
+html[data-th="registon"] .bnav button.on span{color:#04213A}
+#home>#chthB{grid-column:1/-1}.chth-k{display:none}@media(min-width:1024px){#home>#chthB{display:none}#home>.hm-top .chth-k{display:inline-flex;order:4;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;background:rgba(242,193,78,.25);border:1px solid #F2C14E;color:#fff;font:700 12.5px Poppins,sans-serif;cursor:pointer}html[data-th="registon"] #home>.hm-top{background:linear-gradient(120deg,#0f4c81,#0e7490 55%,#b7791f);box-shadow:0 14px 34px rgba(8,60,110,.4)}}#chthB:empty{display:none}.chth-b{display:flex;align-items:center;gap:10px;background:linear-gradient(90deg,rgba(242,193,78,.22),rgba(20,184,166,.12));border:1.5px solid #F2C14E;border-radius:16px;padding:10px 12px;margin-bottom:10px;font-size:13px}.chth-b b{color:#F2C14E}.chth-b span{flex:1;line-height:1.35}.chth-b button{flex:none;border:1px solid rgba(255,255,255,.3);background:transparent;color:inherit;border-radius:10px;padding:6px 9px;font-family:inherit;font-size:11.5px;font-weight:700;cursor:pointer}
 .hy-pre button.on{background:linear-gradient(135deg,#15803D,#047857)!important}
 .gm-hero{background:linear-gradient(135deg,#D97706,#DC2626)!important}.gm-hero b,.gm-hero small{text-shadow:0 1px 2px rgba(0,0,0,.25)}
 
@@ -1124,6 +1132,7 @@ body.champ #tg::before{content:"👑 Chempion rejimi";display:block;font-size:11
 
   <section id="home" class="hide">
     <div class="hm-top"><div class="hp-ring" id="hpRing"><div class="avatar" id="wlAv"></div></div><div style="flex:1;min-width:0"><div class="wl-hi" id="wlHi">Xush kelibsiz</div><div class="wl-n" id="wlN"></div><div class="st-s" id="wlG"></div></div><span class="hm-st" id="wlSt" title="Ketma-ket kunlar"></span><span class="hm-lvp" id="hmLvp"></span><button class="hm-cta" onclick="KUN.go()">▶ Kun testini boshlash</button><span class="hide"><button id="wlX"></button></span></div>
+    <div id="chthB"></div>
     <div class="card hbp"><div class="hbh"><div><b>Bugungi reja</b><small id="hbSub"></small></div><div class="hb-ring" id="hbRing"><span id="hbN">0/0</span></div></div><div id="hbList"></div></div>
     <div id="homeHW" class="hide"></div>
     <div class="hsec-t">Bo‘limlar</div>
@@ -2568,7 +2577,7 @@ function fmt(ms){const s=Math.floor(ms/1000);return String(Math.floor(s/60)).pad
 var BKfn;function BK(fn){BKfn=fn;const hm=["home","auth"].some(i=>$(i)&&!$(i).classList.contains("hide"));$("bkb").classList.toggle("hide",!fn||hm)}
 function show(id){try{KT.leave()}catch(e){}document.body.classList.remove("adm","dlm","tchm");if(id!=="tz"){try{BLITZ.leave()}catch(e){}try{XRON.leave()}catch(e){}try{KIMG.leave()}catch(e){}try{KJ.leave()}catch(e){}try{HAYOQ.leave()}catch(e){}try{LADDER.leave()}catch(e){}try{JUFTG.leave()}catch(e){}try{BOSS.leave()}catch(e){}}try{$("amore").classList.add("hide")}catch(e){}["auth","home","start","quiz","res","tz"].forEach(s=>$(s).classList.toggle("hide",s!==id));BK(id==="res"?(()=>{if(FROM_T)goHome();else{renderTopics();show("start")}}):id==="start"?BKfn:null);setNav(id==="start"&&typeof VIEW!=="undefined"&&VIEW.k==="ms"?"ms":({home:"home",start:"tests",res:"tests"}[id]||null));window.scrollTo(0,0)}
 function setNav(active){active={ms:"tests",turnir:"games",stat:"prof"}[active]||active;const on=!!(active&&typeof ACCT!=="undefined"&&ACCT.cur);$("bnav").classList.toggle("hide",!on);[...$("bnav").children].forEach(b=>b.classList.toggle("on",b.dataset.g===active));const av=$("hdrAv");if(av){const c=typeof ACCT!=="undefined"&&ACCT.cur;av.classList.toggle("hide",!c);if(c){const k=c.uid+"|"+c.f+c.l;if(av.dataset.k!==k){av.dataset.k=k;av.innerHTML=AV.html(c.uid,c.f+" "+c.l,"fill")}}}}
-function goHome(){if(typeof ACCT!=="undefined"&&ACCT.cur){show("home");ACCT.renderHome()}else show("auth")}
+function goHome(){if(typeof ACCT!=="undefined"&&ACCT.cur){show("home");ACCT.renderHome();try{CHAMP.load();CHAMP.apply()}catch(e){}}else show("auth")}
 function goTests(){VIEW={k:"cls"};set=null;show("start");renderTopics();setNav("tests")}
 function goMS(){VIEW={k:"mscls"};set=null;show("start");renderTopics();setNav("ms")}
 document.addEventListener("DOMContentLoaded",()=>{});
@@ -6313,7 +6322,32 @@ const CHAMP = (() => {
     return { k, d, t };
   }
   // Chempionlar har dushanba yangilanadi: o'tgan (yakunlangan) haftaning umumiy reytingidagi 1–3-o'rinlar butun hafta davomida
-  function set(t, d) { info = { k: key(d), d, t }; M = {}; t.forEach((p, i) => M[p.k] = i + 1); apply(); }
+  function set(t, d) { info = { k: key(d), d, t }; M = {}; t.forEach((p, i) => M[p.k] = i + 1); apply(); theme(); }
+  // 👑 Chempion mavzusi «Registon moviy»: faqat 1-o'rin, dushanbadan keyingi dushanbagacha
+  function theme() {
+    const until = wkStart(DBA.now()).getTime() + 7 * 864e5, h = document.documentElement;
+    let off = 0, cur = 0; try { off = +localStorage.getItem("zm_chth_off") || 0; cur = +localStorage.getItem("zm_chth") || 0; } catch (e) {}
+    if (me() === 1) {
+      if (off === until) return;
+      try { localStorage.setItem("zm_chth", until); } catch (e) {}
+      if (h.getAttribute("data-th") !== "registon") { THEME.set("registon"); try { localStorage.setItem("zm_chth", until); } catch (e) {} }
+      if (cur !== until) setTimeout(() => FX.toast("👑 Tabriklaymiz! Siz o‘tgan hafta chempionisiz — «Registon moviy» mavzusi ochildi", "up"), 600);
+    } else if (h.getAttribute("data-th") === "registon" || cur) {
+      try { localStorage.removeItem("zm_chth"); } catch (e) {}
+      let t = "arena"; try { t = localStorage.getItem("zm_th2") || "arena"; } catch (e) {}
+      if (h.getAttribute("data-th") === "registon") { h.setAttribute("data-th", t); THEME.tg(); }
+    }
+  }
+  function thOn(on) {
+    const until = wkStart(DBA.now()).getTime() + 7 * 864e5, h = document.documentElement;
+    try { if (on) { localStorage.removeItem("zm_chth_off"); localStorage.setItem("zm_chth", until); h.setAttribute("data-th", "registon"); } else { localStorage.setItem("zm_chth_off", until); localStorage.removeItem("zm_chth"); h.setAttribute("data-th", localStorage.getItem("zm_th2") || "arena"); } } catch (e) {}
+    THEME.tg(); goHome();
+  }
+  function banner() { // bosh sahifa uchun
+    if (me() !== 1) return "";
+    const on = document.documentElement.getAttribute("data-th") === "registon";
+    return `<div class="chth-b">👑<span><b>Siz o‘tgan hafta chempionisiz!</b><br>${on ? "«Registon moviy» chempion mavzusi yoqilgan." : "Chempion mavzusi o‘chirilgan."}</span><button onclick="CHAMP.thOn(${on ? 0 : 1})">${on ? "Oddiy mavzu" : "👑 Yoqish"}</button></div>`;
+  }
   function live() {}
   function load() {
     if (ready || typeof ACCT === "undefined" || !ACCT.cur) return ready;
@@ -6325,6 +6359,8 @@ const CHAMP = (() => {
   function apply() {
     document.querySelectorAll("[data-uav]").forEach(el => { const r = M[el.dataset.uav]; if (r) { if (el.dataset.ch !== String(r)) el.dataset.ch = r; } else if (el.dataset.ch) delete el.dataset.ch; });
     document.body.classList.toggle("champ", !!me());
+    const b = document.getElementById("chthB"); if (b) { const h = banner(); if (b.innerHTML !== h) b.innerHTML = h; }
+    const top = document.querySelector("#home>.hm-top"); if (top) { let k = top.querySelector(".chth-k"); if (me() === 1) { const on = document.documentElement.getAttribute("data-th") === "registon"; if (!k) { k = document.createElement("button"); k.className = "chth-k"; top.appendChild(k); } const t = on ? "👑 Chempion mavzusi · oddiyga qaytish" : "👑 Chempion mavzusini yoqish"; if (k.textContent !== t) k.textContent = t; k.onclick = () => thOn(on ? 0 : 1); } else if (k) k.remove(); }
   }
   const TS = ["👑 CHEMPION", "🥈 KUMUSH", "🥉 BRONZA"];
   const tag = (uid, long) => { const r = M[uid]; return r ? `<span class="chtt chtt${r}" title="${TT[r - 1]}">${(long ? TT : TS)[r - 1]}</span>` : ""; };
@@ -6357,7 +6393,7 @@ const CHAMP = (() => {
     el.innerHTML = rows.length ? rows.map((w, i) => `<div class="ch-hr${w.k === key(wkStart(now - 7 * 864e5)) ? " now" : ""}"><div class="ch-hd"><b>${lbl(w.d)}</b>${w.k === key(wkStart(now)) ? `<span style="color:var(--mu)">shu hafta · hali yakunlanmagan</span>` : w.k === key(wkStart(now - 7 * 864e5)) ? `<span>👑 hozirgi chempionlar</span>` : ""}</div>${w.t.map((p, j) => `<div class="ch-hp">${AV.html(p.k, p.n, "sm")}<span>${["🥇", "🥈", "🥉"][j]} ${esc(p.n)}</span><em>${p.xp} XP</em></div>`).join("")}</div>`).join("") : `<p class="sub" style="text-align:center">Hali yakunlangan hafta yo‘q. Birinchi g‘olib siz bo‘ling! 🏆</p>`;
   }
   const curInfo = () => info;
-  return { load, live, rank, me, apply, tag, announce, spark, hall, info: curInfo, label: lbl };
+  return { load, live, rank, me, apply, tag, announce, spark, hall, banner, thOn, info: curInfo, label: lbl };
 })();
 // ================== O'YINLASHTIRISH: XP, darajalar, nishonlar, xatolar, reyting ==================
 const GAME = (() => {
