@@ -1079,6 +1079,16 @@ html[data-th="tong"] .km-pt b,html[data-th="vodiy"] .km-pt b,html[data-th="tong"
 .nm-i{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}.nm-i span{font-size:11.5px;background:var(--card2);border-radius:8px;padding:3px 7px;color:var(--mu)}.nm-i .nm-c.tg{background:rgba(56,189,248,.15);color:#38bdf8;font-weight:700}.nm-i .nm-c.no{background:rgba(244,63,94,.12);color:#fb7185}.nm-i .nm-c.ok{background:rgba(34,197,94,.14);color:#4ade80;font-weight:700}
 .nm-a{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.nm-a:empty{display:none}.nm-a button{flex:1;min-width:max-content;padding:8px 10px;border-radius:11px;border:1px solid var(--line);background:var(--card2);color:var(--tx);font-family:inherit;font-weight:700;font-size:12.5px;cursor:pointer}.nm-a button[data-a="dm"]{background:#229ED9;border-color:#229ED9;color:#fff}
 .nm-wt{margin-top:12px}.nm-wt summary{cursor:pointer;font-weight:700}.nm-wt textarea{width:100%;box-sizing:border-box;border-radius:12px;border:1px solid var(--line);background:var(--card2);color:var(--tx);padding:10px;font-family:inherit;font-size:13.5px;line-height:1.45}
+/* Reyting: XP chiplari va shaxsiy maqsad */
+.lbx-ch{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 10px}.lbx-ch span,.lbx-ch button{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:6px 9px;font-size:12px;font-weight:600;color:var(--tx);font-family:inherit}.lbx-ch em{font-style:normal;color:var(--ac2,#F2C14E);font-weight:800}.lbx-ch button{color:#60a5fa;cursor:pointer}
+.lbx-me{border:1.5px solid #E3B955!important;margin-bottom:10px}.lbx-me .t{font-weight:800;font-size:15px}.lbx-me .t b{color:#F2C14E}.lbx-me p{margin:4px 0 0;font-size:12.5px;color:var(--mu);line-height:1.45}.lbx-me p b{color:#F2C14E}
+.lbx-bar{height:10px;background:rgba(var(--k,0,0,0),.25);border-radius:6px;overflow:hidden;margin:8px 0 4px}.lbx-bar i{display:block;height:100%;background:linear-gradient(90deg,#F2C14E,#22c55e)}
+.lbx-bt{display:flex;gap:8px;margin-top:10px}.lbx-bt button{flex:1;border-radius:12px;padding:9px;font-family:inherit;font-weight:800;font-size:13px;cursor:pointer;border:1.5px solid #E3B955;background:transparent;color:#E3B955}.lbx-bt button:first-child{background:linear-gradient(90deg,#e0b44e,#f5d27a);color:#1b1400;border:0}
+.lbx-sh{position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,.55);display:flex;align-items:flex-end;justify-content:center}.lbx-sb{width:100%;max-width:520px;max-height:88vh;overflow:auto;background:var(--card);border:1px solid var(--line);border-radius:24px 24px 0 0;padding:10px 16px 18px;animation:lbxUp .25s ease-out}
+@keyframes lbxUp{from{transform:translateY(60px);opacity:.4}to{transform:none;opacity:1}}
+.lbx-sb .gr{width:46px;height:5px;border-radius:3px;background:var(--line);margin:0 auto 10px}.lbx-sb h3{margin:0 0 4px;font-size:17px}.lbx-r{display:flex;align-items:center;gap:10px;padding:9px 2px;border-bottom:1px solid var(--line);font-size:13.5px}.lbx-r:last-of-type{border:0}.lbx-r i{width:34px;height:34px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:18px;font-style:normal;background:var(--card2);flex:none}.lbx-r b{margin-left:auto;color:#F2C14E;white-space:nowrap}
+.lbx-lv{display:flex;justify-content:space-between;margin:8px 0 4px}.lbx-lv span{display:flex;flex-direction:column;align-items:center;font-size:10px;color:var(--mu);gap:2px}.lbx-lv span em{font-style:normal;font-size:18px}.lbx-lv span.on{color:#F2C14E;font-weight:800}
+.lbx-no{background:rgba(244,63,94,.1);border:1px dashed rgba(244,63,94,.4);border-radius:12px;padding:8px 10px;font-size:12px;color:#fb7185;margin-top:10px}
 </style>
 </head>
 <body>
@@ -6366,6 +6376,35 @@ const GAME = (() => {
   }
   // ---- haftalik reyting ----
   let lbTab = "g";
+  // Reyting: XP qoidalari (chiplar) + «Siz qayerdasiz?» kartasi
+  function xpHelp(arr, c) {
+    const rs = ACCT.recs || [], ws = weekStart(DBA.now()), total = rs.reduce((a, r) => a + xpOf(r), 0) + bonus(), lv = level(total);
+    const me = arr.findIndex(p => p.k === c.uid), my = me >= 0 ? arr[me].xp : rs.filter(r => r.at >= ws).reduce((a, r) => a + xpOf(r), 0);
+    const fmt = n => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, " "), q = n => Math.max(1, Math.ceil(n / 10));
+    let head, sub;
+    if (me === 0) { const gap = arr[1] ? my - arr[1].xp : 0; head = `🥇 Siz 1-o‘rindasiz · <b>${fmt(my)} XP</b>`; sub = arr[1] ? `2-o‘rindan <b>${fmt(gap)} XP</b> oldindasiz — o‘rningizni saqlang!` : "Ajoyib! Hozircha raqibingiz yo‘q."; }
+    else if (me > 0) { const need = arr[me - 1].xp - my + 1; head = `🎯 Siz: ${me + 1}-o‘rindasiz · <b>${fmt(my)} XP</b>`; sub = `${me}-o‘ringa chiqish uchun yana <b>${fmt(need)} XP</b> kerak — bu taxminan ${q(need)} ta to‘g‘ri javob${q(need) > 7 ? ` (≈ ${Math.ceil(q(need) / 8)} ta test)` : ""}.`; }
+    else { const last = arr[arr.length - 1]; head = `🎯 Bu hafta hali XP yo‘q`; sub = arr.length ? `Birinchi testdan keyin reytingga chiqasiz. ${arr.length + 1}-o‘rinni olish uchun ${last && last.xp ? `<b>${fmt(last.xp + 1)} XP</b> (≈ ${q(last.xp + 1)} ta to‘g‘ri javob)` : "bitta to‘g‘ri javob"} yetadi.` : "Birinchi bo‘ling — bitta test yetadi!"; }
+    return `<div class="lbx-ch"><span>✅ To‘g‘ri javob <em>+10</em></span><span>🎓 Sertifikat <em>+20</em></span><span>🏆 Turnir <em>+50</em></span><span>🎁 Ro‘yxat <em>+50</em></span><button id="lbxMore">Batafsil ›</button></div>
+      <div class="card lbx-me"><div class="t">${head}</div><p>${sub}</p><div class="lbx-bar"><i style="width:${lv.pct}%"></i></div><p>${lv.ic} ${lv.name}${lv.to ? ` → ${LEVELS[lv.i + 1][2]} ${lv.next}: yana <b>${fmt(lv.to - total)} XP</b>` : " — eng yuqori daraja! 👑"} · jami ${fmt(total)} XP</p>
+      <div class="lbx-bt"><button onclick="KUN.go()">📅 Kun testi</button><button onclick="goMS()">🎓 Sertifikat</button></div></div>`;
+  }
+  function xpSheet() {
+    const rs = ACCT.recs || [], total = rs.reduce((a, r) => a + xpOf(r), 0) + bonus(), lv = level(total);
+    const m = document.createElement("div"); m.className = "lbx-sh";
+    m.innerHTML = `<div class="lbx-sb"><div class="gr"></div><h3>⭐ Reyting qanday ishlaydi?</h3><p class="sub" style="margin:0 0 6px">Haftalik reyting — shu hafta to‘plangan XP bo‘yicha. Har dushanba 00:00 da yangidan boshlanadi. Darajangiz esa umumiy XP bo‘yicha va hech qachon kamaymaydi.</p>
+      <div class="lbx-r"><i>✅</i>Har bir to‘g‘ri javob (testlar, Kun testi, vazifa, turnir)<b>+10 XP</b></div>
+      <div class="lbx-r"><i>🎓</i>Milliy sertifikat variantini yakunlab, daraja olish<b>+20 XP</b></div>
+      <div class="lbx-r"><i>🏆</i>Turnirda 1 / 2 / 3-o‘rin<b>+50 / 30 / 20</b></div>
+      <div class="lbx-r"><i>🎁</i>Ro‘yxatdan o‘tish (bir marta)<b>+50 XP</b></div>
+      <p class="sub" style="margin:8px 0 0">💡 Eng ko‘p XP: Milliy sertifikat varianti — 55 ta savol, 570 XP gacha. Testni qayta ishlasangiz ham XP qo‘shiladi.</p>
+      <b style="display:block;margin-top:12px;font-size:14px">Darajalar (umumiy XP)</b>
+      <div class="lbx-lv">${LEVELS.map((l, i) => `<span class="${i === lv.i ? "on" : ""}"><em>${l[2]}</em>${l[1]}<small>${l[0]}</small></span>`).join("")}</div>
+      <div class="lbx-no">🎮 O‘yinlar (Blits, Ha yoki Yo‘q, Duel, Kartalar jangi va boshqalar) XP bermaydi — ularning o‘z reytingi bor.</div>
+      <button class="btn" style="margin-top:12px" id="lbxOk">Tushunarli 👍</button></div>`;
+    document.body.appendChild(m);
+    m.onclick = e => { if (e.target === m || e.target.id === "lbxOk") m.remove(); };
+  }
   function board() {
     const c = ACCT.cur; if (!c) { show("auth"); return; }
     show("tz"); setNav("rank"); BK(goHome);
@@ -6390,7 +6429,8 @@ const GAME = (() => {
       const nk = s => String(s || "").trim().toLowerCase();
       const arr = Object.entries(data || {}).filter(([k, v]) => v && v.n && (lbTab === "a" || nk(v.g) === nk(c.g))).map(([k, v]) => ({ k, ...v })).sort((a, b) => b.xp - a.xp || a.at - b.at);
       const top = [arr[1], arr[0], arr[2]], hh = [90, 120, 70], cl = ["#c0c7d0", "#e8b93f", "#c98a4b"];
-      $("lbP").innerHTML = arr.length ? `<div class="card"><div class="podium" style="margin-top:4px">${top.map((p, j) => p ? `<div class="pd">${AV.html(p.k, p.n, "lg")}<div class="pd-n">${esc(p.n)}</div><div class="pd-s">${p.xp} XP</div><div class="pd-b" style="height:${hh[j]}px;background:${cl[j]}">${[2, 1, 3][j]}</div></div>` : '<div class="pd"></div>').join("")}</div></div>` : "";
+      $("lbP").innerHTML = xpHelp(arr, c) + (arr.length ? `<div class="card"><div class="podium" style="margin-top:4px">${top.map((p, j) => p ? `<div class="pd">${AV.html(p.k, p.n, "lg")}<div class="pd-n">${esc(p.n)}</div><div class="pd-s">${p.xp} XP</div><div class="pd-b" style="height:${hh[j]}px;background:${cl[j]}">${[2, 1, 3][j]}</div></div>` : '<div class="pd"></div>').join("")}</div></div>` : "");
+      if ($("lbxMore")) $("lbxMore").onclick = xpSheet;
       const me = arr.findIndex(p => p.k === c.uid);
       $("lbL").innerHTML = arr.length ? arr.slice(0, 30).map((p, i) => `<div class="trow${p.k === c.uid ? " me" : ""}"><div class="tr-r">${i < 3 ? ["🥇", "🥈", "🥉"][i] : i + 1}</div>${AV.html(p.k, p.n)}<div class="tr-n"><div class="tr-nm">${esc(p.n)}${p.k === c.uid ? " (siz)" : ""}</div><div class="st-s">${LEVELS[p.lv || 0][2]} ${LEVELS[p.lv || 0][1]}${lbTab === "a" && p.g ? " · " + esc(p.g) : ""}</div></div><div class="tr-s">${p.xp}<small style="color:var(--mu)"> XP</small></div></div>`).join("")
         + (me >= 30 ? `<div class="st-s" style="text-align:center;margin-top:8px">Siz: ${me + 1}-o'rin</div>` : "") + (me < 0 ? `<div class="st-s" style="text-align:center;margin-top:8px">Bu hafta hali test ishlamadingiz — birinchi testdan keyin reytingda paydo bo'lasiz.</div>` : "")
