@@ -2503,7 +2503,7 @@ const ERRLOG=(()=>{
   const seen=new Set();let n=0;
   function put(msg,src){
     try{
-      msg=String(msg||"").slice(0,280);if(!msg||/^(Script error\.?|Event|ResizeObserver)/i.test(msg)||seen.has(msg)||n>=5)return;
+      msg=String(msg||"").slice(0,280);if(!msg||/^(Script error\.?|Event|ResizeObserver)/i.test(msg)||/without an in-progress transaction/i.test(msg)||seen.has(msg)||n>=5)return;
       seen.add(msg);n++;
       const day=new Date(Date.now()+5*3600e3).toISOString().slice(0,10),id=Date.now().toString(36)+Math.random().toString(36).slice(2,6);
       const c=typeof ACCT!=="undefined"&&ACCT.cur;
@@ -2584,7 +2584,7 @@ const KUN=(()=>{
     const txt=`📅 Bugungi tarix testidan ${ok}/${tot} topdim. Sen-chi? 10 ta savol, ro'yxatdan o'tish shart emas:`;
     const share=`https://t.me/share/url?url=${encodeURIComponent(link())}&text=${encodeURIComponent(txt)}`;
     box.innerHTML=`<div class="card" style="margin:0 0 14px;text-align:left;background:rgba(124,58,237,.12)">
-      ${rep?`<div style="margin:0 0 8px;font-size:13px;color:#fcd34d">🔁 Bu mashq — bugungi Kun testi XP si birinchi urinishda (${esc(rep)}) olingan.</div>`:""}<b>📅 Ertaga yangi 10 ta savol!</b><div class="st-s" style="margin:4px 0 10px">Do'stlaringizni ham sinab ko'ring — kim ko'proq topadi?</div>
+      ${rep?`<div style="margin:0 0 8px;font-size:13px;color:#fcd34d">🔁 Bu mashq — bugungi Kun testi XP si birinchi urinishda (${String(rep).replace(/[^0-9/]/g,"")}) olingan.</div>`:""}<b>📅 Ertaga yangi 10 ta savol!</b><div class="st-s" style="margin:4px 0 10px">Do'stlaringizni ham sinab ko'ring — kim ko'proq topadi?</div>
       <a class="btn" href="${share}" target="_blank" rel="noopener" style="display:block;text-align:center;text-decoration:none">✈️ Do'stlarimga yuborish</a>
       ${ACCT.cur?"":`<div class="st-s" style="margin:12px 0 8px">Natijangiz saqlanishi, XP to'plash, 6 300+ test va reytingga chiqish uchun kiring:</div>
       ${window.IN_TG?`<button class="btn ghost" id="kunIn" style="width:100%">✈️ Telegram orqali kirish (+50 XP)</button>`:`<button class="btn ghost" id="kunW" style="width:100%">✈️ Telegram orqali kirish (+50 XP)</button>`}`}</div>`;
