@@ -754,6 +754,26 @@ body.dlm #bkb{display:none!important}
 .arg .tgbtn:not(.tgsm) svg{stroke:#111}.arg .tgbtn:not(.tgsm) .arg-xp{background:#111;color:#ffd75e}
 .arg .tgbtn:not(.tgsm):after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.6) 48%,transparent 62%);transform:translateX(-120%);animation:argSh 3.8s ease-in-out infinite}
 .arg-city{position:absolute;left:0;right:0;bottom:0;width:100%;height:70px;pointer-events:none}
+/* Test ekrani: bitta ekranga sig'adi (telefon) */
+@media (max-width:899px){
+body:has(#quiz:not(.hide)) .brand{display:none}
+body:has(#quiz:not(.hide)) .wrap{padding-top:8px;padding-bottom:72px}
+#quiz{--qz:1}
+#quiz .fq-top{margin:0 0 6px}
+#quiz .fq-seg{margin-bottom:10px}
+#quiz .fq-card{padding:11px 14px 12px!important;margin:0 0 10px!important;border-radius:18px!important}
+#quiz .fq-tag{font-size:10px;padding:4px 9px}
+#quiz .fq-card .fq-q{margin-top:7px}
+#quiz .fq-q{font-size:calc(clamp(16px,2.7dvh,20px)*var(--qz));line-height:1.3;margin:0}
+#quiz .opt{padding:calc(9px*var(--qz)) 12px!important;gap:11px!important;margin-bottom:8px!important;font-size:calc(15px*var(--qz))!important;border-radius:15px!important;line-height:1.3;min-height:0}
+#quiz .opt .l{width:30px!important;height:30px!important;border-radius:9px!important;font-size:13px!important}
+#quiz .imfb{margin-top:2px;padding:8px 12px;font-size:calc(13.5px*var(--qz));line-height:1.35;border-radius:14px}
+#quiz .imfb .imc{margin-top:2px}#quiz .imfb .ime{margin-top:3px}
+#quiz .ime.ime-c span{display:none}#quiz .ime.ime-c::after{content:"Izohni ko‘rish ▾";color:var(--ac2);font-weight:700;cursor:pointer}
+#quiz.qsh .fq-tag{display:none}#quiz.qsh .fq-card .fq-q{margin-top:0}#quiz.qsh .fq-seg{margin-bottom:6px}#quiz.qsh .opt .l{width:26px!important;height:26px!important}
+#quiz .fq-body{padding-bottom:0!important;margin-bottom:0}
+#quiz .fq-ft .btn{min-height:50px}
+}
 /* Kirish: bitta ekranga sig'adi (telefon) */
 @media (max-width:899px){
 body:has(#auth:not(.hide)) .wrap{padding-bottom:8px}
@@ -2666,6 +2686,9 @@ function start(){
   try{$("qset").textContent=(set&&set.n?(clsOf(set.g)||"")+" · "+(set.g&&set.g.includes(" · ")?fanOf(set.g)+" · ":"")+set.n:(set&&set.title)||"")}catch(e){$("qset").textContent=""}
   $("qsheet").classList.add("hide");show("quiz");render();window.scrollTo(0,0);
 }
+// Test ekrani telefonga sig'masa — shriftni biroz kichraytiradi (pastga tushmaslik uchun)
+function qFit(){const z=$("quiz");if(!z||innerWidth>=900)return;let k=1;z.style.setProperty("--qz",1);const over=()=>document.documentElement.scrollHeight>innerHeight+1;z.classList.remove("qsh");while(over()&&k>.8){k-=.04;z.style.setProperty("--qz",k.toFixed(2))}if(over()){z.classList.add("qsh");while(over()&&k>.7){k-=.04;z.style.setProperty("--qz",k.toFixed(2))}}const e=z.querySelector(".ime");if(e&&over()){e.classList.add("ime-c");e.onclick=()=>{e.classList.remove("ime-c")}}}
+addEventListener("resize",()=>{try{if(!$("quiz").classList.contains("hide"))qFit()}catch(e){}});
 function fmt(ms){const s=Math.floor(ms/1000);return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0")}
 var BKfn;function BK(fn){BKfn=fn;const hm=["home","auth"].some(i=>$(i)&&!$(i).classList.contains("hide"));$("bkb").classList.toggle("hide",!fn||hm)}
 function show(id){try{KT.leave()}catch(e){}try{ARENA.leave()}catch(e){}document.body.classList.remove("adm","dlm","tchm");if(id!=="tz"){try{BLITZ.leave()}catch(e){}try{XRON.leave()}catch(e){}try{KIMG.leave()}catch(e){}try{HAYOQ.leave()}catch(e){}try{LADDER.leave()}catch(e){}try{JUFTG.leave()}catch(e){}try{BOSS.leave()}catch(e){}}try{$("amore").classList.add("hide")}catch(e){}["auth","home","start","quiz","res","tz"].forEach(s=>$(s).classList.toggle("hide",s!==id));BK(id==="res"?(()=>{if(FROM_T)goHome();else{renderTopics();show("start")}}):id==="start"?BKfn:null);setNav(id==="start"&&typeof VIEW!=="undefined"&&VIEW.k==="ms"?"ms":({home:"home",start:"tests",res:"tests"}[id]||null));window.scrollTo(0,0)}
@@ -2701,6 +2724,7 @@ function render(){
     $("ops").appendChild(b);
   });
   const fb=$("qfb");if(done){const ok=ans[cur]===q.a;fb.className="imfb "+(ok?"ok":"bad");fb.innerHTML=`<b>${ok?"✅ To‘g‘ri!":"❌ Xato"}</b>`+(ok?"":`<div class="imc">To‘g‘ri javob: <span></span></div>`)+(q.e?`<div class="ime">💡 <span></span></div>`:"");if(!ok)fb.querySelector(".imc span").textContent=q.o[q.a];if(q.e)fb.querySelector(".ime span").textContent=q.e}else{fb.className="";fb.innerHTML=""}
+  qFit();
   $("prev").disabled=cur===0;
   $("next").textContent=cur===Q.length-1?"Yakunlash ✓":(done?"Keyingisi →":ans[cur]!==null?"Yuborish ➤":"O‘tkazish →");$("next").classList.toggle("ghost",cur<Q.length-1&&ans[cur]===null);
   $("dots").innerHTML="";
