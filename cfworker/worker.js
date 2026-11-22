@@ -641,18 +641,20 @@ async function arenaCron(env) {
     if (!x.wd && x.e <= now) {
       const P = await db(env, "GET", "arp/" + id).catch(() => null) || {};
       const R = Object.entries(P).filter(([u, p]) => p && p.n && p.f && p.f <= x.e + 6e4).map(([u, p]) => ({ u, ...p, e: p.e || 0 })).sort((a, b) => a.e - b.e || a.f - b.f);
-      const w = R[0];
+      const w = R[0], T3 = R.slice(0, 3);
       const up = { wd: true };
       if (w) {
         up.w = { k: w.u, n: str(w.n, 80), e: w.e, f: w.f, j: w.j || x.a };
-        await db(env, "PUT", `arc/${w.u}/${id}`, { n: str(x.n, 60), wn: str(w.n, 80), e: w.e, f: w.f, j: w.j || x.a, a: x.a, s: n, at: x.e });
+        up.w3 = T3.map(p => ({ k: p.u, n: str(p.n, 80), e: p.e, f: p.f, j: p.j || x.a }));
+        for (let i = 0; i < T3.length; i++) { const p = T3[i]; await db(env, "PUT", `arc/${p.u}/${id}`, { n: str(x.n, 60), wn: str(p.n, 80), e: p.e, f: p.f, j: p.j || x.a, a: x.a, s: n, at: x.e, p: i + 1 }); }
       }
       await db(env, "PATCH", "ar/" + id, up);
       const hm = ms => { const s = Math.round(ms / 1000), h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60); return h ? `${h} soat ${m} daqiqa` : `${m} daqiqa ${s % 60} soniya`; };
-      if (w) {
-        const chat = await studentChat(env, w.u).catch(() => null);
-        if (chat) await tg(env, "sendPhoto", { chat_id: chat, photo: SITE + "img/aw-arena.jpg", parse_mode: "HTML", reply_markup: kb(id, "👑 Kartamni ko‘rish"),
-          caption: `🔥 <b>Tabriklaymiz, ${esc(w.n)}!</b>\n\nSiz — <b>👑 ARENA CHEMPIONI!</b>\n⚔️ «${esc(x.n)}»\n🏁 ${n}/${n} bosqich · ❌ ${w.e} xato · ⏱ ${hm(w.f - (w.j || x.a))}\n\n🎁 Profilingizga «ARENA CHEMPIONI» kartasi qo‘shildi. Ustozingiz va sinfdoshlaringiz uni ko‘radi! 💪` }).catch(() => {});
+      const PN = ["👑 ARENA CHEMPIONI", "🥈 ARENA KUMUSHI", "🥉 ARENA BRONZASI"], PIMG = ["aw-arena", "aw-arena2", "aw-arena3"];
+      for (let i = 0; i < T3.length; i++) {
+        const p = T3[i], chat = await studentChat(env, p.u).catch(() => null);
+        if (chat) await tg(env, "sendPhoto", { chat_id: chat, photo: SITE + "img/" + PIMG[i] + ".jpg?v=1", parse_mode: "HTML", reply_markup: kb(id, "🏆 Kartamni ko‘rish"),
+          caption: `🔥 <b>Tabriklaymiz, ${esc(p.n)}!</b>\n\nSiz — <b>${PN[i]}</b> (${i + 1}-o‘rin)!\n⚔️ «${esc(x.n)}»\n🏁 ${n}/${n} bosqich · ❌ ${p.e} xato · ⏱ ${hm(p.f - (p.j || x.a))}\n\n🎁 Profilingizga «${PN[i].slice(PN[i].indexOf(" ") + 1)}» kartasi qo‘shildi. Ustozingiz va sinfdoshlaringiz uni ko‘radi! 💪` }).catch(() => {});
       }
       const tc = x.t ? await studentChat(env, x.t).catch(() => null) : null;
       if (tc) {

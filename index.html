@@ -1177,7 +1177,10 @@ body.champ #tg::before{content:"👑 Chempion rejimi";display:block;font-size:11
 .ar-fin{border-color:#22c55e;text-align:center;margin-bottom:12px}.ar-fin small{display:block;color:var(--mu);margin-top:3px}
 .ar-res{text-align:center;padding:24px 16px}.ar-res.bad{border-color:#dc2626}.ar-res.ok{border-color:#22c55e}.ar-res.fin{border-color:#fbbf24;background:radial-gradient(circle at 50% 0,rgba(251,191,36,.25),var(--card) 70%)}
 .ar-res .ar-em{font-size:62px;line-height:1.1}.ar-res h2{font-family:Cinzel,serif;font-size:25px;margin:6px 0}.ar-res.bad h2{color:#f87171}.ar-res.ok h2{color:#4ade80}.ar-res.fin h2{color:#fbbf24}.ar-res .btn{margin-top:12px}
-.ar-wbox{text-align:center;margin:4px 0 14px}.ar-me{font-weight:700;color:#fbbf24;margin:10px 0 0}
+.ar-wbox{text-align:center;margin:4px 0 14px}.ar-pod{display:flex;justify-content:center;align-items:flex-end;gap:8px}.ar-pd{display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0}.ar-pd b{font-size:13px;color:#fde68a}.ar-pd.p1 .arc{--w:min(170px,40vw)}.ar-pd .arc.sm{--w:min(118px,27vw)}.ar-pd .arc.sm .arc-st{display:flex}.ar-pd .arc.sm .arc-st span:nth-child(n+2){display:none}
+.arc .f1{fill:#f97316}.arc .f2{fill:#fde68a}.arc .sw{stroke:#fde68a}.arc .sg{fill:#fde68a}.arc .s1{fill:#7f1d1d;stroke:#fde68a}.arc .s2{fill:#b91c1c;stroke:#fca5a5}
+.arc.sv{background:linear-gradient(160deg,#e2e8f0,#475569 30%,#f8fafc 50%,#475569 70%,#e2e8f0);background-size:200% 200%;box-shadow:0 0 40px rgba(148,163,184,.5)}.arc.sv .arc-f{background:radial-gradient(ellipse at 50% 100%,#60a5fa 0,#1e40af 30%,#0f172a 62%,#020617)}.arc.sv .arc-f i{background:#e2e8f0;box-shadow:0 0 8px 3px #60a5fa}.arc.sv .f1{fill:#93c5fd}.arc.sv .f2{fill:#e2e8f0}.arc.sv .sw{stroke:#e2e8f0}.arc.sv .sg{fill:#e2e8f0}.arc.sv .s1{fill:#1e293b;stroke:#e2e8f0}.arc.sv .s2{fill:#334155;stroke:#cbd5e1}.arc.sv .arc-h{text-shadow:0 0 14px #60a5fa,0 2px 0 #1e293b}.arc.sv .arc-b{color:#e2e8f0}.arc.sv .arc-st span{color:#bfdbfe}.arc.sv .arc-a{color:#cbd5e1}
+.arc.bz{background:linear-gradient(160deg,#fdba74,#7c2d12 30%,#fed7aa 50%,#7c2d12 70%,#fdba74);background-size:200% 200%;box-shadow:0 0 40px rgba(194,120,60,.5)}.arc.bz .arc-f{background:radial-gradient(ellipse at 50% 100%,#d97706 0,#92400e 30%,#2b1406 62%,#0c0603)}.arc.bz .f1{fill:#d97706}.arc.bz .f2{fill:#fed7aa}.arc.bz .sw{stroke:#fdba74}.arc.bz .sg{fill:#fdba74}.arc.bz .s1{fill:#431407;stroke:#fdba74}.arc.bz .s2{fill:#7c2d12;stroke:#fed7aa}.arc.bz .arc-h{text-shadow:0 0 14px #d97706,0 2px 0 #431407}.arc.bz .arc-b{color:#fed7aa}.arc.bz .arc-st span{color:#fdba74}.ar-me{font-weight:700;color:#fbbf24;margin:10px 0 0}
 .ar-intro{border-color:#b45309;margin-bottom:10px}
 .ar-tl{display:flex;gap:10px;align-items:flex-start;justify-content:space-between;margin-bottom:10px}.ar-tl b{display:block;font-size:15px}.ar-tl small{display:block;color:var(--mu);font-size:12px;margin-top:2px}.ar-tb{display:flex;flex-direction:column;gap:6px;flex:none}.ar-tb .btn{margin:0;padding:7px 10px}
 .ar-lb2{display:block;font-size:12.5px;color:var(--mu);margin:12px 0 5px}.ar-lb2 small{font-weight:400}
@@ -6174,7 +6177,15 @@ const ARENA = (() => {
   const stTxt = st => { const g = GM[st.k]; let src = ""; if (g.src === "set") src = st.ids && st.ids.length ? st.ids.length + " mavzu" : "barcha mavzular"; else if (g.src === "jf") src = (st.f === "j" ? "Jahon" : "O‘zb.") + " · " + (JTY[st.y] || "").replace(/^\S+ /, ""); else if (g.src === "mp") src = (QIT[st.m] || QIT.mix).replace(/^\S+ /, ""); else src = st.f === "j" ? "Jahon tarixi" : st.f === "a" ? "Aralash" : "O‘zbekiston tarixi"; return `${st.c && GM[st.k].src !== "mp" ? st.c + "-sinf · " : ""}${src} · ${LVN[st.l].replace(/^\S+ /, "")} · ${cond(st)}`; };
   const rankOf = L => Object.entries(L || {}).filter(([u, p]) => p && p.n).map(([u, p]) => ({ u, ...p, e: p.e || 0, s: p.s || 0 }))
     .sort((a, b) => (b.f ? 1 : 0) - (a.f ? 1 : 0) || (a.f && b.f ? a.e - b.e || a.f - b.f : b.s - a.s || a.e - b.e || (a.at || 0) - (b.at || 0)));
-  const winOf = (x, L) => { const r = rankOf(L).filter(p => p.f && p.f <= x.e + 6e4); return r[0] || null; };
+  const top3 = (x, L) => rankOf(L).filter(p => p.f && p.f <= x.e + 6e4).slice(0, 3);
+  const winOf = (x, L) => top3(x, L)[0] || null;
+  const PLN = ["ARENA CHEMPIONI", "ARENA KUMUSHI", "ARENA BRONZASI"], PLI = ["👑", "🥈", "🥉"];
+  // 🏆 Sovrindorlar: markazda chempion, yonida kumush va bronza
+  function podium(x, T, me) {
+    if (!T.length) return ""; const n = x.st.length, c = (p, k, sm) => `<div class="ar-pd p${k}">${card({ n: p.n, e: p.e, f: p.f, j: p.j, s: n }, x, sm, k)}<b>${k}-o‘rin</b></div>`;
+    const i = T.findIndex(p => p.u === me);
+    return `<div class="ar-wbox"><div class="ar-pod">${T[1] ? c(T[1], 2, 1) : ""}${c(T[0], 1)}${T[2] ? c(T[2], 3, 1) : ""}</div>${i >= 0 ? `<p class="ar-me">🎉 Tabriklaymiz! Siz — ${PLI[i]} ${PLN[i]}! Karta profilingizga qo‘shildi.</p>` : ""}</div>`;
+  }
 
   let A = {}, un = null, unP = null, CUR = null, MY = {}, LP = {}, cdT = 0, viewId = null, errT = 0;
   function watch() { if (un) return; un = DBA.onSince("ar", "e", now() - 4 * 864e5, v => { A = v || {}; const h = $("arHero"); if (h) hero(h); }); }
@@ -6214,14 +6225,14 @@ const ARENA = (() => {
   const cdHtml = ms => { const [d, h, m, s] = left(ms); return [[d, "kun"], [h, "soat"], [m, "daqiqa"], [s, "soniya"]].map(([v, l]) => `<span><b>${d2(v)}</b><small>${l}</small></span>`).join(""); };
   function draw(id) {
     const x = A[id], u = me(); if (!x || !u || !$("tz")) return;
-    const s = state(x), p = MY[id], n = x.st.length, R = rankOf(LP), pos = R.findIndex(r => r.u === u.uid), w = s === "end" ? (winOf(x, LP) || (x.w ? { u: x.w.k, n: x.w.n, e: x.w.e, f: x.w.f, s: n } : null)) : null;
+    const s = state(x), p = MY[id], n = x.st.length, R = rankOf(LP), pos = R.findIndex(r => r.u === u.uid), T3 = s === "end" ? (top3(x, LP).length ? top3(x, LP) : (x.w3 || (x.w ? [x.w] : [])).map(v => ({ u: v.k, n: v.n, e: v.e, f: v.f, j: v.j }))) : [], w = T3[0] || null;
     const cur = p ? p.s || 0 : 0, canPlay = s === "live" && (!p || !p.f);
     const path = x.st.map((st, i) => { const g = GM[st.k], done = p && i < cur, now_ = canPlay && i === cur, h = p && p.h && p.h[i];
       return `<div class="ar-st ${done ? "ok" : now_ ? "now" : "lk"}"${now_ ? ` onclick="ARENA.play('${id}',${i})"` : ""}><div class="ar-n">${done ? "✓" : g.i}</div><div class="ar-tx"><b>${i + 1}. ${i === n - 1 ? "FINAL: " : ""}${esc(g.n)}</b><small>${done ? `${h ? h.e : 0} xato · ${h ? h.tr : 1} urinish` : now_ ? `Shart: ${esc(cond(st))}${p && p.ti ? ` · ${p.ti + 1}-urinish` : ""}` : `🔒 ${esc(stTxt(st))}`}</small></div>${now_ ? `<span class="ar-go">▶ O‘yna</span>` : ""}</div>`; }).join("");
     $("tz").innerHTML = head("⚔️ Arena yo‘li", x.g === "*" ? "Barcha o‘quvchilar" : x.g) +
       `<div class="card ar-top ${s}"><span class="ar-pill">${s === "live" ? `🔴 JONLI · ${R.length} kishi yo‘lda` : s === "soon" ? "⏳ Tez orada" : "🏁 YAKUNLANDI"}</span><div class="ar-ttl">«${esc(x.n)}»</div><div class="sub" style="margin:2px 0 0">${n} bosqich · ${x.st.some(t => t.c && t.c !== x.c) ? "turli sinflar" : x.c + "-sinf"} · ${s === "soon" ? "Boshlanish: " + when(x.a) : "Tugash: " + when(x.e)}${x.tn ? " · Ustoz: " + esc(x.tn) : ""}</div>
         ${s === "end" ? "" : `<div class="ar-cd" id="arCd" data-s="${s}">${cdHtml(s === "soon" ? x.a - now() : x.e - now())}</div>`}</div>
-      ${w ? `<div class="ar-wbox">${card({ n: w.n, e: w.e, f: w.f, a: x.a, s: n }, x)}${w.u === u.uid ? `<p class="ar-me">🎉 Tabriklaymiz! Siz — ARENA CHEMPIONI! Karta profilingizga qo‘shildi.</p>` : ""}</div>` : ""}
+      ${podium(x, T3, u.uid)}
       ${s === "live" && !p ? `<button class="btn ar-join" onclick="ARENA.play('${id}',0)">⚔️ Arenaga qo‘shilish va boshlash</button>` : ""}
       ${p && p.f ? `<div class="card ar-fin">🏁 <b>Marraga yetib keldingiz!</b><small>${p.e || 0} xato · ${dur(p.f - (p.j || x.a))}${s === "live" ? " · G‘olib arena tugagach aniqlanadi" : ""}</small></div>` : ""}
       <div class="ar-path">${path}</div>
@@ -6332,19 +6343,20 @@ const ARENA = (() => {
   const back = () => { const c = CUR; CUR = null; mark(null); if (c) open(c.id); else HOMEX.games(); };
 
   // ---------- 👑 ARENA CHEMPIONI kartasi (C: olovli qalqon) ----------
-  function card(w, x, sm) {
+  function card(w, x, sm, pl) {
+    pl = pl || 1; const PC = ["", " sv", " bz"][pl - 1], PT = ["ARENA<br>CHEMPIONI", "ARENA<br>KUMUSHI", "ARENA<br>BRONZASI"][pl - 1], PI = ["👑", "🥈", "🥉"][pl - 1];
     const d = new Date(x.e || now()), dt = `${d2(d.getDate())}.${d2(d.getMonth() + 1)}.${d.getFullYear()}`;
-    return `<div class="arc${sm ? " sm" : ""}"><div class="arc-f"><svg class="arc-fl" viewBox="0 0 292 430" preserveAspectRatio="none"><path d="M0 430 Q30 330 20 280 Q60 330 70 300 Q90 360 110 330 Q130 380 150 320 Q170 370 190 330 Q210 360 230 300 Q250 340 272 280 Q262 340 292 430Z" fill="#f97316" opacity=".55"/><path d="M40 430 Q70 370 80 360 Q100 400 146 350 Q190 400 212 360 Q230 380 252 430Z" fill="#fde68a" opacity=".35"/></svg>${"<i></i>".repeat(7)}</div>
+    return `<div class="arc${PC}${sm ? " sm" : ""}"><div class="arc-f"><svg class="arc-fl" viewBox="0 0 292 430" preserveAspectRatio="none"><path d="M0 430 Q30 330 20 280 Q60 330 70 300 Q90 360 110 330 Q130 380 150 320 Q170 370 190 330 Q210 360 230 300 Q250 340 272 280 Q262 340 292 430Z" class="f1" opacity=".55"/><path d="M40 430 Q70 370 80 360 Q100 400 146 350 Q190 400 212 360 Q230 380 252 430Z" class="f2" opacity=".35"/></svg>${"<i></i>".repeat(7)}</div>
       <div class="arc-in"><div class="arc-b">⚔ TARIX ARENA ⚔</div>
-      <svg class="arc-sh" viewBox="0 0 210 190"><g stroke="#fde68a" stroke-width="3" stroke-linecap="round"><line x1="30" y1="170" x2="170" y2="20"/><line x1="180" y1="170" x2="40" y2="20"/></g><g fill="#fde68a"><rect x="22" y="150" width="30" height="6" transform="rotate(-47 37 153)"/><rect x="158" y="150" width="30" height="6" transform="rotate(47 173 153)"/></g><path d="M105 30 L160 50 V100 Q160 150 105 175 Q50 150 50 100 V50Z" fill="#7f1d1d" stroke="#fde68a" stroke-width="4"/><path d="M105 44 L148 60 V100 Q148 140 105 161 Q62 140 62 100 V60Z" fill="#b91c1c" stroke="#fca5a5" stroke-width="1"/><text x="105" y="125" font-size="58" text-anchor="middle">👑</text></svg>
-      <div class="arc-h">ARENA<br>CHEMPIONI</div><div class="arc-n">${esc(w.n)}</div>
+      <svg class="arc-sh" viewBox="0 0 210 190"><g class="sw" stroke-width="3" stroke-linecap="round"><line x1="30" y1="170" x2="170" y2="20"/><line x1="180" y1="170" x2="40" y2="20"/></g><g class="sg"><rect x="22" y="150" width="30" height="6" transform="rotate(-47 37 153)"/><rect x="158" y="150" width="30" height="6" transform="rotate(47 173 153)"/></g><path d="M105 30 L160 50 V100 Q160 150 105 175 Q50 150 50 100 V50Z" class="s1" stroke-width="4"/><path d="M105 44 L148 60 V100 Q148 140 105 161 Q62 140 62 100 V60Z" class="s2" stroke-width="1"/><text x="105" y="125" font-size="58" text-anchor="middle">${PI}</text></svg>
+      <div class="arc-h">${PT}</div><div class="arc-n">${esc(w.n)}</div>
       <div class="arc-st"><span>🏁 ${w.s || (x.st || []).length}/${(x.st || []).length || w.s}</span><span>❌ ${w.e || 0} xato</span>${w.f ? `<span>⏱ ${dur(w.f - (w.j || x.a))}</span>` : ""}</div><div class="arc-a">«${esc(x.n)}» · ${dt}</div></div></div>`;
   }
   // Profil: oxirgi chempionlik kartasi
   async function pfill(uid) {
     const el = $("arPc"); if (!el) return; let L = null; try { L = await DBA.get("arc/" + uid); } catch (e) {}
     const a = Object.values(L || {}).filter(v => v && v.n).sort((p, q) => (q.at || 0) - (p.at || 0)); if (!a.length || $("arPc") !== el) return;
-    const v = a[0]; el.innerHTML = `<div class="ar-pc">${card({ n: v.wn || "", e: v.e, f: v.f, j: v.j, s: v.s }, { n: v.n, e: v.at, a: v.a, st: Array(v.s || 0) }, 1)}<div class="ar-pcx"><b>👑 ARENA CHEMPIONI</b><small>«${esc(v.n)}»${a.length > 1 ? ` · jami <b>${a.length}</b> marta chempion` : ""}</small></div></div>`;
+    const v = a[0], pl = v.p || 1, k1 = a.filter(z => (z.p || 1) === 1).length; el.innerHTML = `<div class="ar-pc">${card({ n: v.wn || "", e: v.e, f: v.f, j: v.j, s: v.s }, { n: v.n, e: v.at, a: v.a, st: Array(v.s || 0) }, 1, pl)}<div class="ar-pcx"><b>${PLI[pl - 1]} ${PLN[pl - 1]}</b><small>«${esc(v.n)}» · ${pl}-o‘rin${a.length > 1 ? ` · jami <b>${a.length}</b> marta sovrindor${k1 ? `, ${k1} marta chempion` : ""}` : ""}</small></div></div>`;
   }
 
   // ---------- 👨‍🏫 Ustoz: arenalar ro‘yxati, yaratish, kuzatish ----------
@@ -6466,12 +6478,12 @@ const ARENA = (() => {
     let x = null; try { x = await DBA.get("ar/" + id); } catch (e) {} if (!x) return tch(); A[id] = x;
     unP = DBA.on("arp/" + id, v => { if (viewId !== "m" + id) return; LP = v || {}; paint(); });
     function paint() {
-      const s = state(x), R = rankOf(LP), n = x.st.length, w = s === "end" ? winOf(x, LP) : null;
+      const s = state(x), R = rankOf(LP), n = x.st.length, T3 = s === "end" ? top3(x, LP) : [];
       $("tz").innerHTML = thead("📊 «" + esc(x.n) + "»", (x.g === "*" ? "Barcha o‘quvchilar" : x.g) + " · " + (s === "live" ? "jonli" : s === "soon" ? "boshlanmagan" : "yakunlangan")) +
         `<div class="card"><div class="ar-my" style="margin:0"><span>${s === "soon" ? "Boshlanishiga" : s === "live" ? "Tugashiga" : "Tugadi"}: <b>${s === "end" ? when(x.e) : leftTxt((s === "soon" ? x.a : x.e) - now())}</b></span><span>Qatnashchi: <b>${R.length}</b> · Marrada: <b>${R.filter(r => r.f).length}</b></span></div>
         <div class="ar-mb">${s !== "end" ? `<button class="btn sm ghost" id="amX">⏹ Hozir yakunlash</button><button class="btn sm ghost" id="amP">＋1 soat</button>` : ""}<button class="btn sm ghost" onclick="ARENA.open('${id}')">👁 O‘quvchi ko‘rinishi</button></div>
         ${s !== "end" && (adm() || x.t === tUid()) ? (x.ann && x.ann.done ? `<p class="sub" style="text-align:center;margin:10px 0 0">✅ Botda e’lon qilingan · ${x.ann.n || 0} kishiga${x.ann.to === "all" ? " (hammaga)" : " (guruhga)"}</p>` : `<button class="btn ar-ann" id="amA">📣 Botda e’lon qilish${x.ann && x.ann.i ? ` · davom ettirish (${x.ann.i}/${x.ann.n})` : ""}</button>`) : ""}</div>
-        ${w ? `<div class="ar-wbox">${card({ ...w, s: n }, x)}</div>` : ""}
+        ${podium(x, T3)}
         <div class="ah">Bosqichlar</div><div class="card" style="padding:8px 12px">${x.st.map((st, i) => `<div class="ar-ms"><span class="ar-k">${i + 1}</span>${GM[st.k].i} <b>${esc(GM[st.k].n)}</b><small>${esc(stTxt(st))}</small><em>${R.filter(r => r.s > i).length} o‘tdi</em></div>`).join("")}</div>
         <div class="ah">Natijalar <small style="font-weight:400;color:var(--mu)">· kam xato yutadi, teng bo‘lsa — kim oldin</small></div>
         <div class="card ar-tbl"><table><tr><th>#</th><th>O‘quvchi</th><th>Bosqich</th><th>Xato</th><th>Urinish</th><th>Marra</th></tr>${R.map((r, i) => `<tr${r.f ? ' class="f"' : ""}><td>${r.f ? (["🥇", "🥈", "🥉"][i] || "🏁") : i + 1}</td><td>${esc(r.n)}</td><td>${r.s}/${n}</td><td>${r.e}</td><td>${r.tr || 0}</td><td>${r.f ? dur(r.f - (r.j || x.a)) : "—"}</td></tr>`).join("") || `<tr><td colspan="6" style="text-align:center;color:var(--mu)">Hali hech kim qo‘shilmadi</td></tr>`}</table></div>`;
