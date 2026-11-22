@@ -674,7 +674,7 @@ async function weeklyAwards(env) {
   const hm = s => { const h = Math.floor(s / 3600), m = Math.round(s % 3600 / 60); return h ? `${h} soat ${m} daqiqa` : `${m} daqiqa`; };
   const XT = ["👑 HAFTA CHEMPIONI", "🥈 HAFTA KUMUSHI", "🥉 HAFTA BRONZASI"], TT = ["💠 PLATINUM KARTA", "⭐ GOLD KARTA", "✦ SILVER KARTA"];
   const XR = ["Bir hafta davomida profilingizda 👑 toj, testlarda oltin halqa va «Registon» premium mavzusi!", "Bir hafta davomida profilingizda 🥈 kumush nishon va halqa!", "Bir hafta davomida profilingizda 🥉 bronza nishon va halqa!"];
-  const TR = ["Bir hafta davomida 💠 Platinum karta — profilda yorqin nur va kartalar jangida +1 sandiq!", "Bir hafta davomida ⭐ Gold karta va kartalar jangida +1 sandiq!", "Bir hafta davomida ✦ Silver karta profilingizda!"];
+  const TR = ["Bir hafta davomida 💠 Platinum karta — profilda yorqin nur!", "Bir hafta davomida ⭐ Gold karta profilingizda!", "Bir hafta davomida ✦ Silver karta profilingizda!"];
   const send = async (p, i, img, title, val, rew) => {
     const id = await studentChat(env, p.k).catch(() => null); if (!id) return;
     const caption = `🎉 <b>Tabriklaymiz, ${esc(p.n || "do‘stim")}!</b>\n\n${title} — <b>${i + 1}-o‘rin</b>\n${val}\n\n🎁 ${rew}\n\n🏛 Ismingiz Shon-sharaf zaliga abadiy yozildi. Yangi hafta boshlandi — unvonni qo‘ldan bermang! 💪`;
