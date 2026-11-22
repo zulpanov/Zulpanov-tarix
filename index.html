@@ -2579,12 +2579,12 @@ const KUN=(()=>{
   const link=()=>"https://tarixarena.uz/?s=dost"+(ST.myRef()?"&r="+ST.myRef():"")+"#kun";
   function result(st,ok,tot){
     const box=$("kunRes");if(!box)return;box.innerHTML="";if(!st||!st.kun)return;
-    try{localStorage.setItem(doneKey(),ok+"/"+tot)}catch(e){}
+    const rep=done();if(!rep){try{localStorage.setItem(doneKey(),ok+"/"+tot)}catch(e){}}
     ST.hit(ACCT.cur?"kun_f":"kun_g");
     const txt=`📅 Bugungi tarix testidan ${ok}/${tot} topdim. Sen-chi? 10 ta savol, ro'yxatdan o'tish shart emas:`;
     const share=`https://t.me/share/url?url=${encodeURIComponent(link())}&text=${encodeURIComponent(txt)}`;
     box.innerHTML=`<div class="card" style="margin:0 0 14px;text-align:left;background:rgba(124,58,237,.12)">
-      <b>📅 Ertaga yangi 10 ta savol!</b><div class="st-s" style="margin:4px 0 10px">Do'stlaringizni ham sinab ko'ring — kim ko'proq topadi?</div>
+      ${rep?`<div style="margin:0 0 8px;font-size:13px;color:#fcd34d">🔁 Bu mashq — bugungi Kun testi XP si birinchi urinishda (${esc(rep)}) olingan.</div>`:""}<b>📅 Ertaga yangi 10 ta savol!</b><div class="st-s" style="margin:4px 0 10px">Do'stlaringizni ham sinab ko'ring — kim ko'proq topadi?</div>
       <a class="btn" href="${share}" target="_blank" rel="noopener" style="display:block;text-align:center;text-decoration:none">✈️ Do'stlarimga yuborish</a>
       ${ACCT.cur?"":`<div class="st-s" style="margin:12px 0 8px">Natijangiz saqlanishi, XP to'plash, 6 300+ test va reytingga chiqish uchun kiring:</div>
       ${window.IN_TG?`<button class="btn ghost" id="kunIn" style="width:100%">✈️ Telegram orqali kirish (+50 XP)</button>`:`<button class="btn ghost" id="kunW" style="width:100%">✈️ Telegram orqali kirish (+50 XP)</button>`}`}</div>`;
@@ -6545,6 +6545,8 @@ const GAME = (() => {
   TQR.then(() => SETS.filter(s => s.qs).forEach(s => s.qs.forEach((q, i) => { if (!q._k) { q._k = s.id + "_" + i; KEYQ[q._k] = q; } })));
   const bonus = () => ((ACCT.cur || {}).bx || 0);
   const xpOf = r => (r.ok || 0) * 10 + (r.lv ? 20 : 0) + (r.mode === "turnir" ? (r.rank === 1 ? 50 : r.rank === 2 ? 30 : r.rank === 3 ? 20 : 0) : 0);
+  // Bir xil testni qayta ishlab XP yig'ishning oldini olish: Kun testi — kuniga faqat 1-urinish; boshqa testlar — har test uchun kuniga eng yaxshi natija. Turnir — har biri alohida.
+const xpSum = rs => { const B = {}; let s = 0; for (const r of rs || []) { if (!r) continue; if (r.mode === "turnir" || !r.ttl) { s += xpOf(r); continue; } const d = new Date((r.at || 0) + 5 * 3600e3).toISOString().slice(0, 10), kun = /^Kun testi/.test(r.ttl), k = (kun ? "kun" : r.ttl) + "|" + d, o = B[k]; if (!o || (kun ? (r.at || 0) < (o.at || 0) : (r.ok || 0) > (o.ok || 0) || ((r.ok || 0) === (o.ok || 0) && !o.lv && r.lv))) B[k] = r; } for (const k in B) s += xpOf(B[k]); return s; };
   const dayKey = ms => { const d = new Date(ms); return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate(); };
   const weekStart = ms => TW.start(ms);
   const weekKey = ms => TW.key(ms);
@@ -6597,7 +6599,7 @@ const GAME = (() => {
   // ---- daraja/nishon o'zgarishi ----
   function announce(rs) {
     const c = ACCT.cur; if (!c) return;
-    const xp = rs.reduce((a, r) => a + xpOf(r), 0) + bonus(), lv = level(xp), K = "zm_lv_" + c.uid, B = "zm_bd_" + c.uid;
+    const xp = xpSum(rs) + bonus(), lv = level(xp), K = "zm_lv_" + c.uid, B = "zm_bd_" + c.uid;
     const st = streak(rs); try { const bk = "zm_beststreak_" + c.uid; if (st > +(localStorage.getItem(bk) || 0)) localStorage.setItem(bk, st); } catch (e) {}
     let pl = null, pb = null; try { pl = localStorage.getItem(K); pb = JSON.parse(localStorage.getItem(B) || "null"); } catch (e) {}
     const got = badges(rs, fixedCount()).filter(b => b.ok).map(b => b.n);
@@ -6605,7 +6607,7 @@ const GAME = (() => {
     if (pb) got.filter(n => !pb.includes(n)).forEach((n, i) => { const b = badges(rs, fixedCount()).find(x => x.n === n); setTimeout(() => { FX.toast(`${b.ic} Yangi nishon: <b>${esc(n)}</b>`, "fire"); FX.S.streak(); }, 3500 + i * 1500); });
     try { localStorage.setItem(K, lv.i); localStorage.setItem(B, JSON.stringify(got)); } catch (e) {}
     // haftalik reyting
-    const wk = weekKey(DBA.now()), ws = weekStart(DBA.now()), wxp = rs.filter(r => r.at >= ws).reduce((a, r) => a + xpOf(r), 0);
+    const wk = weekKey(DBA.now()), ws = weekStart(DBA.now()), wxp = xpSum(rs.filter(r => r.at >= ws));
     const lk = wk + c.uid + wxp + lv.i; if (wxp > 0 && lastLB !== lk) { lastLB = lk; VER.lb(); }
   }
   let lastLB = null;
@@ -6614,7 +6616,7 @@ const GAME = (() => {
     const c = ACCT.cur, box = $("wlLv"); if (!c || !box) return;
     watch();
     try { CHAMP.load(); } catch (e) {}
-    const rs = ACCT.recs, xp = rs.reduce((a, r) => a + xpOf(r), 0) + bonus(), lv = level(xp), st = streak(rs), ne = errList().length;
+    const rs = ACCT.recs, xp = xpSum(rs) + bonus(), lv = level(xp), st = streak(rs), ne = errList().length;
     if ($("hpRing")) $("hpRing").style.setProperty("--p", lv.pct);
     if ($("wlSt")) { $("wlSt").innerHTML = `<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c1 3.5 5 5.5 5 10a5 5 0 0 1-10 0c0-2.2 1-3.6 2.3-4.8.3 1.6 1.2 2.6 2.2 2.8-.8-2.6-.2-5.4.5-8z"/></svg>${st}`; $("wlSt").classList.toggle("off", !st); }
     try { HOMEX.forYou(rs); HB.render(); } catch (e) {}
@@ -6627,7 +6629,7 @@ const GAME = (() => {
   }
   // ---- statistika sahifasiga nishonlar ----
   function statBlock() {
-    const rs = ACCT.recs, xp = rs.reduce((a, r) => a + xpOf(r), 0) + bonus(), lv = level(xp), bs = badges(rs, fixedCount());
+    const rs = ACCT.recs, xp = xpSum(rs) + bonus(), lv = level(xp), bs = badges(rs, fixedCount());
     return `<div class="lvrow" style="margin-bottom:14px"><div class="lvic">${lv.ic}</div><div style="flex:1"><div class="lvn"><b>${lv.name}</b><span>${xp} XP</span></div><div class="lvbar"><i style="width:${lv.pct}%"></i></div></div></div>
       <div class="bdg">${bs.map(b => `<div class="bd${b.ok ? " on" : ""}" title="${esc(b.d)}"><div class="bdi">${b.ic}</div><b>${esc(b.n)}</b><span>${esc(b.d)}</span></div>`).join("")}</div>
       <div class="st-s" style="margin-top:10px">XP qanday beriladi: har bir to'g'ri javob — 10 XP, sertifikat — +20 XP, turnirda 1-o'rin — +50, 2-o'rin — +30, 3-o'rin — +20 XP.</div>`;
@@ -6637,7 +6639,7 @@ const GAME = (() => {
   // Reyting: XP qoidalari (chiplar) + «Siz qayerdasiz?» kartasi
   function xpHelp(arr, c) { // B: pastda qotib turadigan «Siz» qatori
     const rs = ACCT.recs || [], ws = weekStart(DBA.now());
-    const me = arr.findIndex(p => p.k === c.uid), my = me >= 0 ? arr[me].xp : rs.filter(r => r.at >= ws).reduce((a, r) => a + xpOf(r), 0);
+    const me = arr.findIndex(p => p.k === c.uid), my = me >= 0 ? arr[me].xp : xpSum(rs.filter(r => r.at >= ws));
     const fmt = n => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, " ");
     let t;
     if (me === 0) t = `🥇 <b>1-o‘rin</b> · ${fmt(my)} XP${arr[1] ? ` · 2-o‘rindan <b>+${fmt(my - arr[1].xp)}</b> oldinda` : ""}`;
@@ -6646,10 +6648,11 @@ const GAME = (() => {
     return `<div class="lbx-sp"></div><div class="lbx-stk" id="lbxMe"><span>${t}</span><button onclick="event.stopPropagation();KUN.go()">📅 Test</button></div>`;
   }
   function xpSheet() {
-    const rs = ACCT.recs || [], total = rs.reduce((a, r) => a + xpOf(r), 0) + bonus(), lv = level(total);
+    const rs = ACCT.recs || [], total = xpSum(rs) + bonus(), lv = level(total);
     const m = document.createElement("div"); m.className = "lbx-sh";
     m.innerHTML = `<div class="lbx-sb"><div class="gr"></div><h3>⭐ Reyting qanday ishlaydi?</h3><p class="sub" style="margin:0 0 6px">Haftalik reyting — shu hafta to‘plangan XP bo‘yicha. Har yakshanba soat 20:00 da hafta yakunlanadi: g‘oliblar aniqlanadi va reyting noldan boshlanadi. Darajangiz esa umumiy XP bo‘yicha va hech qachon kamaymaydi.</p>
       <div class="lbx-r"><i>✅</i>Har bir to‘g‘ri javob (testlar, Kun testi, vazifa, turnir)<b>+10 XP</b></div>
+      <div class="lbx-r"><i>🔁</i>Kun testi — kuniga faqat 1-urinish; bir xil testni qayta ishlasangiz — o‘sha kunning eng yaxshi natijasi hisoblanadi<b>0 XP</b></div>
       <div class="lbx-r"><i>🎓</i>Milliy sertifikat variantini yakunlab, daraja olish<b>+20 XP</b></div>
       <div class="lbx-r"><i>🏆</i>Turnirda 1 / 2 / 3-o‘rin<b>+50 / 30 / 20</b></div>
       <div class="lbx-r"><i>🎁</i>Ro‘yxatdan o‘tish (bir marta)<b>+50 XP</b></div>
@@ -6699,7 +6702,7 @@ const GAME = (() => {
     draw();
   }
   function reg(qs) { qs.forEach(q => { if (q._k) KEYQ[q._k] = q; }); }
-  return { reg, track, startErrors, homeRender, statBlock, board, announce, xpOf, level, errList, wk: () => weekKey(DBA.now()) };
+  return { reg, track, startErrors, homeRender, statBlock, board, announce, xpOf, xpSum, level, errList, wk: () => weekKey(DBA.now()) };
 })();
 
 // ================== ADMIN: SAVOLLARNI O'ZI QO'SHISH ==================

@@ -601,6 +601,8 @@ function check(v, acc) { if (!String(v || "").trim()) return false; return acc.s
 
 const lvOf = p => p >= 70 ? "A+" : p >= 65 ? "A" : p >= 60 ? "B+" : p >= 55 ? "B" : p >= 50 ? "C+" : p >= 45 ? "C" : "";
 const xpOf = r => (r.ok || 0) * 10 + (r.lv ? 20 : 0) + (r.mode === "turnir" ? (r.rank === 1 ? 50 : r.rank === 2 ? 30 : r.rank === 3 ? 20 : 0) : 0);
+// Bir xil testni qayta ishlab XP yig'ishning oldini olish: Kun testi — kuniga faqat 1-urinish; boshqa testlar — har test uchun kuniga eng yaxshi natija. Turnir — har biri alohida.
+const xpSum = rs => { const B = {}; let s = 0; for (const r of rs || []) { if (!r) continue; if (r.mode === "turnir" || !r.ttl) { s += xpOf(r); continue; } const d = new Date((r.at || 0) + 5 * 3600e3).toISOString().slice(0, 10), kun = /^Kun testi/.test(r.ttl), k = (kun ? "kun" : r.ttl) + "|" + d, o = B[k]; if (!o || (kun ? (r.at || 0) < (o.at || 0) : (r.ok || 0) > (o.ok || 0) || ((r.ok || 0) === (o.ok || 0) && !o.lv && r.lv))) B[k] = r; } for (const k in B) s += xpOf(B[k]); return s; };
 const UZ = 5 * 3600e3; // Toshkent vaqti
 // Hafta chegarasi: yakshanba 20:00 (Toshkent) — sayt (TW) bilan bir xil: +9 soat siljitib dushanba 00:00 deb hisoblanadi
 const WOFF = UZ + 4 * 3600e3;
@@ -692,11 +694,19 @@ function weekStart(ms) { const d = new Date(ms + WOFF), w = (d.getUTCDay() + 6) 
 const weekKey = ms => { const d = new Date(weekStart(ms) + WOFF); return "w" + d.getUTCFullYear() + String(d.getUTCMonth() + 1).padStart(2, "0") + String(d.getUTCDate()).padStart(2, "0"); };
 const str = (v, n) => String(v == null ? "" : v).slice(0, n);
 
+// Bir martalik: yangi XP qoidasi (qayta ishlashga XP yo'q) bo'yicha shu haftaning reytingini qayta hisoblash — har 10 daqiqada 10 kishidan
+async function xpFix(env) {
+  const st = await db(env, "GET", "cfg/xpfix1").catch(() => null); if (st && st.done) return;
+  const wk = weekKey(Date.now()), L = await db(env, "GET", "lb/" + wk).catch(() => null) || {}, ids = Object.keys(L).sort();
+  let i = (st && st.wk === wk && st.i) || 0; const end = Math.min(ids.length, i + 10);
+  for (; i < end; i++) { try { const r = await syncLb(env, ids[i]); if (!r.wxp) await db(env, "DELETE", `lb/${wk}/${ids[i]}`); } catch (e) {} }
+  await db(env, "PUT", "cfg/xpfix1", i >= ids.length ? { done: true, n: ids.length, at: Date.now() } : { i, wk });
+}
 async function syncLb(env, uid, user) {
   user = user || await db(env, "GET", "users/" + uid) || {};
   const rs = vals(await db(env, "GET", "h/" + uid));
   const now = Date.now(), ws = weekStart(now);
-  const xp = rs.reduce((a, r) => a + xpOf(r), 0) + (Number(user.bx) || 0), wxp = rs.filter(r => r.at >= ws).reduce((a, r) => a + xpOf(r), 0);
+  const xp = xpSum(rs) + (Number(user.bx) || 0), wxp = xpSum(rs.filter(r => r.at >= ws));
   let lv = 0; LEVELS.forEach((t, i) => { if (xp >= t) lv = i; });
   if (wxp > 0) await db(env, "PUT", `lb/${weekKey(now)}/${uid}`, { n: str((user.f || "") + " " + (user.l || ""), 80).trim(), g: str(user.g, 30), xp: wxp, lv, at: now });
   return { xp, wxp, lv };
@@ -921,6 +931,7 @@ const json = (o, st = 200) => new Response(JSON.stringify(o), { status: st, head
 
 export default {
   async scheduled(event, env, ctx) {
+    if (event.cron !== "0 4 * * SUN") ctx.waitUntil(xpFix(env).catch(e => console.error("xpfix", e && e.stack || e)));
     if (event.cron !== "0 4 * * SUN") ctx.waitUntil(weeklyAwards(env).catch(e => console.error("awards", e && e.stack || e)).then(() => arenaCron(env)).catch(e => console.error("arena", e && e.stack || e)));
     if (event.cron === "0 4 * * SUN") ctx.waitUntil(backup(env).catch(e => console.error("backup", e && e.stack || e)).then(() => cleanup(env)).catch(e => console.error("cleanup", e && e.stack || e)));
     else ctx.waitUntil(hwRemind(env).catch(e => console.error("hwRemind", e && e.stack || e)));
