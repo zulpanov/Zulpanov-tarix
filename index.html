@@ -1197,6 +1197,9 @@ body.champ #tg::before{content:"👑 Chempion rejimi";display:block;font-size:11
 .ar-ms{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--line);font-size:13px;flex-wrap:wrap}.ar-ms:last-child{border:0}.ar-ms small{flex-basis:100%;padding-left:32px;color:var(--mu);font-size:11.5px}.ar-ms em{margin-left:auto;font-style:normal;color:#4ade80;font-size:12px}
 .ar-tbl{padding:6px;overflow-x:auto}.ar-tbl table{width:100%;border-collapse:collapse;font-size:12.5px}.ar-tbl th{color:var(--mu);font-weight:600;text-align:left;padding:6px}.ar-tbl td{padding:7px 6px;border-top:1px solid var(--line)}.ar-tbl tr.f td{color:#fde68a}
 .ar-map{margin:8px 0 10px;border-radius:16px;overflow:hidden;background:#0d2a4a;border:1px solid var(--line)}.ar-map svg{display:block;width:100%;height:auto}
+.ar-ann{margin-top:10px!important;background:linear-gradient(180deg,#FFD978,#E2A82A)!important;color:#1A1203!important;font-weight:800}
+.ar-op{display:flex;align-items:center;gap:10px;width:100%;text-align:left;font:inherit;font-size:14px;color:var(--tx);background:transparent;border:1px solid var(--line);border-radius:14px;padding:10px 12px;margin-bottom:6px;cursor:pointer}.ar-op i{width:18px;height:18px;border-radius:50%;border:2px solid var(--mu);flex:none}.ar-op.on{border-color:#E8B23A;background:rgba(232,178,58,.1)}.ar-op.on i{border:5px solid #E8B23A}.ar-op small{display:block;color:var(--mu);font-size:12px}
+.ar-ta{width:100%;background:var(--bg);color:var(--tx);border:1px solid var(--line);border-radius:12px;padding:10px;font:inherit;font-size:13px;line-height:1.45;resize:vertical}
 .ar-pc{display:flex;gap:14px;align-items:center;margin-bottom:12px}.ar-pcx b{display:block;font-family:Cinzel,serif;color:#fbbf24}.ar-pcx small{color:var(--mu);font-size:12.5px}
 /* 👑 Chempion kartasi — C: olovli qalqon */
 .arc{--w:270px;width:var(--w);height:calc(var(--w)*1.47);display:inline-block;position:relative;border-radius:calc(var(--w)*.08);padding:4px;background:linear-gradient(160deg,#fca5a5,#7f1d1d 30%,#fde68a 50%,#7f1d1d 70%,#fca5a5);background-size:200% 200%;box-shadow:0 0 50px rgba(220,38,38,.55);animation:arcBr 3.2s ease-in-out infinite,arcBg 6s linear infinite;overflow:hidden;text-align:center;font-family:inherit;vertical-align:top}
@@ -6430,6 +6433,33 @@ const ARENA = (() => {
     try { const id = E.id || ("a" + now().toString(36)); await DBA.set("ar/" + id, x); FX.toast(E.id ? "💾 Saqlandi" : "⚔️ Arena yaratildi!", "up"); E = null; mon(id); }
     catch (e) { $("aeGo").disabled = false; er("⚠️ " + ((e && e.message) || e)); }
   }
+  // 📣 Arena e'loni: bot orqali afisha + matn (guruhga yoki — admin — hammaga)
+  function annSheet(id, x, after) {
+    const A0 = adm(), st = state(x), m = document.createElement("div"); m.className = "lbx-sh"; let to = A0 && x.g === "*" ? "all" : "g", busy = false;
+    const def = `⚔️ ARENA YO‘LI ${st === "soon" ? "e’lon qilindi" : "boshlandi"}!\n\n«${x.n}» — ${x.st.length} bosqich\n${st === "soon" ? "🚀 Boshlanish: " + when(x.a) + "\n" : ""}⏳ Tugash: ${when(x.e)}\n\nHar bosqichdan o‘tsangiz, keyingisi ochiladi. Eng kam xato qilgan — 👑 ARENA CHEMPIONI!`;
+    const opt = (k, t, sub) => `<button class="ar-op${to === k ? " on" : ""}" data-to="${k}"><i></i><span>${t}<small id="anC_${k}">${sub}</small></span></button>`;
+    m.innerHTML = `<div class="lbx-sb"><div class="gr"></div><h3>📣 Arena haqida e’lon</h3><p class="sub" style="margin:0 0 6px">Botdan afisha rasm va matn boradi, ostida «⚔️ Arenaga kirish» tugmasi.</p>
+      <div class="ar-lb2">Kimga yuborilsin?</div><div id="anO">${x.g !== "*" ? opt("g", "👥 Guruh o‘quvchilari", "«" + esc(x.g) + "» — hisoblanmoqda…") : ""}${A0 ? opt("all", "🌍 Botdagi barcha a’zolar", "hisoblanmoqda…") : ""}</div>
+      <div class="ar-lb2">Xabar matni (o‘zgartirish mumkin)</div><textarea id="anT" maxlength="900" rows="7" class="ar-ta">${esc(def)}</textarea>
+      <p class="sub" id="anS" style="min-height:18px;margin:6px 0 0"></p><button class="btn" id="anGo">🚀 Yuborish</button><button class="btn ghost" id="anX" style="margin-top:6px">Bekor qilish</button></div>`;
+    document.body.appendChild(m);
+    const close = () => { if (!busy) m.remove(); };
+    m.onclick = e => { if (e.target === m || e.target.id === "anX") close(); const b = e.target.closest && e.target.closest("[data-to]"); if (b && !busy) { to = b.dataset.to; m.querySelectorAll("[data-to]").forEach(o => o.classList.toggle("on", o === b)); } };
+    ["g", "all"].forEach(k => { if (!$("anC_" + k)) return; TGW_.v("arAnn", { id, to: k, count: 1 }).then(r => { const el = $("anC_" + k); if (el) el.textContent = (k === "g" ? "«" + x.g + "» — " : "") + ((r && r.total) || 0) + " kishi (Telegram ulangan)"; }).catch(() => { const el = $("anC_" + k); if (el) el.textContent = k === "g" ? "«" + x.g + "»" : "Telegram orqali ulanganlar"; }); });
+    $("anGo").onclick = async () => {
+      if (busy) return; const text = $("anT").value.trim(); if (text.length < 5) return FX.toast("Matnni yozing");
+      if (to === "all" && !confirm("Xabar botdagi BARCHA a’zolarga yuboriladi. Davom etilsinmi?")) return;
+      busy = true; $("anGo").disabled = true; let from = (x.ann && !x.ann.done && x.ann.to === to && x.ann.i) || 0, sent = 0, failed = 0, total = 0;
+      try {
+        for (let k = 0; k < 400; k++) {
+          const r = await TGW_.v("arAnn", { id, to, text, from }); sent += (r && r.sent) || 0; failed += (r && r.failed) || 0; total = (r && r.total) || total;
+          $("anS").textContent = `📤 Yuborilmoqda: ${Math.min(total, (r && r.next) || total)} / ${total}…`;
+          if (!r || r.next == null) break; from = r.next;
+        }
+        x.ann = { to, n: total, done: true }; busy = false; m.remove(); FX.toast(`✅ E’lon yuborildi: ${sent}${failed ? ` · ❌ ${failed}` : ""}`, "up"); after && after();
+      } catch (e) { busy = false; $("anGo").disabled = false; $("anS").textContent = "⚠️ " + ((e && e.message) || e) + " — «Yuborish»ni qayta bossangiz, qolgan joyidan davom etadi."; x.ann = { to, i: from, n: total }; }
+    };
+  }
   async function del(id) { if (!confirm("Arena o‘chirilsinmi? Barcha natijalari ham o‘chadi.")) return; try { await DBA.set("arp/" + id, null).catch(() => {}); await DBA.set("ar/" + id, null); FX.toast("🗑 O‘chirildi"); } catch (e) { FX.toast("⚠️ " + ((e && e.message) || e)); } tch(); }
   async function mon(id) {
     leave(); show("tz"); setNav(null); BK(() => tch()); document.body.classList.add("dlm"); viewId = "m" + id;
@@ -6439,12 +6469,14 @@ const ARENA = (() => {
       const s = state(x), R = rankOf(LP), n = x.st.length, w = s === "end" ? winOf(x, LP) : null;
       $("tz").innerHTML = thead("📊 «" + esc(x.n) + "»", (x.g === "*" ? "Barcha o‘quvchilar" : x.g) + " · " + (s === "live" ? "jonli" : s === "soon" ? "boshlanmagan" : "yakunlangan")) +
         `<div class="card"><div class="ar-my" style="margin:0"><span>${s === "soon" ? "Boshlanishiga" : s === "live" ? "Tugashiga" : "Tugadi"}: <b>${s === "end" ? when(x.e) : leftTxt((s === "soon" ? x.a : x.e) - now())}</b></span><span>Qatnashchi: <b>${R.length}</b> · Marrada: <b>${R.filter(r => r.f).length}</b></span></div>
-        <div class="ar-mb">${s !== "end" ? `<button class="btn sm ghost" id="amX">⏹ Hozir yakunlash</button><button class="btn sm ghost" id="amP">＋1 soat</button>` : ""}<button class="btn sm ghost" onclick="ARENA.open('${id}')">👁 O‘quvchi ko‘rinishi</button></div></div>
+        <div class="ar-mb">${s !== "end" ? `<button class="btn sm ghost" id="amX">⏹ Hozir yakunlash</button><button class="btn sm ghost" id="amP">＋1 soat</button>` : ""}<button class="btn sm ghost" onclick="ARENA.open('${id}')">👁 O‘quvchi ko‘rinishi</button></div>
+        ${s !== "end" && (adm() || x.t === tUid()) ? (x.ann && x.ann.done ? `<p class="sub" style="text-align:center;margin:10px 0 0">✅ Botda e’lon qilingan · ${x.ann.n || 0} kishiga${x.ann.to === "all" ? " (hammaga)" : " (guruhga)"}</p>` : `<button class="btn ar-ann" id="amA">📣 Botda e’lon qilish${x.ann && x.ann.i ? ` · davom ettirish (${x.ann.i}/${x.ann.n})` : ""}</button>`) : ""}</div>
         ${w ? `<div class="ar-wbox">${card({ ...w, s: n }, x)}</div>` : ""}
         <div class="ah">Bosqichlar</div><div class="card" style="padding:8px 12px">${x.st.map((st, i) => `<div class="ar-ms"><span class="ar-k">${i + 1}</span>${GM[st.k].i} <b>${esc(GM[st.k].n)}</b><small>${esc(stTxt(st))}</small><em>${R.filter(r => r.s > i).length} o‘tdi</em></div>`).join("")}</div>
         <div class="ah">Natijalar <small style="font-weight:400;color:var(--mu)">· kam xato yutadi, teng bo‘lsa — kim oldin</small></div>
         <div class="card ar-tbl"><table><tr><th>#</th><th>O‘quvchi</th><th>Bosqich</th><th>Xato</th><th>Urinish</th><th>Marra</th></tr>${R.map((r, i) => `<tr${r.f ? ' class="f"' : ""}><td>${r.f ? (["🥇", "🥈", "🥉"][i] || "🏁") : i + 1}</td><td>${esc(r.n)}</td><td>${r.s}/${n}</td><td>${r.e}</td><td>${r.tr || 0}</td><td>${r.f ? dur(r.f - (r.j || x.a)) : "—"}</td></tr>`).join("") || `<tr><td colspan="6" style="text-align:center;color:var(--mu)">Hali hech kim qo‘shilmadi</td></tr>`}</table></div>`;
       if ($("amX")) $("amX").onclick = async () => { if (!confirm("Arena hozir yakunlansinmi? G‘olib shu paytdagi natijalar bo‘yicha aniqlanadi.")) return; try { x.e = now(); if (x.a > x.e) x.a = x.e - 1000; await DBA.update("ar/" + id, { e: x.e, a: x.a }); FX.toast("🏁 Arena yakunlandi"); paint(); } catch (e) { FX.toast("⚠️ " + ((e && e.message) || e)); } };
+      if ($("amA")) $("amA").onclick = () => annSheet(id, x, paint);
       if ($("amP")) $("amP").onclick = async () => { try { x.e += 3600e3; await DBA.update("ar/" + id, { e: x.e }); FX.toast("⏳ +1 soat qo‘shildi", "up"); paint(); } catch (e) { FX.toast("⚠️ " + ((e && e.message) || e)); } };
     }
     paint();

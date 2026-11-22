@@ -236,12 +236,12 @@ const need = u => { if (!u) throw new Error("Telegram foydalanuvchisi aniqlanmad
 const requireAdmin = u => { need(u); if (!isAdminTg(u)) throw new Error("Faqat ustoz uchun"); };
 
 // Ko'p xabarni bo'lib yuborish: har chaqiruvda BATCH tadan, sayt navbatdagisini o'zi so'raydi
-async function sendBatch(env, list, from, build) {
+async function sendBatch(env, list, from, build, method = "sendMessage") {
   from = Math.max(0, Number(from) || 0);
   const part = list.slice(from, from + BATCH);
   let sent = 0, failed = 0;
   for (const to of part) {
-    try { await tg(env, "sendMessage", { chat_id: to.tgId, ...build(to) }); sent++; } catch (e) { failed++; }
+    try { await tg(env, method, { chat_id: to.tgId, ...build(to) }); sent++; } catch (e) { failed++; }
   }
   const next = from + BATCH < list.length ? from + BATCH : null;
   return { sent, failed, next, total: list.length };
@@ -605,17 +605,20 @@ const UZ = 5 * 3600e3; // Toshkent vaqti
 // Hafta chegarasi: yakshanba 20:00 (Toshkent) — sayt (TW) bilan bir xil: +9 soat siljitib dushanba 00:00 deb hisoblanadi
 const WOFF = UZ + 4 * 3600e3;
 // ⚔️ Arena yo'li: boshlanganda va oxirgi soatda guruhga xabar, tugaganda g'olibni aniqlash (kam xato, teng bo'lsa — oldin) va tabrik
+async function arenaGroupTg(env, x, skip) {
+  if (!x.g || x.g === "*") return [];
+  const [users, tgs] = await Promise.all([db(env, "GET", "users"), students(env)]);
+  const byL = {}; tgs.forEach(r => byL[low(r.login)] = r.tgId);
+  const seen = new Set(), list = [];
+  Object.entries(users || {}).forEach(([uid, u]) => { if (!u || low(u.g) !== low(x.g) || (skip && skip(uid))) return; const t = loginsOf({ uid, ...u }).map(l => byL[l]).find(Boolean); if (t && !seen.has(t)) { seen.add(t); list.push({ tgId: t }); } });
+  return list.sort((a, b) => a.tgId - b.tgId);
+}
+async function arenaAllTg(env) { const seen = new Set(); return (await students(env)).filter(r => r.tgId && !seen.has(r.tgId) && seen.add(r.tgId)).map(r => ({ tgId: r.tgId })); }
 async function arenaCron(env) {
   const now = Date.now();
   const ar = await db(env, "GET", "ar", undefined, `&orderBy=%22e%22&startAt=${now - 2 * 864e5}`).catch(() => null) || {};
-  const groupTg = async (x, skip) => {
-    if (!x.g || x.g === "*") return [];
-    const [users, tgs] = await Promise.all([db(env, "GET", "users"), students(env)]);
-    const byL = {}; tgs.forEach(r => byL[low(r.login)] = r.tgId);
-    const seen = new Set(), list = [];
-    Object.entries(users || {}).forEach(([uid, u]) => { if (!u || low(u.g) !== low(x.g) || (skip && skip(uid))) return; const t = loginsOf({ uid, ...u }).map(l => byL[l]).find(Boolean); if (t && !seen.has(t)) { seen.add(t); list.push({ tgId: t }); } });
-    return list.sort((a, b) => a.tgId - b.tgId);
-  };
+  const groupTg = (x, skip) => arenaGroupTg(env, x, skip);
+
   const kb = (id, t) => ({ inline_keyboard: [[{ text: t, url: appLink("ar-" + id) }]] });
   for (const [id, x] of Object.entries(ar)) {
     if (!x || !Array.isArray(x.st) || !x.n) continue;
@@ -803,6 +806,21 @@ const VFN = {
     if ((await db(env, "GET", "admins/" + uid)) !== true) throw new Error("Faqat ustoz uchun");
     const list = (Array.isArray(i.items) ? i.items.slice(0, 1000) : []).map(x => ({ tgId: Number(x && x.tgId), name: String((x && x.name) || "") })).filter(x => x.tgId);
     return sendWel(env, list, i.from);
+  },
+  // ⚔️ Arena e'loni (afisha + matn): admin — guruhga yoki botdagi hammaga; arena egasi ustoz — o'z guruhiga
+  async arAnn(env, uid, i) {
+    const id = String(i.id || ""); if (!/^[a-z0-9]{4,20}$/.test(id)) throw new Error("Arena topilmadi");
+    const x = await db(env, "GET", "ar/" + id); if (!x || !Array.isArray(x.st)) throw new Error("Arena topilmadi");
+    const adm = (await db(env, "GET", "admins/" + uid)) === true; if (!adm && x.t !== uid) throw new Error("Faqat admin yoki arena egasi");
+    const to = i.to === "all" ? (adm ? "all" : null) : "g"; if (!to) throw new Error("Hammaga faqat admin yubora oladi");
+    const from = Math.max(0, Number(i.from) || 0);
+    if (i.count) { const l = to === "all" ? await arenaAllTg(env) : await arenaGroupTg(env, x); return { total: l.length, next: null, sent: 0, failed: 0 }; }
+    if (!from && x.ann && x.ann.done) throw new Error("Bu arena uchun e’lon allaqachon yuborilgan");
+    const list = to === "all" ? await arenaAllTg(env) : await arenaGroupTg(env, x);
+    const text = String(i.text || "").trim().slice(0, 900) || `⚔️ ARENA YO‘LI boshlandi!\n«${x.n}» — ${x.st.length} bosqich`;
+    const r = await sendBatch(env, list, from, () => ({ photo: SITE + "img/ar-start.jpg", caption: esc(text), parse_mode: "HTML", reply_markup: { inline_keyboard: [[{ text: "⚔️ Arenaga kirish", url: appLink("ar-" + id) }]] } }), "sendPhoto");
+    await db(env, "PATCH", "ar/" + id, r.next == null ? { ann: { to, at: Date.now(), n: list.length, i: list.length, done: true }, sn: true } : { ann: { to, at: Date.now(), n: list.length, i: r.next } });
+    return r;
   },
   // Admin: tanlangan o'quvchilarga bot orqali xabar (sayt yoki Telegram ichidan)
   async aMsg(env, uid, i) {
