@@ -550,6 +550,12 @@ button,a,label,summary,.tile,.tile2,.opt,.tp{touch-action:manipulation;-webkit-t
 #stBox.tlv{background:transparent;border:0;box-shadow:none;padding:0}
 #stBox.tlv .topics{gap:0;margin-bottom:8px}
 #stBox.tlv #go:not(.in){display:none}
+#stBox.msv #go:not(.mb){display:none}#stBox.msv{padding-bottom:96px}
+#msBar{display:none;position:fixed;left:50%;transform:translateX(-50%);bottom:calc(max(10px,env(safe-area-inset-bottom)) + 74px);width:min(560px,calc(100% - 20px));z-index:61;align-items:center;gap:10px;padding:9px 10px 9px 14px;border-radius:18px;background:rgb(var(--cardr));border:1px solid var(--ac,#E8B23A);box-shadow:0 -8px 30px rgba(0,0,0,.55);animation:mbIn .22s ease-out}
+#msBar.on{display:flex}@keyframes mbIn{from{opacity:0;transform:translate(-50%,14px)}to{opacity:1;transform:translate(-50%,0)}}
+#msBar .mb-t{flex:1;min-width:0;line-height:1.3}#msBar .mb-t b{display:block;font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}#msBar .mb-t span{font-size:12.5px;color:var(--mu)}
+#msBar #go{flex:none;width:auto;margin:0;height:46px;padding:0 20px;font-size:15px}
+@media (min-width:1024px){#msBar{transform:none;bottom:20px;animation:none;left:var(--mbl,50%);width:var(--mbw,560px)}}
 .tlg{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ac2);margin:4px 2px 10px}
 .tlw{position:relative;margin-bottom:14px}.tlw:before{content:"";position:absolute;left:63px;top:10px;bottom:10px;width:2px;border-radius:2px;background:linear-gradient(#7C3AED,#22D3EE)}
 .tle{display:flex;gap:10px;align-items:flex-start;margin-bottom:10px}
@@ -1330,7 +1336,7 @@ body.champ #tg::before{content:"👑 Chempion rejimi";display:block;font-size:11
 
 <nav class="bnav anav" id="anav"><button data-a="dash"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg><span>Bugun</span></button><button data-a="acc"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.8c2 .7 3.2 2.5 3.6 5.2"/></svg><span>O'quvchi</span></button><button data-a="tur"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M7 6H4a3 3 0 0 0 3 4M17 6h3a3 3 0 0 1-3 4M12 14v4M8 21h8"/></svg><span>Turnir</span></button><button data-a="pm"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M15 9.2c-.6-.9-1.7-1.4-3-1.4-1.8 0-3 .9-3 2.1 0 2.9 6 1.5 6 4.3 0 1.2-1.3 2.1-3 2.1-1.4 0-2.6-.6-3.2-1.6M12 6v1.8M12 16.3V18"/></svg><span>To‘lov</span></button><button data-a="more"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg><span>Yana</span></button></nav>
 <div class="amore hide" id="amore"><div class="amore-s"><div class="grab"></div><div class="amore-g">
-<button data-a="stat"><i class="aic c4">📊</i>Statistika</button><button data-a="cq"><i class="aic c6">✏️</i>Savollar</button><button data-a="ms"><i class="aic c5">🎓</i>Sertifikat</button><button data-a="pm"><i class="aic c3">💎</i>Premium</button><button data-a="tch"><i class="aic c2">👨‍🏫</i>Ustozlar</button><button data-a="bot"><i class="aic c7">🤖</i>Telegram bot</button><button data-a="boss"><i class="aic c1">🏰</i>Boss jangi</button><button data-a="vt"><i class="aic c4">⏱</i>Saytdagi vaqt</button><button data-a="pw"><i class="aic c8">🔑</i>Parol</button><button data-a="out"><i class="aic c1">🚪</i>Chiqish</button></div></div></div>
+<button data-a="stat"><i class="aic c4">📊</i>Statistika</button><button data-a="cq"><i class="aic c6">✏️</i>Savollar</button><button data-a="pm"><i class="aic c3">💎</i>Premium</button><button data-a="tch"><i class="aic c2">👨‍🏫</i>Ustozlar</button><button data-a="bot"><i class="aic c7">🤖</i>Telegram bot</button><button data-a="boss"><i class="aic c1">🏰</i>Boss jangi</button><button data-a="vt"><i class="aic c4">⏱</i>Saytdagi vaqt</button><button data-a="pw"><i class="aic c8">🔑</i>Parol</button><button data-a="out"><i class="aic c1">🚪</i>Chiqish</button></div></div></div>
 <nav class="bnav hide" id="bnav"><button data-g="home"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg><span>Bosh</span></button><button data-g="tests"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v17H6.5A2.5 2.5 0 0 0 4 21.5z"/><path d="M4 19.5V4.5"/></svg><span>Testlar</span></button><button data-g="games"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="7" width="19" height="11" rx="4"/><path d="M7 11v3M5.5 12.5h3M15.5 12h.01M18 13.5h.01"/></svg><span>O'yinlar</span></button><button data-g="rank"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M7 6H4a3 3 0 0 0 3 4M17 6h3a3 3 0 0 1-3 4M12 14v4M8 21h8"/></svg><span>Reyting</span></button><button data-g="prof"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4.4 4.2-6.5 8-6.5s7 2.1 8 6.5"/></svg><span>Profil</span></button><button data-g="out" class="bn-out"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h5v16h-5M10 8l-4 4 4 4M6 12h10"/></svg><span>Chiqish</span></button><div class="bn-me" id="bnMe"></div></nav>
 <div class="modal" id="mdl"><div class="card">
   <p style="font-weight:700;font-size:17px;margin-bottom:6px">Testni yakunlaysizmi?</p>
@@ -2419,7 +2425,7 @@ const MSK = (() => {
 const MSACC=(()=>{let acc={},un=null;
   const watch=()=>{if(un)return;try{DBA}catch(e){return}un=DBA.on("c/ms",v=>{acc=v||{};if(VIEW.k==="ms"||VIEW.k==="mscls")try{renderTopics()}catch(e){}if(typeof MSADM!=="undefined")MSADM.refresh()})};
   const saved=s=>{try{const c=ACCT.cur;return !!(c&&localStorage.getItem("zm_ms_"+c.uid+"_"+s.id))}catch(e){return false}};
-  function can(s){try{if(isAdmin())return true}catch(e){}const a=acc[s.id];if(!a||!a.on)return false;const g=Array.isArray(a.g)?a.g:[];if(!g.length)return true;const c=typeof ACCT!=="undefined"&&ACCT.cur;return !!(c&&g.includes(c.g))}
+  function can(s){return true}
   return{watch,can,saved,get acc(){return acc}}})();
 const clsOf=g=>String(g||"").split(" · ")[0].trim(),fanOf=g=>{const p=String(g||"").split(" · ");return p.length>1?p.slice(1).join(" · "):"Testlar"};
 function renderTopics(){
@@ -2427,15 +2433,15 @@ function renderTopics(){
   const BK=f=>{if(!$("start").classList.contains("hide"))window.BK(f)};
   const box=$("tps"),grid=$("clsGrid");if(!box)return;const E=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   {const g0=$("go");if(g0&&box.contains(g0)){g0.classList.remove("in");$("stBox").insertBefore(g0,box.nextSibling)}}
-  box.innerHTML="";grid.innerHTML="";
+  box.innerHTML="";grid.innerHTML="";msBar();
   MSACC.watch();PM.watch();
   if(VIEW.k==="mscls"){
-    $("stH").textContent="🎓 Milliy sertifikat testlari";$("stS").textContent="Sinfingizni tanlang. Variantlar ustoz ruxsat bergandan keyin ochiladi.";$("stBox").classList.add("hide");BK(goHome);setNav("ms");
+    $("stH").textContent="🎓 Milliy sertifikat testlari";$("stS").textContent="Sinfingizni tanlang. 💎 belgili variantlar — Premium.";$("stBox").classList.add("hide");BK(goHome);setNav("ms");
     const ms=SETS.filter(s=>s.ms),have={};ms.forEach(s=>{const c=clsOf(s.g);(have[c]=have[c]||{n:0,o:0,f:new Set()});have[c].n++;if(MSACC.can(s))have[c].o++;have[c].f.add(fanOf(s.g))});
     const std=["6-sinf","7-sinf","8-sinf","9-sinf","10-sinf","11-sinf"];const extra=Object.keys(have).filter(c=>!std.includes(c));
     std.concat(extra).forEach((c,i)=>{const x=have[c],num=(c.match(/\d+/)||[""])[0];
       const b=document.createElement("button");b.className="clsc"+(x?"":" off");b.style.animationDelay=(i*50)+"ms";
-      b.innerHTML=`<div class="clsn">${E(num||"✦")}</div><b>${E(c)}</b><span>${x?`${x.n} ta variant · ${x.o?`🔓 ${x.o} tasi ochiq`:"🔒 hali yopiq"}<br>${E([...x.f].join(", "))}`:"tez orada"}</span>`;
+      b.innerHTML=`<div class="clsn">${E(num||"✦")}</div><b>${E(c)}</b><span>${x?`${x.n} ta variant<br>${E([...x.f].join(", "))}`:"tez orada"}</span>`;
       if(x)b.onclick=()=>{VIEW={k:"ms",cls:c};set=null;renderTopics();window.scrollTo(0,0)};
       grid.appendChild(b)});
     return;
@@ -2459,7 +2465,7 @@ function renderTopics(){
   }
   $("stBox").classList.remove("hide");BK(()=>{if(VIEW.k==="set"){VIEW={k:"cls"};set=null;renderTopics();window.scrollTo(0,0)}else if(VIEW.k==="ms"){VIEW={k:"mscls"};set=null;renderTopics();window.scrollTo(0,0)}else goHome()});
   let list;
-  if(VIEW.k==="ms"){list=SETS.filter(s=>s.ms&&(!VIEW.cls||clsOf(s.g)===VIEW.cls));$("stH").textContent="🎓 "+(VIEW.cls?VIEW.cls+" · ":"")+"Milliy sertifikat";$("stS").textContent="45 topshiriqli to'liq imtihon varianti. 🔒 belgili variantlar ustoz ruxsat bergandan keyin ochiladi.";}
+  if(VIEW.k==="ms"){list=SETS.filter(s=>s.ms&&(!VIEW.cls||clsOf(s.g)===VIEW.cls));$("stH").textContent="🎓 "+(VIEW.cls?VIEW.cls+" · ":"")+"Milliy sertifikat";$("stS").textContent="45 topshiriqli to'liq imtihon varianti. 💎 belgili variantlar — Premium.";}
   else{list=SETS.filter(s=>!s.ms&&clsOf(s.g)===VIEW.cls);$("stH").textContent="📚 "+VIEW.cls;$("stS").textContent="Mavzuni tanlang";}
   if(!list.length){box.innerHTML='<div class="sub" style="text-align:center;margin:10px 0">Hozircha testlar yo\'q. Tez orada qo\'shiladi.</div>'}
   let lg=null;const gs=[];list.forEach(s=>{if(!gs.includes(s.g))gs.push(s.g)});
@@ -2471,7 +2477,7 @@ function renderTopics(){
     if(TL){box.insertAdjacentHTML("beforeend",`<div class="tlg">${E(fanOf(g))}</div>`);wrap=document.createElement("div");wrap.className="tlw";box.appendChild(wrap)}
     list.filter(s=>s.g===g).forEach(s=>{
     if(!TL&&s.g!==lg){lg=s.g;box.insertAdjacentHTML("beforeend",`<div style="font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ac2);margin-top:6px">${E(VIEW.k==="ms"?s.g:fanOf(s.g))}</div>`)}
-    const lock=s.ms&&!MSACC.can(s)&&!MSACC.saved(s);if(lock&&set&&set.id===s.id)set=null;
+    const lock=false;
     if(TL){
       const bt=best[s.id]||best[s.title],mv=/mavzu(lar)?$/i.test(s.title||""),kw=String(s.sub||"").split(" · ")[0];
       const ev=document.createElement("div");ev.className="tle"+(bt?" done":"")+(set&&set.id===s.id?" sel":"");
@@ -2483,14 +2489,23 @@ function renderTopics(){
       return;
     }
     const b=document.createElement("button");b.className="tp"+(set&&set.id===s.id?" sel":"")+(lock?" lock":"");
-    b.innerHTML=`<div class="n">${E(s.n)}</div><div><b>${E(s.title)}${PM.badge(s)}</b><span>${lock?"🔒 Ustoz hali ruxsat bermagan":E(s.sub)}</span></div>${s.ms?`<span class="lk">${lock?"🔒":"🔓"}</span>`:""}`;
-    b.onclick=()=>{if(lock){FX.toast("🔒 Bu variant hali yopiq. Ustoz ruxsat berganda ochiladi.");return}set=s;document.querySelectorAll(".tp").forEach(x=>x.classList.toggle("sel",x===b));chk()};
+    b.innerHTML=`<div class="n">${E(s.n)}</div><div><b>${E(s.title)}${PM.badge(s)}</b><span>${E(s.sub)}</span></div>`;
+    b.onclick=()=>{set=s;document.querySelectorAll(".tp").forEach(x=>x.classList.toggle("sel",x===b));msBar()};
     box.appendChild(b);
   })});
+  msBar();
   try{chk()}catch(e){}
 }
+addEventListener("resize",()=>{try{if($("msBar")&&$("msBar").classList.contains("on"))msBar()}catch(e){}});
+function msBar(){let bar=$("msBar");const on=VIEW.k==="ms"&&set&&set.ms;$("stBox").classList.toggle("msv",VIEW.k==="ms");
+  if(!bar){bar=document.createElement("div");bar.id="msBar";bar.innerHTML='<div class="mb-t"><b></b><span></span></div>';$("stBox").appendChild(bar)}
+  const g=$("go");bar.classList.toggle("on",!!on);
+  if(on){try{const r=$("stBox").getBoundingClientRect();bar.style.setProperty("--mbl",(r.left+24)+"px");bar.style.setProperty("--mbw",Math.max(320,r.width-48)+"px")}catch(e){}
+  bar.querySelector("b").textContent=String(set.title||"").replace(/^Milliy sertifikat:\s*/,"").replace(/\s*\(.*$/,"")+" tanlandi";bar.querySelector("span").textContent="45 topshiriq · "+((set.ms&&set.ms.dur)||120)+" daqiqa";if(g&&g.parentNode!==bar){g.classList.add("mb");bar.appendChild(g)}}
+  else if(g&&g.parentNode===bar){g.classList.remove("mb");$("stBox").insertBefore(g,$("tps").nextSibling)}
+  try{chk()}catch(e){}}
 renderTopics();
-function chk(){if(!$("go"))return;const a=typeof ACCT!=="undefined"&&ACCT.cur;$("go").disabled=!(set&&a);const n=set&&set.qs?(set.qs.length>25?25:set.qs.length):0;$("go").textContent=!a?"Avval tizimga kiring ↑":$("go").classList.contains("in")&&n?`▶ Boshlash · ${n} savol`:"Testni boshlash"}
+function chk(){if(!$("go"))return;const a=typeof ACCT!=="undefined"&&ACCT.cur;$("go").disabled=!(set&&a);const n=set&&set.qs?(set.qs.length>25?25:set.qs.length):0;$("go").textContent=!a?"Avval tizimga kiring ↑":$("go").classList.contains("mb")?"▶ Boshlash":$("go").classList.contains("in")&&n?`▶ Boshlash · ${n} savol`:"Testni boshlash"}
 $("go").onclick=()=>start();
 const ROT=(()=>{const key=st=>"zm_rot_"+((typeof ACCT!=="undefined"&&ACCT.cur&&(ACCT.cur.login||ACCT.cur.uid))||"x")+"_"+st.id;
  function pick(st,N){const L=st.qs.length;let d={r:0,s:{}};try{d=JSON.parse(localStorage.getItem(key(st)))||d}catch(e){}if(!d.s)d.s={};
@@ -2694,7 +2709,6 @@ function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random
 function start(){
   FROM_T=false;TEAMWIN="";HWCUR=HWNEXT;HWNEXT=null;
   if(!HWCUR&&!set.ar&&!PM.okSet(set)&&!(set.ms&&MSACC.saved(set))){PM.wall("«"+(set.title||set.n||set.g)+"»");return}
-  if(set.ms&&!HWCUR&&!MSACC.can(set)&&!MSACC.saved(set)){FX.toast("🔒 Bu variant hali yopiq. Ustoz ruxsat berganda ochiladi.");return}
   if(set.ms&&set.ms.enc){if(!ACCT.cur)return;const s0=set,h0=HWCUR;FX.toast("⏳ Variant yuklanmoqda…");MSK.open(s0).then(()=>{set=s0;HWNEXT=h0;start()}).catch(e=>{const m=String(e&&e.message);if(m==="deny")PM.wall();else FX.toast(m==="nokey"?"⚠️ Bu variant hali tayyorlanmoqda. Ustozga xabar bering.":"⚠️ Variantni yuklab bo‘lmadi. Internetni tekshiring.")});return}
   if(set.ms){const ac=ACCT.cur;if(!ac)return;FN=ac.f;LN=ac.l;name=FN+" "+LN;return MS.start()}
   const ac=ACCT.cur;
@@ -5566,7 +5580,7 @@ const VTADM = (() => {
 })();
 const MORE = (() => {
   const G = [["O'quvchilar", [["acc", "users", "#22D3EE", "O'quvchilar", "Ro'yxat, natijalar, bloklash"], ["hw", "task", "#22C55E", "Guruhlar va vazifalar", "Kod, havola, uy vazifasi"], ["nm", "users", "#F2C14E", "Yangi a'zolar", "Bugun, hafta, oy · Telegramga yozish"], ["vt", "clock", "#38BDF8", "Saytdagi vaqt", "Kim qancha shug'ullanyapti"]]],
-    ["O'yin va kontent", [["tur", "trophy", "#F472B6", "Turnirlar", "Jonli o'yinlar, natijalar"], ["boss", "castle", "#FB923C", "Boss jangi", "Butun sinf birgalikda"], ["ar", "trophy", "#F97316", "⚔️ Arena yo‘li", "Bosqichli marafon · chempion kartasi"], ["cq", "edit", "#A78BFA", "Savollar", "Testlarni tahrirlash"], ["ms", "cert", "#F2C14E", "Milliy sertifikat", "Variantlar va ruxsatlar"], ["stat", "chart", "#34D399", "Statistika", "Faollik, natijalar, xatolar"]]],
+    ["O'yin va kontent", [["tur", "trophy", "#F472B6", "Turnirlar", "Jonli o'yinlar, natijalar"], ["boss", "castle", "#FB923C", "Boss jangi", "Butun sinf birgalikda"], ["ar", "trophy", "#F97316", "⚔️ Arena yo‘li", "Bosqichli marafon · chempion kartasi"], ["cq", "edit", "#A78BFA", "Savollar", "Testlarni tahrirlash"], ["stat", "chart", "#34D399", "Statistika", "Faollik, natijalar, xatolar"]]],
     ["Daromad", [["pm", "gem", "#FBBF24", "Premium", "Tariflar, o'quvchilar, bo'limlar"], ["tch", "teach", "#22D3EE", "Ustozlar va hamkorlar", "Arizalar, Pro, to'lovlar"]]],
     ["Tizim", [["bot", "bot", "#A7A3D6", "Telegram bot va xabarlar", "Xabar, hisobot, zaxira"], ["pw", "key", "#A7A3D6", "Parol", "Admin kirishi"], ["out", "out", "#F43F5E", "Chiqish", "Admin paneldan chiqish"]]]];
   let bd = {}, st = null, q = "";
