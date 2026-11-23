@@ -1624,6 +1624,11 @@ const PM = (() => {
     return false;
   }
   const okSet = s => is() || !lockSet(s);
+  // O‘yinlarni sinfma-sinf premium qilish: c/pm/fc/<o‘yin>/<sinf>
+  const FC = [["juft", "🧩", "Juftini top"], ["kim", "🕵️", "Kim bu?"]];
+  const clsLock = (k, c) => f(k) || !!(cfg.fc && cfg.fc[k] && cfg.fc[k][String(c)]);
+  const clsOk = (k, c) => is() || !clsLock(k, c);
+  function clsGate(k, c, fn) { watch(); if (clsOk(k, c)) return fn(); const x = FC.find(z => z[0] === k); wall((x ? x[1] + " «" + x[2] + "» · " : "") + c + "-sinf"); }
   const badge = s => (!is() && lockSet(s) ? " 💎" : "");
   function gate(k, fn) { watch(); if (is() || !f(k)) return fn(); const x = FEAT.find(z => z[0] === k); wall(x ? x[1] + " «" + x[2] + "»" : ""); }
   function wall(t) { ask(typeof t === "string" ? t : ""); }
@@ -1654,7 +1659,7 @@ const PM = (() => {
   // Ro'yxatdan faqat ochiq mavzularni qoldirish; bo'sh qolsa — oyna
   const free = L => (is() ? L : (L || []).filter(x => x && !lockSet(x)));
   try { document.addEventListener("click", e => { const t = e.target && e.target.closest && e.target.closest(".pm-lk"); if (t && !is()) { e.preventDefault(); e.stopPropagation(); const st = setOf(t.dataset.s || (t.querySelector("input[value]") || {}).value); ask(st ? "«" + (st.title || st.n || st.g) + "»" : ""); } }, true); } catch (e) {}
-  const anyLock = () => Object.values(cfg.f || {}).some(Boolean) || Object.values(cfg.g || {}).some(Boolean) || Object.values(cfg.s || {}).some(Boolean);
+  const anyLock = () => Object.values(cfg.f || {}).some(Boolean) || Object.values(cfg.fc || {}).some(o => Object.values(o || {}).some(Boolean)) || Object.values(cfg.g || {}).some(Boolean) || Object.values(cfg.s || {}).some(Boolean);
   const tars = () => (Array.isArray(cfg.tar) ? cfg.tar : Object.values(cfg.tar || {})).filter(t => t && t.n);
   const dt = ms => { const d = new Date(ms), z = n => String(n).padStart(2, "0"); return `${z(d.getDate())}.${z(d.getMonth() + 1)}.${d.getFullYear()}`; };
   const contact = () => String(cfg.ct || "ZULPANOV_METHODS").replace(/^@/, "").replace(/[^A-Za-z0-9_]/g, "") || "ZULPANOV_METHODS";
@@ -1677,6 +1682,7 @@ const PM = (() => {
   function included() {
     const out = [];
     FEAT.forEach(([k, i, n]) => { if (f(k)) out.push(i + " " + n); });
+    FC.forEach(([k, i, n]) => { if (f(k)) return; const c = Object.keys((cfg.fc || {})[k] || {}).filter(x => cfg.fc[k][x]).sort((a, b) => a - b); if (c.length) out.push(i + " " + n + ": " + c.join(", ") + "-sinflar"); });
     const gs = Object.keys(cfg.g || {}).filter(k => cfg.g[k]);
     if (gs.length && typeof SETS !== "undefined") { const names = []; SETS.forEach(s => { if (!s.ms && cfg.g[gk(s.g)] && !names.includes(s.g)) names.push(s.g); }); names.forEach(n => out.push("📚 Mavzuli testlar: " + n)); }
     if (!f("ms") && typeof SETS !== "undefined") { const v = SETS.filter(s => s.ms && cfg.s && cfg.s[s.id]); if (v.length) out.push(`🎓 Milliy sertifikat: ${v.length} ta variant`); }
@@ -1792,7 +1798,7 @@ const PM = (() => {
     watch();
   }
   function reset() { try { if (unC) unC(); if (unM) unM(); } catch (e) {} unC = unM = null; mUid = null; me = null; watch(); }
-  return { watch, reset, preview, ask, pay, markBoxes, free, is, lockSet, okSet, badge, gate, wall, open, homeBox, install, gk, FEAT, DAY, get cfg() { return cfg; }, get tcfg() { return tcfg; }, get me() { return me; } };
+  return { watch, reset, preview, ask, pay, markBoxes, free, is, lockSet, okSet, badge, gate, FC, clsLock, clsOk, clsGate, wall, open, homeBox, install, gk, FEAT, DAY, get cfg() { return cfg; }, get tcfg() { return tcfg; }, get me() { return me; } };
 })();
 // Ustoz paneli: 💎 Premium
 const PMADM = (() => {
@@ -1902,6 +1908,7 @@ const PMADM = (() => {
     const ms = SETS.filter(s => s.ms), mcls = []; ms.forEach(s => { const c = clsOf(s.g); if (!mcls.includes(c)) mcls.push(c); }); mcls.sort((a, b) => (parseInt(a) || 99) - (parseInt(b) || 99));
     const gOn = reg.filter(g => G[PM.gk(g)]).length, sOn = ms.filter(s => S[s.id]).length;
     el.innerHTML = `<div class="pma-h">Bo‘limlar</div>${PM.FEAT.map(([k, i, n]) => sw("f/" + k, F[k], i, n)).join("")}
+      ${PM.FC.map(([k, i, n]) => { const o = (C.fc || {})[k] || {}, on = ["6", "7", "8", "9", "10", "11"].filter(c => o[c]).length; return `<details class="pma-d"><summary>${i} ${esc(n)} — sinflar bo‘yicha · ${on} ta premium</summary>${F[k] ? `<div class="tnote">«${esc(n)}» bo‘limi butunlay premium qilingan — hamma sinf yopiq.</div>` : ""}${["6", "7", "8", "9", "10", "11"].map(c => sw("fc/" + k + "/" + c, o[c], i, c + "-sinf")).join("")}</details>`; }).join("")}
       <details class="pma-d"><summary>📚 Mavzuli testlar (sinf va fan bo‘yicha) · ${gOn} ta premium</summary>${cls.map(c => `<div class="pma-h">${esc(c)}</div>` + reg.filter(g => clsOf(g) === c).map(g => sw("g/" + PM.gk(g), G[PM.gk(g)], "📚", fanOf(g))).join("")).join("")}</details>
       <details class="pma-d"><summary>🎓 Milliy sertifikat — alohida variantlar · ${sOn} ta premium</summary>${F.ms ? `<div class="tnote">«Milliy sertifikat (barcha variantlar)» yoqilgan — hamma variant premium.</div>` : ""}${mcls.map(c => `<div class="pma-h">${esc(c)}</div>` + ms.filter(s => clsOf(s.g) === c).map(s => sw("s/" + s.id, S[s.id], "🎓", fanOf(s.g) + ": " + s.title.replace("Milliy sertifikat: ", ""))).join("")).join("")}</details>`;
     el.querySelectorAll("[data-k]").forEach(b => b.onclick = () => { const k = b.dataset.k, on = !b.classList.contains("on"); b.classList.toggle("on", on); DBA.set("c/pm/" + k, on || null).then(() => FX.toast(on ? "💎 Premium qilindi" : "🔓 Bepul qilindi", "up")).catch(e => { b.classList.toggle("on", !on); FX.toast("⚠️ " + (e.message || e)); }); });
@@ -3762,12 +3769,12 @@ const JUFTG = (() => {
   function menu() {
     const n = LV[S.l][0], L = list(), b = best(n), cnt = k => ((window.JUFT || {})[S.c] || []).filter(x => x.k === k).length;
     $("tz").innerHTML = head("🧩 Juftini top", GR(S.c) + "-sinf · " + (SUBJ[S.c] || "Moslarini toping")) +
-      `<div class="jf-cls">${CL.map(c => `<button data-c="${c}"${c === GR(S.c) ? ' class="on"' : ""}${HAS.includes(c) ? "" : " disabled"}>${c}-sinf${HAS.includes(c) ? "" : " · tez kunda"}</button>`).join("")}</div>
+      `<div class="jf-cls">${CL.map(c => `<button data-c="${c}"${c === GR(S.c) ? ' class="on"' : ""}${HAS.includes(c) ? "" : " disabled"}>${c}-sinf${HAS.includes(c) ? (PM.clsOk("juft", c) ? "" : " 💎") : " · tez kunda"}</button>`).join("")}</div>
       ${VAR[GR(S.c)] ? `<div class="jf-cls" style="margin-top:8px">${VAR[GR(S.c)].map(v => `<button data-v="${v}"${v === S.c ? ' class="on"' : ""}>${SUBJ[v]}</button>`).join("")}</div>` : ""}
       <div class="jf-lb">O‘YIN REJIMI</div><div class="jf-md">${[["l", "✏️", "Chiziq bilan ulash", "Ikki ustun · chiziq"], ["c", "🃏", "Aralash kartochkalar", "Mosini topib bosing"]].map(([m, i, t, d]) => `<button data-m="${m}"${m === S.m ? ' class="on"' : ""}><i>${i}</i><span><b>${t}</b><small>${d}</small></span></button>`).join("")}</div>
       <div class="jf-lb">JUFTLAR TURI</div><div class="jf-ty">${Object.entries(TY).map(([k, t]) => `<button data-k="${k}"${k === S.k ? ' class="on"' : ""}><i style="background:${t[4]}26;color:${t[4]}">${t[3]}</i><span style="flex:1"><b>${t[0]}</b><small>${cnt(k)} ta juft</small></span></button>`).join("")}</div>
       <div class="jf-lb">DARAJA</div><div class="jf-lv">${LV.map((v, i) => `<button data-l="${i}"${i === S.l ? ' class="on"' : ""}>${v[1]}<small>${v[0]} juft${v[0] > 6 && S.m !== "c" ? " · 2 bosqich" : ""}</small></button>`).join("")}</div>
-      ${b ? `<div class="tnote" style="margin-top:14px;display:flex;justify-content:space-between"><span>Eng yaxshi natijangiz</span><b>${fmt(b.t)} · ${b.m} xato · ${"⭐".repeat(b.s)}</b></div>` : ""}
+      ${PM.clsOk("juft", GR(S.c)) ? "" : `<div class="pm-note" onclick="PM.open()">💎 ${GR(S.c)}-sinf — Premium · <b>Premium olish ›</b></div>`}${b ? `<div class="tnote" style="margin-top:14px;display:flex;justify-content:space-between"><span>Eng yaxshi natijangiz</span><b>${fmt(b.t)} · ${b.m} xato · ${"⭐".repeat(b.s)}</b></div>` : ""}
       <button class="btn" id="jfGo" style="margin-top:14px"${L.length < 4 ? " disabled" : ""}>🧩 O‘ynash</button>
       <div class="sub" style="text-align:center;margin-top:10px">${S.m === "c" ? `Aralash kartochkalardan bitta ${esc(TY[S.k][1].toLowerCase())} va unga mos ${esc(TY[S.k][2].toLowerCase())}ni bosing.` : `Daftardagidek: chapdagi ${esc(TY[S.k][1].toLowerCase())}ni o‘ngdagi mos ${esc(TY[S.k][2].toLowerCase())} bilan chiziq orqali ulang.`}</div>`;
     $("tz").querySelectorAll("[data-v]").forEach(b => b.onclick = async () => { S.c = b.dataset.v; save(); try { await load(S.c); } catch (e) {} menu(); });
@@ -3775,7 +3782,7 @@ const JUFTG = (() => {
     $("tz").querySelectorAll("[data-k]").forEach(b => b.onclick = () => { S.k = b.dataset.k; save(); menu(); });
     $("tz").querySelectorAll("[data-m]").forEach(b => b.onclick = () => { S.m = b.dataset.m === "c" ? "c" : "l"; save(); menu(); });
     $("tz").querySelectorAll("[data-l]").forEach(b => b.onclick = () => { S.l = +b.dataset.l; save(); menu(); });
-    $("jfGo").onclick = start;
+    $("jfGo").onclick = () => PM.clsGate("juft", GR(S.c), start);
   }
   const PAL = ["#F59E0B", "#22D3EE", "#A78BFA", "#F472B6", "#34D399", "#FB923C"];
   function start() {
@@ -4039,16 +4046,16 @@ const KIMG = (() => {
     const B = bank();
     $("tz").innerHTML = head("🕵️ Kim bu?", GR(S.c) + "-sinf · " + SUBJ(S.c)) +
       `<div class="km-hero"><span class="km-hi">🕵️</span><b>Ishoralarga qarab shaxsni toping</b><small>Kam ishora — ko‘p ball! ${RN} ta shaxs.</small></div>
-      <div class="jf-lb">SINF</div><div class="jf-cls">${CL.map(c => `<button data-c="${c}"${c === GR(S.c) ? ' class="on"' : ""}>${c}-sinf</button>`).join("")}</div>
+      <div class="jf-lb">SINF</div><div class="jf-cls">${CL.map(c => `<button data-c="${c}"${c === GR(S.c) ? ' class="on"' : ""}>${c}-sinf${PM.clsOk("kim", c) ? "" : " 💎"}</button>`).join("")}</div>
       ${GR(S.c) !== "6" ? `<div class="jf-lb">FAN</div><div class="jf-cls">${[[GR(S.c), "O‘zbekiston tarixi"], [GR(S.c) + "j", "Jahon tarixi"]].map(([k, n]) => `<button data-v="${k}"${k === S.c ? ' class="on"' : ""}>${n}</button>`).join("")}</div>` : ""}
       <div class="jf-lb">QOIDALAR</div><div class="card km-rule">🔎 Avval <b>1 ta ishora</b> ochiq. Topa olmasangiz — keyingisini oching.<br>⭐ Ball: 1 ishora — <b>10</b>, 2 — <b>7</b>, 3 — <b>5</b>, 4 — <b>3</b><br>❌ Xato javob — variant o‘chadi, yangi ishora ochiladi. 4-ishoradan keyingi xato — shaxs topilmadi.</div>
       <div class="xr-rc"><div><b>${B.length}</b><small>shaxs bazada</small></div><div><b id="kmBest">—</b><small>eng yaxshi ball</small></div><div><b>${RN}</b><small>shaxs o‘yinda</small></div></div>
-      <button class="btn" id="kmGo" style="margin-top:14px"${B.length >= 6 ? "" : " disabled"}>▶ Boshlash</button>
+      ${PM.clsOk("kim", GR(S.c)) ? "" : `<div class="pm-note" onclick="PM.open()" style="margin-top:14px">💎 ${GR(S.c)}-sinf — Premium · <b>Premium olish ›</b></div>`}<button class="btn" id="kmGo" style="margin-top:14px"${B.length >= 6 ? "" : " disabled"}>▶ Boshlash</button>
       <div class="ah">🏆 Haftaning eng yaxshi tergovchilari · ${esc(GR(S.c))}-sinf · ${esc(SUBJ(S.c))}</div><div class="card" style="padding:6px 12px" id="kmL"><div class="sub" style="text-align:center;margin:12px 0">Yuklanmoqda…</div></div>`;
     const sw = async c => { S.c = c; save(); try { await load(S.c); } catch (e) {} menu(); };
     $("tz").querySelectorAll("[data-c]").forEach(b => b.onclick = () => { if (GR(S.c) === b.dataset.c) return; sw(b.dataset.c === "6" ? "6" : b.dataset.c + (/j$/.test(S.c) ? "j" : "")); });
     $("tz").querySelectorAll("[data-v]").forEach(b => b.onclick = () => sw(b.dataset.v));
-    $("kmGo").onclick = start;
+    $("kmGo").onclick = () => PM.clsGate("kim", GR(S.c), start);
     const k0 = S.c; const { list, best } = await board(); if (!$("kmL") || k0 !== S.c) return;
     $("kmL").innerHTML = lbHtml(list, (me() || {}).uid); if ($("kmBest")) $("kmBest").textContent = best || "—";
   }
