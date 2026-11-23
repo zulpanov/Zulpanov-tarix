@@ -644,7 +644,7 @@ body.dlm #bkb{display:none!important}
 .bz-best{font-size:13px;color:var(--mu);margin-bottom:12px}.bz-best b{color:#FCD34D;font-size:16px}
 .bz-r{display:flex;align-items:center;gap:10px;padding:8px 2px}.bz-r+.bz-r{border-top:1px solid rgba(var(--w),.07)}.bz-r.me{background:rgba(139,92,246,.15);border-radius:12px;padding:8px}.bz-i{width:26px;text-align:center;font-weight:800;color:var(--mu)}.bz-r b{flex:1;font-size:14px;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.bz-r em{font-style:normal;font-weight:900;font-size:17px;color:#FCD34D}
 .bz-cd{height:60vh;display:flex;flex-direction:column;align-items:center;justify-content:center}.bz-cd b{font-size:120px;font-weight:900;line-height:1;background:linear-gradient(180deg,#FDE047,#F97316);-webkit-background-clip:text;background-clip:text;color:transparent;animation:pbin .6s cubic-bezier(.2,1.4,.4,1)}.bz-cd span{color:var(--mu);margin-top:8px}
-.bz-top{display:flex;align-items:center;gap:10px;margin:2px 0 14px}
+.bz-top{display:flex;align-items:center;gap:10px;margin:2px 0 14px}.gq-x{flex:none}.kh-top .gq-x{width:34px;height:34px;font-size:14px}
 .bz-ring{--p:100;width:72px;height:72px;flex:none;border-radius:50%;padding:5px;background:conic-gradient(#FACC15 calc(var(--p)*1%),rgba(var(--w),.1) 0)}.bz-ring span{display:grid;place-items:center;width:100%;height:100%;border-radius:50%;background:var(--bg);font-size:24px;font-weight:900}
 .bz-ring.low{background:conic-gradient(#EF4444 calc(var(--p)*1%),rgba(var(--w),.1) 0)}.bz-ring.low span{color:#FCA5A5;animation:bump .5s infinite}.bz-ring.hit{animation:shake .4s}
 .bz-sc{flex:1;text-align:center;padding:8px;border-radius:16px;background:rgba(var(--w),.06);border:1px solid rgba(var(--w),.1)}.bz-sc small{display:block;font-size:11px;color:var(--mu)}.bz-sc b{font-size:22px;font-weight:900;display:inline-block}.bz-sc b.bump{animation:bump .4s}
@@ -3154,7 +3154,7 @@ const DUEL = (() => {
     const R = rngF(host.seed || 1), perms = Q.map(() => { const a = [0, 1, 2, 3]; for (let i = 3; i > 0; i--) { const j = Math.floor(R() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; });
     G = { hostUid, id, host, Q, perms, cur: 0, ok: 0, streak: 0, wst: 0, t0: Date.now(), lock: false, own: hostUid === me().uid };
     show("tz"); setNav(null); BK(null); document.body.classList.add("dlm");
-    $("tz").innerHTML = `<div class="kh-top"><span class="kh-c" id="dsk">🔥 0</span><span class="kh-c">⚔️ ${esc(G.own ? "Siz boshladingiz" : String(host.n || "").split(" ")[0] + " bilan")}</span><span class="kh-sp"></span><span class="kh-c" id="dqn"></span></div><div class="kh-tb"><i id="dpb" style="width:0%"></i></div><div class="kh-tl"><span>Bir bosishda javob beriladi ⚡</span><span class="ttm" id="dtm">⏱ 00:00</span></div><div id="dqa"></div>`;
+    $("tz").innerHTML = `<div class="kh-top"><button class="adh-b gq-x" onclick="DUEL.quit()" title="Chiqish">✕</button><span class="kh-c" id="dsk">🔥 0</span><span class="kh-c">⚔️ ${esc(G.own ? "Siz boshladingiz" : String(host.n || "").split(" ")[0] + " bilan")}</span><span class="kh-sp"></span><span class="kh-c" id="dqn"></span></div><div class="kh-tb"><i id="dpb" style="width:0%"></i></div><div class="kh-tl"><span>Bir bosishda javob beriladi ⚡</span><span class="ttm" id="dtm">⏱ 00:00</span></div><div id="dqa"></div>`;
     clearInterval(G.tk); G.tk = setInterval(() => { if (!$("dtm") || !G) return clearInterval(G && G.tk); $("dtm").textContent = "⏱ " + fmt(Date.now() - G.t0); }, 500);
     q();
   }
@@ -3239,7 +3239,8 @@ const DUEL = (() => {
   }
   function pending() { let c = null; try { c = ls.get("zm_duel"); } catch (e) {} if (c && me()) { try { ls.del("zm_duel"); } catch (e) {} setTimeout(() => openLink(c), 700); return false; } return false; }
   window.addEventListener("hashchange", () => { const h = location.hash; if (!h.startsWith("#duel-")) return; const dc = h.slice(6); try { history.replaceState(null, "", location.pathname + location.search); } catch (e) {} if (me()) openLink(dc); else { ls.set("zm_duel", dc); FX.toast("⚔️ Duelga kirish uchun avval tizimga kiring"); } });
-  return { open, openLink, pending, leave() { if (G) clearInterval(G.tk); G = null; } };
+  function quit() { if (G && !confirm("Dueldan chiqasizmi? Natija saqlanmaydi.")) return; if (G) clearInterval(G.tk); G = null; open(); }
+  return { open, openLink, pending, quit, leave() { if (G) clearInterval(G.tk); G = null; } };
 })();
 
 
@@ -3256,7 +3257,7 @@ const BLITZ = (() => {
   const CNTS = [10, 20, 30, 40];
   const kOf = () => ck(cls) + "_" + cnt;
   const chosen = () => { const g = AR ? (groups()[cls] || []) : PM.free(groups()[cls] || []), ids = AR ? AR.ids : sel[cls]; return ids && ids.length ? g.filter(x => ids.includes(x.id)) : g; };
-  function head(t, sub) { document.body.classList.add("dlm"); return `<div class="dl-h"><button class="adh-b" onclick="goHome()" title="Bosh sahifa">‹</button><div class="adh-t"><small>${esc(sub || "2 daqiqalik poyga")}</small><b>${t}</b></div><button class="adh-b" onclick="goHome()" title="Bosh sahifa">🏠</button></div>`; }
+  function head(t, sub) { document.body.classList.add("dlm"); return `<div class="dl-h"><button class="adh-b" onclick="HOMEX.games()" title="Orqaga">‹</button><div class="adh-t"><small>${esc(sub || "2 daqiqalik poyga")}</small><b>${t}</b></div><button class="adh-b" onclick="goHome()" title="Bosh sahifa">🏠</button></div>`; }
   async function board(c) {
     let w = {}, a = null; const k = kOf(), u = me();
     try { [w, a] = await Promise.all([DBA.get("lb/bz2" + GAME.wk()), u ? DBA.get("lb/bz2all/" + u.uid + "/" + k) : null]); } catch (e) {}
@@ -3304,7 +3305,7 @@ const BLITZ = (() => {
     for (let i = pool.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [pool[i], pool[j]] = [pool[j], pool[i]]; }
     pool = pool.slice(0, AR ? AR.n : cnt);
     G = { pool, i: 0, s: 0, w: 0, streak: 0, t0: Date.now(), end: Date.now() + DUR, lock: false };
-    $("tz").innerHTML = `<div class="bz-top"><div class="bz-ring" id="bzRing"><span id="bzT">2:00</span></div><div class="bz-sc"><small>Ball</small><b id="bzS">0</b></div><div class="bz-sc"><small>Savol</small><b id="bzP">1/${pool.length}</b></div><div class="bz-sc"><small>Seriya</small><b id="bzK">🔥 0</b></div></div><div class="bz-pb"><i id="bzPb"></i></div><div id="bzQ"></div><div class="kbg">⌨️ Klaviatura: <b>1–4</b> yoki <b>A–D</b> — javob</div>`;
+    $("tz").innerHTML = `<div class="bz-top"><button class="adh-b gq-x" onclick="BLITZ.quit()" title="Chiqish">✕</button><div class="bz-ring" id="bzRing"><span id="bzT">2:00</span></div><div class="bz-sc"><small>Ball</small><b id="bzS">0</b></div><div class="bz-sc"><small>Savol</small><b id="bzP">1/${pool.length}</b></div><div class="bz-sc"><small>Seriya</small><b id="bzK">🔥 0</b></div></div><div class="bz-pb"><i id="bzPb"></i></div><div id="bzQ"></div><div class="kbg">⌨️ Klaviatura: <b>1–4</b> yoki <b>A–D</b> — javob</div>`;
     try { FX.toast("⚡ Boshladik!", "up"); } catch (e) {}
     G.tk = setInterval(tick, 100); tick(); q();
   }
@@ -3364,7 +3365,8 @@ const BLITZ = (() => {
     if (isRec && g.s) setTimeout(() => { try { FX.rain(160); FX.S.win && FX.S.win(); } catch (e) {} }, 300);
   }
   function arena(o) { stop(); AR = o; cls = o.cls; countdown(); }
-  return { open, leave: stop, arena };
+  function quit() { if (G && !confirm("O‘yindan chiqasizmi? Natija saqlanmaydi.")) return; stop(); if (AR) { AR = null; return ARENA.back(); } open(); }
+  return { open, leave: stop, arena, quit };
 })();
 
 
@@ -3393,7 +3395,7 @@ const HAYOQ = (() => {
   const kOf = () => ck(cls);
   const chosen = () => { const g = AR ? (groups()[cls] || []) : PM.free(groups()[cls] || []), ids = AR ? AR.ids : sel[cls]; return ids && ids.length ? g.filter(x => ids.includes(x.id)) : g; };
   const avail = () => chosen().reduce((a, x) => a + elig(x).length, 0);
-  function head(t, sub) { document.body.classList.add("dlm"); return `<div class="dl-h"><button class="adh-b" onclick="goHome()" title="Bosh sahifa">‹</button><div class="adh-t"><small>${esc(sub || "2 daqiqa · to‘g‘ri +3 s · xato −3 s")}</small><b>${t}</b></div><button class="adh-b" onclick="goHome()" title="Bosh sahifa">🏠</button></div>`; }
+  function head(t, sub) { document.body.classList.add("dlm"); return `<div class="dl-h"><button class="adh-b" onclick="HOMEX.games()" title="Orqaga">‹</button><div class="adh-t"><small>${esc(sub || "2 daqiqa · to‘g‘ri +3 s · xato −3 s")}</small><b>${t}</b></div><button class="adh-b" onclick="goHome()" title="Bosh sahifa">🏠</button></div>`; }
   async function board() {
     let w = {}, a = null; const k = kOf(), u = me();
     try { [w, a] = await Promise.all([DBA.get("lb/hy2" + GAME.wk()), u ? DBA.get("lb/hy2all/" + u.uid + "/" + k) : null]); } catch (e) {}
@@ -3455,7 +3457,7 @@ const HAYOQ = (() => {
     pool = pool.slice(0, AR ? AR.n : cnt).map(q => { const tr = Math.random() < .5, ds = [0, 1, 2, 3].filter(k => k !== q.a); return { q, tr, sh: q.o[tr ? q.a : ds[Math.floor(Math.random() * 3)]] }; });
     G = { pool, i: 0, s: 0, c: 0, w: 0, streak: 0, wst: 0, best: 0, mis: [], t0: Date.now(), end: Date.now() + DUR, lock: false, pz: 0 };
     document.body.classList.add("hym");
-    $("tz").innerHTML = `<div class="bz-top"><div class="bz-ring" id="hyRing"><span id="hyT">2:00</span></div><div class="bz-sc"><small>Ball</small><b id="hyS">0</b></div><div class="bz-sc"><small>Savol</small><b id="hyPq">1/${pool.length}</b></div><div class="bz-sc"><small>Seriya</small><b id="hyK">🔥 0</b></div></div><div class="bz-pb"><i id="hyPb"></i></div><div id="hyQ"></div>
+    $("tz").innerHTML = `<div class="bz-top"><button class="adh-b gq-x" onclick="HAYOQ.quit()" title="Chiqish">✕</button><div class="bz-ring" id="hyRing"><span id="hyT">2:00</span></div><div class="bz-sc"><small>Ball</small><b id="hyS">0</b></div><div class="bz-sc"><small>Savol</small><b id="hyPq">1/${pool.length}</b></div><div class="bz-sc"><small>Seriya</small><b id="hyK">🔥 0</b></div></div><div class="bz-pb"><i id="hyPb"></i></div><div id="hyQ"></div>
       <div class="hy-btns"><button class="hy-b hy-no" id="hyNo">❌ YO‘Q</button><button class="hy-b hy-yes" id="hyYes">✅ HA</button></div>`;
     $("hyNo").onclick = () => ans(false); $("hyYes").onclick = () => ans(true);
     document.addEventListener("keydown", key);
@@ -3538,7 +3540,8 @@ const HAYOQ = (() => {
     if (isRec) setTimeout(() => { try { FX.rain(160); FX.S.win && FX.S.win(); } catch (e) {} }, 300);
   }
   function arena(o) { stop(); AR = o; cls = o.cls; countdown(); }
-  return { open, leave: stop, arena, _elig: elig, _groups: groups };
+  function quit() { if (G && !confirm("O‘yindan chiqasizmi? Natija saqlanmaydi.")) return; stop(); if (AR) { AR = null; return ARENA.back(); } open(); }
+  return { open, leave: stop, arena, quit, _elig: elig, _groups: groups };
 })();
 
 
@@ -3744,7 +3747,7 @@ const JUFTG = (() => {
   const best = n => { try { return JSON.parse(localStorage.getItem(bkey(n)) || "null"); } catch (e) { return null; } };
   const fmt = ms => { const s = Math.floor(ms / 1000); return String(Math.floor(s / 60)).padStart(2, "0") + ":" + String(s % 60).padStart(2, "0"); };
   const shuf = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
-  function head(t, sub, back) { document.body.classList.add("dlm"); return `<div class="dl-h"><button class="adh-b" onclick="${back || "goHome()"}" title="Orqaga">‹</button><div class="adh-t"><small>${esc(sub)}</small><b>${t}</b></div></div>`; }
+  function head(t, sub, back) { document.body.classList.add("dlm"); return `<div class="dl-h"><button class="adh-b" onclick="${back || "HOMEX.games()"}" title="Orqaga">‹</button><div class="adh-t"><small>${esc(sub)}</small><b>${t}</b></div></div>`; }
   function stop() { if (G) clearInterval(G.tk); G = null; }
   async function open() {
     if (AR) { AR = null; if (S0) { S = S0; S0 = null; } }
@@ -4124,7 +4127,7 @@ const LADDER = (() => {
   try { const o = JSON.parse(localStorage.getItem("zm_zn") || "{}"); sel = o.sel || {}; } catch (e) {}
   const save = () => { try { localStorage.setItem("zm_zn", JSON.stringify({ sel })); } catch (e) {} };
   const chosen = () => { const g = AR ? (groups()[cls] || []) : PM.free(groups()[cls] || []), ids = AR ? AR.ids : sel[cls]; return ids && ids.length ? g.filter(x => ids.includes(x.id)) : g; };
-  function head(t, sub) { document.body.classList.add("dlm"); return `<div class="dl-h"><button class="adh-b" onclick="goHome()">‹</button><div class="adh-t"><small>${esc(sub || "15 pog'ona · 3 yordam")}</small><b>${t}</b></div><button class="adh-b" onclick="goHome()">🏠</button></div>`; }
+  function head(t, sub) { document.body.classList.add("dlm"); return `<div class="dl-h"><button class="adh-b" onclick="HOMEX.games()" title="Orqaga">‹</button><div class="adh-t"><small>${esc(sub || "15 pog'ona · 3 yordam")}</small><b>${t}</b></div><button class="adh-b" onclick="goHome()">🏠</button></div>`; }
   function stop() { if (G) clearInterval(G.tk); G = null; }
   async function board() {
     let w = {}, a = null; const k = ck(cls), u = me();
