@@ -2738,7 +2738,7 @@ function fmt(ms){const s=Math.floor(ms/1000);return String(Math.floor(s/60)).pad
 var BKfn;function BK(fn){BKfn=fn;const hm=["home","auth"].some(i=>$(i)&&!$(i).classList.contains("hide"));$("bkb").classList.toggle("hide",!fn||hm)}
 function show(id){try{KT.leave()}catch(e){}try{ARENA.leave()}catch(e){}document.body.classList.remove("adm","dlm","tchm");if(id!=="tz"){try{BLITZ.leave()}catch(e){}try{XRON.leave()}catch(e){}try{KIMG.leave()}catch(e){}try{HAYOQ.leave()}catch(e){}try{LADDER.leave()}catch(e){}try{JUFTG.leave()}catch(e){}try{BOSS.leave()}catch(e){}}try{$("amore").classList.add("hide")}catch(e){}["auth","home","start","quiz","res","tz"].forEach(s=>$(s).classList.toggle("hide",s!==id));BK(id==="res"?(()=>{if(FROM_T)goHome();else{renderTopics();show("start")}}):id==="start"?BKfn:null);setNav(id==="start"&&typeof VIEW!=="undefined"&&VIEW.k==="ms"?"ms":({home:"home",start:"tests",res:"tests"}[id]||null));window.scrollTo(0,0)}
 function setNav(active){active={ms:"tests",turnir:"games",stat:"prof"}[active]||active;const on=!!(active&&typeof ACCT!=="undefined"&&ACCT.cur);$("bnav").classList.toggle("hide",!on);[...$("bnav").children].forEach(b=>b.classList.toggle("on",b.dataset.g===active));const av=$("hdrAv");if(av){const c=typeof ACCT!=="undefined"&&ACCT.cur;av.classList.toggle("hide",!c);if(c){const k=c.uid+"|"+c.f+c.l;if(av.dataset.k!==k){av.dataset.k=k;av.innerHTML=AV.html(c.uid,c.f+" "+c.l,"fill")}}}}
-function goHome(){if(typeof ACCT!=="undefined"&&ACCT.cur){show("home");ACCT.renderHome();try{CHAMP.load();CHAMP.apply()}catch(e){}}else show("auth")}
+function goHome(){if(typeof ACCT!=="undefined"&&ACCT.cur){show("home");ACCT.renderHome();try{CHAMP.load();CHAMP.apply()}catch(e){}setTimeout(()=>{try{if(!$("home").classList.contains("hide"))RUN.offer()}catch(e){}},700)}else show("auth")}
 function goTests(){VIEW={k:"cls"};set=null;show("start");renderTopics();setNav("tests")}
 function goMS(){VIEW={k:"mscls"};set=null;show("start");renderTopics();setNav("ms")}
 document.addEventListener("DOMContentLoaded",()=>{});
@@ -2774,11 +2774,12 @@ function render(){
   $("next").textContent=cur===Q.length-1?"Yakunlash ✓":(done?"Keyingisi →":ans[cur]!==null?"Yuborish ➤":"O‘tkazish →");$("next").classList.toggle("ghost",cur<Q.length-1&&ans[cur]===null);
   $("dots").innerHTML="";
   order.forEach((_,k)=>{const d=document.createElement("button");d.className="dot"+(ans[k]!==null?" ans":"")+(k===cur?" cur":"");d.textContent=k+1;d.onclick=()=>{cur=k;$("qsheet").classList.add("hide");render();window.scrollTo(0,0)};$("dots").appendChild(d)});
+  try{RUN.save()}catch(e){}
 }
 $("qnav").onclick=()=>$("qsheet").classList.toggle("hide");
 $("qsheet").onclick=e=>{if(e.target.id==="qsheet")$("qsheet").classList.add("hide")};
 let qxAt=0;$("qx").onclick=()=>{if(Date.now()-qxAt>3000){qxAt=Date.now();FX.toast("Testdan chiqish uchun ✕ ni yana bir marta bosing. Natija saqlanmaydi.");return}
-  qxAt=0;clearInterval(tick);$("qsheet").classList.add("hide");if(set&&set.kt){KT.stop();goHome();return}if(HWCUR||(set&&set.kun)){HWCUR=null;goHome();return}renderTopics();show("start");window.scrollTo(0,0)};
+  qxAt=0;clearInterval(tick);try{RUN.clear()}catch(e){}$("qsheet").classList.add("hide");if(set&&set.kt){KT.stop();goHome();return}if(HWCUR||(set&&set.kun)){HWCUR=null;goHome();return}renderTopics();show("start");window.scrollTo(0,0)};
 $("prev").onclick=()=>{if(cur>0){cur--;render();window.scrollTo(0,0)}};
 $("next").onclick=()=>{
   if(cur<Q.length-1){cur++;render();window.scrollTo(0,0);return}
@@ -2806,8 +2807,44 @@ document.addEventListener("keydown",e=>{
 $("mYes").onclick=()=>{$("mdl").classList.remove("on");finish()};
 $("again").onclick=()=>goHome();
 
+// ================== TUGALLANMAGAN TEST: sahifa yangilansa / Mini App yopilsa — davom ettirish ==================
+const RUN = (() => {
+  const uid = () => (typeof ACCT !== "undefined" && ACCT.cur && ACCT.cur.uid) || "";
+  const k = () => "zm_run_" + uid(), DAY = 864e5;
+  const ok = () => !!(uid() && set && set.id && !set.kt && !set.ar && !set.kun && !set.ms && !FROM_T && Q.length && !$("quiz").classList.contains("hide"));
+  function save() { if (!ok()) return; try { localStorage.setItem(k(), JSON.stringify({ v: 1, sid: set.id, ttl: set.title || set.n || "", Q, order, ans, cur, el: Date.now() - t0, IMS, hw: HWCUR || null, at: Date.now() })); } catch (e) {} }
+  function clear() { try { if (uid()) localStorage.removeItem(k()); } catch (e) {} }
+  const setOf = id => (typeof SETS !== "undefined" ? SETS : []).find(x => x && x.id === id);
+  function pending() {
+    if (!uid()) return null;
+    try { const o = JSON.parse(localStorage.getItem(k()) || "null"); if (o && o.v === 1 && Date.now() - o.at < DAY && setOf(o.sid) && o.Q && o.Q.length) { const n = o.ans.filter(a => a !== null).length; if (n) return { kind: "q", o, ttl: o.ttl, n, tot: o.Q.length }; } else if (o) clear(); } catch (e) { clear(); }
+    try { const pre = "zm_ms_" + uid() + "_"; for (let i = 0; i < localStorage.length; i++) { const key = localStorage.key(i); if (!key || !key.startsWith(pre)) continue; const st = setOf(key.slice(pre.length)), o = JSON.parse(localStorage.getItem(key) || "null"); if (!st || !st.ms || !o || o.v !== 1) continue; if (Date.now() - o.t0 >= (st.ms.dur || 120) * 60000) { localStorage.removeItem(key); continue; } const n = (o.m || []).filter(v => v !== null).length + (o.x || []).filter(v => v).length; if (n) return { kind: "ms", st, key, ttl: st.title, n, tot: 55 }; } } catch (e) {}
+    return null;
+  }
+  function resumeQ(o) {
+    const st = setOf(o.sid); if (!st) return clear();
+    set = st; FROM_T = false; TEAMWIN = ""; HWCUR = o.hw || null; HWNEXT = null;
+    const ac = ACCT.cur; FN = ac.f; LN = ac.l; name = FN + " " + LN;
+    Q = o.Q; order = o.order; ans = o.ans; cur = Math.min(o.cur || 0, Q.length - 1); IMS = o.IMS || { s: 0, w: 0, ok: 0, bad: 0 }; t0 = Date.now() - (o.el || 0);
+    clearInterval(tick); tick = setInterval(() => $("tm").textContent = fmt(Date.now() - t0), 1000); $("tm").textContent = fmt(Date.now() - t0);
+    try { $("qset").textContent = (set.n ? (clsOf(set.g) || "") + " · " + (set.g && set.g.includes(" · ") ? fanOf(set.g) + " · " : "") + set.n : set.title || ""); } catch (e) { $("qset").textContent = ""; }
+    $("qsheet").classList.add("hide"); show("quiz"); render(); window.scrollTo(0, 0);
+  }
+  let asked = false;
+  function offer() {
+    if (asked) return; const p = pending(); if (!p) return; asked = true;
+    const d = document.createElement("div"); d.className = "pm-ask"; d.id = "runAsk";
+    d.innerHTML = `<div class="card pm-ask-c"><div style="font-size:40px">📝</div><h1 style="margin:6px 0 4px">Tugallanmagan test</h1><div class="sub" id="runT"></div><button class="btn" id="runGo">▶ Davom ettirish</button><button class="btn ghost" id="runNo">Bekor qilish</button></div>`;
+    document.body.appendChild(d);
+    d.querySelector("#runT").textContent = `«${p.ttl}» — ${p.n} / ${p.tot} savolga javob bergansiz. To‘xtagan joyingizdan davom ettirasizmi?`;
+    d.querySelector("#runGo").onclick = () => { d.remove(); if (p.kind === "q") resumeQ(p.o); else { set = p.st; start(); } };
+    d.querySelector("#runNo").onclick = () => { if (!confirm("Javoblaringiz o‘chiriladi. Rozimisiz?")) return; d.remove(); if (p.kind === "q") clear(); else try { localStorage.removeItem(p.key); } catch (e) {} };
+  }
+  addEventListener("pagehide", save); document.addEventListener("visibilitychange", () => { if (document.hidden) save(); });
+  return { save, clear, offer, pending };
+})();
 function finish(){
-  clearInterval(tick);
+  clearInterval(tick);try{RUN.clear()}catch(e){}
   const time=fmt(Date.now()-t0);
   let ok=0;const by={};
   order.forEach(({i},k)=>{const q=Q[i],g=ans[k]===q.a;if(g)ok++;if(!FROM_T)GAME.track(q,g);const key=!set.qs?q.m:q.t.split(" · ")[0];by[key]=by[key]||[0,0];by[key][1]++;if(g)by[key][0]++});
