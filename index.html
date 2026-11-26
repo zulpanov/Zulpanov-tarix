@@ -2736,7 +2736,7 @@ function qFit(){const z=$("quiz");if(!z||innerWidth>=900)return;z.classList.remo
 addEventListener("resize",()=>{try{if(!$("quiz").classList.contains("hide"))qFit()}catch(e){}});
 function fmt(ms){const s=Math.floor(ms/1000);return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0")}
 var BKfn;function BK(fn){BKfn=fn;const hm=["home","auth"].some(i=>$(i)&&!$(i).classList.contains("hide"));$("bkb").classList.toggle("hide",!fn||hm)}
-function show(id){try{KT.leave()}catch(e){}try{ARENA.leave()}catch(e){}document.body.classList.remove("adm","dlm","tchm");if(id!=="tz"){try{BLITZ.leave()}catch(e){}try{XRON.leave()}catch(e){}try{KIMG.leave()}catch(e){}try{HAYOQ.leave()}catch(e){}try{LADDER.leave()}catch(e){}try{JUFTG.leave()}catch(e){}try{BOSS.leave()}catch(e){}}try{$("amore").classList.add("hide")}catch(e){}["auth","home","start","quiz","res","tz"].forEach(s=>$(s).classList.toggle("hide",s!==id));BK(id==="res"?(()=>{if(FROM_T)goHome();else{renderTopics();show("start")}}):id==="start"?BKfn:null);setNav(id==="start"&&typeof VIEW!=="undefined"&&VIEW.k==="ms"?"ms":({home:"home",start:"tests",res:"tests"}[id]||null));window.scrollTo(0,0)}
+function show(id){try{KT.leave()}catch(e){}try{GAME.lbOff()}catch(e){}try{ARENA.leave()}catch(e){}document.body.classList.remove("adm","dlm","tchm");if(id!=="tz"){try{BLITZ.leave()}catch(e){}try{XRON.leave()}catch(e){}try{KIMG.leave()}catch(e){}try{HAYOQ.leave()}catch(e){}try{LADDER.leave()}catch(e){}try{JUFTG.leave()}catch(e){}try{BOSS.leave()}catch(e){}}try{$("amore").classList.add("hide")}catch(e){}["auth","home","start","quiz","res","tz"].forEach(s=>$(s).classList.toggle("hide",s!==id));BK(id==="res"?(()=>{if(FROM_T)goHome();else{renderTopics();show("start")}}):id==="start"?BKfn:null);setNav(id==="start"&&typeof VIEW!=="undefined"&&VIEW.k==="ms"?"ms":({home:"home",start:"tests",res:"tests"}[id]||null));window.scrollTo(0,0)}
 function setNav(active){active={ms:"tests",turnir:"games",stat:"prof"}[active]||active;const on=!!(active&&typeof ACCT!=="undefined"&&ACCT.cur);$("bnav").classList.toggle("hide",!on);[...$("bnav").children].forEach(b=>b.classList.toggle("on",b.dataset.g===active));const av=$("hdrAv");if(av){const c=typeof ACCT!=="undefined"&&ACCT.cur;av.classList.toggle("hide",!c);if(c){const k=c.uid+"|"+c.f+c.l;if(av.dataset.k!==k){av.dataset.k=k;av.innerHTML=AV.html(c.uid,c.f+" "+c.l,"fill")}}}}
 function goHome(){if(typeof ACCT!=="undefined"&&ACCT.cur){show("home");ACCT.renderHome();try{CHAMP.load();CHAMP.apply()}catch(e){}setTimeout(()=>{try{if(!$("home").classList.contains("hide"))RUN.offer()}catch(e){}},700)}else show("auth")}
 function goTests(){VIEW={k:"cls"};set=null;show("start");renderTopics();setNav("tests")}
@@ -4298,7 +4298,7 @@ const VER = (() => {
   const rid = r => { const t = JSON.stringify(r); let a = 0x811c9dc5, b = 0x9e3779b9; for (let i = 0; i < t.length; i++) { const c = t.charCodeAt(i); a = Math.imul(a ^ c, 16777619); b = Math.imul(b ^ c, 2246822519); } return (a >>> 0).toString(36) + (b >>> 0).toString(36); };
   async function send(r, fromQueue) {
     if (r && !r.rid) { try { r.rid = rid({ ...r, u: (ACCT.cur || {}).uid || "" }); } catch (e) {} }
-    try { const x = await call("res", r); if (!fromQueue && x.pts !== r.pts) FX.toast(`🛡 Server tekshirdi: ${x.pts} ball`); return x; }
+    try { const x = await call("res", r); try { const u = (ACCT.cur || {}).uid; if (u && DBA.refresh) { DBA.refresh("h/" + u); DBA.refresh("lb/" + GAME.wk()); } } catch (e) {} if (!fromQueue && x.pts !== r.pts) FX.toast(`🛡 Server tekshirdi: ${x.pts} ball`); return x; }
     catch (e) { if (hard(e)) { FX.toast("⚠️ " + e.message); return null; } if (!fromQueue) { const a = load(); if (!r.rid || !a.some(x => x && x.rid === r.rid)) a.push(r); store(a); FX.toast("📶 Natija saqlanmadi — internet tiklanganda o'zi yuboriladi"); } throw e; }
   }
   let busy = false;
@@ -6766,7 +6766,8 @@ const xpSum = rs => { const B = {}; let s = 0; for (const r of rs || []) { if (!
     draw();
   }
   function reg(qs) { qs.forEach(q => { if (q._k) KEYQ[q._k] = q; }); }
-  return { reg, track, startErrors, homeRender, statBlock, board, announce, xpOf, xpSum, level, errList, wk: () => weekKey(DBA.now()) };
+  function lbOff() { if (lbUn) { try { lbUn(); } catch (e) {} lbUn = null; } }
+  return { reg, track, startErrors, homeRender, statBlock, board, lbOff, announce, xpOf, xpSum, level, errList, wk: () => weekKey(DBA.now()) };
 })();
 
 // ================== ADMIN: SAVOLLARNI O'ZI QO'SHISH ==================
@@ -7006,7 +7007,7 @@ const DBA = (() => {
     const sv = v => ({ ".sv": { increment: v } });
     // ---- REST bilan «kuzatish»: bir marta o'qiladi, keyin o'z yozuvimizdan so'ng, sahifaga qaytilganda va vaqti-vaqti bilan yangilanadi ----
     const W = new Map(); // key -> {p, q, cbs:Set, val, t, iv, busy, again}
-    const ivOf = p => /^c(\/|$)|^cq/.test(p) ? 600e3 : /^lb\//.test(p) ? 240e3 : 150e3;
+    const ivOf = p => /^(h|mx)\//.test(p) ? 1200e3 : /^c(\/|$)|^cq/.test(p) ? 600e3 : /^lb\//.test(p) ? 600e3 : /^hw/.test(p) ? 300e3 : 150e3; // trafikni tejash: o‘zgarganda alohida yangilanadi
     async function pull(w) {
       if (w.busy) { w.again = true; return; } w.busy = true;
       try { const v = await rest("GET", w.p, undefined, w.q); w.val = v; w.t = Date.now(); w.cbs.forEach(cb => { try { cb(v); } catch (e) { console.warn(e); } }); }
@@ -7025,7 +7026,7 @@ const DBA = (() => {
       p = clean(p); W.forEach(w => { if (!p || p === w.p || p.startsWith(w.p + "/") || w.p.startsWith(p + "/")) dirty.add(w); });
       clearTimeout(dTo); dTo = setTimeout(() => { const L = [...dirty]; dirty.clear(); L.forEach(pull); }, 350);
     }
-    function refreshAll(force) { const now = Date.now(); W.forEach(w => { if (force || now - w.t > w.iv) pull(w); }); }
+    function refreshAll(force) { const now = Date.now(); W.forEach(w => { if ((force && now - w.t > 60e3) || now - w.t > w.iv) pull(w); }); }
     setInterval(() => { if (document.hidden || Date.now() - lastAct > 5 * 60000) return; refreshAll(false); }, 30e3);
     return {
       kind: "fb", init, app,
@@ -7053,6 +7054,7 @@ const DBA = (() => {
         wake().then(d => { if (stop) return; r = d.ref(p); fn = s => cb(s.val()); r.on("value", fn, () => cb(null)); });
         return () => { if (stop) return; stop = true; const n = (live.get(p) || 1) - 1; if (n > 0) live.set(p, n); else live.delete(p); r && fn && r.off("value", fn); };
       },
+      refresh(p) { touched(p); },
       now() { return Date.now() + off; }
     };
   }
