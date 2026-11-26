@@ -4258,9 +4258,11 @@ const VER = (() => {
     if (!r.ok) { const e = new Error(r.err || "Server xatosi"); e.srv = 1; throw e; } return r.r;
   }
   const hard = e => e && e.srv && !/kaliti hali tayyor|yuklanmadi|DB |Firebase|Sessiya/i.test(e.message);
+  const rid = r => { const t = JSON.stringify(r); let a = 0x811c9dc5, b = 0x9e3779b9; for (let i = 0; i < t.length; i++) { const c = t.charCodeAt(i); a = Math.imul(a ^ c, 16777619); b = Math.imul(b ^ c, 2246822519); } return (a >>> 0).toString(36) + (b >>> 0).toString(36); };
   async function send(r, fromQueue) {
+    if (r && !r.rid) { try { r.rid = rid({ ...r, u: (ACCT.cur || {}).uid || "" }); } catch (e) {} }
     try { const x = await call("res", r); if (!fromQueue && x.pts !== r.pts) FX.toast(`🛡 Server tekshirdi: ${x.pts} ball`); return x; }
-    catch (e) { if (hard(e)) { FX.toast("⚠️ " + e.message); return null; } if (!fromQueue) { const a = load(); a.push(r); store(a); FX.toast("📶 Natija saqlanmadi — internet tiklanganda o'zi yuboriladi"); } throw e; }
+    catch (e) { if (hard(e)) { FX.toast("⚠️ " + e.message); return null; } if (!fromQueue) { const a = load(); if (!r.rid || !a.some(x => x && x.rid === r.rid)) a.push(r); store(a); FX.toast("📶 Natija saqlanmadi — internet tiklanganda o'zi yuboriladi"); } throw e; }
   }
   let busy = false;
   async function flush() {

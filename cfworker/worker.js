@@ -738,12 +738,16 @@ async function grade(env, i) {
 
 async function saveRes(env, uid, user, g, info) {
   const pts = Math.round(g.ok * 100 / g.tot), lv = lvOf(pts), at = Date.now();
-  const id = at.toString(36) + Math.random().toString(36).slice(2, 6);
+  const id = info.rid || (at.toString(36) + Math.random().toString(36).slice(2, 6));
+  if (info.rid) { // takroriy yuborish (ikki marta bosish, internet uzilib qayta yuborish) — qayta saqlanmaydi
+    const old = await db(env, "GET", `h/${uid}/${id}`).catch(() => null);
+    if (old && old.at) { const x = await syncLb(env, uid, user).catch(() => null); return { id, ok: old.ok, tot: old.tot, pts: old.pts, lv: old.lv, dup: 1, ...(x || {}) }; }
+  }
   const h = { ttl: str(info.ttl, 100), mode: "test", ok: g.ok, tot: g.tot, pts, lv, at, v: 1 }; if (info.hw) h.hw = str(info.hw, 40);
   await db(env, "PUT", `h/${uid}/${id}`, h);
   const s0 = g.sec || null, sec = s0 ? Object.fromEntries(Object.entries(s0).slice(0, 30).map(([k, v]) => [sKey(k).slice(0, 60), Array.isArray(v) ? v.slice(0, 2).map(Number) : 0])) : undefined;
   await db(env, "PUT", "r/" + id, { ...h, n: str(((user.f || "") + " " + (user.l || "")).trim() || info.n, 80), u: str(user.login, 40), set: str(info.set, 40), dur: info.dur || 0, ...(info.code ? { code: info.code } : {}), ...(sec ? { sec } : {}) }).catch(() => {});
-  if (user.f) { const o = user.rs || {}; await db(env, "PUT", `users/${uid}/rs`, { n: (o.n || 0) + 1, s: (o.s || 0) + pts, last: at }).catch(() => {}); }
+  if (user.f) await db(env, "PATCH", `users/${uid}/rs`, { n: { ".sv": { increment: 1 } }, s: { ".sv": { increment: pts } }, last: at }).catch(() => {}); // bir vaqtdagi natijalar bir-birini o‘chirmaydi
   const x = await syncLb(env, uid, user).catch(() => null);
   return { id, ok: g.ok, tot: g.tot, pts, lv, ...(x || {}) };
 }
@@ -794,7 +798,8 @@ const VFN = {
     if (dur && dur < g.tot * 700) throw new Error("Juda tez yakunlandi — natija qabul qilinmadi");
     if (!g.sec && i.sec && typeof i.sec === "object") g.sec = i.sec;
     const user = await db(env, "GET", "users/" + uid) || {};
-    return saveRes(env, uid, user, g, { ttl: i.ttl, hw: i.hw, set: i.set, n: i.n, dur });
+    const rid = /^[a-z0-9]{6,20}$/.test(String(i.rid || "")) ? "q" + i.rid : "";
+    return saveRes(env, uid, user, g, { ttl: i.ttl, hw: i.hw, set: i.set, n: i.n, dur, rid });
   },
   async lb(env, uid) { return syncLb(env, uid); },
   // O'quvchi chek yubordi → ustozga Telegram'da xabar
