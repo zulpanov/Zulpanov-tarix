@@ -100,6 +100,16 @@ async function db(env, method, path, body, query = "") {
 const vals = o => Object.values(o || {}).filter(Boolean);
 const sKey = s => String(s).replace(/[.#$\[\]\/]/g, "_");
 
+// ---------------- 📢 Kanalga a'zolik (bot va Mini App) ----------------
+const SUB_CH = "@tarixarena", SUB_URL = "https://t.me/tarixarena";
+// true — a'zo (yoki admin); false — a'zo emas. Telegram javob bermasa (bot kanalda admin emas va h.k.) — o'tkazib yuboriladi
+async function isSub(env, from) {
+  if (!from || !from.id || isAdminTg(from)) return true;
+  try { const m = await tg(env, "getChatMember", { chat_id: SUB_CH, user_id: from.id }); return ["creator", "administrator", "member"].includes(m.status) || (m.status === "restricted" && m.is_member === true); }
+  catch (e) { console.error("sub-check", e && e.message); return true; }
+}
+const subAsk = (env, chat) => tg(env, "sendMessage", { chat_id: chat, parse_mode: "HTML", text: "📢 <b>Botdan foydalanish uchun kanalimizga a’zo bo‘ling</b>\n\nKanalda yangi testlar, turnirlar va Arena haqida xabarlar chiqadi.\n\n1) «Kanalga o‘tish» tugmasini bosing va <b>Obuna bo‘lish</b>ni bosing.\n2) Qaytib, «✅ Tekshirish» ni bosing.", reply_markup: { inline_keyboard: [[{ text: "📢 Kanalga o‘tish", url: SUB_URL }], [{ text: "✅ Tekshirish", callback_data: "subchk" }]] } });
+
 // ---------------- Mini App initData tekshiruvi ----------------
 async function verifyInit(env, initData) {
   if (!initData) throw new Error("Telegram ma’lumoti yo‘q");
@@ -263,6 +273,7 @@ async function parentsList(env) {
 }
 
 const FN = {
+  async sub(env, input, u) { need(u); return { ok: await isSub(env, u), url: SUB_URL }; },
   // Telegram orqali kirish: har bir Telegram foydalanuvchisi uchun o'zgarmas, faqat server biladigan hisob
   async auth(env, input, u) {
     need(u);
@@ -490,6 +501,7 @@ async function onMessage(env, m) {
   if (!m || !m.chat || m.chat.type !== "private" || !m.from) return;
   const chat = m.chat.id, text = String(m.text || "").trim(), first = esc(m.from.first_name || "");
   if (isAdminTg(m.from)) await db(env, "PUT", "tg/adm", chat);
+  if (!(await isSub(env, m.from))) { if (text.startsWith("/start ")) await db(env, "PUT", "tg/sst/" + m.from.id, text.slice(0, 120)).catch(() => {}); return subAsk(env, chat); }
   if (m.contact) { const st = await db(env, "GET", "tg/st/" + m.from.id); if (st === "kurs") await kursDone(env, chat, m.from, m.contact.phone_number); return; }
   if (text && text[0] !== "/" && !/^\d{4}$/.test(text)) {
     const st = await db(env, "GET", "tg/st/" + m.from.id);
@@ -524,8 +536,15 @@ async function onMessage(env, m) {
 }
 async function onCallback(env, q) {
   if (!q || !q.from) return;
+  const sub = await isSub(env, q.from);
+  if (!sub) { await tg(env, "answerCallbackQuery", { callback_query_id: q.id, text: "Siz hali @tarixarena kanaliga a’zo emassiz. Avval «Kanalga o‘tish» ni bosib, obuna bo‘ling.", show_alert: true }).catch(() => {}); if (q.data !== "subchk" && q.message && q.message.chat) await subAsk(env, q.message.chat.id).catch(() => {}); return; }
   tg(env, "answerCallbackQuery", { callback_query_id: q.id }).catch(() => {});
   const chat = q.message && q.message.chat && q.message.chat.id; if (!chat) return;
+  if (q.data === "subchk") {
+    try { await tg(env, "deleteMessage", { chat_id: chat, message_id: q.message.message_id }); } catch (e) {}
+    const st = await db(env, "GET", "tg/sst/" + q.from.id).catch(() => null); if (st) await db(env, "DELETE", "tg/sst/" + q.from.id).catch(() => {});
+    return onMessage(env, { chat: q.message.chat, from: q.from, text: st || "/start" });
+  }
   if (q.data === "kurs") return sendKurs(env, chat);
   if (q.data === "yozil") return sendYozil(env, chat, q.from);
   if (q.data === "ota") return sendOta(env, chat);
