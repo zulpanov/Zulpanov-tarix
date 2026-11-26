@@ -77,7 +77,8 @@
         ".read": "auth != null",
         ".write": "auth != null && root.child('ar').child($id).child('t').val() === auth.uid && !newData.exists()",
         "$uid": {
-          ".write": "auth != null && auth.uid === $uid && root.child('ar').child($id).child('a').val() < now + 60000 && root.child('ar').child($id).child('e').val() > now - 60000"
+          ".write": "auth != null && auth.uid === $uid && root.child('ar').child($id).child('a').val() < now + 60000 && root.child('ar').child($id).child('e').val() > now - 60000",
+          ".validate": "newData.child('n').isString() && newData.child('n').val().length <= 80 && newData.child('s').isNumber() && newData.child('s').val() >= 0 && newData.child('s').val() <= 30 && newData.child('e').isNumber() && newData.child('e').val() >= 0 && newData.child('at').isNumber() && (!data.child('e').exists() || newData.child('e').val() >= data.child('e').val()) && ((!data.child('s').exists() && newData.child('s').val() === 0) || (data.child('s').exists() && (newData.child('s').val() === data.child('s').val() || (newData.child('s').val() === data.child('s').val() + 1 && newData.child('at').val() >= data.child('at').val() + 6000 && newData.child('at').val() <= now + 60000 && newData.child('at').val() >= now - 60000)))) && (!newData.child('f').exists() || newData.child('f').val() === 0 || (data.child('f').exists() && newData.child('f').val() === data.child('f').val()) || ((!data.child('f').exists() || data.child('f').val() === 0) && data.child('s').exists() && newData.child('s').val() === data.child('s').val() + 1 && newData.child('f').val() <= now + 60000 && newData.child('f').val() >= now - 60000)) && (!data.child('f').exists() || data.child('f').val() === 0 || newData.child('f').val() === data.child('f').val())"
         }
       }
     },
