@@ -4597,6 +4597,28 @@ const LINK = (() => {
   }
   return { open, finish };
 })();
+// 📢 Telegram ichida: kanalga a'zo bo'lmaganlarga sayt yopiq (brauzerdan kirish ochiq)
+const SUBG = (() => {
+  const K = "zm_sub_ok";
+  async function check(force) {
+    if (!window.IN_TG) return;
+    try { if (typeof isAdmin === "function" && isAdmin()) return; } catch (e) {}
+    try { if (!force && Date.now() - (+localStorage.getItem(K) || 0) < 12 * 3600e3) return; } catch (e) {}
+    let r = null; try { r = await TGB.once("sub", {}); } catch (e) { return; } // server javob bermasa — to'smaymiz
+    if (r && r.ok) { try { localStorage.setItem(K, Date.now()); } catch (e) {} const w = $("subW"); if (w) w.remove(); return; }
+    wall(r && r.url || "https://t.me/tarixarena");
+  }
+  function wall(url) {
+    if ($("subW")) return;
+    const d = document.createElement("div"); d.className = "pm-ask"; d.id = "subW"; d.style.zIndex = 99999;
+    d.innerHTML = `<div class="card pm-ask-c"><div style="font-size:44px">📢</div><h1 style="margin:6px 0 4px">Kanalga a’zo bo‘ling</h1><div class="sub">TARIX ARENA dan foydalanish uchun <b>@tarixarena</b> kanaliga a’zo bo‘ling. Kanalda yangi testlar, turnirlar va Arena haqida xabarlar chiqadi.</div><button class="btn" id="subGo">📢 Kanalga o‘tish</button><button class="btn ghost" id="subChk">✅ A’zo bo‘ldim — tekshirish</button><div class="sub" id="subE" style="min-height:18px;margin-top:8px"></div></div>`;
+    document.body.appendChild(d);
+    d.querySelector("#subGo").onclick = () => { try { Telegram.WebApp.openTelegramLink(url); } catch (e) { location.href = url; } };
+    d.querySelector("#subChk").onclick = async () => { const b = d.querySelector("#subChk"); b.disabled = true; d.querySelector("#subE").textContent = "Tekshirilmoqda…"; await check(true); if ($("subW")) { b.disabled = false; d.querySelector("#subE").textContent = "Hali a’zo bo‘lmagansiz. Kanalga o‘tib, «Obuna bo‘lish» ni bosing."; } };
+  }
+  document.addEventListener("visibilitychange", () => { if (!document.hidden && $("subW")) check(true); });
+  return { check };
+})();
 const TGB = (() => {
   const w = () => window.Telegram && Telegram.WebApp;
   // Bot server: Cloudflare Worker (tezkor; Google Apps Script endi ishlatilmaydi)
@@ -4626,7 +4648,7 @@ const TGB = (() => {
   const msg = e => (e && (e.message || e.description)) || "Xatolik";
   // Avval kirgan o'quvchini ham (har sessiyada bir marta) botga bog'lash
   setTimeout(() => { try { const c = typeof ACCT !== "undefined" && ACCT.cur; if (on() && c && c.login && !sessionStorage.getItem("zm_tgl")) { sessionStorage.setItem("zm_tgl", "1"); link(c.login); } } catch (e) {} }, 4000);
-  return { on, call, link, groups, msg };
+  return { on, call, once: (n, i) => { if (!on()) return Promise.reject(new Error("off")); return once(n, i); }, link, groups, msg };
 })();
 // Ustoz paneli: 🤖 Bot bo'limi
 const BOTP = (() => {
@@ -7973,6 +7995,7 @@ const T = (() => {
     if (AUTH.FB) { show("auth"); await AUTH.ready().catch(() => {}); }
     TQR.then(() => { if (window.TQPART && !window.TQOK) try { FX.toast("⚠️ Ba'zi testlar yuklanmadi. Internetni tekshirib, sahifani yangilang."); } catch (e) {} });
     if (window.IN_TG) await ACCT.restore().catch(() => {}); else ACCT.restore();
+    try { SUBG.check(); } catch (e) {}
     if (window.IN_TG) { try { const w = Telegram.WebApp; w.ready(); w.expand(); w.disableVerticalSwipes && w.disableVerticalSwipes(); w.setHeaderColor && w.setHeaderColor(THEME.bg()); w.setBackgroundColor && w.setBackgroundColor(THEME.bg()); } catch (e) {} }
     try { ST.visit(); } catch (e) {}
     if ((window.IN_TG ? window.TG_START === "kun" : location.hash === "#kun")) { try { if (!window.IN_TG) history.replaceState(null, "", location.pathname + location.search); } catch (e) {} KUN.go(); return; }
