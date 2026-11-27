@@ -7268,13 +7268,14 @@ const T = (() => {
   const mTitle = m => (m && m.ttl) || ((setById(m && m.set) || {}).title) || "Turnir";
   const mSet = m => { if (m.map) return { id: "turnir", n: "🗺", title: mTitle(m), qs: null, g: "Xarita", subj: "Tarix" }; if (m.sets) { const ss = m.sets.map(setById).filter(Boolean); return { id: "turnir", n: "🏆", title: mTitle(m), qs: null, g: (ss[0] || {}).g || "", subj: (ss[0] || {}).subj || "Tarix" }; } return setById(m.set); };
   function buildQ(meta, pid) {
-    const r = rng(meta.seed);
-    if (meta.map) { const Q = MAPQ.build(meta, r), pr = meta.team && pid ? rng(meta.seed ^ hs(pid)) : r; return { Q, perms: Q.map(() => shuf([0, 1, 2, 3], pr)) }; }
-    if (meta.sets) { const pool = meta.sets.map(setById).filter(s => s && s.qs).flatMap(s => s.qs.map(q => ({ ...q, m: s.title }))); const Q = shuf(pool, r).slice(0, meta.n), pr = meta.team && pid ? rng(meta.seed ^ hs(pid)) : r; return { Q, perms: Q.map(() => shuf([0, 1, 2, 3], pr)) }; }
+    const r = rng(meta.seed), own = !!(meta.team && pid), pr = own ? rng(meta.seed ^ hs(pid)) : r;
+    // Jamoaviy turnirda har o'quvchiga savollar to'plami bir xil, lekin ketma-ketligi va variantlar tartibi o'ziga xos
+    const mix = Q => own ? shuf(Q, rng((meta.seed ^ hs(pid)) + 7919)) : Q;
+    const out = Q => { Q = mix(Q); return { Q, perms: Q.map(() => shuf([0, 1, 2, 3], pr)) }; };
+    if (meta.map) return out(MAPQ.build(meta, r));
+    if (meta.sets) { const pool = meta.sets.map(setById).filter(s => s && s.qs).flatMap(s => s.qs.map(q => ({ ...q, m: s.title }))); return out(shuf(pool, r).slice(0, meta.n)); }
     const s = setById(meta.set);
-    let Q = s.qs ? s.qs.slice() : shuf(SETS.filter(x => x.qs && x.g === s.g).flatMap(x => x.qs), r).slice(0, 20);
-    const perms = Q.map(() => shuf([0, 1, 2, 3], r));
-    return { Q, perms };
+    return out(s.qs ? s.qs.slice() : shuf(SETS.filter(x => x.qs && x.g === s.g).flatMap(x => x.qs), r).slice(0, 20));
   }
   const fmt = ms => { ms = Math.max(0, ms); const s = Math.ceil(ms / 1000); return String(Math.floor(s / 60)).padStart(2, "0") + ":" + String(s % 60).padStart(2, "0"); };
   const ranked = () => Object.entries(st.players || {}).filter(([k, p]) => p && p.n).map(([k, p]) => ({ ...p, k }))
