@@ -2262,22 +2262,25 @@ const TCH = (() => {
     let opts = "", g0 = null; SETS.forEach(s => { if (s.g !== g0) { if (g0) opts += "</optgroup>"; g0 = s.g; opts += `<optgroup label="${esc(g0)}">`; } opts += `<option value="${s.id}">${esc((s.n === "∑" ? "" : s.n + " · ") + s.title)}</option>`; }); opts += "</optgroup>";
     const d = new Date(now + 2 * 86400e3); d.setHours(20, 0, 0, 0); const def = `${d.getFullYear()}-${d2(d.getMonth() + 1)}-${d2(d.getDate())}T20:00`;
     const L = Object.entries(H).map(([id, x]) => ({ id, ...x })).sort((a, b) => (b.c || 0) - (a.c || 0));
-    B.innerHTML = `<div class="card"><h1>📝 Yangi vazifa</h1><label>Test</label><select id="thS">${opts}</select>
-      <label>Guruh</label><select id="thG">${G.map(g => `<option>${esc(g.n)}</option>`).join("")}</select>
+    B.innerHTML = `<div class="card"><h1>📝 Yangi vazifa</h1>
+      <label>Guruh</label><select id="thG">${G.map(g => `<option>${esc(g.n)}</option>`).join("")}</select><div id="thP"></div>
       <label>Muddat</label><input id="thD" type="datetime-local" value="${def}"><label>O‘tish foizi (bo‘sh qolsa — chegarasiz)</label><input id="thM" type="number" min="1" max="100" inputmode="numeric" placeholder="masalan: 70"><label>Izoh (ixtiyoriy)</label><input id="thN" maxlength="120" placeholder="masalan: 8–13-mavzularni takrorlang">
       <div class="accerr" id="thE"></div><button class="btn" id="thB">Vazifani berish</button></div>
       <div id="thL">${L.length ? "" : `<div class="card" style="text-align:center;margin-top:12px"><div class="sub" style="margin:0">Hali vazifa berilmagan.</div></div>`}</div>`;
     const thPre = () => { const g = G.find(x => x.n === $("thG").value), v = g && g.vq; $("thM").value = v && v.on ? v.pct : ""; };
-    if (preG && G.some(x => x.n === preG)) $("thG").value = preG; thPre(); $("thG").onchange = thPre;
+    if (preG && G.some(x => x.n === preG)) $("thG").value = preG;
+    const pk = HW.pickUI($("thP"), () => $("thG").value, () => Object.values(H)); thPre(); $("thG").onchange = () => { thPre(); pk.reset(); };
     $("thB").onclick = async () => {
-      const E = m => $("thE").textContent = m, due = new Date($("thD").value).getTime(), s = SETS.find(x => x.id === $("thS").value);
-      if (!due || isNaN(due)) return E("Muddatni tanlang."); if (due < Date.now()) return E("Muddat o'tib ketgan vaqtga qo'yilgan."); if (!s) return E("Testni tanlang.");
-      const rec = { set: s.id, ttl: s.title, g: $("thG").value, due, c: DBA.now(), t: cur().uid }, note = $("thN").value.trim(); if (note) rec.note = note.slice(0, 120);
+      const E = m => $("thE").textContent = m, due = new Date($("thD").value).getTime(), ss = pk.ids().map(id => SETS.find(x => x.id === id)).filter(Boolean);
+      if (!due || isNaN(due)) return E("Muddatni tanlang."); if (due < Date.now()) return E("Muddat o'tib ketgan vaqtga qo'yilgan."); if (!ss.length) return E("Kamida bitta mavzuni belgilang.");
+      const rec = { g: $("thG").value, due, c: DBA.now(), t: cur().uid }, note = $("thN").value.trim(); if (note) rec.note = note.slice(0, 120);
       if ($("thM").value !== "") { const mn = Math.round(+$("thM").value); if (!(mn >= 1 && mn <= 100)) return E("O‘tish foizi 1 dan 100 gacha bo‘lsin."); rec.min = mn; }
       $("thB").disabled = true; E("");
       try {
-        const id = "w" + Date.now().toString(36); await DBA.set("hw/" + id, rec); H[id] = rec; FX.toast("✅ Vazifa berildi", "up"); drawHw();
-        vcall("tHw", { id }).then(r => FX.toast(`📨 Botda ${r.sent} ta o'quvchiga xabar ketdi`, "up")).catch(() => {});
+        const t0 = "w" + Date.now().toString(36), ids = [];
+        for (let i = 0; i < ss.length; i++) { const id = t0 + (ss.length > 1 ? String.fromCharCode(97 + i) : ""), r1 = { ...rec, set: ss[i].id, ttl: ss[i].title, c: rec.c + i }; await DBA.set("hw/" + id, r1); H[id] = r1; ids.push(id); }
+        FX.toast(`✅ ${ss.length > 1 ? ss.length + " ta vazifa" : "Vazifa"} berildi`, "up"); drawHw();
+        vcall("tHw", { id: ids[0], ids }).then(r => FX.toast(`📨 Botda ${r.sent} ta o'quvchiga xabar ketdi`, "up")).catch(() => {});
       } catch (e) { $("thB").disabled = false; E("⚠️ " + ((e && e.message) || e)); }
     };
     L.forEach(async x => {
@@ -5816,15 +5819,16 @@ const HW = (() => {
         <div class="row"><input id="hwGn" placeholder="Yangi guruh nomi, masalan: 7-A" style="margin:0;flex:2"><button class="btn sm" id="hwGa" style="flex:1">➕ Qo'shish</button></div></div>
       <div class="card" style="margin-top:12px"><h1 style="margin-bottom:6px">🔒 Vazifa chegarasi</h1><div class="sub" style="margin-bottom:10px">Yoqilgan guruhda vazifa belgilangan foizdan past ishlansa «o‘tmadi» hisoblanadi va o‘quvchi uni topshirmaguncha boshqa testlar hamda o‘yinlar yopiq turadi.</div><div id="hwV"></div></div>
       <div class="card" style="margin-top:12px"><h1 style="margin-bottom:10px">📝 Yangi vazifa</h1>
-        <label>Test</label><select id="hwS">${opts}</select>
         <label>Kimga</label><select id="hwTo"></select>
+        <div id="hwP"></div>
         <label>Muddat (shu vaqtgacha topshirish kerak)</label><input id="hwD" type="datetime-local" value="${def}">
         <label>O‘tish foizi (bo‘sh qolsa — chegarasiz)</label><input id="hwM" type="number" min="1" max="100" inputmode="numeric" placeholder="masalan: 70">
         <label>Izoh (ixtiyoriy)</label><input id="hwN" maxlength="120" placeholder="masalan: 8–13-mavzularni takrorlang">
         <div class="accerr" id="hwE"></div><button class="btn" id="hwGo">Vazifani berish</button></div>
       <div id="hwL" style="margin-top:12px"></div>`;
     $("hwGa").onclick = () => { const n = $("hwGn").value.trim().slice(0, 30); if (n.length < 1) return; if (allGroups().some(x => nk(x) === nk(n))) { FX.toast("Bu guruh allaqachon bor"); return; } DBA.set("grp/g" + Date.now().toString(36), { n }); DBA.set("grpk/" + mkCode(), n).catch(() => {}); $("hwGn").value = ""; };
-    $("hwGo").onclick = create; vqDrawn = ""; $("hwTo").onchange = preMin;
+    $("hwGo").onclick = create; vqDrawn = ""; $("hwTo").onchange = () => { preMin(); if (hwPk) hwPk.reset(); };
+    hwPk = pickUI($("hwP"), () => $("hwTo").value || "*", () => list());
     aUn.push(DBA.on("grp", v => { grps = v || {}; renderGroups(); }));
     aUn.push(DBA.on("grpk", v => { gks = v || {}; gksL = true; renderGroups(); }));
     aUn.push(DBA.on(AUTH.FB ? "users" : "u", v => { users = v || {}; renderGroups(); renderAdmin(); }));
@@ -5834,6 +5838,37 @@ const HW = (() => {
   const ulist = () => Object.entries(users || {}).filter(([k, x]) => x && x.f).map(([k, x]) => ({ k, ...x }));
   function allGroups() { const m = new Map(); Object.values(grps || {}).forEach(x => { if (x && x.n) m.set(nk(x.n), x.n); }); ulist().forEach(x => { if (x.g && !m.has(nk(x.g))) m.set(nk(x.g), x.g); }); return [...m.values()].sort((a, b) => a.localeCompare(b)); }
   let vqDrawn = "";
+  // Bir nechta mavzuni tanlash: fan -> mavzular ro'yxati (katakchalar). Guruhga oxirgi berilgan mavzudan keyingisi o'zi belgilanadi.
+  function pickUI(el, getG, getHw) {
+    const fans = [...new Set(SETS.map(x => x.g))], cntQ = x => x.ms ? 45 : x.qs ? x.qs.length : 20;
+    const lastOf = g => (getHw() || []).filter(x => x && x.set && nk(x.g) === nk(g)).sort((a, b) => (b.c || 0) - (a.c || 0))[0];
+    let fan = fans[0], base = 0, done = new Set();
+    el.innerHTML = `<label>Fan va sinf</label><select class="hpF">${fans.map(f => `<option>${esc(f)}</option>`).join("")}</select>
+      <label style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">Mavzular <span class="hpS sub" style="margin:0;font-weight:600"></span></label>
+      <div class="hpB" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px">${[1, 2, 3, 5].map(k => `<button type="button" class="lnk" data-k="${k}" style="border:1px solid var(--line);border-radius:999px;padding:5px 10px">Keyingi ${k} ta</button>`).join("")}<button type="button" class="lnk" data-k="all" style="border:1px solid var(--line);border-radius:999px;padding:5px 10px">Hammasi</button><button type="button" class="lnk" data-k="0" style="border:1px solid var(--line);border-radius:999px;padding:5px 10px">Tozalash</button></div>
+      <div class="hpL" style="max-height:300px;overflow:auto;border:1px solid var(--line);border-radius:12px;padding:4px 10px;margin-bottom:18px"></div>`;
+    const F = el.querySelector(".hpF"), Lb = el.querySelector(".hpL"), S = el.querySelector(".hpS");
+    const items = () => SETS.filter(x => x.g === fan);
+    const sum = () => { const ch = ids(), q = ch.reduce((a, id) => a + cntQ(SETS.find(x => x.id === id)), 0); S.textContent = ch.length ? `${ch.length} ta mavzu · ${q} savol` : "tanlanmagan"; };
+    function draw(sel) {
+      const L = items(); Lb.innerHTML = L.map((x, i) => `<label style="display:flex;align-items:flex-start;gap:9px;padding:8px 0;border-bottom:1px solid var(--line);margin:0;font-weight:500;cursor:pointer"><input type="checkbox" value="${esc(x.id)}" style="width:auto;margin:3px 0 0;flex:none"${sel.has(x.id) ? " checked" : ""}><span style="flex:1">${x.n === "∑" ? "" : `<b>${esc(x.n)}</b> · `}${esc(x.n !== "∑" && x.sub ? String(x.sub).split(" · ")[0] : String(x.title).split(": ").pop())}<small class="sub" style="display:block;margin:0">${cntQ(x)} savol${done.has(x.id) ? " · ✔ avval berilgan" : ""}</small></span></label>`).join("");
+      Lb.querySelectorAll("input").forEach(c => c.onchange = sum); sum();
+      const f0 = Lb.querySelector("input:checked"); if (f0) setTimeout(() => { try { Lb.scrollTop = Math.max(0, f0.closest("label").offsetTop - Lb.offsetTop - 50); } catch (e) {} }, 0);
+    }
+    function next(k) { const L = items().filter(x => x.n !== "∑"); return new Set(L.slice(base, base + k).map(x => x.id)); }
+    function reset() {
+      const g = getG(), last = lastOf(g), ls = last && SETS.find(x => x.id === last.set);
+      done = new Set((getHw() || []).filter(x => x && nk(x.g) === nk(g)).map(x => x.set));
+      if (ls) { fan = ls.g; F.value = fan; const L = items().filter(x => x.n !== "∑"); base = Math.max(0, L.findIndex(x => x.id === ls.id) + 1); if (base >= L.length) base = 0; draw(next(1)); }
+      else { fan = F.value; base = 0; draw(new Set()); }
+    }
+    F.onchange = () => { fan = F.value; base = 0; draw(new Set()); };
+    el.querySelectorAll(".hpB [data-k]").forEach(b => b.onclick = () => { const k = b.dataset.k; draw(k === "all" ? new Set(items().filter(x => x.n !== "∑").map(x => x.id)) : k === "0" ? new Set() : next(+k)); });
+    function ids() { return [...Lb.querySelectorAll("input:checked")].map(c => c.value); }
+    reset();
+    return { ids, reset };
+  }
+  const multiTtl = ss => ss.length === 1 ? ss[0].title : `${ss.length} ta mavzu:\n` + ss.map(x => "• " + x.title).join("\n");
   // Guruh uchun chegara sozlamasi formasi (admin va ustoz paneli uchun umumiy)
   function vqForm(el, gname, vq, save) {
     vq = vq || {}; const id = "vq" + Math.random().toString(36).slice(2, 7);
@@ -5846,6 +5881,7 @@ const HW = (() => {
       const v = { on: $(id + "o").checked, pct: p, keep: $(id + "k").checked }; $(id + "s").disabled = true;
       try { await save(v); FX.toast(v.on ? `🔒 Saqlandi: ${p}%` : "Saqlandi: chegara o‘chirilgan", "up"); } catch (e) { FX.toast("⚠️ " + ((e && e.message) || e)); } if ($(id + "s")) $(id + "s").disabled = false; };
   }
+  let hwPk = null;
   function vqOfName(n) { const e = Object.entries(grps || {}).find(([k, x]) => x && x.n && nk(x.n) === nk(n) && x.vq); return e ? e[1].vq : null; }
   function preMin() { const m = $("hwM"), g = $("hwTo"); if (!m || !g) return; const v = g.value === "*" ? null : vqOfName(g.value); m.value = v && v.on ? v.pct : ""; }
   function drawVq() {
@@ -5871,15 +5907,20 @@ const HW = (() => {
     if (gksL) saved.forEach(([id, x]) => { if (!codeOf(x.n) && !renderGroups.mk.has(id)) { renderGroups.mk.add(id); DBA.set("grpk/" + mkCode(), x.n).catch(() => {}); } });
     const sel = $("hwTo"), v = sel.value;
     sel.innerHTML = `<option value="*">Barcha guruhlar</option>` + all.map(n => `<option value="${esc(n)}">${esc(n)}</option>`).join("");
-    if ([...sel.options].some(o => o.value === v)) sel.value = v; else preMin();
+    if ([...sel.options].some(o => o.value === v)) sel.value = v; else { preMin(); if (hwPk) hwPk.reset(); }
   }
   async function create() {
     const E = m => $("hwE").textContent = m, due = new Date($("hwD").value).getTime();
     if (!due || isNaN(due)) return E("Muddatni tanlang.");
     if (due < Date.now()) return E("Muddat o'tib ketgan vaqtga qo'yilgan.");
-    const s = setOf($("hwS").value), rec = { set: s.id, ttl: s.title, g: $("hwTo").value, due, c: DBA.now() }, note = $("hwN").value.trim(), mn = Math.round(+$("hwM").value);
-    if (note) rec.note = note; if ($("hwM").value !== "") { if (!(mn >= 1 && mn <= 100)) return E("O‘tish foizi 1 dan 100 gacha bo‘lsin."); rec.min = mn; }
-    E(""); if (s.ms) DBA.set("c/pmhw/" + s.id, true).catch(() => {}); await DBA.set("hw/w" + Date.now().toString(36), rec); $("hwN").value = ""; FX.toast("✅ Vazifa berildi", "up");
+    const ss = (hwPk ? hwPk.ids() : []).map(setOf).filter(Boolean); if (!ss.length) return E("Kamida bitta mavzuni belgilang.");
+    const base = { g: $("hwTo").value, due, c: DBA.now() }, note = $("hwN").value.trim(), mn = Math.round(+$("hwM").value);
+    if (note) base.note = note; if ($("hwM").value !== "") { if (!(mn >= 1 && mn <= 100)) return E("O‘tish foizi 1 dan 100 gacha bo‘lsin."); base.min = mn; }
+    E(""); $("hwGo").disabled = true; const t0 = Date.now().toString(36);
+    try { for (let i = 0; i < ss.length; i++) { const s = ss[i]; if (s.ms) DBA.set("c/pmhw/" + s.id, true).catch(() => {}); await DBA.set("hw/w" + t0 + (ss.length > 1 ? String.fromCharCode(97 + i) : ""), { ...base, set: s.id, ttl: s.title, c: base.c + i }); } }
+    catch (e) { $("hwGo").disabled = false; return E("⚠️ " + ((e && e.message) || e)); }
+    $("hwGo").disabled = false; $("hwN").value = ""; FX.toast(`✅ ${ss.length > 1 ? ss.length + " ta vazifa" : "Vazifa"} berildi`, "up"); setTimeout(() => { if (hwPk) hwPk.reset(); }, 400);
+    const rec = { ttl: multiTtl(ss), g: base.g };
     if (TGB.on()) { const d = new Date(due); TGB.call("notifyHw", { ttl: rec.ttl, grp: rec.g === "*" ? "" : rec.g, note: note || "", due: `${d2(d.getDate())}.${d2(d.getMonth() + 1)} ${d2(d.getHours())}:${d2(d.getMinutes())}` }).then(r => FX.toast(`📨 Botda ${r.sent} ta o'quvchiga xabar ketdi`, "up")).catch(() => {}); }
   }
   function renderAdmin() {
@@ -5922,7 +5963,7 @@ const HW = (() => {
     if (t != null) setTimeout(() => { try { pc >= t ? FX.toast(`✅ Vazifa topshirildi: ${pc}%`, "up") : FX.toast(`❌ Vazifa o‘tmadi: ${pc}% (kerak ${t}%). Qayta ishlang`); } catch (e) {} }, 1200);
     DBA.get(p).then(o => { if (!o) return DBA.set(p, { n: rec.n, u: rec.u || "", pts: rec.pts, ok: rec.ok, tot: rec.tot, pc, at: rec.at, late: due && rec.at > due ? 1 : 0, k: 1 }); const up = { k: (o.k || 1) + 1 }; if (rec.pts > (o.pts || 0)) { up.pts = rec.pts; up.ok = rec.ok; } if (pc > (o.pc != null ? o.pc : pctOf(o))) up.pc = pc; return DBA.update(p, up); }).catch(() => {});
   }
-  return { open, leaveAdmin, renderStudent, fillRegGroups, record, join, pendingJoin, gate, lockInfo, lockScreen, vqForm, pctOf, pend: () => { try { return localStorage.getItem("zm_gj") || ""; } catch (e) { return ""; } }, allGroups: () => { const m = new Set(Object.values(grps || {}).filter(x => x && x.n).map(x => x.n)); return [...m]; } };
+  return { pickUI, multiTtl, open, leaveAdmin, renderStudent, fillRegGroups, record, join, pendingJoin, gate, lockInfo, lockScreen, vqForm, pctOf, pend: () => { try { return localStorage.getItem("zm_gj") || ""; } catch (e) { return ""; } }, allGroups: () => { const m = new Set(Object.values(grps || {}).filter(x => x && x.n).map(x => x.n)); return [...m]; } };
 })();
 
 // ================== MILLIY SERTIFIKAT FORMATIDAGI TEST ==================
