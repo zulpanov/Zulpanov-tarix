@@ -841,10 +841,13 @@ async function tgOfLogins(env, logins, to) {
 const VFN = {
   // Ustoz vazifa berdi — guruh o'quvchilariga bot xabari
   async tHw(env, uid, i) {
-    const c = await teacherCtx(env, uid), id = String(i.id || "").replace(/[^A-Za-z0-9_-]/g, "").slice(0, 40);
-    const hw = await db(env, "GET", "hw/" + id); if (!hw || hw.t !== uid) throw new Error("Vazifa topilmadi");
+    const c = await teacherCtx(env, uid), cl = x => String(x || "").replace(/[^A-Za-z0-9_-]/g, "").slice(0, 40);
+    const ids = (Array.isArray(i.ids) && i.ids.length ? i.ids.slice(0, 30) : [i.id]).map(cl).filter(Boolean);
+    const hws = (await Promise.all(ids.map(id => db(env, "GET", "hw/" + id)))).filter(x => x && x.t === uid);
+    const hw = hws[0]; if (!hw) throw new Error("Vazifa topilmadi");
+    const ttl = hws.length > 1 ? hws.length + " ta mavzu:\n" + hws.map(x => "• " + (x.ttl || "")).join("\n") : hw.ttl || "";
     const list = await tgOfLogins(env, c.us.filter(x => low(x.g) === low(hw.g)).flatMap(loginsOf), "stu");
-    const text = "📝 <b>Yangi uy vazifasi!</b>\n👨‍🏫 Ustoz: " + esc(c.t.n || "") + "\n\n📚 " + esc(hw.ttl || "") + "\n⏰ Muddat: <b>" + tashDt(hw.due) + "</b>" + (hw.note ? "\n💬 " + esc(hw.note) : "") + "\n\nBajarish uchun tugmani bosing 👇";
+    const text = "📝 <b>Yangi uy vazifasi!</b>\n👨‍🏫 Ustoz: " + esc(c.t.n || "") + "\n\n📚 " + esc(ttl) + "\n⏰ Muddat: <b>" + tashDt(hw.due) + "</b>" + (hw.note ? "\n💬 " + esc(hw.note) : "") + "\n\nBajarish uchun tugmani bosing 👇";
     return sendBatch(env, list, i.from, () => ({ text, parse_mode: "HTML", reply_markup: { inline_keyboard: [[{ text: "📝 Vazifani bajarish", url: appLink() }]] } }));
   },
   // Ustoz xabari — faqat o'z o'quvchilari (va ota-onalari)
