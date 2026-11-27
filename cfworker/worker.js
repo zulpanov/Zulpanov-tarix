@@ -1008,7 +1008,7 @@ export default {
     // Bepul tarif: bitta ishga tushishda ≤50 tashqi so'rov. Shuning uchun vazifalar ketma-ket, muhimlari birinchi.
     const run = (n, f) => f().catch(e => console.error(n, e && e.stack || e));
     if (event.cron === "0 4 * * SUN") ctx.waitUntil(run("backup", () => backup(env)).then(() => run("cleanup", () => cleanup(env))));
-    else ctx.waitUntil((async () => { await run("awards", () => weeklyAwards(env)); await run("arena", () => arenaCron(env)); await run("hwRemind", () => hwRemind(env)); await run("xpcheck", () => xpCheck(env)); })());
+    else ctx.waitUntil((async () => { await run("awards", () => weeklyAwards(env)); await run("arena", () => arenaCron(env)); await run("hwRemind", () => hwRemind(env)); })());
   },
   async fetch(req, env, ctx) {
     const url = new URL(req.url);
