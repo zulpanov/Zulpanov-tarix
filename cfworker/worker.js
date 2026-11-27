@@ -721,9 +721,9 @@ const dayStart = ms => Date.parse(dayOf(ms) + "T00:00:00Z") - UZ;
 const hSince = async (env, uid, from) => vals(await db(env, "GET", "h/" + uid, undefined, `&orderBy=%22at%22&startAt=${from}`));
 // Hech narsa yozmaydi: yangi usul natijasi (kesh qanday bo'lishi kerak bo'lsa) va eski usul natijasini qaytaradi
 async function xpCompare(env, uid, user) {
-  const all = vals(await db(env, "GET", "h/" + uid)), now = Date.now(), ws = weekStart(now), d0 = dayStart(now), bx = Number(user && user.bx) || 0;
+  const raw = await db(env, "GET", "h/" + uid) || {}, all = vals(raw), now = Date.now(), ws = weekStart(now), d0 = dayStart(now), bx = Number(user && user.bx) || 0;
   const oldXp = xpSum(all) + bx, oldW = xpSum(all.filter(r => r.at >= ws));
-  const keys = Object.keys(await db(env, "GET", "h/" + uid, undefined, "&shallow=true") || {}).length;
+  const keys = Object.keys(raw).length;
   const past = all.filter(r => (r.at || 0) < d0), cache = { d: dayOf(now), v: xpSum(past), n: past.length };
   const today = await hSince(env, uid, d0), week = await hSince(env, uid, ws);
   const newXp = (keys === cache.n + today.length ? cache.v + xpSum(today) : NaN) + bx, newW = xpSum(week);
@@ -733,19 +733,22 @@ async function xpCompare(env, uid, user) {
 async function xpCheck(env) {
   const st = await db(env, "GET", "cfg/xpchk1").catch(() => null) || {}; if (st.done || st.off) return;
   if (!st.bk) { const b = await backup(env).catch(e => ({ err: String(e && e.message || e) })); await db(env, "PUT", "cfg/xpchk1", { ...st, bk: 1, bkr: b }); return; }
-  const U = await db(env, "GET", "users", undefined, "&shallow=true") || {}, ids = Object.keys(U).sort();
-  let i = st.i || 0, ok = st.ok || 0, empty = st.empty || 0; const bad = st.bad || [], end = Math.min(ids.length, i + 40);
+  const U = await db(env, "GET", "h", undefined, "&shallow=true") || {}, ids = Object.keys(U).sort();
+  let i = st.v2 ? st.i || 0 : 0, ok = st.v2 ? st.ok || 0 : 0, empty = st.v2 ? st.empty || 0 : 0; const bad = st.v2 ? st.bad || [] : [], end = Math.min(ids.length, i + 6);
   for (; i < end; i++) {
     const uid = ids[i];
     try {
-      const user = await db(env, "GET", "users/" + uid) || {}, c = await xpCompare(env, uid, user);
+      const bx = await db(env, "GET", "users/" + uid + "/bx").catch(() => null), user = { bx };
+      const c = await xpCompare(env, uid, user);
       if (!c.n) { empty++; continue; }
-      if (c.oldXp === c.newXp && c.oldW === c.newW) ok++; else if (bad.length < 60) bad.push({ u: uid, n: str(((user.f || "") + " " + (user.l || "")).trim() || user.login, 60), ...c });
-    } catch (e) { if (bad.length < 60) bad.push({ u: uid, err: str(e && e.message || e, 160) }); }
+      if (c.oldXp === c.newXp && c.oldW === c.newW) ok++; else if (bad.length < 60) bad.push({ u: uid, ...c });
+    } catch (e) { if (bad.length < 60) bad.push({ u: uid, err: str(e && e.message || e, 160) }); if (/subrequest/i.test(String(e && e.message))) break; }
   }
   const done = i >= ids.length;
-  await db(env, "PUT", "cfg/xpchk1", { ...st, i, ok, empty, bad, n: ids.length, at: Date.now(), done });
+  await db(env, "PUT", "cfg/xpchk1", { ...st, v2: 1, i, ok, empty, bad, n: ids.length, at: Date.now(), done });
+  if (!st.v2) for (const chat of await adminChats(env)) await tg(env, "sendMessage", { chat_id: chat, parse_mode: "HTML", text: `🧪 XP tekshiruvi boshlandi: natijasi bor ${ids.length} o‘quvchi, har 10 daqiqada 6 tadan (~${Math.ceil(ids.length / 6 * 10 / 60)} soat). Tugagach hisobot keladi.` }).catch(() => {});
   if (done) {
+    for (const b of bad.slice(0, 8)) if (!b.err) { const u = await db(env, "GET", "users/" + b.u).catch(() => null) || {}; b.n = str(((u.f || "") + " " + (u.l || "")).trim() || u.login || b.u, 60); }
     const lines = bad.slice(0, 25).map(b => b.err ? `• ${esc(b.u)}: xato — ${esc(b.err)}` : `• ${esc(b.n)}: jami ${b.oldXp} → ${b.newXp}, hafta ${b.oldW} → ${b.newW}`);
     const text = `🧪 <b>XP tekshiruvi tugadi</b> (bazaga hech narsa yozilmadi)\n\n👥 Jami: ${ids.length}\n✅ Bir xil: ${ok}\n➖ Natijasiz: ${empty}\n⚠️ Farq/xato: ${bad.length}` + (lines.length ? "\n\n" + lines.join("\n") : "") + `\n\n📦 Zaxira: ${st.bkr && st.bkr.sent ? "Telegram’ga yuborildi" : "yuborilmadi"}`;
     for (const chat of await adminChats(env)) await tg(env, "sendMessage", { chat_id: chat, text, parse_mode: "HTML" }).catch(() => {});
@@ -994,11 +997,10 @@ const json = (o, st = 200) => new Response(JSON.stringify(o), { status: st, head
 
 export default {
   async scheduled(event, env, ctx) {
-    if (event.cron !== "0 4 * * SUN") ctx.waitUntil(xpFix(env).catch(e => console.error("xpfix", e && e.stack || e)));
-    if (event.cron !== "0 4 * * SUN") ctx.waitUntil(xpCheck(env).catch(e => console.error("xpcheck", e && e.stack || e)));
-    if (event.cron !== "0 4 * * SUN") ctx.waitUntil(weeklyAwards(env).catch(e => console.error("awards", e && e.stack || e)).then(() => arenaCron(env)).catch(e => console.error("arena", e && e.stack || e)));
-    if (event.cron === "0 4 * * SUN") ctx.waitUntil(backup(env).catch(e => console.error("backup", e && e.stack || e)).then(() => cleanup(env)).catch(e => console.error("cleanup", e && e.stack || e)));
-    else ctx.waitUntil(hwRemind(env).catch(e => console.error("hwRemind", e && e.stack || e)));
+    // Bepul tarif: bitta ishga tushishda ≤50 tashqi so'rov. Shuning uchun vazifalar ketma-ket, muhimlari birinchi.
+    const run = (n, f) => f().catch(e => console.error(n, e && e.stack || e));
+    if (event.cron === "0 4 * * SUN") ctx.waitUntil(run("backup", () => backup(env)).then(() => run("cleanup", () => cleanup(env))));
+    else ctx.waitUntil((async () => { await run("awards", () => weeklyAwards(env)); await run("arena", () => arenaCron(env)); await run("hwRemind", () => hwRemind(env)); await run("xpcheck", () => xpCheck(env)); })());
   },
   async fetch(req, env, ctx) {
     const url = new URL(req.url);
