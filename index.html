@@ -2187,12 +2187,13 @@ const TCH = (() => {
       const hs = Object.entries(H).map(([id, x]) => ({ id, ...x })).filter(x => nk(x.g) === nk(g.n)).sort((x, y) => (y.c || 0) - (x.c || 0)), now = DBA.now();
       T.innerHTML = `<button class="btn" id="tgHw" style="margin:0 0 10px">${ADI("task", 16)} Vazifa berish</button><div id="tgHl">${hs.length ? "" : `<div class="sub" style="text-align:center;margin:12px 0">Bu guruhga hali vazifa berilmagan.</div>`}</div>`;
       $("tgHw").onclick = () => { preG = g.n; navTo("hw"); };
-      for (const x of hs) { const r = await hwrOf(x.id), dn = L.filter(s => r[s.k]), el = $("tgHl"); if (!el) return; el.insertAdjacentHTML("beforeend", `<div class="card" style="margin-bottom:10px"><div class="tch-gh"><b>${esc(x.ttl)}</b><small>${dtt(x.due)}${now > x.due ? " · tugagan" : ""}</small></div><div class="tch-bar"><i style="width:${L.length ? Math.round(dn.length / L.length * 100) : 0}%"></i></div><div class="sub" style="margin:4px 0 0">Bajardi: <b>${dn.length}/${L.length}</b>${dn.length ? ` · o'rtacha: <b>${Math.round(dn.reduce((q, s) => q + (r[s.k].pts || 0), 0) / dn.length)}</b>` : ""}</div></div>`); }
+      for (const x of hs) { const r = await hwrOf(x.id), dn = L.filter(s => r[s.k] && (x.min == null || (r[s.k].pc != null ? r[s.k].pc : HW.pctOf(r[s.k])) >= x.min)), el = $("tgHl"); if (!el) return; el.insertAdjacentHTML("beforeend", `<div class="card" style="margin-bottom:10px"><div class="tch-gh"><b>${esc(x.ttl)}</b><small>${dtt(x.due)}${now > x.due ? " · tugagan" : ""}</small></div><div class="tch-bar"><i style="width:${L.length ? Math.round(dn.length / L.length * 100) : 0}%"></i></div><div class="sub" style="margin:4px 0 0">Bajardi: <b>${dn.length}/${L.length}</b>${dn.length ? ` · o'rtacha: <b>${Math.round(dn.reduce((q, s) => q + (r[s.k].pts || 0), 0) / dn.length)}</b>` : ""}</div></div>`); }
     } else if (gtab === "weak") { T.innerHTML = `<div class="card"><div id="twL"><div class="sub" style="margin:0">Hisoblanmoqda…</div></div></div>`; weakPaint(await weakOf(L)); }
     else {
-      T.innerHTML = `<div class="card"><h1>Qo'shilish havolasi</h1><div class="tch-code">Kod: <b>${esc(g.k || "—")}</b></div><div class="sub" style="margin:6px 0 10px;word-break:break-all">${esc(joinLink(g.k))}</div>
+      T.innerHTML = `<div class="card" style="margin-bottom:12px"><h1>🔒 Vazifa chegarasi</h1><div class="sub" style="margin:0 0 8px">Yoqilsa, vazifa belgilangan foizdan past ishlanganda «o‘tmadi» hisoblanadi va o‘quvchi topshirmaguncha boshqa testlar va o‘yinlar yopiq turadi.</div><div id="tgV"></div></div><div class="card"><h1>Qo'shilish havolasi</h1><div class="tch-code">Kod: <b>${esc(g.k || "—")}</b></div><div class="sub" style="margin:6px 0 10px;word-break:break-all">${esc(joinLink(g.k))}</div>
         <div class="row" style="gap:6px"><button class="btn sm" id="tgS2">✈️ Ulashish</button><button class="btn sm ghost" id="tgC">🔗 Nusxalash</button></div></div>
         <button class="btn ghost" id="tgD" style="margin-top:12px;color:var(--bad)">Guruhni o'chirish</button>`;
+      HW.vqForm($("tgV"), "", g.vq, async v => { await DBA.update("grp/" + g.id, { vq: v }); g.vq = v; });
       $("tgS2").onclick = () => share(g); $("tgC").onclick = async () => { try { await navigator.clipboard.writeText(gtxt(g)); FX.toast("✅ Nusxalandi"); } catch (e) { prompt("Nusxalang:", gtxt(g)); } };
       $("tgD").onclick = async () => { if (!confirm(`«${g.n}» guruhi o'chirilsinmi? Kodi bekor bo'ladi, o'quvchilar ro'yxatingizdan chiqadi.`)) return; try { if (g.k) { await DBA.set("grpk/" + g.k, null); await DBA.set("grpt/" + g.k, null); } await DBA.set("grp/" + g.id, null); FX.toast("🗑 O'chirildi"); back0 = []; view = "groups"; open(); } catch (e) { FX.toast("⚠️ " + ((e && e.message) || e)); } };
     }
@@ -2263,13 +2264,16 @@ const TCH = (() => {
     const L = Object.entries(H).map(([id, x]) => ({ id, ...x })).sort((a, b) => (b.c || 0) - (a.c || 0));
     B.innerHTML = `<div class="card"><h1>📝 Yangi vazifa</h1><label>Test</label><select id="thS">${opts}</select>
       <label>Guruh</label><select id="thG">${G.map(g => `<option>${esc(g.n)}</option>`).join("")}</select>
-      <label>Muddat</label><input id="thD" type="datetime-local" value="${def}"><label>Izoh (ixtiyoriy)</label><input id="thN" maxlength="120" placeholder="masalan: 8–13-mavzularni takrorlang">
+      <label>Muddat</label><input id="thD" type="datetime-local" value="${def}"><label>O‘tish foizi (bo‘sh qolsa — chegarasiz)</label><input id="thM" type="number" min="1" max="100" inputmode="numeric" placeholder="masalan: 70"><label>Izoh (ixtiyoriy)</label><input id="thN" maxlength="120" placeholder="masalan: 8–13-mavzularni takrorlang">
       <div class="accerr" id="thE"></div><button class="btn" id="thB">Vazifani berish</button></div>
       <div id="thL">${L.length ? "" : `<div class="card" style="text-align:center;margin-top:12px"><div class="sub" style="margin:0">Hali vazifa berilmagan.</div></div>`}</div>`;
+    const thPre = () => { const g = G.find(x => x.n === $("thG").value), v = g && g.vq; $("thM").value = v && v.on ? v.pct : ""; };
+    if (preG && G.some(x => x.n === preG)) $("thG").value = preG; thPre(); $("thG").onchange = thPre;
     $("thB").onclick = async () => {
       const E = m => $("thE").textContent = m, due = new Date($("thD").value).getTime(), s = SETS.find(x => x.id === $("thS").value);
       if (!due || isNaN(due)) return E("Muddatni tanlang."); if (due < Date.now()) return E("Muddat o'tib ketgan vaqtga qo'yilgan."); if (!s) return E("Testni tanlang.");
       const rec = { set: s.id, ttl: s.title, g: $("thG").value, due, c: DBA.now(), t: cur().uid }, note = $("thN").value.trim(); if (note) rec.note = note.slice(0, 120);
+      if ($("thM").value !== "") { const mn = Math.round(+$("thM").value); if (!(mn >= 1 && mn <= 100)) return E("O‘tish foizi 1 dan 100 gacha bo‘lsin."); rec.min = mn; }
       $("thB").disabled = true; E("");
       try {
         const id = "w" + Date.now().toString(36); await DBA.set("hw/" + id, rec); H[id] = rec; FX.toast("✅ Vazifa berildi", "up"); drawHw();
@@ -2278,11 +2282,12 @@ const TCH = (() => {
     };
     L.forEach(async x => {
       let r = {}; try { r = (await DBA.get("hwr/" + x.id)) || {}; } catch (e) {}
-      const st = S.filter(s => nk(s.g) === nk(x.g)), dn = st.filter(s => r[s.k]), over = now > x.due, el = $("thL"); if (!el) return;
+      const pcR = q => q.pc != null ? q.pc : HW.pctOf(q), ok = s => r[s.k] && (x.min == null || pcR(r[s.k]) >= x.min);
+      const st = S.filter(s => nk(s.g) === nk(x.g)), dn = st.filter(ok), over = now > x.due, el = $("thL"); if (!el) return;
       const div = document.createElement("div"); div.className = "card"; div.style.marginTop = "12px";
-      div.innerHTML = `<div class="tch-gh"><b>${esc(x.ttl)}</b><small>${esc(x.g)} · muddat ${dtt(x.due)}${over ? " · tugagan" : ""}</small></div>
-        <div class="tch-bar"><i style="width:${st.length ? Math.round(dn.length / st.length * 100) : 0}%"></i></div><div class="sub" style="margin:4px 0 0">Bajardi: <b>${dn.length}/${st.length}</b>${dn.length ? ` · o'rtacha: <b>${Math.round(dn.reduce((a, s) => a + (r[s.k].pts || 0), 0) / dn.length)}</b>` : ""}</div>
-        <details style="margin-top:6px"><summary class="sub">Ro'yxat</summary>${st.map(s => `<div class="tch-r"><div><b>${esc(s.f + " " + (s.l || ""))}</b></div><div>${r[s.k] ? (r[s.k].late ? "⏰ " : "✅ ") + (r[s.k].pts || 0) : over ? "❌" : "⏳"}</div></div>`).join("") || `<div class="sub">Guruhda o'quvchi yo'q</div>`}</details>
+      div.innerHTML = `<div class="tch-gh"><b>${esc(x.ttl)}</b><small>${esc(x.g)} · muddat ${dtt(x.due)}${over ? " · tugagan" : ""}${x.min != null ? ` · 🔒 ${x.min}%` : ""}</small></div>
+        <div class="tch-bar"><i style="width:${st.length ? Math.round(dn.length / st.length * 100) : 0}%"></i></div><div class="sub" style="margin:4px 0 0">${x.min != null ? "Topshirdi" : "Bajardi"}: <b>${dn.length}/${st.length}</b>${dn.length ? ` · o'rtacha: <b>${Math.round(dn.reduce((a, s) => a + (r[s.k].pts || 0), 0) / dn.length)}</b>` : ""}${x.min != null && st.some(s => r[s.k] && !ok(s)) ? ` · ❌ o‘tmadi: <b>${st.filter(s => r[s.k] && !ok(s)).length}</b>` : ""}</div>
+        <details style="margin-top:6px"><summary class="sub">Ro'yxat</summary>${st.map(s => `<div class="tch-r"><div><b>${esc(s.f + " " + (s.l || ""))}</b></div><div>${r[s.k] ? (!ok(s) ? "❌ " + pcR(r[s.k]) + "%" : (r[s.k].late ? "⏰ " : "✅ ") + (x.min != null ? pcR(r[s.k]) + "%" : (r[s.k].pts || 0))) : over ? "❌" : "⏳"}</div></div>`).join("") || `<div class="sub">Guruhda o'quvchi yo'q</div>`}</details>
         <div style="text-align:right;margin-top:6px"><button class="lnk" style="color:var(--bad)">🗑 O'chirish</button></div>`;
       div.querySelector(".lnk").onclick = async () => { if (!confirm("Vazifa o'chirilsinmi?")) return; try { await DBA.set("hw/" + x.id, null); delete H[x.id]; div.remove(); } catch (e) { FX.toast("⚠️ " + ((e && e.message) || e)); } };
       el.appendChild(div);
@@ -2722,6 +2727,7 @@ const HB=(()=>{
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
 function start(){
   FROM_T=false;TEAMWIN="";HWCUR=HWNEXT;HWNEXT=null;
+  if(!HWCUR&&!set.kt){const L=HW.lockInfo();if(L){HW.lockScreen(L);return}}
   if(!HWCUR&&!set.ar&&!PM.okSet(set)&&!(set.ms&&MSACC.saved(set))){PM.wall("«"+(set.title||set.n||set.g)+"»");return}
   if(set.ms&&set.ms.enc){if(!ACCT.cur)return;const s0=set,h0=HWCUR;FX.toast("⏳ Variant yuklanmoqda…");MSK.open(s0).then(()=>{set=s0;HWNEXT=h0;start()}).catch(e=>{const m=String(e&&e.message);if(m==="deny")PM.wall();else FX.toast(m==="nokey"?"⚠️ Bu variant hali tayyorlanmoqda. Ustozga xabar bering.":"⚠️ Variantni yuklab bo‘lmadi. Internetni tekshiring.")});return}
   if(set.ms){const ac=ACCT.cur;if(!ac)return;FN=ac.f;LN=ac.l;name=FN+" "+LN;return MS.start()}
@@ -5691,11 +5697,34 @@ const HW = (() => {
   const d2 = n => String(n).padStart(2, "0"), dt = ms => { if (!ms) return "—"; const d = new Date(ms); return `${d2(d.getDate())}.${d2(d.getMonth() + 1)} ${d2(d.getHours())}:${d2(d.getMinutes())}`; };
   const list = () => Object.entries(hw || {}).filter(([k, x]) => x && x.set).map(([k, x]) => ({ id: k, ...x })).sort((a, b) => (b.c || 0) - (a.c || 0));
   const setOf = id => SETS.find(s => s.id === id);
+  // Vazifa chegarasi: grp/<id>/vq = { on, pct, keep }; vazifada min (o'tish foizi)
+  let gUn = null; const loc = {};
+  const cfgOf = gn => { for (const x of Object.values(grps || {})) if (x && x.n && nk(x.n) === nk(gn) && x.vq && x.vq.on) return x.vq; return null; };
+  const pctOf = r => r && r.tot ? Math.round((r.ok || 0) * 100 / r.tot) : 0;
+  function best(id) { let b = loc[id] != null ? loc[id] : -1; (ACCT.recs || []).forEach(r => { if (r.hw === id) b = Math.max(b, pctOf(r)); }); return b; }
+  const thrOf = (x, cfg) => cfg && x && x.min != null ? x.min : null;
+  function lockInfo() {
+    const c = typeof ACCT !== "undefined" && ACCT.cur; if (!c || !c.g || isAdmin()) return null;
+    const cfg = cfgOf(c.g); if (!cfg) return null; const now = DBA.now();
+    const x = list().filter(x => (x.g === "*" || nk(x.g) === nk(c.g)) && x.min != null && setOf(x.set) && (now <= x.due || (cfg.keep && now - x.due < 60 * 86400e3)) && best(x.id) < x.min).sort((a, b) => a.due - b.due)[0];
+    return x ? { x, b: best(x.id) } : null;
+  }
+  function lockScreen(L) {
+    L = L || lockInfo(); if (!L) return; const s = setOf(L.x.set), now = DBA.now();
+    try { T.leave(); } catch (e) {} show("tz");
+    $("tz").innerHTML = `<div class="card" style="text-align:center"><div style="font-size:46px">🔒</div><h1>Avval uy vazifasini topshiring</h1>
+      <p class="sub">Boshqa testlar va o‘yinlar vazifa topshirilgandan keyin ochiladi.</p>
+      <div class="tnote" style="text-align:left"><b>📘 ${esc(s.title)}</b><br>O‘tish uchun kamida <b>${L.x.min}%</b> to‘g‘ri javob kerak.<br>${L.b >= 0 ? `Sizning eng yaxshi natijangiz: <b style="color:var(--bad)">${L.b}%</b>` : "Hali ishlanmagan."}<br>⏰ Muddat: ${dt(L.x.due)}${now > L.x.due ? " (o‘tib ketgan)" : ""}</div>
+      <button class="btn" id="hwLk">${L.b >= 0 ? "Qayta ishlash" : "Vazifani ishlash"}</button><button class="btn ghost" style="margin-top:8px" onclick="goHome()">Bosh sahifa</button></div>`;
+    $("hwLk").onclick = () => startHW(L.x.id);
+  }
+  function gate(fn) { return function (...a) { const L = lockInfo(); if (L) { lockScreen(L); return; } return fn.apply(this, a); }; }
   function left(ms) { const d = ms - DBA.now(); if (d <= 0) return "muddat o'tgan"; const h = Math.floor(d / 3600e3); if (h >= 48) return Math.floor(h / 24) + " kun qoldi"; if (h >= 1) return h + " soat qoldi"; return Math.max(1, Math.floor(d / 60000)) + " daqiqa qoldi"; }
   let wm = null;
   function watch(all) { const want = all ? "all" : "p"; if (un && (wm === "all" || wm === want)) return; if (un) un(); wm = want;
     const cb = v => { hw = v || {}; renderStudent(); if ($("hwL")) renderAdmin(); };
-    un = all ? DBA.on("hw", cb) : DBA.onSince("hw", "due", DBA.now() - 15 * 86400e3, cb); }
+    un = all ? DBA.on("hw", cb) : DBA.onSince("hw", "due", DBA.now() - 60 * 86400e3, cb);
+    if (!gUn) gUn = DBA.on("grp", v => { grps = v || {}; renderStudent(); }); }
 
   // ---------- o'quvchi ----------
   let hwOpen = false;
@@ -5705,13 +5734,16 @@ const HW = (() => {
     const done = {}; ACCT.recs.forEach(r => { if (r.hw && (!done[r.hw] || r.pts > done[r.hw].pts)) done[r.hw] = r; });
     const now = DBA.now();
     const jb = $("homeJoin"); if (!cur.g) { box.innerHTML = ""; HB.setHW(null); if (jb) joinCard(jb); HB.render(); return; } if (jb) jb.innerHTML = "";
-    const mine = list().filter(x => (x.g === "*" || nk(x.g) === nk(cur.g)) && setOf(x.set) && now - x.due < (done[x.id] ? 3 : 14) * 86400e3).sort((a, b) => a.due - b.due);
+    const cfg = cfgOf(cur.g), fl = {};
+    list().forEach(x => { const t = thrOf(x, cfg); if (t == null) return; const b = best(x.id); if (b >= t) { if (!done[x.id]) done[x.id] = { pts: b + "%" }; } else { delete done[x.id]; if (b >= 0) fl[x.id] = b; } });
+    const mine = list().filter(x => (x.g === "*" || nk(x.g) === nk(cur.g)) && setOf(x.set) && now - x.due < (done[x.id] ? 3 : (thrOf(x, cfg) != null && cfg.keep ? 60 : 14)) * 86400e3).sort((a, b) => a.due - b.due);
     if (!mine.length) { box.innerHTML = ""; HB.setHW(null); HB.render(); return; }
     const todo = mine.filter(x => !done[x.id]), fin = mine.filter(x => done[x.id]);
     const cnt = s => s.ms ? 45 : s.qs ? s.qs.length : 20;
     const row = x => { const d = done[x.id], over = now > x.due, s = setOf(x.set), h = (x.due - now) / 3600e3;
-      const st = d ? `<span style="color:var(--ok)">bajarildi</span>` : over ? `<span style="color:var(--bad)">muddat o‘tgan</span>` : h < 24 ? `<span style="color:#fbbf24">${h < 1 ? "1 soatdan kam qoldi" : Math.round(h) + " soat qoldi"}</span>` : `${dt(x.due)} gacha`;
-      return `<div class="hwr"><div class="hwi ${d ? "g" : over ? "r" : h < 24 ? "y" : "b"}">${d ? "✅" : over ? "⏰" : "📘"}</div><div class="hwt"><b>${esc(s.title)}</b><small>${cnt(s)} savol · ${st}</small></div>${d ? `<button class="hwsc" data-hw="${esc(x.id)}" title="Qayta ishlash">${d.pts}<i>↻</i></button>` : `<button class="btn sm hwgo" data-hw="${esc(x.id)}">Ishlash</button>`}</div>`; };
+      const t = thrOf(x, cfg), f = fl[x.id];
+      const st = d ? `<span style="color:var(--ok)">${t != null ? "topshirildi" : "bajarildi"}</span>` : f != null ? `<span style="color:var(--bad)">o‘tmadi: ${f}% (kerak ${t}%)</span>` : over ? `<span style="color:var(--bad)">muddat o‘tgan</span>` : h < 24 ? `<span style="color:#fbbf24">${h < 1 ? "1 soatdan kam qoldi" : Math.round(h) + " soat qoldi"}</span>` : `${dt(x.due)} gacha`;
+      return `<div class="hwr"><div class="hwi ${d ? "g" : f != null || over ? "r" : h < 24 ? "y" : "b"}">${d ? "✅" : f != null ? "❌" : over ? "⏰" : "📘"}</div><div class="hwt"><b>${esc(s.title)}</b><small>${cnt(s)} savol${t != null && !d ? ` · 🔒 kamida ${t}%` : ""} · ${st}</small></div>${d ? `<button class="hwsc" data-hw="${esc(x.id)}" title="Qayta ishlash">${d.pts}<i>↻</i></button>` : `<button class="btn sm hwgo" data-hw="${esc(x.id)}">${f != null ? "Qayta" : "Ishlash"}</button>`}</div>`; };
     box.innerHTML = `<div class="card hwc${todo.length ? " hwcard" : ""}" style="margin-top:12px"><div class="hwh"><b>📝 Uyga vazifalar</b>${todo.length ? `<span class="st-lv" style="background:var(--ac)">${todo.length} ta qoldi</span>` : `<span class="st-lv" style="background:var(--ok)">hammasi bajarildi</span>`}</div>
       ${todo.map(row).join("")}${fin.length ? `<button class="hwmore" id="hwMore">✅ Bajarilganlar (${fin.length}) ${hwOpen ? "▴" : "›"}</button>${hwOpen ? fin.map(row).join("") : ""}` : ""}</div>`;
     const mb = $("hwMore"); if (mb) mb.onclick = () => { hwOpen = !hwOpen; renderStudent(); };
@@ -5763,15 +5795,17 @@ const HW = (() => {
       <div class="card"><h1 style="margin-bottom:6px">👥 Guruhlar</h1><div class="sub" style="margin-bottom:10px">Har guruhning o'z kodi bor. O'quvchiga 🔗 havolani yuboring (yoki kodni ayting) — bosishi bilan guruhga qo'shiladi. Guruhsiz o'quvchilar «mustaqil» hisoblanadi: ularga uy vazifasi bormaydi.</div>
         <div id="hwG" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px"></div>
         <div class="row"><input id="hwGn" placeholder="Yangi guruh nomi, masalan: 7-A" style="margin:0;flex:2"><button class="btn sm" id="hwGa" style="flex:1">➕ Qo'shish</button></div></div>
+      <div class="card" style="margin-top:12px"><h1 style="margin-bottom:6px">🔒 Vazifa chegarasi</h1><div class="sub" style="margin-bottom:10px">Yoqilgan guruhda vazifa belgilangan foizdan past ishlansa «o‘tmadi» hisoblanadi va o‘quvchi uni topshirmaguncha boshqa testlar hamda o‘yinlar yopiq turadi.</div><div id="hwV"></div></div>
       <div class="card" style="margin-top:12px"><h1 style="margin-bottom:10px">📝 Yangi vazifa</h1>
         <label>Test</label><select id="hwS">${opts}</select>
         <label>Kimga</label><select id="hwTo"></select>
         <label>Muddat (shu vaqtgacha topshirish kerak)</label><input id="hwD" type="datetime-local" value="${def}">
+        <label>O‘tish foizi (bo‘sh qolsa — chegarasiz)</label><input id="hwM" type="number" min="1" max="100" inputmode="numeric" placeholder="masalan: 70">
         <label>Izoh (ixtiyoriy)</label><input id="hwN" maxlength="120" placeholder="masalan: 8–13-mavzularni takrorlang">
         <div class="accerr" id="hwE"></div><button class="btn" id="hwGo">Vazifani berish</button></div>
       <div id="hwL" style="margin-top:12px"></div>`;
     $("hwGa").onclick = () => { const n = $("hwGn").value.trim().slice(0, 30); if (n.length < 1) return; if (allGroups().some(x => nk(x) === nk(n))) { FX.toast("Bu guruh allaqachon bor"); return; } DBA.set("grp/g" + Date.now().toString(36), { n }); DBA.set("grpk/" + mkCode(), n).catch(() => {}); $("hwGn").value = ""; };
-    $("hwGo").onclick = create;
+    $("hwGo").onclick = create; vqDrawn = ""; $("hwTo").onchange = preMin;
     aUn.push(DBA.on("grp", v => { grps = v || {}; renderGroups(); }));
     aUn.push(DBA.on("grpk", v => { gks = v || {}; gksL = true; renderGroups(); }));
     aUn.push(DBA.on(AUTH.FB ? "users" : "u", v => { users = v || {}; renderGroups(); renderAdmin(); }));
@@ -5780,8 +5814,33 @@ const HW = (() => {
   }
   const ulist = () => Object.entries(users || {}).filter(([k, x]) => x && x.f).map(([k, x]) => ({ k, ...x }));
   function allGroups() { const m = new Map(); Object.values(grps || {}).forEach(x => { if (x && x.n) m.set(nk(x.n), x.n); }); ulist().forEach(x => { if (x.g && !m.has(nk(x.g))) m.set(nk(x.g), x.g); }); return [...m.values()].sort((a, b) => a.localeCompare(b)); }
+  let vqDrawn = "";
+  // Guruh uchun chegara sozlamasi formasi (admin va ustoz paneli uchun umumiy)
+  function vqForm(el, gname, vq, save) {
+    vq = vq || {}; const id = "vq" + Math.random().toString(36).slice(2, 7);
+    el.innerHTML = `<div class="vqf" style="border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:8px">${gname ? `<b>${esc(gname)}</b>` : ""}
+      <label style="display:flex;align-items:center;gap:8px;margin:6px 0;font-weight:600"><input type="checkbox" id="${id}o" style="width:auto;margin:0"${vq.on ? " checked" : ""}> Chegara yoqilgan</label>
+      <div class="row" style="align-items:center;gap:8px"><span class="sub" style="margin:0;flex:2">O‘tish foizi</span><input id="${id}p" type="number" min="1" max="100" value="${vq.pct || 70}" style="margin:0;flex:1"></div>
+      <label style="display:flex;align-items:center;gap:8px;margin:8px 0;font-weight:600"><input type="checkbox" id="${id}k" style="width:auto;margin:0"${vq.keep ? " checked" : ""}> Topshirmaguncha qulf tursin <small class="sub" style="margin:0;font-weight:400">(muddat o‘tsa ham)</small></label>
+      <button class="btn sm" id="${id}s">Saqlash</button></div>`;
+    $(id + "s").onclick = async () => { const p = Math.round(+$(id + "p").value); if (!(p >= 1 && p <= 100)) { FX.toast("Foiz 1 dan 100 gacha bo‘lsin"); return; }
+      const v = { on: $(id + "o").checked, pct: p, keep: $(id + "k").checked }; $(id + "s").disabled = true;
+      try { await save(v); FX.toast(v.on ? `🔒 Saqlandi: ${p}%` : "Saqlandi: chegara o‘chirilgan", "up"); } catch (e) { FX.toast("⚠️ " + ((e && e.message) || e)); } if ($(id + "s")) $(id + "s").disabled = false; };
+  }
+  function vqOfName(n) { const e = Object.entries(grps || {}).find(([k, x]) => x && x.n && nk(x.n) === nk(n) && x.vq); return e ? e[1].vq : null; }
+  function preMin() { const m = $("hwM"), g = $("hwTo"); if (!m || !g) return; const v = g.value === "*" ? null : vqOfName(g.value); m.value = v && v.on ? v.pct : ""; }
+  function drawVq() {
+    const V = $("hwV"); if (!V) return; const all = allGroups(), sig = all.join("|"); if (vqDrawn === sig) return; vqDrawn = sig;
+    if (!all.length) { V.innerHTML = `<div class="sub" style="margin:0">Hali guruh yo‘q.</div>`; return; }
+    V.innerHTML = all.map((n, i) => `<div id="hwV${i}"></div>`).join("");
+    all.forEach((n, i) => vqForm($("hwV" + i), n, vqOfName(n), async v => {
+      const e = Object.entries(grps || {}).find(([k, x]) => x && x.n && nk(x.n) === nk(n));
+      if (e) await DBA.update("grp/" + e[0], { vq: v }); else await DBA.set("grp/g" + Date.now().toString(36), { n, vq: v });
+      preMin();
+    }));
+  }
   function renderGroups() {
-    if (!$("hwG")) return; renderGroups.mk = renderGroups.mk || new Set();
+    if (!$("hwG")) return; drawVq(); renderGroups.mk = renderGroups.mk || new Set();
     const us = ulist(), saved = Object.entries(grps || {}).filter(([k, x]) => x && x.n);
     const all = allGroups();
     const codeOf = n => (Object.entries(gks || {}).find(([k, v]) => nk(v) === nk(n)) || [])[0];
@@ -5793,14 +5852,14 @@ const HW = (() => {
     if (gksL) saved.forEach(([id, x]) => { if (!codeOf(x.n) && !renderGroups.mk.has(id)) { renderGroups.mk.add(id); DBA.set("grpk/" + mkCode(), x.n).catch(() => {}); } });
     const sel = $("hwTo"), v = sel.value;
     sel.innerHTML = `<option value="*">Barcha guruhlar</option>` + all.map(n => `<option value="${esc(n)}">${esc(n)}</option>`).join("");
-    if ([...sel.options].some(o => o.value === v)) sel.value = v;
+    if ([...sel.options].some(o => o.value === v)) sel.value = v; else preMin();
   }
   async function create() {
     const E = m => $("hwE").textContent = m, due = new Date($("hwD").value).getTime();
     if (!due || isNaN(due)) return E("Muddatni tanlang.");
     if (due < Date.now()) return E("Muddat o'tib ketgan vaqtga qo'yilgan.");
-    const s = setOf($("hwS").value), rec = { set: s.id, ttl: s.title, g: $("hwTo").value, due, c: DBA.now() }, note = $("hwN").value.trim();
-    if (note) rec.note = note;
+    const s = setOf($("hwS").value), rec = { set: s.id, ttl: s.title, g: $("hwTo").value, due, c: DBA.now() }, note = $("hwN").value.trim(), mn = Math.round(+$("hwM").value);
+    if (note) rec.note = note; if ($("hwM").value !== "") { if (!(mn >= 1 && mn <= 100)) return E("O‘tish foizi 1 dan 100 gacha bo‘lsin."); rec.min = mn; }
     E(""); if (s.ms) DBA.set("c/pmhw/" + s.id, true).catch(() => {}); await DBA.set("hw/w" + Date.now().toString(36), rec); $("hwN").value = ""; FX.toast("✅ Vazifa berildi", "up");
     if (TGB.on()) { const d = new Date(due); TGB.call("notifyHw", { ttl: rec.ttl, grp: rec.g === "*" ? "" : rec.g, note: note || "", due: `${d2(d.getDate())}.${d2(d.getMonth() + 1)} ${d2(d.getHours())}:${d2(d.getMinutes())}` }).then(r => FX.toast(`📨 Botda ${r.sent} ta o'quvchiga xabar ketdi`, "up")).catch(() => {}); }
   }
@@ -5810,18 +5869,20 @@ const HW = (() => {
     if (!hs.length) { L.innerHTML = `<div class="card" style="text-align:center"><p class="sub" style="margin:0">Hali vazifa berilmagan.</p></div>`; return; }
     L.innerHTML = hs.map(x => {
       const st = us.filter(u => x.g === "*" || nk(u.g) === nk(x.g)), res = hwr[x.id] || {}, over = now > x.due;
-      const dn = st.filter(u => res[u.k]), late = dn.filter(u => res[u.k].late).length, pct = st.length ? Math.round(dn.length / st.length * 100) : 0;
+      const pcR = r => r.pc != null ? r.pc : pctOf(r), pass = u => res[u.k] && (x.min == null || pcR(res[u.k]) >= x.min), fail = st.filter(u => res[u.k] && !pass(u)).length;
+      const dn = st.filter(pass), late = dn.filter(u => res[u.k].late).length, pct = st.length ? Math.round(dn.length / st.length * 100) : 0;
       const avg = dn.length ? Math.round(dn.reduce((a, u) => a + (res[u.k].pts || 0), 0) / dn.length) : null;
       let body = "";
       if (openId === x.id) {
         const rows = st.slice().sort((a, b) => (res[b.k] ? 1 : 0) - (res[a.k] ? 1 : 0) || ((res[b.k] || {}).pts || 0) - ((res[a.k] || {}).pts || 0) || (a.l + a.f).localeCompare(b.l + b.f));
         body = `<div style="margin-top:10px">${rows.length ? rows.map(u => { const r = res[u.k];
-          return `<div class="trow"><div class="tr-r">${r ? (r.late ? "⏰" : "✅") : over ? "❌" : "⏳"}</div><div class="tr-n"><div class="tr-nm">${esc(u.f)} ${esc(u.l)}</div><div class="st-s">${r ? `${dt(r.at)}${r.late ? " · kechikib topshirdi" : ""}${r.k > 1 ? ` · ${r.k} marta urindi` : ""}` : over ? "ishlamadi" : "hali ishlamagan"}</div></div><div class="tr-s">${r ? r.pts : "—"}</div></div>`; }).join("") : '<div class="sub" style="margin:0">Bu guruhda hali o\'quvchi yo\'q.</div>'}
+          const ps = r && pass(u);
+          return `<div class="trow"><div class="tr-r">${r ? (!ps ? "❌" : r.late ? "⏰" : "✅") : over ? "❌" : "⏳"}</div><div class="tr-n"><div class="tr-nm">${esc(u.f)} ${esc(u.l)}</div><div class="st-s">${r ? `${!ps ? `<span style="color:var(--bad)">o‘tmadi (${pcR(r)}% / ${x.min}%)</span> · ` : ""}${dt(r.at)}${r.late ? " · kechikib topshirdi" : ""}${r.k > 1 ? ` · ${r.k} marta urindi` : ""}` : over ? "ishlamadi" : "hali ishlamagan"}</div></div><div class="tr-s">${r ? pcR(r) + "%" : "—"}</div></div>`; }).join("") : '<div class="sub" style="margin:0">Bu guruhda hali o\'quvchi yo\'q.</div>'}
           <div style="text-align:right;margin-top:8px"><button class="lnk" data-del="${esc(x.id)}" style="color:var(--bad)">🗑 Vazifani o'chirish</button></div></div>`;
       }
       return `<div class="card" style="margin-bottom:12px"><div class="hwhead" data-id="${esc(x.id)}" style="cursor:pointer"><div style="display:flex;justify-content:space-between;gap:10px"><b>${esc(x.ttl)}</b><span class="st-lv" style="background:${over ? "#5b6b7b" : "var(--ok)"};align-self:flex-start">${over ? "tugagan" : "faol"}</span></div>
-        <div class="st-s" style="margin:4px 0 8px">👥 ${x.g === "*" ? "Barcha o'quvchilar" : esc(x.g)} · ⏰ ${dt(x.due)} (${left(x.due)})${x.note ? " · 💬 " + esc(x.note) : ""}</div>
-        <div class="mh"><b>${dn.length} / ${st.length} bajardi</b><span>${avg != null ? "o'rtacha " + avg + " ball" : ""}${late ? ` · ${late} ta kechikkan` : ""} ${openId === x.id ? "▲" : "▼"}</span></div><div class="bar" style="margin:0"><i style="width:${pct}%"></i></div></div>${body}</div>`;
+        <div class="st-s" style="margin:4px 0 8px">👥 ${x.g === "*" ? "Barcha o'quvchilar" : esc(x.g)} · ⏰ ${dt(x.due)} (${left(x.due)})${x.note ? " · 💬 " + esc(x.note) : ""}${x.min != null ? ` · 🔒 kamida ${x.min}%` : ""}${fail ? ` · ❌ ${fail} ta o‘tmadi` : ""}</div>
+        <div class="mh"><b>${dn.length} / ${st.length} ${x.min != null ? "topshirdi" : "bajardi"}</b><span>${avg != null ? "o'rtacha " + avg + " ball" : ""}${late ? ` · ${late} ta kechikkan` : ""} ${openId === x.id ? "▲" : "▼"}</span></div><div class="bar" style="margin:0"><i style="width:${pct}%"></i></div></div>${body}</div>`;
     }).join("");
     L.querySelectorAll(".hwhead").forEach(h => h.onclick = () => { openId = openId === h.dataset.id ? null : h.dataset.id; renderAdmin(); });
     L.querySelectorAll("[data-del]").forEach(b => b.onclick = () => {
@@ -5835,10 +5896,14 @@ const HW = (() => {
       if (inp && ns.length && inp.tagName === "INPUT") { const s = document.createElement("select"); s.id = "rG"; s.innerHTML = `<option value="">— guruhingizni tanlang —</option>` + ns.map(n => `<option value="${esc(n)}">${esc(n)}</option>`).join(""); inp.replaceWith(s); } } catch (e) {}
   }
   function record(rec, ac) {
-    if (!rec.hw || !ac) return; const p = `hwr/${rec.hw}/${ac.uid}`, due = (hw[rec.hw] || {}).due || (HWCUR && HWCUR.due) || 0;
-    DBA.get(p).then(o => { if (!o) return DBA.set(p, { n: rec.n, u: rec.u || "", pts: rec.pts, ok: rec.ok, tot: rec.tot, at: rec.at, late: due && rec.at > due ? 1 : 0, k: 1 }); const up = { k: (o.k || 1) + 1 }; if (rec.pts > (o.pts || 0)) { up.pts = rec.pts; up.ok = rec.ok; } return DBA.update(p, up); }).catch(() => {});
+    if (!rec.hw || !ac) return; const p = `hwr/${rec.hw}/${ac.uid}`, due = (hw[rec.hw] || {}).due || (HWCUR && HWCUR.due) || 0, pc = pctOf(rec);
+    loc[rec.hw] = Math.max(loc[rec.hw] != null ? loc[rec.hw] : -1, pc);
+    setTimeout(() => { try { renderStudent(); } catch (e) {} }, 50);
+    const x = hw[rec.hw], t = thrOf(x, ac.g && cfgOf(ac.g));
+    if (t != null) setTimeout(() => { try { pc >= t ? FX.toast(`✅ Vazifa topshirildi: ${pc}%`, "up") : FX.toast(`❌ Vazifa o‘tmadi: ${pc}% (kerak ${t}%). Qayta ishlang`); } catch (e) {} }, 1200);
+    DBA.get(p).then(o => { if (!o) return DBA.set(p, { n: rec.n, u: rec.u || "", pts: rec.pts, ok: rec.ok, tot: rec.tot, pc, at: rec.at, late: due && rec.at > due ? 1 : 0, k: 1 }); const up = { k: (o.k || 1) + 1 }; if (rec.pts > (o.pts || 0)) { up.pts = rec.pts; up.ok = rec.ok; } if (pc > (o.pc != null ? o.pc : pctOf(o))) up.pc = pc; return DBA.update(p, up); }).catch(() => {});
   }
-  return { open, leaveAdmin, renderStudent, fillRegGroups, record, join, pendingJoin, pend: () => { try { return localStorage.getItem("zm_gj") || ""; } catch (e) { return ""; } }, allGroups: () => { const m = new Set(Object.values(grps || {}).filter(x => x && x.n).map(x => x.n)); return [...m]; } };
+  return { open, leaveAdmin, renderStudent, fillRegGroups, record, join, pendingJoin, gate, lockInfo, lockScreen, vqForm, pctOf, pend: () => { try { return localStorage.getItem("zm_gj") || ""; } catch (e) { return ""; } }, allGroups: () => { const m = new Set(Object.values(grps || {}).filter(x => x && x.n).map(x => x.n)); return [...m]; } };
 })();
 
 // ================== MILLIY SERTIFIKAT FORMATIDAGI TEST ==================
@@ -8332,6 +8397,9 @@ PM.install();
   const W=f=>function(...a){if(ready())return f.apply(this,a);try{FX.toast("⏳ Testlar yuklanmoqda…")}catch(e){}return TQR.then(()=>f.apply(this,a))};
   [[BLITZ,"open"],[HAYOQ,"open"],[LADDER,"open"],[LADDER,"start"],[DUEL,"open"],[DUEL,"openLink"],[KUN,"go"],[BOSS,"setup"],[BOSS,"play"],[T,"openHost"],[T,"openJoin"],[GAME,"startErrors"],[KT,"join"],[KT,"create"],[HW,"open"],[HW,"join"],[DARS,"open"],[STAT,"open"],[XRON,"open"]].forEach(([o,m])=>{try{if(o&&typeof o[m]==="function")o[m]=W(o[m])}catch(e){}});
   window.goTests=W(goTests);window.goMS=W(goMS);window.start=W(start);
+  // Uy vazifasi qulfi: topshirilmagan vazifa bo'lsa o'yinlar ochilmaydi (turnir va Boss jangi ochiq)
+  [[BLITZ,"open"],[HAYOQ,"open"],[LADDER,"open"],[LADDER,"start"],[DUEL,"open"],[DUEL,"openLink"],[JUFTG,"open"],[XRON,"open"],[KIMG,"open"],[GAME,"startErrors"],[KUN,"go"]].forEach(([o,k])=>{if(o&&typeof o[k]==="function")o[k]=HW.gate(o[k])});
+  {const g0=PM.gate;PM.gate=function(k,f,...a){if(k==="xarita"){const L=HW.lockInfo();if(L){HW.lockScreen(L);return}}return g0.call(this,k,f,...a)}}
   TQR.then(()=>{try{if(!$("home").classList.contains("hide")&&ACCT.cur)ACCT.renderHome();if(!$("start").classList.contains("hide"))renderTopics()}catch(e){}});
 })();
 </script>
