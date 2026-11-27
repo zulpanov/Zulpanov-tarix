@@ -763,11 +763,19 @@ async function xpFix(env) {
   for (; i < end; i++) { try { const r = await syncLb(env, ids[i]); if (!r.wxp) await db(env, "DELETE", `lb/${wk}/${ids[i]}`); } catch (e) {} }
   await db(env, "PUT", "cfg/xpfix1", i >= ids.length ? { done: true, n: ids.length, at: Date.now() } : { i, wk });
 }
+// XP: butun tarix kuniga bir marta o'qiladi; qolgan paytda faqat bugungi va shu haftalik natijalar (xpc/<uid> — server keshi)
 async function syncLb(env, uid, user) {
   user = user || await db(env, "GET", "users/" + uid) || {};
-  const rs = vals(await db(env, "GET", "h/" + uid));
-  const now = Date.now(), ws = weekStart(now);
-  const xp = xpSum(rs) + (Number(user.bx) || 0), wxp = xpSum(rs.filter(r => r.at >= ws));
+  const now = Date.now(), ws = weekStart(now), d0 = dayStart(now), day = dayOf(now);
+  const [c0, sh, td] = await Promise.all([db(env, "GET", "xpc/" + uid).catch(() => null), db(env, "GET", "h/" + uid, undefined, "&shallow=true").catch(() => null), hSince(env, uid, d0)]);
+  const keys = Object.keys(sh || {}).length;
+  let base;
+  if (c0 && c0.d === day && keys === c0.n + td.length) base = c0.v;
+  else { // kesh yo'q, eskirgan yoki o'tgan kunlarga yozuv qo'shilgan/o'chirilgan — bir marta to'liq hisob
+    const past = vals(await db(env, "GET", "h/" + uid)).filter(r => (r.at || 0) < d0);
+    base = xpSum(past); await db(env, "PUT", "xpc/" + uid, { d: day, v: base, n: past.length }).catch(() => {});
+  }
+  const xp = base + xpSum(td) + (Number(user.bx) || 0), wxp = xpSum(await hSince(env, uid, ws));
   let lv = 0; LEVELS.forEach((t, i) => { if (xp >= t) lv = i; });
   if (wxp > 0) await db(env, "PUT", `lb/${weekKey(now)}/${uid}`, { n: str((user.f || "") + " " + (user.l || ""), 80).trim(), g: str(user.g, 30), xp: wxp, lv, at: now });
   return { xp, wxp, lv };
@@ -1000,7 +1008,7 @@ export default {
     // Bepul tarif: bitta ishga tushishda ≤50 tashqi so'rov. Shuning uchun vazifalar ketma-ket, muhimlari birinchi.
     const run = (n, f) => f().catch(e => console.error(n, e && e.stack || e));
     if (event.cron === "0 4 * * SUN") ctx.waitUntil(run("backup", () => backup(env)).then(() => run("cleanup", () => cleanup(env))));
-    else ctx.waitUntil((async () => { await run("awards", () => weeklyAwards(env)); await run("arena", () => arenaCron(env)); await run("hwRemind", () => hwRemind(env)); await run("xpcheck", () => xpCheck(env)); })());
+    else ctx.waitUntil((async () => { await run("awards", () => weeklyAwards(env)); await run("arena", () => arenaCron(env)); await run("hwRemind", () => hwRemind(env)); })());
   },
   async fetch(req, env, ctx) {
     const url = new URL(req.url);
