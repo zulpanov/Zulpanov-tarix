@@ -55,7 +55,9 @@
       "$uid": {
         ".read": "auth != null && (auth.uid === $uid || root.child('admins').child(auth.uid).val() === true || root.child('tst').child(auth.uid).child($uid).exists())",
         ".write": "auth != null && root.child('admins').child(auth.uid).val() === true",
-        ".indexOn": ["at"]
+        ".indexOn": [
+          "at"
+        ]
       }
     },
     "cfg": {
@@ -75,7 +77,10 @@
     "ar": {
       ".read": "auth != null",
       ".write": "auth != null && root.child('admins').child(auth.uid).val() === true",
-      ".indexOn": ["e", "t"],
+      ".indexOn": [
+        "e",
+        "t"
+      ],
       "$id": {
         ".write": "auth != null && root.child('tch').child(auth.uid).child('ok').val() === true && (!data.exists() || data.child('t').val() === auth.uid) && (!newData.exists() || (newData.child('t').val() === auth.uid && newData.child('g').val() !== '*'))"
       }
@@ -347,6 +352,12 @@
             ".validate": false
           }
         }
+      }
+    },
+    "rot": {
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid",
+        ".write": "auth != null && auth.uid === $uid"
       }
     }
   }

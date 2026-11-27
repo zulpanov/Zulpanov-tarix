@@ -2500,7 +2500,7 @@ function renderTopics(){
     if(TL){
       const bt=best[s.id]||best[s.title],mv=/mavzu(lar)?$/i.test(s.title||""),kw=String(s.sub||"").split(" · ")[0];
       const ev=document.createElement("div");ev.className="tle"+(bt?" done":"")+(set&&set.id===s.id?" sel":"");
-      ev.innerHTML=`<div class="tle-n"><b>${E(s.n)}</b><span>mavzu</span></div><div class="tle-d"></div><div class="tp" role="button" tabindex="0"><div class="tle-h"><b>${E(mv?String(s.title).split(": ").pop():s.title)}${PM.badge(s)}</b>${bt?`<span class="tle-s" style="color:${lvc(bt.lv)};background:${lvc(bt.lv)}22">${bt.lv?E(bt.lv)+" · ":""}${bt.pts}</span>`:""}</div><span class="tle-k">${E(mv?kw:s.sub)}</span>${s.qs&&s.qs.length&&!s.ms?(()=>{const r=ROT.stat(s),all=r.n>=r.L,pc=Math.round(r.n/r.L*100);return `<div class="tle-bar${all?" all":""}"><i style="width:${pc}%"></i></div><div class="tle-bl"><span>📚 ${r.n} / ${r.L} ko‘rildi</span><b>${all?"✅ hammasi":r.n?`🆕 ${r.L-r.n} ta yangi`:`🆕 ${r.L} ta yangi`}</b></div>`})():""}</div>`;
+      ev.innerHTML=`<div class="tle-n"><b>${E(s.n)}</b><span>mavzu</span></div><div class="tle-d"></div><div class="tp" role="button" tabindex="0"><div class="tle-h"><b>${E(mv?String(s.title).split(": ").pop():s.title)}${PM.badge(s)}</b>${bt?`<span class="tle-s" style="color:${lvc(bt.lv)};background:${lvc(bt.lv)}22">${bt.lv?E(bt.lv)+" · ":""}${bt.pts}</span>`:""}</div><span class="tle-k">${E(mv?kw:s.sub)}</span>${s.qs&&s.qs.length&&!s.ms?(()=>{const r=ROT.stat(s),all=r.n>=r.L,pc=Math.round(r.n/r.L*100);return `<div class="tle-bar${all?" all":""}"><i style="width:${pc}%"></i></div><div class="tle-bl"><span>📚 ${r.n} / ${r.L} ko‘rildi</span><b>${r.w?`<span style="color:#f87171">🔁 ${r.w} ta xato</span> · `:""}${all?"✅ hammasi":r.n?`🆕 ${r.L-r.n} ta yangi`:`🆕 ${r.L} ta yangi`}</b></div>`})():""}</div>`;
       const card=ev.querySelector(".tp");
       card.onclick=e=>{if(e.target.closest("#go"))return;set=s;document.querySelectorAll(".tle").forEach(x=>x.classList.toggle("sel",x===ev));const g=$("go");if(g){g.classList.add("in");card.appendChild(g)}chk()};
       wrap.appendChild(ev);
@@ -2526,12 +2526,31 @@ function msBar(){let bar=$("msBar");const on=VIEW.k==="ms"&&set&&set.ms;$("stBox
 renderTopics();
 function chk(){if(!$("go"))return;const a=typeof ACCT!=="undefined"&&ACCT.cur;$("go").disabled=!(set&&a);const n=set&&set.qs?(set.qs.length>25?25:set.qs.length):0;$("go").textContent=!a?"Avval tizimga kiring ↑":$("go").classList.contains("mb")?"▶ Boshlash":$("go").classList.contains("in")&&n?`▶ Boshlash · ${n} savol`:"Testni boshlash"}
 $("go").onclick=()=>start();
-const ROT=(()=>{const key=st=>"zm_rot_"+((typeof ACCT!=="undefined"&&ACCT.cur&&(ACCT.cur.login||ACCT.cur.uid))||"x")+"_"+st.id;
- function pick(st,N){const L=st.qs.length;let d={r:0,s:{}};try{d=JSON.parse(localStorage.getItem(key(st)))||d}catch(e){}if(!d.s)d.s={};
-  const r=(d.r||0)+1;const idx=shuffle(st.qs.map((_,i)=>i)).sort((x,y)=>(d.s[x]||0)-(d.s[y]||0));const ch=idx.slice(0,Math.min(N,L));
-  ch.forEach(i=>d.s[i]=r);d.r=r;try{localStorage.setItem(key(st),JSON.stringify(d))}catch(e){}return shuffle(ch.map(i=>st.qs[i]))}
- function stat(st){const L=(st.qs||[]).length;let d=null;try{d=JSON.parse(localStorage.getItem(key(st)))}catch(e){}const s=(d&&d.s)||{};let n=0;for(let i=0;i<L;i++)if(s[i])n++;return{n,L}}
- return{pick,stat}})();
+const ROT=(()=>{
+ // Mavzuli testda 25 ta savol: avval xato qilinganlar (ko'pi bilan 10), keyin ishlanmaganlar, keyin eng oldin ishlanganlar.
+ // Ko'rilganlar savol matni bo'yicha eslab qolinadi va o'quvchi hisobiga (rot/<uid>/<to'plam>) yoziladi.
+ const MAXW=10;
+ const uidOf=()=>(typeof ACCT!=="undefined"&&ACCT.cur&&(ACCT.cur.uid||ACCT.cur.login))||"x";
+ const lkey=st=>"zm_rot2_"+uidOf()+"_"+st.id, okey=st=>"zm_rot_"+((typeof ACCT!=="undefined"&&ACCT.cur&&(ACCT.cur.login||ACCT.cur.uid))||"x")+"_"+st.id;
+ const hq=q=>{let h=2166136261;for(const ch of String(q&&q.q||"")){h^=ch.charCodeAt(0);h=Math.imul(h,16777619)}return(h>>>0).toString(36)};
+ let remote=null,rUid=null,rLoad=null;
+ function load(){const u=uidOf();if(rUid===u)return;rUid=u;remote=null;if(u==="x"||typeof AUTH==="undefined"||!AUTH.FB)return;
+  rLoad=DBA.get("rot/"+u).then(v=>{if(rUid!==u)return;remote=v||{};try{if(!$("start").classList.contains("hide"))renderTopics()}catch(e){}}).catch(()=>{})}
+ function data(st){load();let d=null;try{d=JSON.parse(localStorage.getItem(lkey(st)))}catch(e){}
+  if(!d){d={r:0,s:{}};try{const o=JSON.parse(localStorage.getItem(okey(st)));if(o&&o.s)for(const i in o.s){const q=st.qs[+i];if(q)d.s[hq(q)]=o.s[i]}if(o&&o.r)d.r=o.r}catch(e){}} // eski (tartib raqamli) ma'lumotni ko'chirish
+  if(!d.s)d.s={};const R=remote&&remote[st.id];if(R){d.r=Math.max(d.r||0,R.r||0);for(const k in R.s||{})d.s[k]=Math.max(d.s[k]||0,R.s[k]||0)}return d}
+ const isErr=q=>{try{return GAME.isErr(q)}catch(e){return false}};
+ function pick(st,N){const L=st.qs.length,d=data(st),r=(d.r||0)+1;N=Math.min(N,L);
+  const all=shuffle(st.qs.map((_,i)=>i)),W=all.filter(i=>isErr(st.qs[i])).slice(0,MAXW),ws=new Set(W);
+  const rest=all.filter(i=>!ws.has(i)).sort((x,y)=>(d.s[hq(st.qs[x])]||0)-(d.s[hq(st.qs[y])]||0));
+  const ch=W.concat(rest).slice(0,N),up={};
+  ch.forEach(i=>{const k=hq(st.qs[i]);d.s[k]=r;up[k]=r});d.r=r;
+  try{localStorage.setItem(lkey(st),JSON.stringify(d))}catch(e){}
+  const u=uidOf();if(u!=="x"&&typeof AUTH!=="undefined"&&AUTH.FB){try{DBA.update("rot/"+u+"/"+st.id+"/s",up).catch(()=>{});DBA.set("rot/"+u+"/"+st.id+"/r",r).catch(()=>{})}catch(e){}
+   if(remote){const R=remote[st.id]=remote[st.id]||{s:{}};R.r=r;R.s=Object.assign(R.s||{},up)}}
+  return shuffle(ch.map(i=>ws.has(i)?Object.assign({},st.qs[i],{rp:1}):st.qs[i]))}
+ function stat(st){const L=(st.qs||[]).length,d=data(st);let n=0,w=0;for(let i=0;i<L;i++){const q=st.qs[i];if(d.s[hq(q)])n++;if(isErr(q))w++}return{n,L,w}}
+ return{pick,stat,load}})();
 // ================== KUN TESTI (ro'yxatdan o'tmasdan) + KIRISHLAR STATISTIKASI ==================
 // Xatolar jurnali: o'quvchilarda chiqqan xatolar err/<kun>/<id> ga yoziladi (sessiyada ko'pi bilan 5 ta)
 const ERRLOG=(()=>{
@@ -2770,7 +2789,7 @@ function render(){
   $("tmr").style.setProperty("--p",Math.round(nA/Q.length*100));
   $("pb").innerHTML=order.map((_,k)=>`<i class="${k===cur?"c":ans[k]!==null?"d":""}"></i>`).join("");
   $("qshn").textContent=`${nA} / ${Q.length} javob berildi`;
-  $("tg").textContent=q.t;$("qt").textContent=q.q;
+  $("tg").textContent=q.t+(q.rp?" · 🔁 Takror":"");$("qt").textContent=q.q;
   $("ops").innerHTML="";
   idx.forEach((oi,k)=>{
     const b=document.createElement("button");
@@ -6861,7 +6880,7 @@ const xpSum = rs => { const B = {}; let s = 0; for (const r of rs || []) { if (!
   }
   function reg(qs) { qs.forEach(q => { if (q._k) KEYQ[q._k] = q; }); }
   function lbOff() { if (lbUn) { try { lbUn(); } catch (e) {} lbUn = null; } }
-  return { reg, track, startErrors, homeRender, statBlock, board, lbOff, announce, xpOf, xpSum, level, errList, wk: () => weekKey(DBA.now()) };
+  return { isErr: q => !!(q && q._k && MX[q._k]), reg, track, startErrors, homeRender, statBlock, board, lbOff, announce, xpOf, xpSum, level, errList, wk: () => weekKey(DBA.now()) };
 })();
 
 // ================== ADMIN: SAVOLLARNI O'ZI QO'SHISH ==================
