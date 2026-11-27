@@ -7511,7 +7511,7 @@ const T = (() => {
   function teams() {
     const k = st.meta.team.k, arr = [...Array(k)].map((_, i) => ({ i, m: [] }));
     Object.entries(st.players || {}).forEach(([pk, p]) => { if (p && p.n && p.tm != null && arr[p.tm]) arr[p.tm].m.push({ ...p, k: pk }); });
-    arr.forEach(T => { T.m.sort((a, b) => (a.jt || 0) - (b.jt || 0)); const n = T.m.length; T.sum = T.m.reduce((x, p) => x + (p.s || 0), 0); T.avg = n ? T.sum / n : 0; T.prog = n ? T.m.reduce((x, p) => x + (p.a || 0), 0) / n : 0; T.at = n ? T.m.reduce((x, p) => x + (p.t || 0), 0) / n : 0; });
+    arr.forEach(T => { T.m.sort((a, b) => (a.jt || 0) - (b.jt || 0)); const n = T.m.length; T.sum = T.m.reduce((x, p) => x + (p.s || 0), 0); T.avg = n ? T.sum / n : 0; T.prog = n ? T.m.reduce((x, p) => x + (p.a || 0), 0) / n : 0; T.at = n ? T.m.reduce((x, p) => x + (p.t || 0), 0) / n : 0; const pen = (st.meta && st.meta.rope && st.meta.rope.pen) || 0; T.ravg = n ? T.m.reduce((x, p) => x + (p.s || 0) - pen * Math.max(0, (p.a || 0) - (p.s || 0)), 0) / n : 0; });
     return arr;
   }
   const tRank = () => teams().sort((a, b) => (b.m.length ? 1 : 0) - (a.m.length ? 1 : 0) || b.avg - a.avg || a.at - b.at || a.i - b.i);
@@ -7639,19 +7639,23 @@ const T = (() => {
 
   // ================== ARQON TORTISH (2 jamoali jamoaviy turnir) ==================
   const isRope = () => !!(st.meta && st.meta.rope && st.meta.team);
+  // Arqon: g'alaba chizig'i savollar soniga mos (Yaqin 20% · O'rta 30% · Uzoq 40%), xato −0,5, savollarning yarmigacha o'yin tugamaydi
+  const ropeCfg = (n, v) => { const p = { "2": .2, "3": .3, "5": .4 }[String(v)] || (+v > 0 && +v < 1 ? +v : .3); return { w: Math.max(2, Math.round((+n || 10) * p)), p, pen: .5, half: 1 }; };
   const ropeLocked = () => { try { return !!(PM.cfg.f && PM.cfg.f.arqon); } catch (e) { return false; } };
   const isTch = () => { try { return TCH.is(); } catch (e) { return false; } };
   const tchPro = () => { try { return ((TCH.me && +TCH.me.pro) || 0) > DBA.now(); } catch (e) { return false; } };
   const canRope = () => isAdmin() || !ropeLocked() || PM.is() || (isTch() && tchPro());
   const ini2 = n => String(n || "?").split(/\s+/).filter(Boolean).slice(0, 2).map(x => Array.from(x)[0] || "").join("").toUpperCase() || "?";
   function ropeState() {
-    const T = teams(), a = T[0] || { avg: 0, m: [] }, b = T[1] || { avg: 0, m: [] }, w = (st.meta.rope && st.meta.rope.w) || 3, diff = b.avg - a.avg;
-    return { T: [a, b], diff, w, k: Math.max(-1, Math.min(1, diff / w)), win: Math.abs(diff) >= w - 1e-9 ? (diff > 0 ? 1 : 0) : null };
+    const T = teams(), a = T[0] || { avg: 0, ravg: 0, m: [] }, b = T[1] || { avg: 0, ravg: 0, m: [] }, rp = st.meta.rope || {}, w = rp.w || 3, diff = (b.ravg != null ? b.ravg : b.avg) - (a.ravg != null ? a.ravg : a.avg);
+    const lock = !!(rp.half && st.meta.n && Math.min(a.prog || 0, b.prog || 0) < st.meta.n / 2); // savollarning yarmigacha g'alaba yo'q
+    const k = Math.max(lock ? -.92 : -1, Math.min(lock ? .92 : 1, diff / w));
+    return { T: [a, b], diff, w, k, lock, win: !lock && Math.abs(diff) >= w - 1e-9 ? (diff > 0 ? 1 : 0) : null };
   }
   function ropeHTML(big) {
     const R = ropeState(), me = myTm(), mx = big ? 6 : 4;
     const av = i => { const ms = R.T[i].m.slice().sort((x, y) => (y.s || 0) - (x.s || 0)), sh = ms.slice(0, mx), more = ms.length - sh.length; return sh.map(p => `<span class="rp-a${p.k === st.pid ? " me" : ""}" style="--c:${TC[i][1]}">${esc(ini2(p.n))}</span>`).join("") + (more > 0 ? `<span class="rp-a more">+${more}</span>` : ""); };
-    return `<div class="rp${big ? " big" : ""}"><div class="rp-hd"><span style="color:${TC[0][1]}">${esc(tName(0))}${me === 0 ? " (siz)" : ""} <b>${f1(R.T[0].avg)}</b></span><small>o'rtacha to'g'ri javob</small><span style="color:${TC[1][1]}"><b>${f1(R.T[1].avg)}</b> ${esc(tName(1))}${me === 1 ? " (siz)" : ""}</span></div>
+    return `<div class="rp${big ? " big" : ""}"><div class="rp-hd"><span style="color:${TC[0][1]}">${esc(tName(0))}${me === 0 ? " (siz)" : ""} <b>${f1(st.meta.rope && st.meta.rope.pen ? R.T[0].ravg : R.T[0].avg)}</b></span><small>${st.meta.rope && st.meta.rope.pen ? "o'rtacha ball · xato −0,5" : "o'rtacha to'g'ri javob"}${R.lock ? "<br>⏳ Yarmidan keyin g‘alaba hisoblanadi" : ""}</small><span style="color:${TC[1][1]}"><b>${f1(st.meta.rope && st.meta.rope.pen ? R.T[1].ravg : R.T[1].avg)}</b> ${esc(tName(1))}${me === 1 ? " (siz)" : ""}</span></div>
       <div class="rp-f"><i class="rp-z l"></i><i class="rp-z r"></i><i class="rp-c"></i><i class="rp-wl l"></i><i class="rp-wl r"></i>
       <div class="rp-m" style="transform:translateX(${R.k * 2.5}%)"><div class="rp-r"></div><div class="rp-s l">${av(0)}</div><div class="rp-s r">${av(1)}</div></div>
       <span class="rp-k" style="left:${50 + R.k * 35}%"></span><small class="rp-lb l">G'alaba chizig'i</small><small class="rp-lb r">G'alaba chizig'i</small><div class="rp-pl"></div></div></div>`;
@@ -7779,7 +7783,7 @@ const T = (() => {
       ${DBA.kind === "mock" ? '<div class="tnote warn">Sinov rejimi: Firebase hali ulanmagan. Turnir faqat shu qurilmadagi oynalar orasida ishlaydi.</div>' : ""}
       <div class="seg" id="thm"><button data-m="solo" class="on">🏆 Yakka turnir</button><button data-m="team">👥 Jamoaviy</button><button data-m="rope">🪢 Arqon tortish</button><button data-m="big">🏟 Katta (200+)</button></div>
       <div id="throp" class="hide"><div class="tnote">🪢 <b>Arqon tortish</b> — 2 jamoa. Har to'g'ri javob arqonni o'z jamoasi tomonga tortadi (jamoa a'zolarining o'rtacha to'g'ri javobi hisoblanadi). Bayroq g'alaba chizig'iga yetsa — o'yin tugaydi, vaqt tugasa — bayroq qaysi tomonda bo'lsa, o'sha yutadi.</div>
-        <div class="row"><div style="flex:1"><label>G'alaba chizig'i</label><select id="thrw"><option value="2">Yaqin — tez o'yin</option><option value="3" selected>O'rta — tavsiya</option><option value="5">Uzoq — kuchlilar uchun</option></select></div><div style="flex:1"><label>Bir jamoada nechta o'quvchi</label><input id="thrz" type="number" min="1" max="30" value="10"></div></div></div>
+        <div class="row"><div style="flex:1"><label>G'alaba chizig'i</label><select id="thrw"><option value="2">Yaqin — savollarning 20%</option><option value="3" selected>O'rta — 30% (tavsiya)</option><option value="5">Uzoq — 40%, kuchlilar uchun</option></select></div><div style="flex:1"><label>Bir jamoada nechta o'quvchi</label><input id="thrz" type="number" min="1" max="30" value="10"></div></div></div>
       <div class="tnote hide" id="thbig">🏟 <b>Katta turnir</b> — 200–300 kishigacha. O'quvchilar savollarni ulanmasdan ishlaydi, natijani server tekshiradi. Sizning ekraningizda jonli top-10 chiqadi. Jonli «poyga» effekti bo'lmaydi.</div>
       <div id="thteam" class="hide"><div class="row"><div style="flex:1"><label>Jamoalar soni</label><select id="thk">${[2, 3, 4, 5, 6].map(x => `<option${x === 2 ? " selected" : ""}>${x}</option>`).join("")}</select></div><div style="flex:1"><label>Bir jamoada nechta o'quvchi</label><input id="thz" type="number" min="1" max="30" value="5"></div></div>
         <label>Jamoa nomlari (birinchi qo'shilgan o'quvchi — sardor — nomni o'zgartira oladi)</label><div id="thnm"></div></div>
@@ -7828,7 +7832,7 @@ const T = (() => {
         const ttl = "🗺 Xarita jangi: " + (k === "mix" ? "aralash" : MAPQ.CN[k]);
         const meta = { phase: "lobby", set: "xarita", map: { k }, ttl, seed: Math.floor(Math.random() * 1e9), dur, n: nq, c: DBA.now() };
         if ($("thm").querySelector(".on").dataset.m === "team") meta.team = { k: +$("thk").value, sz: Math.max(1, Math.min(30, +$("thz").value || 5)), nm: [...$("thnm").querySelectorAll("input")].map((i, j) => i.value.trim().slice(0, 24) || TC[j][2]) };
-        if ($("thm").querySelector(".on").dataset.m === "rope") { meta.team = { k: 2, sz: Math.max(1, Math.min(30, +$("thrz").value || 10)), nm: [TC[0][2], TC[1][2]] }; meta.rope = { w: +$("thrw").value || 3 }; meta.ttl = "🪢 " + meta.ttl; }
+        if ($("thm").querySelector(".on").dataset.m === "rope") { meta.team = { k: 2, sz: Math.max(1, Math.min(30, +$("thrz").value || 10)), nm: [TC[0][2], TC[1][2]] }; meta.rope = ropeCfg(meta.n, $("thrw").value); meta.ttl = "🪢 " + meta.ttl; }
         await DBA.set(`t/${code}`, { meta });
         DBA.set(`a/${code}`, { code, set: "xarita", ttl: (meta.team ? "👥 " : "") + meta.ttl, ph: "lobby", c: meta.c }).catch(() => {});
         return hAttach(code);
@@ -7842,7 +7846,7 @@ const T = (() => {
     let code; for (let k = 0; k < 20; k++) { code = String(1000 + Math.floor(Math.random() * 9000)); if (!(await DBA.get(`t/${code}/meta`))) break; }
     const meta = { phase: "lobby", set: ids[0], sets: ids, ttl, seed: Math.floor(Math.random() * 1e9), dur, n: nq, c: DBA.now() };
     if ($("thm").querySelector(".on").dataset.m === "team") meta.team = { k: +$("thk").value, sz: Math.max(1, Math.min(30, +$("thz").value || 5)), nm: [...$("thnm").querySelectorAll("input")].map((i, j) => i.value.trim().slice(0, 24) || TC[j][2]) };
-    if ($("thm").querySelector(".on").dataset.m === "rope") { meta.team = { k: 2, sz: Math.max(1, Math.min(30, +$("thrz").value || 10)), nm: [TC[0][2], TC[1][2]] }; meta.rope = { w: +$("thrw").value || 3 }; meta.ttl = "🪢 " + meta.ttl; }
+    if ($("thm").querySelector(".on").dataset.m === "rope") { meta.team = { k: 2, sz: Math.max(1, Math.min(30, +$("thrz").value || 10)), nm: [TC[0][2], TC[1][2]] }; meta.rope = ropeCfg(meta.n, $("thrw").value); meta.ttl = "🪢 " + meta.ttl; }
     await DBA.set(`t/${code}`, { meta });
     hAttach(code);
   }
@@ -8043,7 +8047,7 @@ const T = (() => {
       <div class="card"><h1>🎮 Do'stlar o'yini</h1><p class="sub">O'yin ochasiz, kodni do'stlaringizga yuborasiz va birga bellashasiz. Natijalar XP sifatida hisoblanadi.</p>
       <div class="seg" id="mym"><button data-m="solo" class="on">🏆 Yakka</button><button data-m="team">👥 Jamoaviy</button><button data-m="rope">🪢 Arqon${canRope() ? "" : " 👑"}</button></div>
       <div id="myteam" class="hide"><label>Jamoalar soni</label><select id="myk"><option>2</option><option>3</option><option>4</option></select></div>
-      <div id="myrope" class="hide"><div class="tnote">🪢 2 jamoa arqon tortadi: har to'g'ri javob — o'z tomoningizga bir tortish. Bayroq g'alaba chizig'iga yetsa, o'yin tugaydi.</div><div class="row"><div style="flex:1"><label>G'alaba chizig'i</label><select id="myrw"><option value="2">Yaqin — tez o'yin</option><option value="3" selected>O'rta</option><option value="5">Uzoq</option></select></div><div style="flex:1"><label>Bir jamoada</label><select id="myrz">${(isTch() ? [5, 10, 15] : [3, 5, 10]).map(x => `<option value="${x}"${x === 10 ? " selected" : ""}>${x} kishigacha</option>`).join("")}</select></div></div><div class="sub" style="margin:6px 0 0">1 ga 1 ham o'ynash mumkin — jamoalar teng bo'lsa bo'ldi.</div></div>
+      <div id="myrope" class="hide"><div class="tnote">🪢 2 jamoa arqon tortadi: to'g'ri javob — o'z tomoningizga bir tortish, xato — yarim tortish orqaga. Bayroq g'alaba chizig'iga yetsa o'yin tugaydi, lekin savollarning yarmigacha emas.</div><div class="row"><div style="flex:1"><label>G'alaba chizig'i</label><select id="myrw"><option value="2">Yaqin — savollarning 20%</option><option value="3" selected>O'rta — 30%</option><option value="5">Uzoq — 40%</option></select></div><div style="flex:1"><label>Bir jamoada</label><select id="myrz">${(isTch() ? [5, 10, 15] : [3, 5, 10]).map(x => `<option value="${x}"${x === 10 ? " selected" : ""}>${x} kishigacha</option>`).join("")}</select></div></div><div class="sub" style="margin:6px 0 0">Jamoalar teng bo‘lishi shart emas — ball o‘rtacha bo‘yicha.</div></div>
       <div class="seg" id="mysrc"><button data-s="t" class="on">📚 Mavzular</button><button data-s="m">🗺 Xarita jangi${PM.is() ? "" : " 👑"}</button></div>
       <div id="mysrcm" class="hide"><label>Qit’a</label><select id="mysrck"><option value="mix">🌍 Aralash (barcha qit’alar)</option><option value="E">Yevropa</option><option value="A">Osiyo</option><option value="F">Afrika</option><option value="N">Shimoliy Amerika</option><option value="S">Janubiy Amerika</option></select><div class="tnote">🗺 Xaritada davlat yonadi — kim tez topadi? Javobdan keyin poytaxt va tarixiy fakt chiqadi.</div></div>
       <div id="mytp"><label>Mavzular (sinfni bosib oching)</label><div id="mys" class="tpks">${opts}</div></div>
@@ -8065,7 +8069,7 @@ const T = (() => {
           let code; for (let j = 0; j < 20; j++) { code = String(1000 + Math.floor(Math.random() * 9000)); if (!(await DBA.get(`t/${code}/meta`))) break; }
           const meta = { phase: "lobby", set: "xarita", map: { k }, ttl, seed: Math.floor(Math.random() * 1e9), dur, n: nq, c: DBA.now(), host: ac.uid, hn: (ac.f + " " + ac.l).slice(0, 60), stu: 1 };
           if ($("mym").querySelector(".on").dataset.m === "team") { const kk = +$("myk").value; meta.team = { k: kk, sz: Math.floor(MY_MAX / kk), nm: TC.slice(0, kk).map(t => t[2]) }; }
-          if ($("mym").querySelector(".on").dataset.m === "rope") { if (!canRope()) throw new Error(isTch() ? "Arqon tortish — Pro tarif imkoniyati" : "Arqon tortish — Premium imkoniyati"); meta.team = { k: 2, sz: Math.max(1, Math.min(isTch() ? 15 : 10, +$("myrz").value || 10)), nm: [TC[0][2], TC[1][2]] }; meta.rope = { w: +$("myrw").value || 3 }; meta.ttl = "🪢 " + meta.ttl; }
+          if ($("mym").querySelector(".on").dataset.m === "rope") { if (!canRope()) throw new Error(isTch() ? "Arqon tortish — Pro tarif imkoniyati" : "Arqon tortish — Premium imkoniyati"); meta.team = { k: 2, sz: Math.max(1, Math.min(isTch() ? 15 : 10, +$("myrz").value || 10)), nm: [TC[0][2], TC[1][2]] }; meta.rope = ropeCfg(meta.n, $("myrw").value); meta.ttl = "🪢 " + meta.ttl; }
           await DBA.set(`t/${code}/meta`, meta);
           DBA.set(`a/${code}`, { code, set: "xarita", ttl: "🎮 " + (meta.team ? "👥 " : "") + meta.ttl, ph: "lobby", c: meta.c, host: ac.uid, hn: meta.hn }).catch(() => {});
           ls.set("zm_mygame", code); openJoin(code); join();
@@ -8082,7 +8086,7 @@ const T = (() => {
         let code; for (let k = 0; k < 20; k++) { code = String(1000 + Math.floor(Math.random() * 9000)); if (!(await DBA.get(`t/${code}/meta`))) break; }
         const meta = { phase: "lobby", set: ids[0], sets: ids, ttl, seed: Math.floor(Math.random() * 1e9), dur, n: nq, c: DBA.now(), host: ac.uid, hn: (ac.f + " " + ac.l).slice(0, 60), stu: 1 };
         if ($("mym").querySelector(".on").dataset.m === "team") { const k = +$("myk").value; meta.team = { k, sz: Math.floor(MY_MAX / k), nm: TC.slice(0, k).map(t => t[2]) }; }
-        if ($("mym").querySelector(".on").dataset.m === "rope") { if (!canRope()) throw new Error(isTch() ? "Arqon tortish — Pro tarif imkoniyati" : "Arqon tortish — Premium imkoniyati"); meta.team = { k: 2, sz: Math.max(1, Math.min(isTch() ? 15 : 10, +$("myrz").value || 10)), nm: [TC[0][2], TC[1][2]] }; meta.rope = { w: +$("myrw").value || 3 }; meta.ttl = "🪢 " + meta.ttl; }
+        if ($("mym").querySelector(".on").dataset.m === "rope") { if (!canRope()) throw new Error(isTch() ? "Arqon tortish — Pro tarif imkoniyati" : "Arqon tortish — Premium imkoniyati"); meta.team = { k: 2, sz: Math.max(1, Math.min(isTch() ? 15 : 10, +$("myrz").value || 10)), nm: [TC[0][2], TC[1][2]] }; meta.rope = ropeCfg(meta.n, $("myrw").value); meta.ttl = "🪢 " + meta.ttl; }
         await DBA.set(`t/${code}/meta`, meta);
         DBA.set(`a/${code}`, { code, set: ids[0], ttl: "🎮 " + (meta.team ? "👥 " : "") + meta.ttl, ph: "lobby", c: meta.c, host: ac.uid, hn: meta.hn }).catch(() => {});
         ls.set("zm_mygame", code);
