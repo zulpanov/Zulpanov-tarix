@@ -7516,7 +7516,7 @@ const T = (() => {
   }
   const tRank = () => teams().sort((a, b) => (b.m.length ? 1 : 0) - (a.m.length ? 1 : 0) || b.avg - a.avg || a.at - b.at || a.i - b.i);
   const myTm = () => { const p = st.players[st.pid]; return p && p.tm != null ? p.tm : null; };
-  const balanced = () => { const c = teams().map(T => T.m.length); return Math.min(...c) >= 1 && Math.max(...c) - Math.min(...c) <= 1; };
+  const balanced = () => { const c = teams().map(T => T.m.length); return Math.min(...c) >= 1; }; // jamoalar teng bo'lishi shart emas — ball o'rtacha bo'yicha
   function race(el, { big = false } = {}) { // B: «Qal'a minoralari» — har to'g'ri javob minoraga g'isht qo'shadi
     if (!el || !st.meta) return;
     const n = st.meta.n || 1, me = myTm(), T = teams().filter(t => t.m.length), rk = tRank(), lead = rk[0] && rk[0].avg > 0 ? rk[0].i : null;
@@ -7546,17 +7546,17 @@ const T = (() => {
   function canJoin(i, P) {
     const c = [...Array(st.meta.team.k)].map(() => 0);
     Object.entries(P || {}).forEach(([pk, p]) => { if (p && p.n && p.tm != null && pk !== st.pid && c[p.tm] != null) c[p.tm]++; });
-    return c[i] < st.meta.team.sz && c[i] === Math.min(...c);
+    return c[i] < st.meta.team.sz;
   }
   async function pickTeam(i) {
     let P = st.players; try { P = (await DBA.get(`t/${st.code}/players`)) || P; } catch (e) {}
     if (st.meta.phase !== "lobby") return;
-    if (!canJoin(i, P)) { FX.toast("Bu jamoa hozir yopiq — jamoalar teng bo'lishi kerak. Boshqasini tanlang."); return; }
+    if (!canJoin(i, P)) { FX.toast("Bu jamoa to‘lgan. Boshqasini tanlang."); return; }
     await DBA.update(`t/${st.code}/players/${st.pid}`, { tm: i, jt: DBA.now(), tnm: null }); FX.S.tick && FX.S.tick();
   }
   function sTeamLobby() {
     tz().innerHTML = `<div class="card" style="text-align:center"><div style="font-size:40px">${isRope() ? "🪢" : "👥"}</div><h1>${isRope() ? "Arqon tortish" : "Jamoaviy turnir"}</h1>${isRope() ? `<p class="sub" style="margin-bottom:0">Har to'g'ri javob arqonni o'z jamoangiz tomonga tortadi. Bayroq g'alaba chizig'iga yetsa — o'yin tugaydi!</p>` : ""}
-      <p class="sub">Kod <b>${st.code}</b> · ${esc(mTitle(st.meta))} · ${st.meta.n} savol · ${Math.round(st.meta.dur / 60000)} daqiqa<br>Har jamoada ko'pi bilan <b>${st.meta.team.sz}</b> kishi. Jamoalar soni teng bo'ladi (farq 1 kishidan oshmaydi).</p>
+      <p class="sub">Kod <b>${st.code}</b> · ${esc(mTitle(st.meta))} · ${st.meta.n} savol · ${Math.round(st.meta.dur / 60000)} daqiqa<br>Har jamoada ko'pi bilan <b>${st.meta.team.sz}</b> kishi. Jamoalar teng bo‘lishi shart emas — ball jamoa a’zolarining <b>o‘rtacha</b> natijasi bo‘yicha.</p>
       <div id="tme"></div></div>${myBar()}<div class="card" style="margin-top:12px"><b>Jamoalar</b><div id="tlt" class="tmg" style="margin-top:10px"></div></div>`;
     myBind(); st.meKey = null; sTeamLobbyUpd();
   }
@@ -7933,7 +7933,7 @@ const T = (() => {
     const el = $("thb"); if (!el) return;
     const T = teams(), k = st.meta.team.k, ok = balanced();
     if ($("thst")) { $("thst").disabled = !ok; }
-    if ($("thw")) { const c = T.map(t => t.m.length); $("thw").textContent = ok ? "✅ Jamoalar teng — boshlash mumkin" : (Math.min(...c) < 1 ? "Har bir jamoada kamida 1 kishi bo'lishi kerak" : "Jamoalar soni teng emas (farq 1 kishidan oshmasin). O'quvchini boshqa jamoaga o'tkazing."); $("thw").className = "tnote" + (ok ? "" : " warn"); }
+    if ($("thw")) { const c = T.map(t => t.m.length); $("thw").textContent = ok ? (Math.max(...c) - Math.min(...c) > 0 ? "✅ Boshlash mumkin · jamoalar teng emas — ball o‘rtacha bo‘yicha hisoblanadi" : "✅ Boshlash mumkin") : "Har bir jamoada kamida 1 kishi bo'lishi kerak"; $("thw").className = "tnote" + (ok ? "" : " warn"); }
     const free = Object.entries(st.players || {}).filter(([pk, p]) => p && p.n && p.tm == null);
     if ($("tcnt")) $("tcnt").textContent = T.reduce((a, t) => a + t.m.length, 0);
     el.className = "tmg"; el.innerHTML = "";
@@ -8026,7 +8026,7 @@ const T = (() => {
     if (!amHost() || !$("myGo")) return;
     const m = st.meta;
     SHARE.bind("mySh", { code: st.code, kind: m.team ? "team" : "turnir", ttl: mTitle(m), n: m.n, dur: Math.round(m.dur / 60000), link: link() });
-    $("myGo").onclick = async () => { if (isRope() && !balanced()) { FX.toast("Ikkala jamoada kamida 1 kishi bo'lsin va jamoalar teng bo'lsin (farq 1 kishidan oshmasin)"); return; } const n = Object.keys(st.players || {}).length; if (n < 2 && !confirm("Hozircha faqat siz qo'shilgansiz. Baribir boshlaysizmi?")) return; $("myGo").disabled = true; await DBA.update(`t/${st.code}/meta`, { phase: "run", startAt: DBA.now() + 5000 }); DBA.update(`a/${st.code}`, { ph: "run" }).catch(() => {}); };
+    $("myGo").onclick = async () => { if (isRope() && !balanced()) { FX.toast("Ikkala jamoada kamida 1 kishi bo‘lsin"); return; } const n = Object.keys(st.players || {}).length; if (n < 2 && !confirm("Hozircha faqat siz qo'shilgansiz. Baribir boshlaysizmi?")) return; $("myGo").disabled = true; await DBA.update(`t/${st.code}/meta`, { phase: "run", startAt: DBA.now() + 5000 }); DBA.update(`a/${st.code}`, { ph: "run" }).catch(() => {}); };
     $("myX").onclick = async () => { if (!confirm("O'yin yopilsinmi?")) return; await DBA.update(`t/${st.code}/meta`, { phase: "end" }); DBA.set(`a/${st.code}`, null).catch(() => {}); ls.del("zm_mygame"); ls.del("zm_active"); clear(); goHome(); };
   }
   async function myOpen() {
