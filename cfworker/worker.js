@@ -103,10 +103,33 @@ const sKey = s => String(s).replace(/[.#$\[\]\/]/g, "_");
 // ---------------- 📢 Kanalga a'zolik (bot va Mini App) ----------------
 const SUB_CH = "@tarixarena", SUB_URL = "https://t.me/tarixarena";
 // true — a'zo (yoki admin); false — a'zo emas. Telegram javob bermasa (bot kanalda admin emas va h.k.) — o'tkazib yuboriladi
-async function isSub(env, from) {
-  if (!from || !from.id || isAdminTg(from)) return true;
-  try { const m = await tg(env, "getChatMember", { chat_id: SUB_CH, user_id: from.id }); return ["creator", "administrator", "member"].includes(m.status) || (m.status === "restricted" && m.is_member === true); }
-  catch (e) { console.error("sub-check", e && e.message); return true; }
+// "y" — a'zo, "n" — a'zo emas, "e" — Telegram javob bermadi (xato)
+async function subState(env, from) {
+  if (!from || !from.id || isAdminTg(from)) return "y";
+  try { const m = await tg(env, "getChatMember", { chat_id: SUB_CH, user_id: from.id }); return (["creator", "administrator", "member"].includes(m.status) || (m.status === "restricted" && m.is_member === true)) ? "y" : "n"; }
+  catch (e) { console.error("sub-check", e && e.message); await subErrNote(env, e).catch(() => {}); return "e"; }
+}
+async function isSub(env, from) { return (await subState(env, from)) !== "n"; }
+// Admin panelda «Kanal tekshiruvi» o'chirilgan bo'lsa (c/main/subOff) — Mini App tekshirmaydi
+const subOff = async env => { try { return !!(await db(env, "GET", "c/main/subOff")); } catch (e) { return false; } };
+// Telegram a'zolikni tekshira olmasa (masalan, bot kanalda admin emas) — ustozga soatiga ko'pi bilan 1 marta xabar
+async function subErrNote(env, e) {
+  const last = await db(env, "GET", "tg/suberr").catch(() => null);
+  if (last && Date.now() - last < 3600e3) return;
+  await db(env, "PUT", "tg/suberr", Date.now());
+  const txt = `⚠️ <b>Kanalga a’zolikni tekshirib bo‘lmayapti</b>\n\nTelegram javobi: <code>${String((e && e.message) || e).replace(/[<>&]/g, "").slice(0, 200)}</code>\n\nBot @tarixarena kanalida admin ekanini tekshiring. Shu vaqtda Mini App o‘quvchilarga «Tekshirib bo‘lmadi» oynasini ko‘rsatadi. Zarur bo‘lsa: Admin panel → O‘quvchilar → «📢 Kanal tekshiruvi» ni o‘chiring.`;
+  for (const id of await adminChats(env)) { try { await tg(env, "sendMessage", { chat_id: id, parse_mode: "HTML", text: txt }); } catch (x) {} }
+}
+// Ustoz yoki admin hisobimi (Telegram orqali ulangan hisob bo'yicha)
+async function staffTg(env, u) {
+  if (isAdminTg(u)) return true;
+  try {
+    const ln = await db(env, "GET", "tg/link/" + u.id).catch(() => null);
+    const uid = (ln && ln.uid) || await db(env, "GET", "logins/tg" + u.id).catch(() => null);
+    if (!uid) return false;
+    if ((await db(env, "GET", "admins/" + uid).catch(() => null)) === true) return true;
+    return (await db(env, "GET", "tch/" + uid + "/ok").catch(() => null)) === true;
+  } catch (e) { return false; }
 }
 const subAsk = (env, chat) => tg(env, "sendMessage", { chat_id: chat, parse_mode: "HTML", text: "📢 <b>Botdan foydalanish uchun kanalimizga a’zo bo‘ling</b>\n\nKanalda yangi testlar, turnirlar va Arena haqida xabarlar chiqadi.\n\n1) «Kanalga o‘tish» tugmasini bosing va <b>Obuna bo‘lish</b>ni bosing.\n2) Qaytib, «✅ Tekshirish» ni bosing.", reply_markup: { inline_keyboard: [[{ text: "📢 Kanalga o‘tish", url: SUB_URL }], [{ text: "✅ Tekshirish", callback_data: "subchk" }]] } });
 
@@ -273,10 +296,18 @@ async function parentsList(env) {
 }
 
 const FN = {
-  async sub(env, input, u) { need(u); return { ok: await isSub(env, u), url: SUB_URL }; },
+  async sub(env, input, u) {
+    need(u);
+    if (await subOff(env)) return { ok: true, off: 1, url: SUB_URL };
+    const st = await subState(env, u);
+    if (st === "n" && await staffTg(env, u)) return { ok: true, url: SUB_URL };
+    return { ok: st === "y", err: st === "e" ? 1 : 0, url: SUB_URL };
+  },
   // Telegram orqali kirish: har bir Telegram foydalanuvchisi uchun o'zgarmas, faqat server biladigan hisob
   async auth(env, input, u) {
     need(u);
+    // Mini App orqali kirish: kanalga a'zo bo'lmagan o'quvchiga hisob berilmaydi (ustoz/admin va Telegram xatosida — o'tkaziladi)
+    if (!(await subOff(env)) && (await subState(env, u)) === "n" && !(await staffTg(env, u))) throw new Error("📢 TARIX ARENA dan foydalanish uchun @tarixarena kanaliga a’zo bo‘ling");
     const k = await acctKey(env, u.id);
     const ln = await db(env, "GET", "tg/link/" + u.id).catch(() => null); // eski (login-parolli) hisobga ulangan bo'lsa
     if (ln && ln.ct && ln.uid) return { token: await customToken(env, ln.uid), login: "tg" + u.id, linked: true, f: u.first_name || "", l: u.last_name || "", photo: u.photo_url || "" };
