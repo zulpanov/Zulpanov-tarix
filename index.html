@@ -34,7 +34,7 @@ window.TG_APP = "";   // BotFather /newapp da berilgan qisqa nom, masalan: app
   if(h.indexOf("#tgAuthResult=")===0){var b=h.slice(14).replace(/-/g,"+").replace(/_/g,"/");b+="===".slice((b.length+3)%4);r=JSON.parse(decodeURIComponent(escape(atob(b))))||false;}
   else if(q.get("hash")&&q.get("id")&&q.get("auth_date")){r={};["id","first_name","last_name","username","photo_url","auth_date","hash"].forEach(function(k){if(q.get(k)!=null)r[k]=q.get(k);});["id","first_name","last_name","username","photo_url","auth_date","hash"].forEach(function(k){q.delete(k);});}
   if(r!==null){window.TGW=r;var s=q.toString();history.replaceState(null,"",location.pathname+(s?"?"+s:""));}}catch(e){window.TGW=false;}})();
-(function(){var h=location.hash||"",q=location.search||"";if(!/tgWebApp/.test(h+q))return;window.IN_TG=true;try{sessionStorage.setItem("zm_tg","1")}catch(e){}
+(function(){var h=location.hash||"",q=location.search||"";if(!/tgWebApp/.test(h+q)){var ss=false;try{ss=sessionStorage.getItem("zm_tg")==="1"}catch(e){}if(!ss)return;window.IN_TG=true;window.TG_START="";window.TG_SRC="";document.write('<script src="https://telegram.org/js/telegram-web-app.js"><\/script>');return}window.IN_TG=true;try{sessionStorage.setItem("zm_tg","1")}catch(e){}
   var m=(h+"&"+q).match(/tgWebAppStartParam=([^&]+)/);window.TG_START=m?decodeURIComponent(m[1]):"";window.TG_SRC="";(function(){var t=window.TG_START,i=t.indexOf("__");if(i>=0){window.TG_SRC=t.slice(i+2);t=t.slice(0,i)}if(/^s-/.test(t)){window.TG_SRC=t.slice(2);t=""}if(/^r-/.test(t)){window.TG_REF=t.slice(2);if(!window.TG_SRC)window.TG_SRC="dost";t=""}window.TG_START=t})();
   document.write('<script src="https://telegram.org/js/telegram-web-app.js"><\/script>');})();
 </script>
@@ -4646,24 +4646,54 @@ const LINK = (() => {
   }
   return { open, finish };
 })();
-// 📢 Telegram ichida: kanalga a'zo bo'lmaganlarga sayt yopiq (brauzerdan kirish ochiq)
+// 📢 Telegram ichida: kanalga a'zolik har ochilishda orqada tekshiriladi (brauzerdan kirish ochiq).
+// Sayt darhol ishlaydi; a'zo bo'lmasa — oyna yopadi. Server 1 daqiqa javob bermasa — «Tekshirib bo'lmadi» oynasi.
 const SUBG = (() => {
-  const K = "zm_sub_ok";
-  async function check(force) {
-    if (!window.IN_TG) return;
-    try { if (typeof isAdmin === "function" && isAdmin()) return; } catch (e) {}
-    try { if (!force && Date.now() - (+localStorage.getItem(K) || 0) < 12 * 3600e3) return; } catch (e) {}
-    let r = null; try { r = await TGB.once("sub", {}); } catch (e) { return; } // server javob bermasa — to'smaymiz
-    if (r && r.ok) { try { localStorage.setItem(K, Date.now()); } catch (e) {} const w = $("subW"); if (w) w.remove(); return; }
-    wall(r && r.url || "https://t.me/tarixarena");
+  const URL0 = "https://t.me/tarixarena";
+  let busy = false, shown = false, url = URL0;
+  const staff = () => { try { if (typeof isAdmin === "function" && isAdmin()) return true; } catch (e) {} try { return TCH.is(); } catch (e) { return false; } };
+  const can = () => { try { return !!(window.IN_TG && window.Telegram && Telegram.WebApp && Telegram.WebApp.initData); } catch (e) { return false; } };
+  const ask = () => Promise.race([TGB.once("sub", {}), new Promise((_, rj) => setTimeout(() => rj(new Error("timeout")), 12000))]);
+  // natija: "y" — a'zo, "n" — a'zo emas, "e" — tekshirib bo'lmadi
+  async function probe(tries) {
+    for (let i = 0; i < tries; i++) {
+      try { const r = await ask(); if (r && r.url) url = r.url; if (r && r.ok) return "y"; if (r && !r.err) return "n"; } catch (e) {}
+      if (i < tries - 1) await new Promise(f => setTimeout(f, [3000, 6000, 10000, 15000, 20000][i] || 20000));
+    }
+    return "e";
   }
-  function wall(url) {
-    if ($("subW")) return;
-    const d = document.createElement("div"); d.className = "pm-ask"; d.id = "subW"; d.style.zIndex = 99999;
-    d.innerHTML = `<div class="card pm-ask-c"><div style="font-size:44px">📢</div><h1 style="margin:6px 0 4px">Kanalga a’zo bo‘ling</h1><div class="sub">TARIX ARENA dan foydalanish uchun <b>@tarixarena</b> kanaliga a’zo bo‘ling. Kanalda yangi testlar, turnirlar va Arena haqida xabarlar chiqadi.</div><button class="btn" id="subGo">📢 Kanalga o‘tish</button><button class="btn ghost" id="subChk">✅ A’zo bo‘ldim — tekshirish</button><div class="sub" id="subE" style="min-height:18px;margin-top:8px"></div></div>`;
-    document.body.appendChild(d);
-    d.querySelector("#subGo").onclick = () => { try { Telegram.WebApp.openTelegramLink(url); } catch (e) { location.href = url; } };
-    d.querySelector("#subChk").onclick = async () => { const b = d.querySelector("#subChk"); b.disabled = true; d.querySelector("#subE").textContent = "Tekshirilmoqda…"; await check(true); if ($("subW")) { b.disabled = false; d.querySelector("#subE").textContent = "Hali a’zo bo‘lmagansiz. Kanalga o‘tib, «Obuna bo‘lish» ni bosing."; } };
+  async function check(force) {
+    if (!window.IN_TG || busy) return;
+    if (!can()) return; // Telegram ma'lumoti yo'q — oddiy brauzer kabi
+    if (staff()) { close(); return; }
+    busy = true;
+    try {
+      const st = await probe(force ? 2 : 6); // birinchi tekshiruv ~1 daqiqagacha qayta urinadi
+      if (staff()) { close(); return; }
+      if (st === "y") { const was = shown; close(); if (was && !(typeof ACCT !== "undefined" && ACCT.cur)) location.reload(); return; }
+      wall(st);
+    } finally { busy = false; }
+  }
+  function close() { const w = $("subW"); if (w) w.remove(); shown = false; }
+  function wall(st) {
+    shown = true;
+    let d = $("subW");
+    if (!d) {
+      d = document.createElement("div"); d.className = "pm-ask"; d.id = "subW"; d.style.zIndex = 99999;
+      d.innerHTML = `<div class="card pm-ask-c"><div style="font-size:44px">📢</div><h1 style="margin:6px 0 4px" id="subH"></h1><div class="sub" id="subT"></div><button class="btn" id="subGo">📢 Kanalga o‘tish</button><button class="btn ghost" id="subChk"></button><div class="sub" id="subE" style="min-height:18px;margin-top:8px"></div></div>`;
+      document.body.appendChild(d);
+      d.querySelector("#subGo").onclick = () => { try { Telegram.WebApp.openTelegramLink(url); } catch (e) { location.href = url; } };
+      d.querySelector("#subChk").onclick = async () => {
+        const b = d.querySelector("#subChk"), e = d.querySelector("#subE"); b.disabled = true; e.textContent = "Tekshirilmoqda…";
+        await check(true);
+        if ($("subW")) { b.disabled = false; e.textContent = d.dataset.st === "e" ? "Hali ham tekshirib bo‘lmadi. Internetni tekshirib, birozdan keyin qayta urining." : "Hali a’zo bo‘lmagansiz. Kanalga o‘tib, «Obuna bo‘lish» ni bosing."; }
+      };
+    }
+    d.dataset.st = st;
+    const err = st === "e";
+    d.querySelector("#subH").textContent = err ? "A’zolikni tekshirib bo‘lmadi" : "Kanalga a’zo bo‘ling";
+    d.querySelector("#subT").innerHTML = err ? "Telegram kanalga a’zoligingizni tekshira olmadik. Internetni tekshirib, «Qayta urinish» ni bosing. <b>@tarixarena</b> kanaliga a’zo bo‘lmagan bo‘lsangiz — avval a’zo bo‘ling." : "TARIX ARENA dan foydalanish uchun <b>@tarixarena</b> kanaliga a’zo bo‘ling. Kanalda yangi testlar, turnirlar va Arena haqida xabarlar chiqadi.";
+    d.querySelector("#subChk").textContent = err ? "🔄 Qayta urinish" : "✅ A’zo bo‘ldim — tekshirish";
   }
   document.addEventListener("visibilitychange", () => { if (!document.hidden && $("subW")) check(true); });
   return { check };
@@ -5316,7 +5346,7 @@ const ACC = (() => {
     $("tz").innerHTML = `${adminNav("acc")}<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap"><h1 style="margin:0">👥 O'quvchilar hisoblari</h1>
       <div class="row" style="flex:0 0 auto"><button class="btn ghost sm" id="acRef">🔄 Yangilash</button><button class="btn ghost sm" id="acCsv">⬇ CSV</button></div></div>
       <div class="sub" id="acN" style="margin:6px 0 12px">Yuklanmoqda…</div>
-      <div class="tnote" style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><div style="flex:1">Ro'yxatdan o'tish: <b id="acReg">…</b></div><button class="btn sm" id="acRegB">…</button></div>
+      <div class="tnote" style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><div style="flex:1">Ro'yxatdan o'tish: <b id="acReg">…</b></div><button class="btn sm" id="acRegB">…</button></div><div class="tnote" style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><div style="flex:1">📢 Kanal tekshiruvi (Telegram Mini App): <b id="acSub">…</b></div><button class="btn sm" id="acSubB">…</button></div>
       <input id="acQ" placeholder="🔎 Ism, login yoki sinf bo'yicha qidirish" style="margin:0">
       </div>
       <div id="acL" style="margin-top:12px"></div>`;
@@ -5324,8 +5354,9 @@ const ACC = (() => {
     $("acRef").onclick = () => loadU();
     $("acCsv").onclick = csv;
     $("acRegB").onclick = () => DBA.update("c/main", { regOff: cfg.regOff ? 0 : 1 });
+    $("acSubB").onclick = () => DBA.update("c/main", { subOff: cfg.subOff ? 0 : 1 });
     loadU();
-    unsubs.push(DBA.on("c/main", v => { cfg = v || {}; if ($("acReg")) { $("acReg").textContent = cfg.regOff ? "yopiq 🔒" : "ochiq ✅"; $("acRegB").textContent = cfg.regOff ? "Ochish" : "Yopish"; } }));
+    unsubs.push(DBA.on("c/main", v => { cfg = v || {}; if ($("acReg")) { $("acReg").textContent = cfg.regOff ? "yopiq 🔒" : "ochiq ✅"; $("acRegB").textContent = cfg.regOff ? "Ochish" : "Yopish"; } if ($("acSub")) { $("acSub").textContent = cfg.subOff ? "o‘chiq ⏸" : "yoqiq ✅"; $("acSubB").textContent = cfg.subOff ? "Yoqish" : "O‘chirish"; } }));
   }
   // O'quvchilar ro'yxati bir marta yuklanadi. Testlar soni va o'rtacha ball — users/<uid>/rs (server yangilab boradi).
   async function loadU() {
