@@ -1,5 +1,5 @@
 // TARIX ARENA — oflayn ishlash uchun xizmat ishchisi
-const V = "zm-v122";
+const V = "zm-v123";
 const DATA = "zm-data"; const ST = "zm-st"; // shriftlar va rasmlar — yangilanishda o'chirilmaydi // versiyali fayllar (?v=) — yangilanishda o'chirilmaydi
 const SHELL = ["./", "./index.html", "./manifest.webmanifest", "./icons/icon-192.png", "./icons/icon-512.png"];
 self.addEventListener("install", e => { e.waitUntil(caches.open(V).then(c => c.addAll(SHELL)).then(() => self.skipWaiting())); });
@@ -17,7 +17,7 @@ self.addEventListener("fetch", e => {
   // Sahifa: saqlangan nusxa darhol ochiladi (tez kirish), yangisi orqada yuklanib keshga yoziladi.
   // Yangi versiya kelsa — sahifaga xabar beriladi (u o'zi yangilanadi yoki «Yangilash» tugmasini ko'rsatadi)
   if (same && (r.mode === "navigate" || /\.(html|js|webmanifest)$/.test(u.pathname) || u.pathname.endsWith("/"))) {
-    const key = r.mode === "navigate" ? "./index.html" : r;
+    const key = r.mode === "navigate" ? (u.pathname.endsWith("/") ? u.origin + u.pathname + "index.html" : u.origin + u.pathname) : r; // har sahifa o'z nomi bilan saqlanadi (xarita.html ≠ index.html)
     const net = fetch(r, { cache: "no-cache" }).then(res => { if (res.ok && res.type === "basic") { const cp = res.clone(); caches.open(V).then(c => c.put(key, cp)); } return res; });
     e.respondWith(caches.open(V).then(c => c.match(key, { ignoreSearch: true })).then(old => {
       if (old) {
